@@ -78,24 +78,24 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
 
-            case R.id.nav_camera:
+            case R.id.nav_home:
 
                 fragment = HomeFragment.newInstance();
                 break;
-            case R.id.nav_gallery:
+            case R.id.nav_news:
 
                 fragment = NewsFragment.newInstance();
                 break;
-            case R.id.nav_slideshow:
+            case R.id.nav_calendar:
 
                 break;
-            case R.id.nav_manage:
+            case R.id.nav_directory:
 
                 break;
-            case R.id.nav_share:
+            case R.id.nav_nutrislice:
 
                 break;
-            case R.id.nav_send:
+            case R.id.nav_peachjar:
 
                 break;
         }

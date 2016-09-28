@@ -3,33 +3,45 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Home" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_news"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="News" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_calendar"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Calendar" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_directory"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Directory" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Links">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_psd"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="District Website" />
+            <item
+                android:id="@+id/nav_nutrislice"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Nutrislice" />
+            <item
+                android:id="@+id/nav_powerschool"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Powerschool" />
+            <item
+                android:id="@+id/nav_peachjar"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Peachjar" />
+            <item
+                android:id="@+id/nav_activities"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Activites" />
         </menu>
     </item>
 
