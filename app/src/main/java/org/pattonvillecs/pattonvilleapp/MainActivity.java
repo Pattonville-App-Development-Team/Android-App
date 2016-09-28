@@ -1,5 +1,7 @@
 package org.pattonvillecs.pattonvilleapp;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -79,15 +84,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+
+        Fragment fragment = null;
+
 
         switch (item.getItemId()) {
 
             case R.id.nav_camera:
 
+                fragment = HomeFragment.newInstance();
                 break;
             case R.id.nav_gallery:
 
+                fragment = NewsFragment.newInstance();
                 break;
             case R.id.nav_slideshow:
 
@@ -101,6 +110,14 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_send:
 
                 break;
+        }
+
+        if (fragment != null) {
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, fragment)
+                    .commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
