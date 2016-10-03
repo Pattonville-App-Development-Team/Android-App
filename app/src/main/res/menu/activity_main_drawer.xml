@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
@@ -20,7 +22,9 @@
             android:title="Directory" />
     </group>
 
-    <item android:title="Links">
+    <item
+        android:id="@+id/menu_links"
+        android:title="Links">
         <menu>
             <item
                 android:id="@+id/nav_psd"
@@ -44,5 +48,22 @@
                 android:title="Activites" />
         </menu>
     </item>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Notifications" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Help &amp; Feedback" />
+    </group>
 
 </menu>
