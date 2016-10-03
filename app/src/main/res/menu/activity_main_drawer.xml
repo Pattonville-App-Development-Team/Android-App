@@ -6,19 +6,19 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="Home" />
         <item
             android:id="@+id/nav_news"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_subject_black_24dp"
             android:title="News" />
         <item
             android:id="@+id/nav_calendar"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_event_black_24dp"
             android:title="Calendar" />
         <item
             android:id="@+id/nav_directory"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_contacts_black_24dp"
             android:title="Directory" />
     </group>
 
@@ -28,23 +28,18 @@
         <menu>
             <item
                 android:id="@+id/nav_psd"
-                android:icon="@drawable/ic_menu_send"
                 android:title="District Website" />
             <item
                 android:id="@+id/nav_nutrislice"
-                android:icon="@drawable/ic_menu_share"
                 android:title="Nutrislice" />
             <item
                 android:id="@+id/nav_powerschool"
-                android:icon="@drawable/ic_menu_send"
                 android:title="Powerschool" />
             <item
                 android:id="@+id/nav_peachjar"
-                android:icon="@drawable/ic_menu_send"
                 android:title="Peachjar" />
             <item
                 android:id="@+id/nav_activities"
-                android:icon="@drawable/ic_menu_send"
                 android:title="Activites" />
         </menu>
     </item>
@@ -54,15 +49,15 @@
         android:checkableBehavior="none">
         <item
             android:id="@+id/nav_notifications"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_notifications_black_24dp"
             android:title="Notifications" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="Settings" />
         <item
             android:id="@+id/nav_feedback"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_feedback_black_24dp"
             android:title="Help &amp; Feedback" />
     </group>
 
