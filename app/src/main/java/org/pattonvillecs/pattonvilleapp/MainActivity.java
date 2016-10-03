@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_calendar:
 
+                fragment = CalendarFragment.newInstance();
                 break;
             case R.id.nav_directory:
 

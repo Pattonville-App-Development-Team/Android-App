@@ -9,4 +9,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_news_fragment">Hello News fragment</string>
     <string name="hello_home_fragment">Hello Home fragment</string>
+    <string name="hello_calendar_fragment">Hello Calendar Fragment</string>
 </resources>
