@@ -2,7 +2,6 @@ package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         if (v != null) {
             ListView lv = (ListView) v.findViewById(android.R.id.list);
-            lv.setPadding(16, 16, 16, 16);
+            //lv.setPadding(16, 16, 16, 16); //TODO Figure out why Nathan added this method call - it always crashes
         }
         return v;
     }
