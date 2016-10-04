@@ -12,7 +12,6 @@ import org.pattonvillecs.pattonvilleapp.R;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     public SettingsFragment() {
-        super();
     }
 
     /**
