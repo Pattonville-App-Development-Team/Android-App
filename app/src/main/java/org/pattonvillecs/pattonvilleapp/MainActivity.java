@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_main, fragment)
+                    .replace(R.id.content_default, fragment)
                     .commit();
         }
 

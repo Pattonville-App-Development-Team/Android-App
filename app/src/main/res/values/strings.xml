@@ -10,5 +10,6 @@
     <string name="hello_news_fragment">Hello News fragment</string>
     <string name="hello_home_fragment">Hello Home fragment</string>
     <string name="hello_calendar_fragment">Hello Calendar Fragment</string>
+    <string name="default_content_message">No content here yet</string>
     <string name="title_activity_settings">SettingsActivity</string>
 </resources>
