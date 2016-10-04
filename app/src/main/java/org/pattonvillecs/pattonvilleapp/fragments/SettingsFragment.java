@@ -27,6 +27,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getActivity().setTheme(R.style.PreferenceFixTheme);
         super.onCreate(savedInstanceState);
     }
 
