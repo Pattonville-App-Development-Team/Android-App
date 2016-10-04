@@ -1,15 +1,17 @@
 package org.pattonvillecs.pattonvilleapp;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,8 +19,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,42 +73,42 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
 
         Fragment fragment = null;
 
-
         switch (item.getItemId()) {
 
             case R.id.nav_home:
-
+                Log.e("Main Activity", "cased into nav_home");
                 fragment = HomeFragment.newInstance();
                 break;
-            case R.id.nav_news:
 
+            case R.id.nav_news:
                 fragment = NewsFragment.newInstance();
                 break;
-            case R.id.nav_calendar:
 
+            case R.id.nav_calendar:
                 fragment = CalendarFragment.newInstance();
                 break;
+
             case R.id.nav_directory:
-
                 break;
+
             case R.id.nav_nutrislice:
-
                 break;
+
             case R.id.nav_peachjar:
-
                 break;
+            case R.id.nav_settings:
+                Log.e("Main Activity", "cased into action_settings");
+                startActivity(new Intent(this, SettingsActivity.class));
         }
 
         if (fragment != null) {
-
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content_default, fragment)
                     .commit();

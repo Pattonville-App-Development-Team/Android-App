@@ -7,7 +7,12 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/hello_calendar_fragment" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/nav_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>
