@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
 
             case R.id.nav_home:
+                Log.e("Main Activity", "cased into nav_home");
                 fragment = HomeFragment.newInstance();
                 break;
 
@@ -99,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_peachjar:
                 break;
-
+            case R.id.nav_settings:
+                Log.e("Main Activity", "cased into action_settings");
+                startActivity(new Intent(this, SettingsActivity.class));
         }
 
         if (fragment != null) {
