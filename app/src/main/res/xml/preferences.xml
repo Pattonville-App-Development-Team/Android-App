@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceScreen
-        android:key="button_voicemail_category_key"
-        android:title="sdf"
-        android:persistent="false">
-    </PreferenceScreen>
+    <PreferenceCategory android:title="General">
+
+        <CheckBoxPreference android:title="Recieve Notifications">
+
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Home"></PreferenceCategory>
+
+    <PreferenceCategory android:title="News"></PreferenceCategory>
+
+    <PreferenceCategory android:title="Calendar"></PreferenceCategory>
+
+    <PreferenceCategory android:title="Directory"></PreferenceCategory>
 
 </PreferenceScreen>
