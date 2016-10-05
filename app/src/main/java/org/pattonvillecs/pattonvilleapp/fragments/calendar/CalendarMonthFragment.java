@@ -11,12 +11,12 @@ import org.pattonvillecs.pattonvilleapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CalendarMonth#newInstance} factory method to
+ * Use the {@link CalendarMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarMonth extends Fragment {
+public class CalendarMonthFragment extends Fragment {
 
-    public CalendarMonth() {
+    public CalendarMonthFragment() {
         // Required empty public constructor
     }
 
@@ -24,11 +24,11 @@ public class CalendarMonth extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment CalendarMonth.
+     * @return A new instance of fragment CalendarMonthFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CalendarMonth newInstance() {
-        CalendarMonth fragment = new CalendarMonth();
+    public static CalendarMonthFragment newInstance() {
+        CalendarMonthFragment fragment = new CalendarMonthFragment();
         return fragment;
     }
 
