@@ -4,6 +4,7 @@ package org.pattonvillecs.pattonvilleapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,16 @@ public class ResourceFragment extends Fragment {
 
     public ResourceFragment() {
         // Required empty public constructor
+    }
+
+    public static ResourceFragment retrieveResourceFragment(FragmentManager fragmentManager) {
+        ResourceFragment resourceFragment = (ResourceFragment) fragmentManager.findFragmentByTag(ResourceFragment.FRAGMENT_TAG);
+        if (resourceFragment == null) {
+            Log.e(TAG, "ResourceFragment null, recreating...");
+            resourceFragment = new ResourceFragment();
+            fragmentManager.beginTransaction().add(resourceFragment, ResourceFragment.FRAGMENT_TAG).commitNow();
+        }
+        return resourceFragment;
     }
 
     @Override
