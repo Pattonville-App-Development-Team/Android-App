@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventsFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,13 +55,13 @@ public class CalendarFragment extends Fragment {
 
                 switch (position) {
                     case 0:
-                        fragment = HomeFragment.newInstance();
+                        fragment = CalendarMonthFragment.newInstance();
                         break;
                     case 1:
-                        fragment = NewsFragment.newInstance();
+                        fragment = CalendarEventsFragment.newInstance();
                         break;
                     case 2:
-                        fragment = SettingsFragment.newInstance();
+                        fragment = CalendarPinnedFragment.newInstance();
                         break;
                 }
 
@@ -67,17 +70,17 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public CharSequence getPageTitle(int position) {
-                String title = "null";
+                String title = "Broken!";
 
                 switch (position) {
                     case 0:
-                        title = "HomeFragment";
+                        title = "Month";
                         break;
                     case 1:
-                        title = "NewsFragment";
+                        title = "Events";
                         break;
                     case 2:
-                        title = "SettingsFragment";
+                        title = "Pinned";
                         break;
                 }
 
