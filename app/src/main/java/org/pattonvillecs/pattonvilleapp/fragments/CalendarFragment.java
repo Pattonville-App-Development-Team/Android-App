@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -41,6 +42,7 @@ public class CalendarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
@@ -87,6 +89,9 @@ public class CalendarFragment extends Fragment {
                 return 3;
             }
         });
+
+        TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
+        tabs.setupWithViewPager(viewPager);
 
         return view;
     }
