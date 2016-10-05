@@ -2,6 +2,8 @@ package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,6 @@ public class CalendarFragment extends Fragment {
      *
      * @return A new instance of fragment CalendarFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
         return fragment;
@@ -37,14 +38,56 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
+        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                Fragment fragment = null;
+
+                switch (position) {
+                    case 0:
+                        fragment = HomeFragment.newInstance();
+                        break;
+                    case 1:
+                        fragment = NewsFragment.newInstance();
+                        break;
+                    case 2:
+                        fragment = SettingsFragment.newInstance();
+                        break;
+                }
+
+                return fragment;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                String title = "null";
+
+                switch (position) {
+                    case 0:
+                        title = "HomeFragment";
+                        break;
+                    case 1:
+                        title = "NewsFragment";
+                        break;
+                    case 2:
+                        title = "SettingsFragment";
+                        break;
+                }
+
+                return title;
+            }
+
+            @Override
+            public int getCount() {
+                return 3;
+            }
+        });
+
+        return view;
     }
 }
