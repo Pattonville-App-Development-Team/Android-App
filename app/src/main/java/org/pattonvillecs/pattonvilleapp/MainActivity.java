@@ -18,8 +18,15 @@ import android.view.MenuItem;
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String KEY_CURRENT_ITEM = "CURRENT_ITEM";
+
+    private static final String TAG = "MainActivity";
+
+    private ResourceFragment resourceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +44,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        navigationView.getMenu().getItem(0).setChecked(true);
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        resourceFragment = (ResourceFragment) getSupportFragmentManager().findFragmentByTag(ResourceFragment.FRAGMENT_TAG);
+        if (resourceFragment == null) {
+            Log.e("MainActivity", "ResourceFragment null, recreating...");
+            resourceFragment = new ResourceFragment();
+            getSupportFragmentManager().beginTransaction().add(resourceFragment, ResourceFragment.FRAGMENT_TAG).commitNow();
+        }
+
+        int currentItem = (Integer) resourceFragment.getOrDefault(KEY_CURRENT_ITEM, R.id.nav_home);
+
+        MenuItem currentMenuItem = navigationView.getMenu().findItem(currentItem);
+        currentMenuItem.setChecked(true);
+        onNavigationItemSelected(currentMenuItem);
     }
 
     @Override
@@ -76,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+
+        if (item.getItemId() != R.id.nav_settings)
+            resourceFragment.put(KEY_CURRENT_ITEM, item.getItemId());
 
         Fragment fragment = null;
 

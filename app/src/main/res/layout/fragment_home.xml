@@ -13,11 +13,12 @@
         android:id="@+id/carouselView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:fillColor="#FFFFFFFF"
+        app:fillColor="@color/colorAccent"
         app:pageColor="#00000000"
         app:radius="6dp"
         app:slideInterval="3000"
+        app:snap="true"
         app:strokeColor="#FF777777"
-        app:strokeWidth="1dp" />
+        app:strokeWidth="2dp" />
 
 </LinearLayout>
