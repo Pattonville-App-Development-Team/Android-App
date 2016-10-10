@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
@@ -38,10 +40,13 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        View layout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
+
+        MaterialCalendarView calendarView = (MaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+
+        return layout;
     }
 
 }

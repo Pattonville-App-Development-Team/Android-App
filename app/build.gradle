@@ -28,7 +28,7 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.takisoft.fix:preference-v7:24.2.1.0'
-    compile 'com.github.sundeepk:compact-calendar-view:1.9.1'
+    compile 'com.prolificinteractive:material-calendarview:1.4.0'
     compile 'com.synnapps:carouselview:0.0.9'
     testCompile 'junit:junit:4.12'
 }
