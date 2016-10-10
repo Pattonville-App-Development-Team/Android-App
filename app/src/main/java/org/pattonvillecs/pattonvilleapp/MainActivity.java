@@ -79,19 +79,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
 
             case R.id.nav_home:
-                Log.e("Main Activity", "cased into nav_home");
                 fragment = HomeFragment.newInstance();
+                setTitle(R.string.title_fragment_home);
                 break;
 
             case R.id.nav_news:
                 fragment = NewsFragment.newInstance();
+                setTitle(R.string.title_fragment_news);
                 break;
 
             case R.id.nav_calendar:
                 fragment = CalendarFragment.newInstance();
+                setTitle(R.string.title_fragment_calendar);
                 break;
 
             case R.id.nav_directory:
+                setTitle(R.string.title_fragment_directory);
                 break;
 
             case R.id.nav_nutrislice:
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_peachjar:
                 break;
             case R.id.nav_settings:
-                Log.e("Main Activity", "cased into action_settings");
                 startActivity(new Intent(this, SettingsActivity.class));
         }
 
