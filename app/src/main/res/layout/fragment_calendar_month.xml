@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
-    <MaterialCalendarView
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendar_calendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </MaterialCalendarView>
+    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
 </FrameLayout>
