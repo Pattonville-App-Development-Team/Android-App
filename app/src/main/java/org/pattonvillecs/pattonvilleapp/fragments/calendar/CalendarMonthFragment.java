@@ -14,7 +14,6 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,7 +115,7 @@ public class CalendarMonthFragment extends Fragment {
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        MaterialCalendarView calendarView = (MaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+        final MaterialCalendarView calendarView = (MaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
         calendarView.addDecorator(new DayViewDecorator() {
             @Override
             public boolean shouldDecorate(CalendarDay day) {
@@ -132,7 +131,6 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
-        Log.e(TAG, "Width: ");
 
         return layout;
     }
