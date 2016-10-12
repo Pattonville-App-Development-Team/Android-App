@@ -144,8 +144,8 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             }
         } else if (specWidthMode == MeasureSpec.EXACTLY) {
             if (specHeightMode == MeasureSpec.EXACTLY) {
-                //Pick the larger of the two explicit sizes
-                measureTileSize = Math.max(desiredTileWidth, desiredTileHeight);
+                //Pick the SMALLER of the two explicit sizes !!!CHANGED!!!
+                measureTileSize = Math.min(desiredTileWidth, desiredTileHeight);
             } else {
                 //Be the width size the user wants
                 measureTileSize = desiredTileWidth;
