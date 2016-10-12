@@ -2,12 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+    <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
         android:id="@+id/calendar_calendar"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+        android:layout_height="match_parent" />
 </LinearLayout>

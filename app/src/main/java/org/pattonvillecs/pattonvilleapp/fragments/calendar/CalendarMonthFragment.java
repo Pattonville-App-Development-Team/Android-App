@@ -26,6 +26,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,7 +116,7 @@ public class CalendarMonthFragment extends Fragment {
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        final MaterialCalendarView calendarView = (MaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+        final FixedMaterialCalendarView calendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
         calendarView.addDecorator(new DayViewDecorator() {
             @Override
             public boolean shouldDecorate(CalendarDay day) {
@@ -130,7 +131,16 @@ public class CalendarMonthFragment extends Fragment {
                 view.addSpan(new DotSpan(10, getThemeAccentColor(getContext())));
             }
         });
-        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
+        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendarView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                calendarView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                calendarView.requestLayout();
+            }
+        });
 
         return layout;
     }
