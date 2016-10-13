@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fragment="org.pattonvillecs.pattonvilleapp.fragments.SettingsFragment"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout="@layout/activity_settings">
 
-    <PreferenceCategory android:title="General">
+    <android.support.v7.preference.PreferenceCategory android:title="General">
 
-        <CheckBoxPreference android:title="Recieve Notifications">
+        <android.support.v7.preference.PreferenceScreen android:title="Select Buildings"></android.support.v7.preference.PreferenceScreen>
 
-        </CheckBoxPreference>
-    </PreferenceCategory>
+        <android.support.v7.preference.CheckBoxPreference android:title="Recieve Notifications">
 
-    <PreferenceCategory android:title="Home"></PreferenceCategory>
+        </android.support.v7.preference.CheckBoxPreference>
+    </android.support.v7.preference.PreferenceCategory>
 
-    <PreferenceCategory android:title="News"></PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="Home"></android.support.v7.preference.PreferenceCategory>
 
-    <PreferenceCategory android:title="Calendar"></PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="News"></android.support.v7.preference.PreferenceCategory>
 
-    <PreferenceCategory android:title="Directory"></PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="Calendar"></android.support.v7.preference.PreferenceCategory>
 
-</PreferenceScreen>
+    <android.support.v7.preference.PreferenceCategory android:title="Directory"></android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>
