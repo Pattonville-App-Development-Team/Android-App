@@ -40,6 +40,7 @@ import java.util.Arrays;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    private static final int NUM_ITEMS_SHOWN = 3;
     private FixedMaterialCalendarView mCalendarView;
     private int calendarMonthSlideInDrawerHeightPixels;
     private ListView mListView;
@@ -85,7 +86,7 @@ public class CalendarMonthFragment extends Fragment {
                 view.addSpan(new DotSpan(mCalendarView.getTileWidth() / 10f, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
         });
-        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
         mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -93,9 +94,10 @@ public class CalendarMonthFragment extends Fragment {
         });
 
         mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        mListView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2")));
+        mListView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2", "Test3", "Test4")));
 
-        calendarMonthSlideInDrawerHeightPixels = getResources().getDimensionPixelSize(R.dimen.calendar_month_slide_in_drawer_height);
+        mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of a SINGLE ITEM if it could wrap_content
+        calendarMonthSlideInDrawerHeightPixels = mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN; // Show desired number of items
 
         ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.button_calendar);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
