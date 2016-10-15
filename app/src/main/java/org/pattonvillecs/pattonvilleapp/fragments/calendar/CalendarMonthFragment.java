@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
@@ -72,6 +73,13 @@ public class CalendarMonthFragment extends Fragment {
         final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
         mCalendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+        mCalendarView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of the calendar view if it could wrap_content
+        mCalendarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mCalendarView.invalidateDecorators(); // !!!THIS CAUSES MEGA-LAG!!! TODO Fix slow layout updating... Perhaps with a mutating DotSpan?
+            }
+        });
         mCalendarView.addDecorator(new DayViewDecorator() {
             @Override
             public boolean shouldDecorate(CalendarDay day) {
@@ -83,7 +91,7 @@ public class CalendarMonthFragment extends Fragment {
                 StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
                 view.setSelectionDrawable(stateListDrawable);
 
-                view.addSpan(new DotSpan(mCalendarView.getTileWidth() / 10f, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
+                view.addSpan(new DotSpan(mCalendarView.getChildAt(1).getWidth() / 7f / 10f, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
         });
         mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
