@@ -3,6 +3,8 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.res.Configuration;
+import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.StateListDrawable;
@@ -16,10 +18,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ToggleButton;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -31,7 +31,10 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +48,9 @@ public class CalendarMonthFragment extends Fragment {
     private FixedMaterialCalendarView mCalendarView;
     private int calendarMonthSlideInDrawerHeightPixels;
     private ListView mListView;
+    private List<String> listViewContent;
+    private ArrayAdapter<String> listViewArrayAdapter;
+    private boolean currentEventsDrawerOpen = false;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -94,37 +100,44 @@ public class CalendarMonthFragment extends Fragment {
                 view.addSpan(new DotSpan(mCalendarView.getChildAt(1).getWidth() / 7f / 10f, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
         });
-        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
+        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                listViewArrayAdapter.clear();
+                DateFormat simpleDateFormat = SimpleDateFormat.getDateInstance();
+                for (int i = 0; i < 10; i++) {
+                    listViewArrayAdapter.add("Date: " + simpleDateFormat.format(date.getDate()) + " TEST" + i);
+                }
+                openCurrentEventsDrawer();
             }
         });
 
         mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        mListView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2", "Test3", "Test4")));
-
-        mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of a SINGLE ITEM if it could wrap_content
-        calendarMonthSlideInDrawerHeightPixels = mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN; // Show desired number of items
-
-        ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.button_calendar);
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        listViewContent = new ArrayList<>();
+        listViewArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listViewContent);
+        mListView.setAdapter(listViewArrayAdapter);
+        listViewArrayAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    openCurrentEventsDrawer();
-                } else {
-                    closeCurrentEventsDrawer();
+            public void onChanged() {
+                switch (getActivity().getResources().getConfiguration().orientation) {
+                    case Configuration.ORIENTATION_PORTRAIT:
+                        mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of a SINGLE ITEM if it could wrap_content
+                        calendarMonthSlideInDrawerHeightPixels = mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN; // Show desired number of items
+                        break;
+                    case Configuration.ORIENTATION_LANDSCAPE:
+                        calendarMonthSlideInDrawerHeightPixels = mListView.getHeight();
+                        break;
                 }
             }
         });
-
-        layout.getLayoutAnimation();
 
         return layout;
     }
 
     private void openCurrentEventsDrawer() {
+        if (currentEventsDrawerOpen)
+            return;
         ValueAnimator valueAnimator = ValueAnimator.ofInt(0, calendarMonthSlideInDrawerHeightPixels).setDuration(250);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -138,6 +151,7 @@ public class CalendarMonthFragment extends Fragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 mListView.setVisibility(View.VISIBLE);
+                currentEventsDrawerOpen = true;
             }
 
             @Override
@@ -156,6 +170,8 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     private void closeCurrentEventsDrawer() {
+        if (!currentEventsDrawerOpen)
+            return;
         ValueAnimator valueAnimator = ValueAnimator.ofInt(calendarMonthSlideInDrawerHeightPixels, 0).setDuration(250);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -173,6 +189,7 @@ public class CalendarMonthFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mListView.setVisibility(View.GONE);
+                currentEventsDrawerOpen = false;
             }
 
             @Override

@@ -5,11 +5,6 @@
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
-    <ToggleButton
-        android:id="@+id/button_calendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
         android:id="@+id/calendar_calendar"
         android:layout_width="match_parent"
