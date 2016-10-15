@@ -1,6 +1,8 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -13,11 +15,14 @@ import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -28,6 +33,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -43,6 +49,9 @@ import java.util.Arrays;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    private FixedMaterialCalendarView mCalendarView;
+    private int calendarMonthSlideInDrawerHeightPixels;
+    private ListView mListView;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -123,8 +132,8 @@ public class CalendarMonthFragment extends Fragment {
         // Inflate the layout for this fragment
         final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        final FixedMaterialCalendarView calendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
-        calendarView.addDecorator(new DayViewDecorator() {
+        mCalendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+        mCalendarView.addDecorator(new DayViewDecorator() {
             @Override
             public boolean shouldDecorate(CalendarDay day) {
                 return day.getDay() % 3 == 0;
@@ -132,34 +141,101 @@ public class CalendarMonthFragment extends Fragment {
 
             @Override
             public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarMonthFragment.generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
+                StateListDrawable stateListDrawable = generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
                 view.setSelectionDrawable(stateListDrawable);
 
-                view.addSpan(new DotSpan(calendarView.getTileWidth() / 10f, getThemeAccentColor(getContext())));
+                view.addSpan(new DotSpan(mCalendarView.getTileWidth() / 10f, getThemeAccentColor(getContext())));
             }
         });
-        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+            }
+        });
 
-        final ListView listView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2")));
+        mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
+        mListView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2")));
+
+        calendarMonthSlideInDrawerHeightPixels = getResources().getDimensionPixelSize(R.dimen.calendar_month_slide_in_drawer_height);
 
         ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.button_calendar);
-        toggleButton.setTextOn("GONE");
-        toggleButton.setTextOff("VISIBLE");
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    listView.setVisibility(View.GONE);
-                    calendarView.setVisibility(View.VISIBLE);
+                    openCurrentEventsDrawer();
                 } else {
-                    listView.setVisibility(View.VISIBLE);
-                    calendarView.setVisibility(View.GONE);
+                    closeCurrentEventsDrawer();
                 }
             }
         });
 
+        layout.getLayoutAnimation();
+
         return layout;
+    }
+
+    private void openCurrentEventsDrawer() {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, calendarMonthSlideInDrawerHeightPixels).setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mListView.getLayoutParams().height = (Integer) animation.getAnimatedValue();
+                mListView.requestLayout();
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mListView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        valueAnimator.start();
+    }
+
+    private void closeCurrentEventsDrawer() {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(calendarMonthSlideInDrawerHeightPixels, 0).setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mListView.getLayoutParams().height = (Integer) animation.getAnimatedValue();
+                mListView.requestLayout();
+            }
+        });
+        valueAnimator.setInterpolator(new AccelerateInterpolator());
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mListView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        valueAnimator.start();
     }
 
 }

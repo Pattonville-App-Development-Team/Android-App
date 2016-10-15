@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
@@ -14,12 +13,14 @@
     <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
         android:id="@+id/calendar_calendar"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <ListView
         android:id="@+id/list_view_calendar"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="@dimen/calendar_month_slide_in_drawer_height"
+        android:layout_weight="0"
         android:visibility="gone" />
 
 </LinearLayout>
