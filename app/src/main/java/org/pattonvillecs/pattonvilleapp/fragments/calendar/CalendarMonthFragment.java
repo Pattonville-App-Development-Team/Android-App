@@ -18,6 +18,11 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -27,6 +32,8 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
+
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,7 +121,7 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View layout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
         final FixedMaterialCalendarView calendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
         calendarView.addDecorator(new DayViewDecorator() {
@@ -128,17 +135,27 @@ public class CalendarMonthFragment extends Fragment {
                 StateListDrawable stateListDrawable = CalendarMonthFragment.generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
                 view.setSelectionDrawable(stateListDrawable);
 
-                view.addSpan(new DotSpan(10, getThemeAccentColor(getContext())));
+                view.addSpan(new DotSpan(calendarView.getTileWidth() / 10f, getThemeAccentColor(getContext())));
             }
         });
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
 
-        layout.setOnClickListener(new View.OnClickListener() {
+        final ListView listView = (ListView) layout.findViewById(R.id.list_view_calendar);
+        listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Arrays.asList("Test1", "Test2")));
+
+        ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.button_calendar);
+        toggleButton.setTextOn("GONE");
+        toggleButton.setTextOff("VISIBLE");
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                calendarView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-                calendarView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                calendarView.requestLayout();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    listView.setVisibility(View.GONE);
+                    calendarView.setVisibility(View.VISIBLE);
+                } else {
+                    listView.setVisibility(View.VISIBLE);
+                    calendarView.setVisibility(View.GONE);
+                }
             }
         });
 
