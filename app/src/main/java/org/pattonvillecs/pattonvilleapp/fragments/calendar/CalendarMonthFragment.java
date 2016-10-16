@@ -9,8 +9,10 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +31,12 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,13 +46,14 @@ import java.util.List;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    private static final String KEY_CURRENT_EVENTS_DRAWER_OPEN = "currentEventsDrawerOpen";
     private static final int NUM_ITEMS_SHOWN = 3;
     private FixedMaterialCalendarView mCalendarView;
     private int calendarMonthSlideInDrawerHeightPixels;
     private ListView mListView;
-    private List<String> listViewContent;
     private ArrayAdapter<String> listViewArrayAdapter;
     private boolean currentEventsDrawerOpen = false;
+    private ResourceFragment resourceFragment;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -66,6 +69,11 @@ public class CalendarMonthFragment extends Fragment {
     public static CalendarMonthFragment newInstance() {
         CalendarMonthFragment fragment = new CalendarMonthFragment();
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -114,8 +122,7 @@ public class CalendarMonthFragment extends Fragment {
         });
 
         mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        listViewContent = new ArrayList<>();
-        listViewArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listViewContent);
+        listViewArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
         mListView.setAdapter(listViewArrayAdapter);
         listViewArrayAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -132,12 +139,27 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
 
+        resourceFragment = ResourceFragment.retrieveResourceFragment(getActivity().getSupportFragmentManager());
+        if ((Boolean) resourceFragment.getOrDefault(KEY_CURRENT_EVENTS_DRAWER_OPEN, false)) {
+            Log.e(TAG, "About to call openCurrentEventsDrawer");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openCurrentEventsDrawer();
+                }
+            }, 2000);
+        }
+
         return layout;
     }
 
     private void openCurrentEventsDrawer() {
+        Log.e(TAG, "Called openCurrentEventsDrawer");
+        Log.e(TAG, "Drawer open status: " + currentEventsDrawerOpen);
         if (currentEventsDrawerOpen)
             return;
+        Log.e(TAG, "Opening drawer");
         ValueAnimator valueAnimator = ValueAnimator.ofInt(0, calendarMonthSlideInDrawerHeightPixels).setDuration(250);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -147,26 +169,10 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
         valueAnimator.setInterpolator(new DecelerateInterpolator());
-        valueAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mListView.setVisibility(View.VISIBLE);
-                currentEventsDrawerOpen = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
         valueAnimator.start();
+        mListView.setVisibility(View.VISIBLE);
+        currentEventsDrawerOpen = true;
+        resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, true);
     }
 
     private void closeCurrentEventsDrawer() {
@@ -190,6 +196,7 @@ public class CalendarMonthFragment extends Fragment {
             public void onAnimationEnd(Animator animation) {
                 mListView.setVisibility(View.GONE);
                 currentEventsDrawerOpen = false;
+                resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, false);
             }
 
             @Override
