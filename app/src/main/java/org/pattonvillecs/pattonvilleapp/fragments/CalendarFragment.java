@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -34,8 +35,13 @@ public class CalendarFragment extends Fragment {
      * @return A new instance of fragment CalendarFragment.
      */
     public static CalendarFragment newInstance() {
-        CalendarFragment fragment = new CalendarFragment();
-        return fragment;
+        return new CalendarFragment();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(R.string.title_fragment_calendar);
     }
 
     @Override

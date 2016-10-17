@@ -2,6 +2,7 @@ package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +27,14 @@ public class NewsFragment extends Fragment {
      *
      * @return A new instance of fragment NewsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewsFragment newInstance() {
-        NewsFragment fragment = new NewsFragment();
-        return fragment;
+        return new NewsFragment();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().setTitle(R.string.title_fragment_news);
     }
 
     @Override

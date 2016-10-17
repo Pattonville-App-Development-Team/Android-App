@@ -65,17 +65,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
-                setTitle(R.string.title_fragment_home);
                 break;
 
             case R.id.nav_news:
                 fragment = NewsFragment.newInstance();
-                setTitle(R.string.title_fragment_news);
                 break;
 
             case R.id.nav_calendar:
                 fragment = CalendarFragment.newInstance();
-                setTitle(R.string.title_fragment_calendar);
                 break;
 
             case R.id.nav_directory:
