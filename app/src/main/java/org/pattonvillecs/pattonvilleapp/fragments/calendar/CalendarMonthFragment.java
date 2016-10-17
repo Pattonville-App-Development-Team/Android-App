@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -31,7 +30,6 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.text.DateFormat;
@@ -53,7 +51,7 @@ public class CalendarMonthFragment extends Fragment {
     private ListView mListView;
     private ArrayAdapter<String> listViewArrayAdapter;
     private boolean currentEventsDrawerOpen = false;
-    private ResourceFragment resourceFragment;
+    //private ResourceFragment resourceFragment;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -67,6 +65,7 @@ public class CalendarMonthFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static CalendarMonthFragment newInstance() {
+        Log.e(TAG, "New instance created...");
         CalendarMonthFragment fragment = new CalendarMonthFragment();
         return fragment;
     }
@@ -83,6 +82,7 @@ public class CalendarMonthFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
         final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
@@ -139,6 +139,7 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
 
+        /*
         resourceFragment = ResourceFragment.retrieveResourceFragment(getActivity().getSupportFragmentManager());
         if ((Boolean) resourceFragment.getOrDefault(KEY_CURRENT_EVENTS_DRAWER_OPEN, false)) {
             Log.e(TAG, "About to call openCurrentEventsDrawer");
@@ -150,6 +151,7 @@ public class CalendarMonthFragment extends Fragment {
                 }
             }, 2000);
         }
+        */
 
         return layout;
     }
@@ -172,7 +174,7 @@ public class CalendarMonthFragment extends Fragment {
         valueAnimator.start();
         mListView.setVisibility(View.VISIBLE);
         currentEventsDrawerOpen = true;
-        resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, true);
+        //resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, true);
     }
 
     private void closeCurrentEventsDrawer() {
@@ -196,7 +198,7 @@ public class CalendarMonthFragment extends Fragment {
             public void onAnimationEnd(Animator animation) {
                 mListView.setVisibility(View.GONE);
                 currentEventsDrawerOpen = false;
-                resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, false);
+                //resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, false);
             }
 
             @Override

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_home);
             this.onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_home));
         }
+
+        ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
     }
 
     @Override

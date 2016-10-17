@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -23,6 +24,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragmen
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
+    private ResourceFragment mResourceFragment;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -45,6 +47,12 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mResourceFragment = ResourceFragment.retrieveResourceFragment(getActivity().getSupportFragmentManager());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -53,8 +61,6 @@ public class CalendarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
-
-        final ResourceFragment resourceFragment = ResourceFragment.retrieveResourceFragment(getActivity().getSupportFragmentManager());
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
@@ -108,7 +114,7 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                resourceFragment.put(KEY_CURRENT_TAB, position);
+                mResourceFragment.put(KEY_CURRENT_TAB, position);
             }
 
             @Override
@@ -119,7 +125,7 @@ public class CalendarFragment extends Fragment {
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
         tabs.setupWithViewPager(viewPager);
 
-        viewPager.setCurrentItem((Integer) resourceFragment.getOrDefault(KEY_CURRENT_TAB, 0));
+        viewPager.setCurrentItem((Integer) mResourceFragment.getOrDefault(KEY_CURRENT_TAB, 0));
 
         return view;
     }
