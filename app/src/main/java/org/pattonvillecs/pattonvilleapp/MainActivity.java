@@ -11,21 +11,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String KEY_CURRENT_ITEM = "CURRENT_ITEM";
-
     private static final String TAG = "MainActivity";
 
-    private ResourceFragment resourceFragment;
+    //private ResourceFragment resourceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        resourceFragment = (ResourceFragment) getSupportFragmentManager().findFragmentByTag(ResourceFragment.FRAGMENT_TAG);
-        if (resourceFragment == null) {
-            Log.e("MainActivity", "ResourceFragment null, recreating...");
-            resourceFragment = new ResourceFragment();
-            getSupportFragmentManager().beginTransaction().add(resourceFragment, ResourceFragment.FRAGMENT_TAG).commitNow();
-        }
-
-        int currentItem = (Integer) resourceFragment.getOrDefault(KEY_CURRENT_ITEM, R.id.nav_home);
-
-        MenuItem currentMenuItem = navigationView.getMenu().findItem(currentItem);
-        currentMenuItem.setChecked(true);
-        onNavigationItemSelected(currentMenuItem);
     }
 
     @Override
@@ -71,13 +54,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
 
-        if (item.getItemId() != R.id.nav_settings)
-            resourceFragment.put(KEY_CURRENT_ITEM, item.getItemId());
-
         Fragment fragment = null;
 
         switch (item.getItemId()) {
-
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
                 setTitle(R.string.title_fragment_home);
@@ -109,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_default, fragment)
-                    .commit();
+                    .replace(R.id.content_default, fragment, fragment.getClass().getSimpleName())
+                    .commitNow();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
