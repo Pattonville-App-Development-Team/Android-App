@@ -162,7 +162,7 @@ public class CalendarMonthFragment extends Fragment {
         switch (orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of a SINGLE ITEM if it could wrap_content
-                calendarMonthSlideInDrawerHeightPixels = mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN; // Show desired number of items
+                calendarMonthSlideInDrawerHeightPixels = Math.max(mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN, (int) (getActivity().getResources().getDisplayMetrics().heightPixels * .2)); // Show desired number of items
                 break;
             case Configuration.ORIENTATION_LANDSCAPE:
                 mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.makeMeasureSpec(mCalendarView.getMeasuredHeight(), View.MeasureSpec.AT_MOST));
