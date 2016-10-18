@@ -63,6 +63,7 @@ public class CalendarFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
