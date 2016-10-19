@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -33,9 +32,6 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,10 +45,11 @@ public class CalendarMonthFragment extends Fragment {
     private FixedMaterialCalendarView mCalendarView;
     private int calendarMonthSlideInDrawerHeightPixels;
     private ListView mListView;
-    private ArrayAdapter<String> listViewArrayAdapter;
+    //private ArrayAdapter<String> mListViewArrayAdapter;
     private boolean currentEventsDrawerOpen = false;
     private CalendarDay dateSelected;
     private boolean drawerInMotion = false;
+    private SingleDayEventAdapter mSingleDayEventAdapter;
     //private ResourceFragment resourceFragment;
 
     public CalendarMonthFragment() {
@@ -131,19 +128,16 @@ public class CalendarMonthFragment extends Fragment {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
-                listViewArrayAdapter.clear();
-                DateFormat simpleDateFormat = SimpleDateFormat.getDateInstance();
-                for (int i = 0; i < 10; i++) {
-                    listViewArrayAdapter.add("Date: " + simpleDateFormat.format(date.getDate()) + " TEST" + i);
-                }
+                mSingleDayEventAdapter.setCurrentCalendarDay(date);
                 openCurrentEventsDrawer();
             }
         });
 
         mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        listViewArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
-        mListView.setAdapter(listViewArrayAdapter);
-        listViewArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+        //mListViewArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.dateless_event_list_item, R.id.text_top, new ArrayList<String>());
+        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext());
+        mListView.setAdapter(mSingleDayEventAdapter);
+        mSingleDayEventAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 Log.e(TAG, "Dataset changed!");
@@ -263,5 +257,4 @@ public class CalendarMonthFragment extends Fragment {
         });
         valueAnimator.start();
     }
-
 }
