@@ -183,6 +183,8 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     private void openCurrentEventsDrawer() {
+        if (true)
+            return;
         Log.e(TAG, "Called openCurrentEventsDrawer");
         Log.e(TAG, "Drawer open status: " + currentEventsDrawerOpen);
         if (currentEventsDrawerOpen)

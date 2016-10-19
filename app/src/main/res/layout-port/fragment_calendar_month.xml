@@ -13,10 +13,12 @@
         android:layout_weight="1"
         app:mcv_dateTextAppearance="@style/PSD.Calendar.Date" />
 
-    <ListView
+    <org.pattonvillecs.pattonvilleapp.fragments.calendar.MaxHeightListView
         android:id="@+id/list_view_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0" />
+        android:layout_weight="0"
+        app:maxHeight="100dp"
+        tools:listitem="@layout/dateless_event_list_item" />
 
 </LinearLayout>
