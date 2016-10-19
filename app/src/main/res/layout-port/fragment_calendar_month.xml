@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
@@ -18,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        app:maxHeight="100dp"
+        android:animateLayoutChanges="true"
+        app:maxHeight="@dimen/calendar_month_slide_in_drawer_max_height"
         tools:listitem="@layout/dateless_event_list_item" />
 
 </LinearLayout>

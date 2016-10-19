@@ -1,9 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.content.res.Configuration;
+import android.animation.LayoutTransition;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -12,12 +10,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -41,12 +37,8 @@ import java.lang.reflect.Method;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
-    private static final int NUM_ITEMS_SHOWN = 3;
     private FixedMaterialCalendarView mCalendarView;
-    private int calendarMonthSlideInDrawerHeightPixels;
-    private ListView mListView;
-    //private ArrayAdapter<String> mListViewArrayAdapter;
-    private boolean currentEventsDrawerOpen = false;
+    private ListView mMaxHeightListView;
     private CalendarDay dateSelected;
     private boolean drawerInMotion = false;
     private SingleDayEventAdapter mSingleDayEventAdapter;
@@ -80,36 +72,18 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mCalendarView.invalidateDecorators();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
         final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        mCalendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
-        mCalendarView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of the calendar view if it could wrap_content
-        mCalendarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            private boolean isCalendarViewDirty = true; // Stops spam of updates caused by mCalendarView.invalidateDecorators()
+        layout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
 
-            @Override
-            public void onGlobalLayout() {
-                if (getActivity() != null && !drawerInMotion) // If the calendar fragment is still attached to an activity
-                {
-                    if (isCalendarViewDirty) {
-                        Log.e(TAG, "Decorators invalidated from layout change");
-                        mCalendarView.invalidateDecorators(); // TODO Fix slow layout updating... Perhaps with a mutating DotSpan? Not too important right now
-                        isCalendarViewDirty = false;
-                    }
-                } else
-                    isCalendarViewDirty = true;
-            }
-        });
+        mCalendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+
         mCalendarView.addDecorator(new DayViewDecorator() {
+            float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
+
             @Override
             public boolean shouldDecorate(CalendarDay day) {
                 return day.getDay() % 3 == 0;
@@ -120,7 +94,8 @@ public class CalendarMonthFragment extends Fragment {
                 StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
                 view.setSelectionDrawable(stateListDrawable);
 
-                view.addSpan(new DotSpan(mCalendarView.getChildAt(1).getWidth() / 7f / 10f, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
+                //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
         });
         mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
@@ -129,20 +104,18 @@ public class CalendarMonthFragment extends Fragment {
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
                 mSingleDayEventAdapter.setCurrentCalendarDay(date);
-                openCurrentEventsDrawer();
             }
         });
-        mCalendarView.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
-        mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
-        //mListViewArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.dateless_event_list_item, R.id.text_top, new ArrayList<String>());
+        mMaxHeightListView = (ListView) layout.findViewById(R.id.list_view_calendar);
+        mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mSingleDayEventAdapter = new SingleDayEventAdapter(getContext());
-        mListView.setAdapter(mSingleDayEventAdapter);
+        mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
         mSingleDayEventAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 Log.e(TAG, "Dataset changed!");
-                measureDrawerHeight(getActivity().getResources().getConfiguration().orientation);
+                mCalendarView.invalidateDecorators();
             }
         });
 
@@ -150,20 +123,6 @@ public class CalendarMonthFragment extends Fragment {
             dateSelected = savedInstanceState.getParcelable("dateSelected");
 
         return layout;
-    }
-
-    private void measureDrawerHeight(int orientation) {
-        Log.e(TAG, "Measuring drawer height");
-        switch (orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED); // Compute hypothetical bounds of a SINGLE ITEM if it could wrap_content
-                calendarMonthSlideInDrawerHeightPixels = Math.max(mListView.getMeasuredHeight() * NUM_ITEMS_SHOWN, (int) (getActivity().getResources().getDisplayMetrics().heightPixels * .2)); // Show desired number of items
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                mListView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.makeMeasureSpec(mCalendarView.getMeasuredHeight(), View.MeasureSpec.AT_MOST));
-                calendarMonthSlideInDrawerHeightPixels = mListView.getMeasuredHeight();
-                break;
-        }
     }
 
     @Override
@@ -177,87 +136,6 @@ public class CalendarMonthFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            measureDrawerHeight(getActivity().getResources().getConfiguration().orientation);
-            openCurrentEventsDrawer();
         }
-    }
-
-    private void openCurrentEventsDrawer() {
-        if (true)
-            return;
-        Log.e(TAG, "Called openCurrentEventsDrawer");
-        Log.e(TAG, "Drawer open status: " + currentEventsDrawerOpen);
-        if (currentEventsDrawerOpen)
-            return;
-        Log.e(TAG, "Opening drawer to height: " + calendarMonthSlideInDrawerHeightPixels);
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, calendarMonthSlideInDrawerHeightPixels).setDuration(250);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mListView.getLayoutParams().height = (Integer) animation.getAnimatedValue();
-                mListView.requestLayout();
-            }
-        });
-        valueAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                drawerInMotion = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                drawerInMotion = false;
-                mCalendarView.invalidateDecorators();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        valueAnimator.setInterpolator(new DecelerateInterpolator());
-        valueAnimator.start();
-        if (calendarMonthSlideInDrawerHeightPixels != 0)
-            currentEventsDrawerOpen = true;
-    }
-
-    private void closeCurrentEventsDrawer() {
-        if (!currentEventsDrawerOpen)
-            return;
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(calendarMonthSlideInDrawerHeightPixels, 0).setDuration(250);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mListView.getLayoutParams().height = (Integer) animation.getAnimatedValue();
-                mListView.requestLayout();
-            }
-        });
-        valueAnimator.setInterpolator(new AccelerateInterpolator());
-        valueAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                drawerInMotion = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                drawerInMotion = false;
-                currentEventsDrawerOpen = false;
-                mCalendarView.invalidateDecorators();
-                //resourceFragment.put(KEY_CURRENT_EVENTS_DRAWER_OPEN, false);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        valueAnimator.start();
     }
 }
