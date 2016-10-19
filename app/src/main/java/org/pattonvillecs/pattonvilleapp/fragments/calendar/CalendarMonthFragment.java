@@ -132,6 +132,7 @@ public class CalendarMonthFragment extends Fragment {
                 openCurrentEventsDrawer();
             }
         });
+        mCalendarView.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
         mListView = (ListView) layout.findViewById(R.id.list_view_calendar);
         //mListViewArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.dateless_event_list_item, R.id.text_top, new ArrayList<String>());
