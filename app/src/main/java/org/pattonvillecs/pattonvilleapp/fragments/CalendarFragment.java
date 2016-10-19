@@ -1,6 +1,5 @@
 package org.pattonvillecs.pattonvilleapp.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -24,7 +23,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragmen
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
-    private ResourceFragment mResourceFragment;
+    private ViewPager mViewPager;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -47,12 +46,6 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mResourceFragment = ResourceFragment.retrieveResourceFragment(getActivity().getSupportFragmentManager());
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -62,13 +55,12 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        mViewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
-
                 switch (position) {
                     case 0:
                         fragment = CalendarMonthFragment.newInstance();
@@ -80,14 +72,12 @@ public class CalendarFragment extends Fragment {
                         fragment = CalendarPinnedFragment.newInstance();
                         break;
                 }
-
                 return fragment;
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
                 String title = "Broken!";
-
                 switch (position) {
                     case 0:
                         title = "Month";
@@ -99,7 +89,6 @@ public class CalendarFragment extends Fragment {
                         title = "Pinned";
                         break;
                 }
-
                 return title;
             }
 
@@ -108,26 +97,19 @@ public class CalendarFragment extends Fragment {
                 return 3;
             }
         });
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mResourceFragment.put(KEY_CURRENT_TAB, position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
 
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
-        tabs.setupWithViewPager(viewPager);
+        tabs.setupWithViewPager(mViewPager);
 
-        viewPager.setCurrentItem((Integer) mResourceFragment.getOrDefault(KEY_CURRENT_TAB, 0));
+        if (savedInstanceState != null)
+            mViewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CURRENT_TAB, mViewPager.getCurrentItem());
     }
 }
