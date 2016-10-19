@@ -12,6 +12,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
@@ -22,8 +24,27 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+    private NavigationView mNavigationView;
 
-    //private ResourceFragment resourceFragment;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        int checkedItemId = -1;
+        for (int i = 0; i < mNavigationView.getMenu().size(); i++) {
+            if (mNavigationView.getMenu().getItem(i).isChecked()) {
+                checkedItemId = mNavigationView.getMenu().getItem(i).getItemId();
+                break;
+            }
+        }
+
+        switch (checkedItemId) {
+            case R.id.nav_calendar:
+                inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
+                return true;
+            default:
+                return true;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +60,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
-            navigationView.setCheckedItem(R.id.nav_home);
-            this.onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_home));
+            mNavigationView.setCheckedItem(R.id.nav_home);
+            this.onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_home));
         }
 
         ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
@@ -97,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.content_default, fragment)
                     .commitNow();
         }
+
+        supportInvalidateOptionsMenu();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
