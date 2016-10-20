@@ -35,10 +35,10 @@ public class SingleDayEventAdapter extends BaseAdapter {
 
     public void setCurrentCalendarDay(CalendarDay newCalendarDay) {
         currentCalendarDay = newCalendarDay;
-        count = 10;
+        count = newCalendarDay.getDay();
         datelessCalendarEvents.clear();
         DateFormat simpleDateFormat = SimpleDateFormat.getDateInstance();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < count; i++) {
             datelessCalendarEvents.add(new DatelessCalendarEvent("Date: " + simpleDateFormat.format(currentCalendarDay.getDate()) + " TEST" + i));
         }
         notifyDataSetChanged();
