@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
         MenuInflater inflater = getMenuInflater();
         int checkedItemId = -1;
         for (int i = 0; i < mNavigationView.getMenu().size(); i++) {
@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             default:
                 return true;
-        }
+        }*/
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override

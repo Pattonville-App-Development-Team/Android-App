@@ -13,6 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -30,8 +33,6 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
-
-import java.lang.reflect.Method;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,12 +78,30 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mCalendarView.invalidateDecorators();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_goto_today:
+                mCalendarView.setCurrentDate(CalendarDay.today());
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -170,13 +189,7 @@ public class CalendarMonthFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (dateSelected != null) {
-            try {
-                Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-                toCall.setAccessible(true);
-                toCall.invoke(mCalendarView, dateSelected, true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mCalendarView.setCurrentDate(dateSelected);
             measureDrawerHeight(getActivity().getResources().getConfiguration().orientation);
             openCurrentEventsDrawer();
         }
