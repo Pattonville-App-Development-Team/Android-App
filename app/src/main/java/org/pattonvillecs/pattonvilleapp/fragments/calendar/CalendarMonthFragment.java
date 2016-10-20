@@ -30,6 +30,8 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
+import java.lang.reflect.Method;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
@@ -41,9 +43,7 @@ public class CalendarMonthFragment extends Fragment {
     private FixedMaterialCalendarView mCalendarView;
     private ListView mMaxHeightListView;
     private CalendarDay dateSelected;
-    private boolean drawerInMotion = false;
     private SingleDayEventAdapter mSingleDayEventAdapter;
-    //private ResourceFragment resourceFragment;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -84,10 +84,16 @@ public class CalendarMonthFragment extends Fragment {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_goto_today:
-                mCalendarView.setCurrentDate(CalendarDay.today());
+                try {
+                    Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
+                    toCall.setAccessible(true);
+                    toCall.invoke(mCalendarView, CalendarDay.today(), true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -148,7 +154,13 @@ public class CalendarMonthFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (dateSelected != null) {
-            mCalendarView.setCurrentDate(dateSelected);
+            try {
+                Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
+                toCall.setAccessible(true);
+                toCall.invoke(mCalendarView, dateSelected, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
