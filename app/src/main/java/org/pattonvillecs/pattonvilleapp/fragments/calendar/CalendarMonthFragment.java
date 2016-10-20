@@ -84,6 +84,7 @@ public class CalendarMonthFragment extends Fragment {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_goto_today:
+                mCalendarView.setCurrentDate(CalendarDay.today());
                 try {
                     Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
                     toCall.setAccessible(true);
@@ -154,6 +155,7 @@ public class CalendarMonthFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (dateSelected != null) {
+            mCalendarView.setCurrentDate(dateSelected);
             try {
                 Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
                 toCall.setAccessible(true);
