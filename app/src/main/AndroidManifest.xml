@@ -21,8 +21,15 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity">
-
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".fragments.calendar.CalendarEventDetailsActivity"
+            android:label="@string/title_activity_calendar_event_details"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/PSD.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
         </activity>
     </application>
 

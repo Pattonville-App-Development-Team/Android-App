@@ -2,6 +2,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
 import android.animation.LayoutTransition;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -142,6 +144,13 @@ public class CalendarMonthFragment extends Fragment {
             public void onChanged() {
                 Log.e(TAG, "Dataset changed!");
                 mCalendarView.invalidateDecorators();
+            }
+        });
+
+        mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class));
             }
         });
 
