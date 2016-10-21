@@ -23,27 +23,9 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-    private NavigationView mNavigationView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*
-        MenuInflater inflater = getMenuInflater();
-        int checkedItemId = -1;
-        for (int i = 0; i < mNavigationView.getMenu().size(); i++) {
-            if (mNavigationView.getMenu().getItem(i).isChecked()) {
-                checkedItemId = mNavigationView.getMenu().getItem(i).getItemId();
-                break;
-            }
-        }
-
-        switch (checkedItemId) {
-            case R.id.nav_calendar:
-                inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
-                return true;
-            default:
-                return true;
-        }*/
         super.onCreateOptionsMenu(menu);
         return true;
     }
@@ -62,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
             mNavigationView.setCheckedItem(R.id.nav_home);
