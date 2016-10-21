@@ -12,4 +12,30 @@
     <string name="title_activity_settings">Settings</string>
     <string name="calendar_fragment_action_today">Today</string>
 
+
+    <string name="key_school_selection">schoolselection</string>
+
+    <string-array name="schools">
+        <item>High School</item>
+        <item>Heights Middle School</item>
+        <item>Holman Middle School</item>
+        <item>Remington Traditional School</item>
+        <item>Willow Brook Elementary</item>
+        <item>Bridgeway Elementary</item>
+        <item>Drumond Elementary</item>
+        <item>Rose Acres Elementary</item>
+        <item>Parkwood Elementary</item>
+    </string-array>
+
+    <string-array name="schools_values">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </string-array>
 </resources>

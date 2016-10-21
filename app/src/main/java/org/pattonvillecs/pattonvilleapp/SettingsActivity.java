@@ -1,9 +1,8 @@
 package org.pattonvillecs.pattonvilleapp;
 
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
-
-import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -13,23 +12,18 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         setTitle(R.string.title_activity_settings);
-        getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            getActivity().setTheme(R.style.PSD_Preference);
             super.onCreate(savedInstanceState);
-        }
+            addPreferencesFromResource(R.xml.main_preferences);
 
-        @Override
-        public void onCreatePreferencesFix(Bundle savedInstanceState, String rootKey) {
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences);
         }
     }
 }
