@@ -25,21 +25,21 @@ public class SingleDayEventAdapter extends BaseAdapter {
     private final LayoutInflater mLayoutInflater;
     private CalendarDay currentCalendarDay;
     private int count;
-    private List<DatelessCalendarEvent> datelessCalendarEvents;
+    private List<CalendarEvent> calendarEvents;
 
     public SingleDayEventAdapter(Context context) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
-        datelessCalendarEvents = new ArrayList<>();
+        calendarEvents = new ArrayList<>();
     }
 
     public void setCurrentCalendarDay(CalendarDay newCalendarDay) {
         currentCalendarDay = newCalendarDay;
         count = newCalendarDay.getDay();
-        datelessCalendarEvents.clear();
+        calendarEvents.clear();
         DateFormat simpleDateFormat = SimpleDateFormat.getDateInstance();
         for (int i = 0; i < count; i++) {
-            datelessCalendarEvents.add(new DatelessCalendarEvent("Date: " + simpleDateFormat.format(currentCalendarDay.getDate()) + " TEST" + i));
+            calendarEvents.add(new CalendarEvent("Date: " + simpleDateFormat.format(currentCalendarDay.getDate()) + " TEST" + i, currentCalendarDay.getDate(), "eventDetails", "Pattonville High School"));
         }
         notifyDataSetChanged();
     }
@@ -51,7 +51,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return datelessCalendarEvents.get(position);
+        return calendarEvents.get(position);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
         TextView topText = (TextView) view.findViewById(R.id.text_top);
         TextView bottomText = (TextView) view.findViewById(R.id.text_bottom);
 
-        topText.setText(datelessCalendarEvents.get(position).getEventName());
-        bottomText.setText("Smaller this time... " + datelessCalendarEvents.get(position).getEventName());
+        topText.setText(calendarEvents.get(position).getEventName());
+        bottomText.setText("Smaller this time... " + calendarEvents.get(position).getEventName());
 
         return view;
     }
