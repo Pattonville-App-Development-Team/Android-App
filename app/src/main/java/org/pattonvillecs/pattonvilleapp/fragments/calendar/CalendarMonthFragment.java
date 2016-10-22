@@ -150,7 +150,8 @@ public class CalendarMonthFragment extends Fragment {
         mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class));
+                CalendarEvent calendarEvent = (CalendarEvent) parent.getAdapter().getItem(position);
+                startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
             }
         });
 
