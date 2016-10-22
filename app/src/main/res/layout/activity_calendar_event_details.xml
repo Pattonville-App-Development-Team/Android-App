@@ -44,7 +44,8 @@
                 android:layout_height="100dp"
                 android:layout_alignBottom="@id/preview_image"
                 android:layout_gravity="bottom"
-                android:background="@drawable/scrim_bottom" />
+                android:background="@drawable/scrim_bottom"
+                app:layout_collapseMode="none" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -52,7 +53,6 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/PSD.PopupOverlay" />
-
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -64,9 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/colorAccent"
+        android:src="@drawable/ic_calendar_plus_white_48dp"
         app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/calendar_plus" />
+        app:layout_anchorGravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>
