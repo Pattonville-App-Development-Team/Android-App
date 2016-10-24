@@ -44,4 +44,5 @@
     <string name="date_time_placeholder">Date here…\nTime here…</string>
     <string name="location_placeholder">Location here…</string>
     <string name="extra_info_placeholder">Extra information here…</string>
+    <string name="logo_content_description">Logo</string>
 </resources>
