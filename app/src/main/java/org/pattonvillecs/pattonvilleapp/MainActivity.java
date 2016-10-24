@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_directory:
-                setTitle(R.string.title_fragment_directory);
+                //setTitle(R.string.title_fragment_directory); Do in Fragment
                 break;
 
             case R.id.nav_nutrislice:
@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_peachjar:
                 break;
+
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
         }
