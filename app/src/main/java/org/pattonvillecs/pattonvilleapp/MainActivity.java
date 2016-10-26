@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_directory:
-                //setTitle(R.string.title_fragment_directory); Do in Fragment
+                fragment = DirectoryFragment.newInstance();
                 break;
 
             case R.id.nav_nutrislice:
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
         }
 
         if (fragment != null) {
