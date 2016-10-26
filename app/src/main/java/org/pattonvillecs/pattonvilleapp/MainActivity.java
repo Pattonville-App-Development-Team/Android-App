@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
@@ -23,6 +24,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+    private DrawerLayout mDrawerLayout;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -38,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -98,16 +100,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_default, fragment)
-                    .commitNow();
+            final FragmentManager fragmentManager = getSupportFragmentManager();
+            final Fragment finalFragment = fragment;
+            mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_default, finalFragment)
+                            .commitNow();
+                    mDrawerLayout.removeDrawerListener(this);
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                }
+            });
         }
 
         supportInvalidateOptionsMenu();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }
