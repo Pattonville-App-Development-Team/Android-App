@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
@@ -101,32 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (fragment != null) {
             final FragmentManager fragmentManager = getSupportFragmentManager();
-            final Fragment finalFragment = fragment;
-            mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-                @Override
-                public void onDrawerSlide(View drawerView, float slideOffset) {
-                }
-
-                @Override
-                public void onDrawerOpened(View drawerView) {
-                }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.content_default, finalFragment)
-                            .commitNow();
-                    mDrawerLayout.removeDrawerListener(this);
-                }
-
-                @Override
-                public void onDrawerStateChanged(int newState) {
-                }
-            });
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_default, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
         }
 
         supportInvalidateOptionsMenu();
-
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
