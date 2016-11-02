@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
@@ -16,6 +18,8 @@ import org.pattonvillecs.pattonvilleapp.R;
  * create an instance of this fragment.
  */
 public class NewsFragment extends Fragment {
+
+    private TextView textView;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -45,8 +49,11 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false);
+        View root = inflater.inflate(R.layout.fragment_news, container, false);
+
+        textView = (TextView) root.findViewById(R.id.newstest);
+
+        return root;
     }
 
     @Override
@@ -57,5 +64,23 @@ public class NewsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String[] mSelectedSchools = PreferenceUtils.getSelectedSchools(getContext());
+
+        if (mSelectedSchools.length > 0) {
+            String string = "";
+            for (int i = 0; i < mSelectedSchools.length; i++) {
+                string += mSelectedSchools[i] + ", ";
+            }
+
+            textView.setText(string);
+        } else {
+            textView.setText("No Schools Selected");
+        }
     }
 }
