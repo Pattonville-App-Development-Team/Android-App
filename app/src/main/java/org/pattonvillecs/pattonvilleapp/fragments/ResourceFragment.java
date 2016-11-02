@@ -15,7 +15,10 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * @deprecated Not needed in most cases. Undeprecate if <b>truly</b> needed.
  */
+@Deprecated
 public class ResourceFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = "RESOURCE_FRAGMENT";

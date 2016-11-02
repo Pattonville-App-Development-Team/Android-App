@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
@@ -23,6 +25,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+    private DrawerLayout mDrawerLayout;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -38,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_directory:
-                setTitle(R.string.title_fragment_directory);
+                fragment = DirectoryFragment.newInstance();
                 break;
 
             case R.id.nav_nutrislice:
@@ -94,21 +97,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_peachjar:
                 break;
+
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            final FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content_default, fragment)
-                    .commitNow();
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
         }
 
         supportInvalidateOptionsMenu();
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
