@@ -7,8 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.pattonvillecs.pattonvilleapp.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +21,8 @@ import org.pattonvillecs.pattonvilleapp.R;
  * create an instance of this fragment.
  */
 public class DirectoryFragment extends Fragment {
+    private ListView mListView;
+    private ArrayAdapter<String> listAdapter;
 
     public DirectoryFragment() {
         // Required empty public constructor
@@ -50,6 +57,19 @@ public class DirectoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
+        mListView = (ListView) layout.findViewById(R.id.list_view_directory);
+
+        String[] schools = new String[]{"Pattonville School District", "Pattonville High School",
+                "Heights Middle School", "Holman Middle School", "Remington Traditional School",
+                "Bridgeway Elementary School", "Drummond Elementary School",
+                "Parkwood Elementary School", "Rose Acres Elementary School",
+                "Willow Brook Elementary School", "Special School District"};
+        ArrayList<String> schoolsList = new ArrayList<String>();
+        schoolsList.addAll(Arrays.asList(schools));
+
+        listAdapter = new ArrayAdapter<>(mListView.getContext(),
+                android.R.layout.simple_list_item_1, schoolsList);
+        mListView.setAdapter(listAdapter);
 
         return layout;
     }

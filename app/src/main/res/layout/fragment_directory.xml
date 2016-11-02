@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.DirectoryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/list_view_directory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/title_fragment_directory" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
