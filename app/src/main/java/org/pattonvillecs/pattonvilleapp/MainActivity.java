@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
+
+
     }
 
     @Override
@@ -112,5 +114,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         supportInvalidateOptionsMenu();
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
