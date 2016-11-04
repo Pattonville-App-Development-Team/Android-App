@@ -19,7 +19,7 @@ public final class PreferenceUtils {
         }
     }
 
-    public static boolean getPowerschoolIntent(Context context) {
+    public static boolean getPowerSchoolIntent(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPrefs.getBoolean("powerschoolintent", false);
     }

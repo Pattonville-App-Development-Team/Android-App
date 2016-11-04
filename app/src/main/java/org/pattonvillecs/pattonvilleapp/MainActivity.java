@@ -23,6 +23,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
@@ -56,8 +58,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
+        enableHttpResponseCache();
+    }
 
-
+    /**
+     * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
+     */
+    private void enableHttpResponseCache() {
+        try {
+            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+            File httpCacheDir = new File(getCacheDir(), "http");
+            Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("install", File.class, long.class)
+                    .invoke(null, httpCacheDir, httpCacheSize);
+        } catch (Exception httpResponseCacheNotAvailable) {
+            Log.d(TAG, "HTTP response cache is unavailable.");
+        }
     }
 
     @Override
@@ -104,30 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_powerschool:
-
-                // Check between using app or browser
-                if (PreferenceUtils.getPowerschoolIntent(this)) {
-
-                    // If app installed, launch, if not, open play store to it
-                    if (getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)) != null) {
-                        startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)));
-                    } else {
-
-                        // Open store app if there, if not open in browser
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
-                                    + getString(R.string.powerschool_package_name))));
-                        } catch (android.content.ActivityNotFoundException anfe) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
-                                    + getString(R.string.powerschool_package_name))));
-                        }
-                    }
-                } else {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("https://powerschool.psdr3.org"));
-                    startActivity(i);
-                }
-
+                launchPowerSchool();
                 break;
         }
 
@@ -143,6 +136,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void launchPowerSchool() {
+        // Check between using app or browser
+        if (PreferenceUtils.getPowerSchoolIntent(this)) {
+
+            // If app installed, launch, if not, open play store to it
+            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)) != null) {
+                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)));
+            } else {
+
+                // Open store app if there, if not open in browser
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
+                            + getString(R.string.powerschool_package_name))));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
+                            + getString(R.string.powerschool_package_name))));
+                }
+            }
+        } else {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse("https://powerschool.psdr3.org"));
+            startActivity(i);
+        }
+    }
+
 
     @Override
     protected void onResume() {
