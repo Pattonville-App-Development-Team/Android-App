@@ -75,6 +75,15 @@ public class CalendarEventsFragment extends Fragment {
     }
 
     private static class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
+
+        /**
+         * Handler operations
+         */
+        @SuppressWarnings("unused")
+        private static final int
+                UPDATE = 0, FILTER = 1, CONFIRM_DELETE = 2,
+                LOAD_MORE_COMPLETE = 8, LOAD_MORE_RESET = 9;
+
         public EventAdapter(@Nullable List<EventFlexibleItem> items) {
             this(items, null);
         }
@@ -106,14 +115,14 @@ public class CalendarEventsFragment extends Fragment {
 
         public void onLoadMoreComplete(@Nullable List<EventFlexibleItem> newItems, @IntRange(from = -1) long delay) {
             //Delete the progress item with delay
-            mHandler.sendEmptyMessageDelayed(8, delay);
+            mHandler.sendEmptyMessageDelayed(LOAD_MORE_COMPLETE, delay);
             //Add the new items or reset the loading status
             if (newItems != null && newItems.size() > 0) {
                 if (DEBUG)
                     Log.i(this.getClass().getSimpleName(), "onLoadMore performing adding " + newItems.size() + " new Items!");
                 addItems(getItemCount(), newItems);
                 //Reset OnLoadMore -delayed- instant
-                mHandler.sendEmptyMessageDelayed(9, 0L);//200L);
+                mHandler.sendEmptyMessageDelayed(LOAD_MORE_RESET, 0L);//200L);
             } else {
                 noMoreLoad();
             }
@@ -126,7 +135,7 @@ public class CalendarEventsFragment extends Fragment {
             if (DEBUG) Log.v(this.getClass().getSimpleName(), "onLoadMore noMoreLoad!");
             notifyItemChanged(getItemCount() - 1, Payload.NO_MORE_LOAD);
             //Reset OnLoadMore delayed
-            mHandler.sendEmptyMessageDelayed(9, 200L);
+            mHandler.sendEmptyMessageDelayed(LOAD_MORE_RESET, 200L);
         }
     }
 
