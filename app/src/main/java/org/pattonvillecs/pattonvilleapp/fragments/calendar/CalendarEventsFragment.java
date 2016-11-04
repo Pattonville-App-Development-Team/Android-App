@@ -3,10 +3,12 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
@@ -62,7 +65,7 @@ public class CalendarEventsFragment extends Fragment {
 
         @SuppressWarnings("unchecked")
         FlexibleAdapter<EventFlexibleItem> flexibleAdapter = new EventAdapter(new ArrayList<>(items))
-                .setEndlessScrollThreshold(10);
+                .setEndlessScrollThreshold(20);
 
         mRecyclerView.setAdapter(flexibleAdapter);
         mRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
@@ -101,7 +104,30 @@ public class CalendarEventsFragment extends Fragment {
             }, new LoadingEventFlexibleItem());
         }
 
+        public void onLoadMoreComplete(@Nullable List<EventFlexibleItem> newItems, @IntRange(from = -1) long delay) {
+            //Delete the progress item with delay
+            mHandler.sendEmptyMessageDelayed(8, delay);
+            //Add the new items or reset the loading status
+            if (newItems != null && newItems.size() > 0) {
+                if (DEBUG)
+                    Log.i(this.getClass().getSimpleName(), "onLoadMore performing adding " + newItems.size() + " new Items!");
+                addItems(getItemCount(), newItems);
+                //Reset OnLoadMore -delayed- instant
+                mHandler.sendEmptyMessageDelayed(9, 0L);//200L);
+            } else {
+                noMoreLoad();
+            }
+        }
 
+        /**
+         * Called when no more items are loaded.
+         */
+        private void noMoreLoad() {
+            if (DEBUG) Log.v(this.getClass().getSimpleName(), "onLoadMore noMoreLoad!");
+            notifyItemChanged(getItemCount() - 1, Payload.NO_MORE_LOAD);
+            //Reset OnLoadMore delayed
+            mHandler.sendEmptyMessageDelayed(9, 200L);
+        }
     }
 
     private static class EventViewHolder extends FlexibleViewHolder {
