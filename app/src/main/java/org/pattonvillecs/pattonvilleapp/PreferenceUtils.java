@@ -6,10 +6,6 @@ import android.preference.PreferenceManager;
 
 import java.util.Set;
 
-/**
- * Created by skeltonn on 10/31/16.
- */
-
 public final class PreferenceUtils {
 
     public static String[] getSelectedSchools(Context context) {
@@ -21,5 +17,10 @@ public final class PreferenceUtils {
         } else {
             return selections.toArray(new String[]{});
         }
+    }
+
+    public static boolean getPowerschoolIntent(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPrefs.getBoolean("powerschoolintent", false);
     }
 }

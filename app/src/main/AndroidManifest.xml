@@ -18,6 +18,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.powerschool.portal" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".SettingsActivity"

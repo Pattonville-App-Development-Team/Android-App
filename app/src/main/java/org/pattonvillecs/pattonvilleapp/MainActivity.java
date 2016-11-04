@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -100,6 +101,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+
+            case R.id.nav_powerschool:
+
+                // Check between using app or browser
+                if (PreferenceUtils.getPowerschoolIntent(this)) {
+
+                    // If app installed, launch, if not, open play store to it
+                    if (getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)) != null) {
+                        startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)));
+                    } else {
+
+                        // Open store app if there, if not open in browser
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
+                                    + getString(R.string.powerschool_package_name))));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
+                                    + getString(R.string.powerschool_package_name))));
+                        }
+                    }
+                } else {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://powerschool.psdr3.org"));
+                    startActivity(i);
+                }
+
                 break;
         }
 

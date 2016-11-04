@@ -14,6 +14,7 @@
 
 
     <string name="key_school_selection">schoolselection</string>
+    <string name="key_powerschool_intent">powerschoolintent</string>
 
     <string-array name="schools">
         <item>High School</item>
@@ -46,4 +47,6 @@
     <string name="location_placeholder">Location here…</string>
     <string name="extra_info_placeholder">Extra information here…</string>
     <string name="logo_content_description">Logo</string>
+
+    <string name="powerschool_package_name">com.powerschool.portal</string>
 </resources>
