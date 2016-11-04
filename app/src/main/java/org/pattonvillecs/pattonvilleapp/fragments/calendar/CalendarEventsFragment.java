@@ -58,10 +58,15 @@ public class CalendarEventsFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
         List<EventFlexibleItem> items = Arrays.asList(new EventFlexibleItem("A"), new EventFlexibleItem("B"), new EventFlexibleItem("C"), new EventFlexibleItem("D"), new EventFlexibleItem("E"),
-                new EventFlexibleItem("F"));
-        FlexibleAdapter<EventFlexibleItem> flexibleAdapter = new EventAdapter(new ArrayList<>(items));
+                new EventFlexibleItem("F"), new EventFlexibleItem("G"), new EventFlexibleItem("H"), new EventFlexibleItem("I"));
+
+        @SuppressWarnings("unchecked")
+        FlexibleAdapter<EventFlexibleItem> flexibleAdapter = new EventAdapter(new ArrayList<>(items))
+                .setEndlessScrollThreshold(10);
+
         mRecyclerView.setAdapter(flexibleAdapter);
         mRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+
 
         return layout;
     }

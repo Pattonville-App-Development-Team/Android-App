@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar.fix;
 import android.content.Context;
 import android.support.v4.view.BetterViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -108,6 +109,8 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         final int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
         final int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
+        Log.e("MCV", "onMeasure called " + specWidthSize + " " + specHeightSize);
+
         //We need to disregard padding for a while. This will be added back later
         final int desiredWidth = specWidthSize - getPaddingLeft() - getPaddingRight();
         final int desiredHeight = specHeightSize - getPaddingTop() - getPaddingBottom();
@@ -142,15 +145,15 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             } else {
                 measureTileHeight = desiredTileHeight;
             }
-        } else if (specWidthMode == MeasureSpec.EXACTLY) {
-            if (specHeightMode == MeasureSpec.EXACTLY) {
+        } else if (specWidthMode == MeasureSpec.EXACTLY || specWidthMode == MeasureSpec.AT_MOST) {
+            if (specHeightMode == MeasureSpec.EXACTLY || specHeightMode == MeasureSpec.AT_MOST) {
                 //Pick the SMALLER of the two explicit sizes !!!CHANGED!!!
                 measureTileSize = Math.min(desiredTileWidth, desiredTileHeight);
             } else {
                 //Be the width size the user wants
                 measureTileSize = desiredTileWidth;
             }
-        } else if (specHeightMode == MeasureSpec.EXACTLY) {
+        } else if (specHeightMode == MeasureSpec.EXACTLY || specHeightMode == MeasureSpec.AT_MOST) {
             //Be the height size the user wants
             measureTileSize = desiredTileHeight;
         }

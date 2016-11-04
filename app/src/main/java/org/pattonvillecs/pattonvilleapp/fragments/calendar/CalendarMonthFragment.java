@@ -46,6 +46,7 @@ public class CalendarMonthFragment extends Fragment {
     private ListView mMaxHeightListView;
     private CalendarDay dateSelected;
     private SingleDayEventAdapter mSingleDayEventAdapter;
+    private LinearLayout mLinearLayout;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -103,11 +104,12 @@ public class CalendarMonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        layout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        mLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        mLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
-        mCalendarView = (FixedMaterialCalendarView) layout.findViewById(R.id.calendar_calendar);
+        mCalendarView = (FixedMaterialCalendarView) mLinearLayout.findViewById(R.id.calendar_calendar);
 
         mCalendarView.addDecorator(new DayViewDecorator() {
             float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
@@ -132,10 +134,11 @@ public class CalendarMonthFragment extends Fragment {
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
                 mSingleDayEventAdapter.setCurrentCalendarDay(date);
+                Log.e(TAG, "Setting layout");
             }
         });
 
-        mMaxHeightListView = (ListView) layout.findViewById(R.id.list_view_calendar);
+        mMaxHeightListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
         mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mSingleDayEventAdapter = new SingleDayEventAdapter(getContext());
         mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
@@ -158,12 +161,14 @@ public class CalendarMonthFragment extends Fragment {
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
 
-        return layout;
+
+        return mLinearLayout;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        dateSelected = null;
         if (dateSelected != null) {
             mCalendarView.setCurrentDate(dateSelected);
             try {
