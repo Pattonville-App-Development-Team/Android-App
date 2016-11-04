@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -59,16 +58,13 @@ public class DirectoryFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
-        String[] schools = new String[]{"Pattonville School District", "Pattonville High School",
-                "Heights Middle School", "Holman Middle School", "Remington Traditional School",
-                "Bridgeway Elementary School", "Drummond Elementary School",
-                "Parkwood Elementary School", "Rose Acres Elementary School",
-                "Willow Brook Elementary School", "Special School District"};
-        ArrayList<String> schoolsList = new ArrayList<String>();
-        schoolsList.addAll(Arrays.asList(schools));
+        String[] schools = this.getResources().getStringArray(R.array.schools);
+        //new String[]{"Pattonville School District", "Pattonville High School", "Heights Middle School", "Holman Middle School", "Remington Traditional School", "Bridgeway Elementary School", "Drummond Elementary School", "Parkwood Elementary School", "Rose Acres Elementary School", "Willow Brook Elementary School", "Special School District"};
+        //ArrayList<String> schoolsList = new ArrayList<String>();
+        //schoolsList.addAll(Arrays.asList(schools));
 
         listAdapter = new ArrayAdapter<>(mListView.getContext(),
-                android.R.layout.simple_list_item_1, schoolsList);
+                android.R.layout.simple_list_item_1, Arrays.asList(schools));
         mListView.setAdapter(listAdapter);
 
         return layout;
