@@ -48,5 +48,6 @@
     <string name="extra_info_placeholder">Extra information here…</string>
     <string name="logo_content_description">Logo</string>
 
-    <string name="powerschool_package_name">com.powerschool.portal</string>
+    <string name="package_name_powerschool">com.powerschool.portal</string>
+    <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
 </resources>
