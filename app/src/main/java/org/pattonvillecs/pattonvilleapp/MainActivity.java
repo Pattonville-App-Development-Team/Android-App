@@ -110,9 +110,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_nutrislice:
+                launchNutrislice();
                 break;
 
             case R.id.nav_peachjar:
+                launchWebsite("https://www.peachjar.com");
                 break;
 
             case R.id.nav_settings:
@@ -121,6 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_powerschool:
                 launchPowerSchool();
+                break;
+
+            case R.id.nav_activities:
+                launchWebsite("http://pirates.psdr3.org");
+                break;
+
+            case R.id.nav_psd:
+                launchWebsite("http://www.psdr3.org");
                 break;
         }
 
@@ -142,29 +152,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (PreferenceUtils.getPowerSchoolIntent(this)) {
 
             // If app installed, launch, if not, open play store to it
-            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)) != null) {
-                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.powerschool_package_name)));
+            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_powerschool)) != null) {
+                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_powerschool)));
             } else {
 
                 // Open store app if there, if not open in browser
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="
-                            + getString(R.string.powerschool_package_name))));
+                    launchWebsite("market://details?id="
+                            + getString(R.string.package_name_powerschool));
                 } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
-                            + getString(R.string.powerschool_package_name))));
+                    launchWebsite("https://play.google.com/store/apps/details?id="
+                            + getString(R.string.package_name_powerschool));
                 }
             }
         } else {
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse("https://powerschool.psdr3.org"));
-            startActivity(i);
+            launchWebsite("https://powerschool.psdr3.org");
         }
     }
 
+    private void launchNutrislice() {
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        // If app installed, launch, if not, open play store to it
+        if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)) != null) {
+            startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)));
+        } else {
+
+            // Open store app if there, if not open in browser
+            try {
+                launchWebsite("market://details?id=" + getString(R.string.package_name_nutrislice));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                launchWebsite("https://play.google.com/store/apps/details?id="
+                        + getString(R.string.package_name_nutrislice));
+            }
+        }
+    }
+
+    private void launchWebsite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
