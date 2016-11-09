@@ -8,7 +8,7 @@
         android:id="@+id/text_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_margin="8dp"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
@@ -18,5 +18,14 @@
         android:layout_alignLeft="@id/text_top"
         android:layout_alignStart="@id/text_top"
         android:layout_below="@id/text_top"
+        android:layout_margin="8dp"
         android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/text_top"
+        android:layout_toRightOf="@id/text_top"
+        android:background="@drawable/button_pinned"
+        android:contentDescription="Pin" />
 </RelativeLayout>
