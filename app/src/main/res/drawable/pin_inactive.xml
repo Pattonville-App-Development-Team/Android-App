@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/pin"
+    android:fromDegrees="45"
+    android:pivotX="50%"
+    android:pivotY="50%"
     android:tint="@android:color/darker_gray"
-    app:srcCompat="@drawable/pin">
+    android:toDegrees="45">
 
-</vector>
+</rotate>

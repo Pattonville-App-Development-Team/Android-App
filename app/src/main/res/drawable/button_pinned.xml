@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/pin_active" android:state_pressed="true" />
-    <item android:drawable="@drawable/pin_inactive" android:state_focused="true" />
-    <item android:drawable="@drawable/pin_inactive" />
+    <item android:drawable="@drawable/pin_active" android:state_checked="true" android:state_pressed="true" /> <!--currently pressed turning the toggle on-->
+    <item android:drawable="@drawable/pin_active" android:state_pressed="true" /> <!--currently pressed turning the toggle off-->
+    <item android:drawable="@drawable/pin_inactive" android:state_checked="true" /> <!--not pressed default checked state-->
+    <item android:drawable="@drawable/pin_inactive" /> <!--default non-pressed non-checked-->
 </selector>
