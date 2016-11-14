@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -150,12 +149,9 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
 
-        mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CalendarEvent calendarEvent = (CalendarEvent) parent.getAdapter().getItem(position);
-                startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
-            }
+        mMaxHeightListView.setOnItemClickListener((parent, view, position, id) -> {
+            CalendarEvent calendarEvent = (CalendarEvent) parent.getAdapter().getItem(position);
+            startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
         });
 
         if (savedInstanceState != null)
