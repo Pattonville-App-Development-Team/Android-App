@@ -132,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_psd:
                 launchWebsite("http://www.psdr3.org");
                 break;
+
+            case R.id.nav_feedback:
+                startActivity(new Intent(this, FeedbackActivity.class));
+                break;
         }
 
         if (fragment != null) {

@@ -20,12 +20,13 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.powerschool.portal" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".fragments.calendar.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
@@ -35,6 +36,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".FeedbackActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
