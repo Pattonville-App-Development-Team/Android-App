@@ -12,13 +12,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="16dp"
-        android:background="@drawable/button_pinned"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:button="@drawable/button_pinned"
         android:contentDescription="@string/pin_content_description"
         android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textOff=""
-        android:textOn="" />
+        android:focusableInTouchMode="false" />
 
     <TextView
         android:id="@+id/text_top"

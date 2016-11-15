@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fromDegrees="45"
     android:pivotX="50%"
     android:pivotY="50%"
     android:toDegrees="45">
     <bitmap
         android:src="@drawable/ic_pin_black_36dp"
-        android:tint="@android:color/darker_gray"
-        app:srcCompat="@drawable/pin" />
+        android:tint="#424242" />
 </rotate>
