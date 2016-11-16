@@ -16,10 +16,12 @@
         android:text="Type your thoughts:" />
 
     <EditText
+        android:id="@+id/feedback_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/feedback_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Send" />
