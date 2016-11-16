@@ -53,4 +53,7 @@
     <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
     <string name="pin_content_description">Pin</string>
     <string name="title_activity_notifications">Notifications</string>
+    <string name="home_news_header_text">Recent News</string>
+    <string name="sample_news">Placeholder News</string>
+    <string name="home_upcoming_events_header_text">Upcoming Events</string>
 </resources>

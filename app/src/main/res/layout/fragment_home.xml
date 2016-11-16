@@ -18,9 +18,30 @@
         app:strokeColor="#FF777777"
         app:strokeWidth="2dp" />
 
+    <TextView
+        android:id="@+id/home_news_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="20dp"
+        android:text="@string/home_news_header_text"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
+
+
     <ListView
         android:id="@+id/home_news_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/upcoming_events_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="20dp"
+        android:text="@string/home_upcoming_events_header_text"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
 
 </LinearLayout>

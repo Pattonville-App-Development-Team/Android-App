@@ -8,9 +8,10 @@
 
     <ImageView
         android:id="@+id/home_news_listview_item_imageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         app:srcCompat="@drawable/test_news_1" />
+
 
     <TextView
         android:id="@+id/home_news_listview_item_textView"
@@ -20,5 +21,5 @@
         android:gravity="center"
         android:text="@string/sample_news"
         android:textColor="#000000"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 </LinearLayout>
