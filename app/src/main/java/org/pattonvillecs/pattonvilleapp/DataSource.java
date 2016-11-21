@@ -12,16 +12,16 @@ import java.util.Set;
  */
 
 public enum DataSource {
-    DISTRICT(0, true, true, false, false, false, false),
-    HIGH_SCHOOL(1, true, true, true, true, false, false),
-    HEIGHTS_MIDDLE_SCHOOL(2, true, true, true, false, true, false),
-    HOLMAN_MIDDLE_SCHOOL(3, true, true, true, false, true, false),
-    REMINGTON_TRADITIONAL_SCHOOL(4, true, true, true, false, true, true),
-    WILLOW_BROOK_ELEMENTARY(5, true, true, true, false, false, true),
-    BRIDGEWAY_ELEMENTARY(6, true, true, true, false, false, true),
-    DRUMMOND_ELEMENTARY(7, true, true, true, false, false, true),
-    ROSE_ACRES_ELEMENTARY(8, true, true, true, false, false, true),
-    PARKWOOD_ELEMENTARY(9, true, true, true, false, false, true);
+    DISTRICT("District", 0, true, true, false, false, false, false),
+    HIGH_SCHOOL("Pattonville High School", 1, true, true, true, true, false, false),
+    HEIGHTS_MIDDLE_SCHOOL("Heights", 2, true, true, true, false, true, false),
+    HOLMAN_MIDDLE_SCHOOL("Holman", 3, true, true, true, false, true, false),
+    REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", 4, true, true, true, false, true, true),
+    WILLOW_BROOK_ELEMENTARY("Willow Brook", 5, true, true, true, false, false, true),
+    BRIDGEWAY_ELEMENTARY("Bridgeway", 6, true, true, true, false, false, true),
+    DRUMMOND_ELEMENTARY("Drummond", 7, true, true, true, false, false, true),
+    ROSE_ACRES_ELEMENTARY("Rose Acres", 8, true, true, true, false, false, true),
+    PARKWOOD_ELEMENTARY("Parkwood", 9, true, true, true, false, false, true);
 
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 
@@ -45,11 +45,13 @@ public enum DataSource {
             .filter(d -> d.isHighSchool || d.isMiddleSchool || d.isElementarySchool)
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
+    public final String name;
     public final int id;
     public final boolean hasCalendar, hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
 
 
-    DataSource(int id, boolean hasCalendar, boolean hasNews, boolean isDisableable, boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool) {
+    DataSource(String name, int id, boolean hasCalendar, boolean hasNews, boolean isDisableable, boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool) {
+        this.name = name;
         this.id = id;
         this.hasCalendar = hasCalendar;
         this.hasNews = hasNews;
