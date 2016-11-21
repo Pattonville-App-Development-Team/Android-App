@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +29,13 @@ public class HomeFragment extends Fragment {
 
     ListView newsListView;
 
+    ListView eventListView;
+
     String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Internationals", "Third Headline"};
 
     int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
 
+    String[] sampleEvents = {"Election Day (Help)", "Pattonville Official App Release", "Independence Day"};
 
     ImageListener imageListener = new ImageListener() {
         @Override
@@ -71,7 +76,11 @@ public class HomeFragment extends Fragment {
 
         newsListView = (ListView) view.findViewById(R.id.home_news_listview);
 
+        eventListView = (ListView) view.findViewById(R.id.home_upcoming_events_listview);
+
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
+
+        List<HashMap<String, String>> homeEventsList = new ArrayList<HashMap<String, String>>();
 
         for (int i = 0; i < 3; i++) {
 
@@ -81,13 +90,46 @@ public class HomeFragment extends Fragment {
             homeNewsList.add(newsListItem);
         }
 
-        String[] from = {"image", "headline"};
+        for (int i = 0; i < 2; i++) {
 
-        int[] to = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+            HashMap<String, String> eventListItem = new HashMap<String, String>();
+            eventListItem.put("event", sampleEvents[i]);
+            homeEventsList.add(eventListItem);
 
-        SimpleAdapter adapter = new SimpleAdapter(view.getContext(), homeNewsList, R.layout.home_news_listview_item, from, to);
 
-        newsListView.setAdapter(adapter);
+        }
+
+        String[] homeNewsListFrom = {"image", "headline"};
+
+        String[] homeEventListFrom = {"event"};
+
+        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+
+        int[] homeEventListTo = {R.id.home_upcoming_events_listview_textview};
+
+        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(view.getContext(), homeNewsList, R.layout.home_news_listview_item, homeNewsListFrom, homeNewsListTo);
+
+        SimpleAdapter eventListSimpleAdapter = new SimpleAdapter(view.getContext(), homeEventsList, R.layout.home_upcoming_events_listview_item, homeEventListFrom, homeEventListTo);
+
+        newsListView.setAdapter(newsListSimpleAdapter);
+
+        eventListView.setAdapter(eventListSimpleAdapter);
+
+        newsListView.setOnItemClickListener((parent, view1, position, id) -> {
+
+            Fragment fragment = NewsFragment.newInstance();
+
+            final FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_default, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        });
+
+
+
+
+
 
         return view;
 
@@ -114,4 +156,6 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+
 }
