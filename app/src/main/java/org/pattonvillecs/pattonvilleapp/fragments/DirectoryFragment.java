@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,13 +62,25 @@ public class DirectoryFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
-        String[] schools = this.getResources().getStringArray(R.array.schools);
-        //new String[]{"Pattonville School District", "Pattonville High School", "Heights Middle School", "Holman Middle School", "Remington Traditional School", "Bridgeway Elementary School", "Drummond Elementary School", "Parkwood Elementary School", "Rose Acres Elementary School", "Willow Brook Elementary School", "Special School District"};
-        //ArrayList<String> schoolsList = new ArrayList<String>();
-        //schoolsList.addAll(Arrays.asList(schools));
+        List<String> schoolNames = Stream.of(DataSource.SCHOOLS)
+                .sortBy(dataSource -> dataSource.name)
+                .sortBy(dataSource -> {
+                    if (!dataSource.isDisableable)
+                        return 0;
+                    else if (dataSource.isHighSchool)
+                        return 1;
+                    else if (dataSource.isMiddleSchool)
+                        return 2;
+                    else if (dataSource.isElementarySchool)
+                        return 3;
+                    else
+                        return 4;
+                })
+                .map(dataSource -> dataSource.name)
+                .collect(Collectors.toList());
 
         listAdapter = new ArrayAdapter<>(mListView.getContext(),
-                android.R.layout.simple_list_item_1, Arrays.asList(schools));
+                android.R.layout.simple_list_item_1, schoolNames);
         mListView.setAdapter(listAdapter);
 
         return layout;
