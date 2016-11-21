@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "165535596180",
+    "firebase_url": "https://pattonvilleapp-9be65.firebaseio.com",
+    "project_id": "pattonvilleapp-9be65",
+    "storage_bucket": "pattonvilleapp-9be65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165535596180:android:1752d3677f9ad7f1",
+        "android_client_info": {
+          "package_name": "org.pattonvillecs.pattonvilleapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165535596180-a1le4en388c2dhiltd5s5ikac3i0o5jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBith7qxCRtybDXUFmq4VIrV-Gfm-xHiZM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
