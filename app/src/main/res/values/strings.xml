@@ -22,11 +22,11 @@
         <item>Heights Middle School</item>
         <item>Holman Middle School</item>
         <item>Remington Traditional School</item>
-        <item>Willow Brook Elementary</item>
         <item>Bridgeway Elementary</item>
         <item>Drummond Elementary</item>
         <item>Rose Acres Elementary</item>
         <item>Parkwood Elementary</item>
+        <item>Willow Brook Elementary</item>
     </string-array>
 
     <string-array name="schools_values">
@@ -48,6 +48,10 @@
     <string name="location_placeholder">Location here…</string>
     <string name="extra_info_placeholder">Extra information here…</string>
     <string name="logo_content_description">Logo</string>
+
+    <string name="directory_detail_school_name">School Name Here…</string>
+    <string name="directory_school_info">School Info Here…</string>
+    <string name="directory_school_image">School Image Here</string>
 
     <string name="package_name_powerschool">com.powerschool.portal</string>
     <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
