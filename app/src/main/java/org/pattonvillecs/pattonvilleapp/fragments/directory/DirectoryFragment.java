@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import java.util.List;
 public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ListView mListView;
     private ArrayAdapter<String> listAdapter;
+    private List<DataSource> schools;
 
     public DirectoryFragment() {
         // Required empty public constructor
@@ -64,7 +66,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
-        List<String> schoolNames = Stream.of(DataSource.SCHOOLS)
+        schools = Stream.of(DataSource.SCHOOLS)
                 .sortBy(dataSource -> dataSource.name)
                 .sortBy(dataSource -> {
                     if (!dataSource.isDisableable)
@@ -78,12 +80,13 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                     else
                         return 4;
                 })
-                .map(dataSource -> dataSource.name)
                 .collect(Collectors.toList());
 
         listAdapter = new ArrayAdapter<>(mListView.getContext(),
-                android.R.layout.simple_list_item_1, schoolNames);
+                android.R.layout.simple_list_item_1,
+                Stream.of(schools).map(dataSource -> dataSource.name).collect(Collectors.toList()));
         mListView.setAdapter(listAdapter);
+        mListView.setOnItemClickListener(this);
 
         return layout;
     }
@@ -91,9 +94,10 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
+        intent.putExtra("School", schools.get(position));
 
-        //will need to start a new activity and pass it an extra with the id of the school clicked
-        // in the bundle
+        Log.e("DIRECTORY", "WE GOT HERE :)");
+        startActivity(intent);
         //how does this interact with the DataSource class?
     }
 }

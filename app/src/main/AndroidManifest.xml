@@ -43,6 +43,10 @@
             android:name=".NotificationsActivity"
             android:parentActivityName=".MainActivity" />
 
+        <activity
+            android:name=".fragments.directory.DirectoryDetailActivity"
+            android:parentActivityName=".MainActivity" />
+
         <service android:name=".FBNotificationsService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

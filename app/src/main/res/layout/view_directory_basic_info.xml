@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/vpi__background_holo_light"
+    android:elevation="0dp"
     android:orientation="vertical">
 
 
@@ -28,6 +30,7 @@
         android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
         android:contentDescription="@string/directory_school_image"
+        android:paddingBottom="16dp"
         app:srcCompat="@color/colorPrimary" />
 
     <TextView
