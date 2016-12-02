@@ -25,16 +25,31 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         school = (DataSource) intent.getSerializableExtra("School");
 
+        //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
         schoolName.setText(school.name);
+
+        TextView schoolAddress = (TextView) findViewById(R.id.directory_address_textView);
+        schoolAddress.setText(school.address);
+
+        TextView schoolPhone = (TextView) findViewById(R.id.directory_phoneNumber_textView);
+        schoolPhone.setText(school.mainNumber);
+
+        TextView schoolAttendance = (TextView) findViewById(R.id.directory_attendanceNumber_textView);
+        schoolAttendance.setText(school.attendanceNumber);
+
+        TextView schoolFax = (TextView) findViewById(R.id.directory_faxNumber_textView);
+        schoolFax.setText(school.faxNumber);
+
+
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.directory_recycler_view);
 
     }
 
-    private class DirectoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public DirectoryHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
         }
