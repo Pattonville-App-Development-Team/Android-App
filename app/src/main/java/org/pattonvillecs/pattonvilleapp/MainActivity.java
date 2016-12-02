@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "HTTP response cache is unavailable.");
         }
     }
+
 
     @Override
     public void onBackPressed() {

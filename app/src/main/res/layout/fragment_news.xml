@@ -4,11 +4,9 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.NewsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/newstest"
+    <ListView
+        android:id="@+id/news_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="News Fragment" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
