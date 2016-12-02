@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +29,11 @@ public class HomeFragment extends Fragment {
 
     ListView eventListView;
 
-    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Internationals", "Third Headline"};
+    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Universes", "Test Headline 3"};
 
     int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
 
-    String[] sampleEvents = {"Election Day (Help)", "Pattonville Official App Release", "Independence Day"};
+    String[] sampleEvents = {"Board Meeting", "Pattonville Official App Release", "Independence Day"};
 
     ImageListener imageListener = new ImageListener() {
         @Override
@@ -117,18 +115,8 @@ public class HomeFragment extends Fragment {
 
         newsListView.setOnItemClickListener((parent, view1, position, id) -> {
 
-            Fragment fragment = NewsFragment.newInstance();
 
-            final FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_default, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
         });
-
-
-
-
 
 
         return view;
