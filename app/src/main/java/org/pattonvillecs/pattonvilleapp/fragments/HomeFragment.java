@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class HomeFragment extends Fragment {
 
     CarouselView carouselView;
@@ -67,10 +69,11 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        carouselView = (CarouselView) view.findViewById(R.id.carouselView);
-        carouselView.setPageCount(4);
-        carouselView.setImageListener(imageListener);
-
+        if (getResources().getConfiguration().orientation != ORIENTATION_LANDSCAPE) {
+            carouselView = (CarouselView) view.findViewById(R.id.carouselView);
+            carouselView.setPageCount(4);
+            carouselView.setImageListener(imageListener);
+        }
 
         newsListView = (ListView) view.findViewById(R.id.home_news_listview);
 
