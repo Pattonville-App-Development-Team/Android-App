@@ -25,14 +25,11 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class HomeFragment extends Fragment {
 
+    public static String[] sampleHeadlines = {"Pattonville App in development", "Pattonville Robotics Club wins recent match!", "PHS to host basketball celebration on Jan. 20",
+            "Students, staff recognized at November board meeting", "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual  list"};
     CarouselView carouselView;
-
     ListView newsListView;
-
     ListView eventListView;
-
-    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Universes", "Test Headline 3"};
-
     int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
 
     String[] sampleEvents = {"Board Meeting", "Pattonville Official App Release", "Independence Day"};
@@ -86,8 +83,11 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < 3; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<String, String>();
+
+
             newsListItem.put("image", Integer.toString(sampleImages[i]));
             newsListItem.put("headline", sampleHeadlines[i]);
+
             homeNewsList.add(newsListItem);
         }
 
