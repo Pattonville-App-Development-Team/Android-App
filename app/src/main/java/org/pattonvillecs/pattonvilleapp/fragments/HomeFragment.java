@@ -26,7 +26,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 public class HomeFragment extends Fragment {
 
     public static String[] sampleHeadlines = {"Pattonville App in development", "Pattonville Robotics Club wins recent match!", "PHS to host basketball celebration on Jan. 20",
-            "Students, staff recognized at November board meeting", "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual  list"};
+            "Students, staff recognized at November board meeting", "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual \"best of\" list",};
     CarouselView carouselView;
     ListView newsListView;
     ListView eventListView;
