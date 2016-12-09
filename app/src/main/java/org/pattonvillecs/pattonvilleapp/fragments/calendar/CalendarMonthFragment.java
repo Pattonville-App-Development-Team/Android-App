@@ -4,29 +4,26 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
+import net.fortuna.ical4j.model.component.VEvent;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
@@ -103,13 +100,15 @@ public class CalendarMonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        NestedScrollView scrollView = (NestedScrollView) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        mLinearLayout = (LinearLayout) scrollView.getChildAt(0);
 
         mLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
         mCalendarView = (FixedMaterialCalendarView) mLinearLayout.findViewById(R.id.calendar_calendar);
 
+        /*
         mCalendarView.addDecorator(new DayViewDecorator() {
             float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
 
@@ -126,7 +125,7 @@ public class CalendarMonthFragment extends Fragment {
                 //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
                 view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
-        });
+        });*/
         mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -139,7 +138,7 @@ public class CalendarMonthFragment extends Fragment {
 
         mMaxHeightListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
         mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext());
+        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext(), mCalendarView);
         mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
         mSingleDayEventAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -149,9 +148,12 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
 
-        mMaxHeightListView.setOnItemClickListener((parent, view, position, id) -> {
-            CalendarEvent calendarEvent = (CalendarEvent) parent.getAdapter().getItem(position);
-            startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
+        mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                VEvent calendarVEvent = (VEvent) parent.getAdapter().getItem(position);
+                CalendarMonthFragment.this.startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
+            }
         });
 
         if (savedInstanceState != null)

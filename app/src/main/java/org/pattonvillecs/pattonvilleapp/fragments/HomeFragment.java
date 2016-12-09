@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -115,25 +116,20 @@ public class HomeFragment extends Fragment {
 
         eventListView.setAdapter(eventListSimpleAdapter);
 
-        newsListView.setOnItemClickListener((parent, view1, position, id) -> {
+        newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view1, int position, long id) {
+                Fragment fragment = NewsFragment.newInstance();
 
-            Fragment fragment = NewsFragment.newInstance();
-
-            final FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_default, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+                final FragmentManager fragmentManager = HomeFragment.this.getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_default, fragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+            }
         });
 
-
-
-
-
-
         return view;
-
-
     }
 
     public void onButtonPressed(Uri uri) {

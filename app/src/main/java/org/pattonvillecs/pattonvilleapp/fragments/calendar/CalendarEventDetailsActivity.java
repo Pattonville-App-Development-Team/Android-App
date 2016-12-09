@@ -66,18 +66,22 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         });
 
         TextView locationTextView = (TextView) findViewById(R.id.location);
-        locationTextView.setText(calendarEvent.getEventLocation());
-        locationTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:38.733249,-90.420162?q=" + Uri.encode(calendarEvent.getEventLocation()));
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-            }
-        });
+        if (calendarEvent.getEventLocation().isEmpty()) {
+            locationTextView.setText(calendarEvent.getEventLocation());
+            locationTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri gmmIntentUri = Uri.parse("geo:38.733249,-90.420162?q=" + Uri.encode(calendarEvent.getEventLocation()));
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
+            });
+        } else {
+            locationTextView.setText(R.string.no_location);
+        }
 
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
-        extraInfoTextView.setText(calendarEvent.getEventDetails());
+        extraInfoTextView.setText(calendarEvent.getEventName() + "\n" + calendarEvent.getEventDetails());
     }
 }

@@ -2,6 +2,8 @@ package org.pattonvillecs.pattonvilleapp;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
+import com.annimon.stream.function.Supplier;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -26,24 +28,72 @@ public enum DataSource {
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 
     public static final Set<DataSource> MIDDLE_SCHOOLS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
-            .filter(d -> d.isMiddleSchool)
-            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+            .filter(new Predicate<DataSource>() {
+                @Override
+                public boolean test(DataSource value) {
+                    return value.isMiddleSchool;
+                }
+            }).collect(Collectors.toCollection(new Supplier<EnumSet<DataSource>>() {
+                @Override
+                public EnumSet<DataSource> get() {
+                    return EnumSet.noneOf(DataSource.class);
+                }
+            })));
 
     public static final Set<DataSource> HIGH_SCHOOLS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
-            .filter(d -> d.isHighSchool)
-            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+            .filter(new Predicate<DataSource>() {
+                @Override
+                public boolean test(DataSource value) {
+                    return value.isHighSchool;
+                }
+            }).collect(Collectors.toCollection(new Supplier<EnumSet<DataSource>>() {
+                @Override
+                public EnumSet<DataSource> get() {
+                    return EnumSet.noneOf(DataSource.class);
+                }
+            })));
 
     public static final Set<DataSource> ELEMENTARY_SCHOOLS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
-            .filter(d -> d.isElementarySchool)
-            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+            .filter(new Predicate<DataSource>() {
+                @Override
+                public boolean test(DataSource d) {
+                    return d.isElementarySchool;
+                }
+            })
+            .collect(Collectors.toCollection(new Supplier<EnumSet<DataSource>>() {
+                @Override
+                public EnumSet<DataSource> get() {
+                    return EnumSet.noneOf(DataSource.class);
+                }
+            })));
 
     public static final Set<DataSource> DISABLEABLE_NEWS_SOURCES = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
-            .filter(value -> value.hasNews && value.isDisableable)
-            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+            .filter(new Predicate<DataSource>() {
+                @Override
+                public boolean test(DataSource value) {
+                    return value.hasNews && value.isDisableable;
+                }
+            })
+            .collect(Collectors.toCollection(new Supplier<EnumSet<DataSource>>() {
+                @Override
+                public EnumSet<DataSource> get() {
+                    return EnumSet.noneOf(DataSource.class);
+                }
+            })));
 
     public static final Set<DataSource> SCHOOLS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
-            .filter(d -> d.isHighSchool || d.isMiddleSchool || d.isElementarySchool)
-            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+            .filter(new Predicate<DataSource>() {
+                @Override
+                public boolean test(DataSource d) {
+                    return d.isHighSchool || d.isMiddleSchool || d.isElementarySchool;
+                }
+            })
+            .collect(Collectors.toCollection(new Supplier<EnumSet<DataSource>>() {
+                @Override
+                public EnumSet<DataSource> get() {
+                    return EnumSet.noneOf(DataSource.class);
+                }
+            })));
 
     public final String name;
     public final int id;
