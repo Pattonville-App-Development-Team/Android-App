@@ -7,7 +7,6 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -100,8 +99,8 @@ public class CalendarMonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        NestedScrollView scrollView = (NestedScrollView) inflater.inflate(R.layout.fragment_calendar_month, container, false);
-        mLinearLayout = (LinearLayout) scrollView.getChildAt(0);
+        View scrollView = inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        mLinearLayout = (LinearLayout) scrollView.findViewById(R.id.linear_layout);
 
         mLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
@@ -166,9 +165,10 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        dateSelected = null;
+        //dateSelected = null;
         if (dateSelected != null) {
             mCalendarView.setCurrentDate(dateSelected);
+
             try {
                 Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
                 toCall.setAccessible(true);
