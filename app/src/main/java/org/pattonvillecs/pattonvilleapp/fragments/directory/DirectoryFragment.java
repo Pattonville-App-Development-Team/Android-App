@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -19,29 +19,21 @@ import com.annimon.stream.Stream;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DirectoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
+    int[] images = {R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot,
+            R.drawable.rm_mascot, R.drawable.br_mascot, R.drawable.dr_mascot, R.drawable.pw_mascot,
+            R.drawable.ra_mascot, R.drawable.wb_mascot};
     private ListView mListView;
-    private ArrayAdapter<String> listAdapter;
     private List<DataSource> schools;
 
     public DirectoryFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment DirectoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static DirectoryFragment newInstance() {
         return new DirectoryFragment();
     }
@@ -82,10 +74,23 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                 })
                 .collect(Collectors.toList());
 
-        listAdapter = new ArrayAdapter<>(mListView.getContext(),
-                android.R.layout.simple_list_item_1,
-                Stream.of(schools).map(dataSource -> dataSource.name).collect(Collectors.toList()));
-        mListView.setAdapter(listAdapter);
+        List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i < 9; i++) {
+
+            HashMap<String, String> newsListItem = new HashMap<String, String>();
+            newsListItem.put("image", Integer.toString(images[i]));
+            newsListItem.put("headline", schools.get(i).name);
+            homeNewsList.add(newsListItem);
+        }
+        String[] homeNewsListFrom = {"image", "headline"};
+
+        String[] homeEventListFrom = {"event"};
+
+        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+
+
+        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(layout.getContext(), homeNewsList, R.layout.home_news_listview_item, homeNewsListFrom, homeNewsListTo);
+        mListView.setAdapter(newsListSimpleAdapter);
         mListView.setOnItemClickListener(this);
 
         return layout;
