@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,19 +22,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class HomeFragment extends Fragment {
 
+    public static String[] sampleHeadlines = {"Pattonville App in development", "Pattonville Robotics Club wins recent match!", "PHS to host basketball celebration on Jan. 20",
+            "Students, staff recognized at November board meeting", "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual \"best of\" list",};
     CarouselView carouselView;
-
     ListView newsListView;
-
     ListView eventListView;
-
-    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Internationals", "Third Headline"};
-
     int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
 
-    String[] sampleEvents = {"Election Day (Help)", "Pattonville Official App Release", "Independence Day"};
+    String[] sampleEvents = {"Board Meeting", "Pattonville Official App Release", "Independence Day"};
 
     ImageListener imageListener = new ImageListener() {
         @Override
@@ -70,10 +67,11 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        carouselView = (CarouselView) view.findViewById(R.id.carouselView);
-        carouselView.setPageCount(4);
-        carouselView.setImageListener(imageListener);
-
+        if (getResources().getConfiguration().orientation != ORIENTATION_LANDSCAPE) {
+            carouselView = (CarouselView) view.findViewById(R.id.carouselView);
+            carouselView.setPageCount(4);
+            carouselView.setImageListener(imageListener);
+        }
 
         newsListView = (ListView) view.findViewById(R.id.home_news_listview);
 

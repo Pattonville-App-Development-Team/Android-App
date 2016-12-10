@@ -18,10 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 
 import java.io.File;
 
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "HTTP response cache is unavailable.");
         }
     }
+
 
     @Override
     public void onBackPressed() {

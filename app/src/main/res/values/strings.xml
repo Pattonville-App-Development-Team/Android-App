@@ -11,6 +11,7 @@
     <string name="title_fragment_directory">Directory</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_feedback">Feedback</string>
+    <string name="title_activity_directoryDetail">Directory</string>
     <string name="calendar_fragment_action_today">Today</string>
 
 
@@ -22,11 +23,11 @@
         <item>Heights Middle School</item>
         <item>Holman Middle School</item>
         <item>Remington Traditional School</item>
-        <item>Willow Brook Elementary</item>
         <item>Bridgeway Elementary</item>
         <item>Drummond Elementary</item>
         <item>Rose Acres Elementary</item>
         <item>Parkwood Elementary</item>
+        <item>Willow Brook Elementary</item>
     </string-array>
 
     <string-array name="schools_values">
@@ -49,13 +50,20 @@
     <string name="extra_info_placeholder">Extra information here…</string>
     <string name="logo_content_description">Logo</string>
 
+    <string name="directory_detail_school_name">School Name Here…</string>
+    <string name="directory_school_image">School Image Here</string>
+    <string name="directory_info_unavaiable">N/A</string>
+    <string name="directory_facultyName_placeholder">Faculty Name Here...</string>
+    <string name="directory_facultyDeptarment_placeholder">Department Name Here...</string>
+    <string name="directory_facultyEmail_placeholder">sampleemail@psdr3.org</string>
+
     <string name="package_name_powerschool">com.powerschool.portal</string>
     <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
     <string name="pin_content_description">Pin</string>
     <string name="title_activity_notifications">Notifications</string>
-    <string name="home_news_header_text">Recent News</string>
+    <string name="home_news_header_text">RECENT NEWS</string>
     <string name="sample_news">Placeholder News</string>
-    <string name="home_upcoming_events_header_text">Upcoming Events</string>
+    <string name="home_upcoming_events_header_text">UPCOMING EVENTS</string>
     <string name="event_placeholder">Pattonville App Release</string>
     <string name="no_location">No location provided...</string>
     <string name="no_summary">No summary provided...</string>

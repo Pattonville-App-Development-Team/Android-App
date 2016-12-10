@@ -7,30 +7,26 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NewsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class NewsFragment extends Fragment {
 
-    private TextView textView;
+    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Internationals", "Third Headline"};
+    int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
+    private ListView listView;
+
 
     public NewsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment NewsFragment.
-     */
     public static NewsFragment newInstance() {
         return new NewsFragment();
     }
@@ -51,7 +47,23 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
-        textView = (TextView) root.findViewById(R.id.newstest);
+        listView = (ListView) root.findViewById(R.id.news_listview);
+
+        List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
+
+        for (int i = 0; i < 3; i++) {
+
+            HashMap<String, String> newsListItem = new HashMap<String, String>();
+            newsListItem.put("image", Integer.toString(sampleImages[i]));
+            newsListItem.put("headline", sampleHeadlines[i]);
+            homeNewsList.add(newsListItem);
+        }
+
+        String[] homeNewsListFrom = {"image", "headline"};
+        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+
+        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(root.getContext(), homeNewsList, R.layout.home_news_listview_item, homeNewsListFrom, homeNewsListTo);
+        listView.setAdapter(newsListSimpleAdapter);
 
         return root;
     }
@@ -69,18 +81,5 @@ public class NewsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        String[] mSelectedSchools = PreferenceUtils.getSelectedSchools(getContext());
-
-        if (mSelectedSchools.length > 0) {
-            String string = "";
-            for (int i = 0; i < mSelectedSchools.length; i++) {
-                string += mSelectedSchools[i] + ", ";
-            }
-
-            textView.setText(string);
-        } else {
-            textView.setText("No Schools Selected");
-        }
     }
 }

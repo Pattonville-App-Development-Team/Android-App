@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.pattonvillecs.pattonvilleapp.fragments.DirectoryFragment">
+    tools:context="org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment">
 
     <ListView
         android:id="@+id/list_view_directory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

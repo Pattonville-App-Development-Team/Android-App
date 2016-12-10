@@ -1,12 +1,15 @@
-package org.pattonvillecs.pattonvilleapp.fragments;
+package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -24,9 +27,10 @@ import java.util.List;
  * Use the {@link DirectoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DirectoryFragment extends Fragment {
+public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ListView mListView;
     private ArrayAdapter<String> listAdapter;
+    private List<DataSource> schools;
 
     public DirectoryFragment() {
         // Required empty public constructor
@@ -63,7 +67,7 @@ public class DirectoryFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
-        List<String> schoolNames = Stream.of(DataSource.SCHOOLS)
+        schools = Stream.of(DataSource.SCHOOLS)
                 .sortBy(new Function<DataSource, String>() {
                     @Override
                     public String apply(DataSource dataSource) {
@@ -83,18 +87,29 @@ public class DirectoryFragment extends Fragment {
                         else
                             return 4;
                     }
-                }).map(new Function<DataSource, String>() {
+                }).collect(Collectors.toList());
+
+        listAdapter = new ArrayAdapter<>(mListView.getContext(),
+                android.R.layout.simple_list_item_1,
+                Stream.of(schools).map(new Function<DataSource, String>() {
                     @Override
                     public String apply(DataSource dataSource) {
                         return dataSource.name;
                     }
-                }).collect(Collectors.<String>toList());
-
-        listAdapter = new ArrayAdapter<>(mListView.getContext(),
-                android.R.layout.simple_list_item_1, schoolNames);
+                }).collect(Collectors.toList()));
         mListView.setAdapter(listAdapter);
+        mListView.setOnItemClickListener(this);
 
         return layout;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
+        intent.putExtra("School", schools.get(position));
+
+        Log.e("DIRECTORY", "WE GOT HERE :)");
+        startActivity(intent);
+        //how does this interact with the DataSource class?
+    }
 }
