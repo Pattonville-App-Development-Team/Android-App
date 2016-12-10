@@ -10,19 +10,19 @@
     <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
         android:id="@+id/calendar_calendar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_weight="0.75"
         android:elevation="2dp"
         android:outlineProvider="bounds"
         app:mcv_dateTextAppearance="@style/PSD.Calendar.Date" />
 
-    <org.pattonvillecs.pattonvilleapp.fragments.calendar.MaxHeightListView
+    <ListView
         android:id="@+id/list_view_calendar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
         android:animateLayoutChanges="true"
-        app:maxHeight="@dimen/calendar_month_slide_in_drawer_max_height"
+        android:minHeight="150dp"
         tools:listitem="@layout/dateless_event_list_item" />
 
 </LinearLayout>

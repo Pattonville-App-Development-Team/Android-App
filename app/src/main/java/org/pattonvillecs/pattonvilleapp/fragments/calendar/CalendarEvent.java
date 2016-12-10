@@ -3,6 +3,14 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.annimon.stream.Optional;
+import com.annimon.stream.function.Function;
+
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Summary;
+
 import java.util.Date;
 
 /**
@@ -38,6 +46,28 @@ public class CalendarEvent implements Parcelable {
         dateAndTime = (Date) in.readSerializable();
         eventDetails = in.readString();
         eventLocation = in.readString();
+    }
+
+    public CalendarEvent(VEvent calendarVEvent) {
+        this(Optional.ofNullable(calendarVEvent.getSummary()).map(new Function<Summary, String>() {
+                    @Override
+                    public String apply(Summary summary) {
+                        return summary.getValue();
+                    }
+                }).orElse(""),
+                calendarVEvent.getStartDate().getDate(),
+                Optional.ofNullable(calendarVEvent.getDescription()).map(new Function<Description, String>() {
+                    @Override
+                    public String apply(Description description) {
+                        return description.getValue();
+                    }
+                }).orElse(""),
+                Optional.ofNullable(calendarVEvent.getLocation()).map(new Function<Location, String>() {
+                    @Override
+                    public String apply(Location location) {
+                        return location.getValue();
+                    }
+                }).orElse(""));
     }
 
     public String getEventName() {

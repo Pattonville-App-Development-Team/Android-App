@@ -65,4 +65,6 @@
     <string name="sample_news">Placeholder News</string>
     <string name="home_upcoming_events_header_text">UPCOMING EVENTS</string>
     <string name="event_placeholder">Pattonville App Release</string>
+    <string name="no_location">No location provided...</string>
+    <string name="no_summary">No summary provided...</string>
 </resources>

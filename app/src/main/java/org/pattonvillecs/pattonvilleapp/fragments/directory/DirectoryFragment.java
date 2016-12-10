@@ -15,6 +15,7 @@ import android.widget.SimpleAdapter;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.Function;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
@@ -59,21 +60,27 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
         schools = Stream.of(DataSource.SCHOOLS)
-                .sortBy(dataSource -> dataSource.name)
-                .sortBy(dataSource -> {
-                    if (!dataSource.isDisableable)
-                        return 0;
-                    else if (dataSource.isHighSchool)
-                        return 1;
-                    else if (dataSource.isMiddleSchool)
-                        return 2;
-                    else if (dataSource.isElementarySchool)
-                        return 3;
-                    else
-                        return 4;
-                })
-                .collect(Collectors.toList());
-
+                .sortBy(new Function<DataSource, String>() {
+                    @Override
+                    public String apply(DataSource dataSource) {
+                        return dataSource.name;
+                    }
+                }).sortBy(new Function<DataSource, Integer>() {
+                    @Override
+                    public Integer apply(DataSource dataSource) {
+                        if (!dataSource.isDisableable)
+                            return 0;
+                        else if (dataSource.isHighSchool)
+                            return 1;
+                        else if (dataSource.isMiddleSchool)
+                            return 2;
+                        else if (dataSource.isElementarySchool)
+                            return 3;
+                        else
+                            return 4;
+                    }
+                }).collect(Collectors.<DataSource>toList());
+      
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 9; i++) {
 

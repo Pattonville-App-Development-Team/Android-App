@@ -64,9 +64,9 @@ public class MaxHeightListView extends ListView {
         String requestedModeName = getMeasureSpecModeName(requestedMode);
         int requestedHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        int newMode = requestedMode == MeasureSpec.EXACTLY ? MeasureSpec.EXACTLY : MeasureSpec.AT_MOST;
+        int newMode = MeasureSpec.AT_MOST;//requestedMode == MeasureSpec.EXACTLY ? MeasureSpec.EXACTLY : MeasureSpec.AT_MOST;
         String newModeName = getMeasureSpecModeName(newMode);
-        int newHeight = Math.min(maxHeight, requestedHeight);
+        int newHeight = 10000;//Math.min(maxHeight, requestedHeight);
 
         Log.i(TAG, "Overrode measure of height " + requestedHeight + " and mode " + requestedModeName + " to measure of height " + newHeight + " and mode " + newModeName);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight, newMode);
