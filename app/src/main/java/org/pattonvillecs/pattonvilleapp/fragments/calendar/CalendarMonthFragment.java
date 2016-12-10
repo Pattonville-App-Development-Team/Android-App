@@ -99,32 +99,12 @@ public class CalendarMonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        View scrollView = inflater.inflate(R.layout.fragment_calendar_month, container, false);
-        mLinearLayout = (LinearLayout) scrollView.findViewById(R.id.linear_layout);
+        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
         mLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
         mCalendarView = (FixedMaterialCalendarView) mLinearLayout.findViewById(R.id.calendar_calendar);
-
-        /*
-        mCalendarView.addDecorator(new DayViewDecorator() {
-            float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
-
-            @Override
-            public boolean shouldDecorate(CalendarDay day) {
-                return day.getDay() % 3 == 0;
-            }
-
-            @Override
-            public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.CYAN, getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect(0, 0, 0, 0));
-                view.setSelectionDrawable(stateListDrawable);
-
-                //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
-                view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
-            }
-        });*/
         mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -132,6 +112,7 @@ public class CalendarMonthFragment extends Fragment {
                 dateSelected = date;
                 mSingleDayEventAdapter.setCurrentCalendarDay(date);
                 Log.e(TAG, "Setting layout");
+                Log.e(TAG, mSingleDayEventAdapter.getCount() + " events present");
             }
         });
 
@@ -154,7 +135,6 @@ public class CalendarMonthFragment extends Fragment {
                 CalendarMonthFragment.this.startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
             }
         });
-
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
 

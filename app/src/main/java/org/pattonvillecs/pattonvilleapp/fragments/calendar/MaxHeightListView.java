@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ListView;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -59,7 +60,6 @@ public class MaxHeightListView extends ListView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        /*
         int requestedMode = MeasureSpec.getMode(heightMeasureSpec);
         String requestedModeName = getMeasureSpecModeName(requestedMode);
         int requestedHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -71,7 +71,5 @@ public class MaxHeightListView extends ListView {
         Log.i(TAG, "Overrode measure of height " + requestedHeight + " and mode " + requestedModeName + " to measure of height " + newHeight + " and mode " + newModeName);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight, newMode);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }*/
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 4, MeasureSpec.AT_MOST));
     }
 }
