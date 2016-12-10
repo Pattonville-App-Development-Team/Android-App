@@ -3,7 +3,6 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.animation.LayoutTransition;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -120,13 +119,6 @@ public class CalendarMonthFragment extends Fragment {
         mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         mSingleDayEventAdapter = new SingleDayEventAdapter(getContext(), mCalendarView);
         mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
-        mSingleDayEventAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                Log.e(TAG, "Dataset changed!");
-                mCalendarView.invalidateDecorators();
-            }
-        });
 
         mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

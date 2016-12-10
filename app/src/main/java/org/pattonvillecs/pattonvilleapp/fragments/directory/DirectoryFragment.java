@@ -87,7 +87,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                         else
                             return 4;
                     }
-                }).collect(Collectors.toList());
+                }).collect(Collectors.<DataSource>toList());
 
         listAdapter = new ArrayAdapter<>(mListView.getContext(),
                 android.R.layout.simple_list_item_1,
@@ -96,7 +96,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                     public String apply(DataSource dataSource) {
                         return dataSource.name;
                     }
-                }).collect(Collectors.toList()));
+                }).collect(Collectors.<String>toList()));
         mListView.setAdapter(listAdapter);
         mListView.setOnItemClickListener(this);
 

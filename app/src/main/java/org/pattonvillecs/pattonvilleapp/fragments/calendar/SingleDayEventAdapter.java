@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.StateListDrawable;
 import android.util.Log;
@@ -61,6 +62,13 @@ public class SingleDayEventAdapter extends BaseAdapter {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         this.mCalendarView = mCalendarView;
+        this.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                Log.e(TAG, "Dataset changed!");
+                SingleDayEventAdapter.this.mCalendarView.invalidateDecorators();
+            }
+        });
         calendarEvents = new ArrayList<>();
         parsedCalendarEvents = new MultiValueMap<>();
         Volley.newRequestQueue(context)
@@ -120,7 +128,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
                 }));
     }
 
-    public static String fixICalStrings(String iCalString) {
+    private static String fixICalStrings(String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
