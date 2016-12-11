@@ -28,12 +28,23 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class HomeFragment extends Fragment {
 
-    public static String[] sampleHeadlines = {"Pattonville App in development", "Pattonville Robotics Club wins recent match!", "PHS to host basketball celebration on Jan. 20",
-            "Students, staff recognized at November board meeting", "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual \"best of\" list",};
+    public static String[] sampleHeadlines = {"Pattonville App in development",
+            "Pattonville Robotics Club wins recent match!",
+            "PHS to host basketball celebration on Jan. 20",
+            "Students, staff recognized at November board meeting",
+            "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual \"best of\" list",
+            "Headline Six", "Headline Seven", "Headline Eight", "Headline Nine", "Headline Ten",
+            "Headline Eleven", "Headline Twelve"};
+
+    public static int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2,
+            R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1,
+            R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
+            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3,
+            R.drawable.test_news_4};
+
     CarouselView carouselView;
     ListView newsListView;
     ListView eventListView;
-    int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
 
     String[] sampleEvents = {"Board Meeting", "Pattonville Official App Release", "Independence Day"};
 

@@ -18,10 +18,7 @@ import java.util.List;
 
 public class NewsFragment extends Fragment {
 
-    String[] sampleHeadlines = {"Student named _____ of the Year", "Pattonville Robotics Club wins Super Internationals", "Third Headline"};
-    int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
     private ListView listView;
-
 
     public NewsFragment() {
         // Required empty public constructor
@@ -51,11 +48,11 @@ public class NewsFragment extends Fragment {
 
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 12; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<String, String>();
-            newsListItem.put("image", Integer.toString(sampleImages[i]));
-            newsListItem.put("headline", sampleHeadlines[i]);
+            newsListItem.put("image", Integer.toString(HomeFragment.sampleImages[i]));
+            newsListItem.put("headline", HomeFragment.sampleHeadlines[i]);
             homeNewsList.add(newsListItem);
         }
 
