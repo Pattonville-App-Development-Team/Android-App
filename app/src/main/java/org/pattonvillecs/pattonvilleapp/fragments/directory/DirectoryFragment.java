@@ -59,7 +59,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
-        schools = Stream.of(DataSource.SCHOOLS)
+        schools = Stream.of(DataSource.ALL)
                 .sortBy(new Function<DataSource, String>() {
                     @Override
                     public String apply(DataSource dataSource) {

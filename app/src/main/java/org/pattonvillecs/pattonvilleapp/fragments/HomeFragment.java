@@ -80,24 +80,36 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+
+        List<HashMap<String, String>> homeNewsList = new ArrayList<>();
+        List<HashMap<String, String>> homeEventsList = new ArrayList<>();
+
         if (getResources().getConfiguration().orientation != ORIENTATION_LANDSCAPE) {
             carouselView = (CarouselView) view.findViewById(R.id.carouselView);
             carouselView.setPageCount(4);
             carouselView.setImageListener(imageListener);
+
+            for (int i = 0; i < 3; i++) {
+                HashMap<String, String> newsListItem = new HashMap<>();
+                newsListItem.put("image", Integer.toString(sampleImages[i]));
+                newsListItem.put("headline", sampleHeadlines[i]);
+                homeNewsList.add(newsListItem);
+            }
+        } else {
+
+            for (int i = 0; i < 12; i++) {
+                HashMap<String, String> newsListItem = new HashMap<>();
+                newsListItem.put("image", Integer.toString(sampleImages[i]));
+                newsListItem.put("headline", sampleHeadlines[i]);
+                homeNewsList.add(newsListItem);
+            }
+
         }
 
         newsListView = (ListView) view.findViewById(R.id.home_news_listview);
         eventListView = (ListView) view.findViewById(R.id.home_upcoming_events_listview);
 
-        List<HashMap<String, String>> homeNewsList = new ArrayList<>();
-        List<HashMap<String, String>> homeEventsList = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(sampleImages[i]));
-            newsListItem.put("headline", sampleHeadlines[i]);
-            homeNewsList.add(newsListItem);
-        }
         for (int i = 0; i < 2; i++) {
             HashMap<String, String> eventListItem = new HashMap<>();
             eventListItem.put("event", sampleEvents[i]);
