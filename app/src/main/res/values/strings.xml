@@ -53,9 +53,6 @@
     <string name="directory_detail_school_name">School Name Here…</string>
     <string name="directory_school_image">School Image Here</string>
     <string name="directory_info_unavaiable">N/A</string>
-    <string name="directory_facultyName_placeholder">Faculty Name Here...</string>
-    <string name="directory_facultyDeptarment_placeholder">Department Name Here...</string>
-    <string name="directory_facultyEmail_placeholder">sampleemail@psdr3.org</string>
 
     <string name="package_name_powerschool">com.powerschool.portal</string>
     <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
