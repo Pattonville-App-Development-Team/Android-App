@@ -16,7 +16,6 @@
         android:paddingTop="4dp"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
-        android:textStyle="normal|bold"
         tools:text="First Name Last Name" />
 
     <TextView
