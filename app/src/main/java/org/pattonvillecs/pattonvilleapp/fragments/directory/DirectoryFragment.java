@@ -80,7 +80,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                             return 4;
                     }
                 }).collect(Collectors.<DataSource>toList());
-      
+
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 10; i++) {
 

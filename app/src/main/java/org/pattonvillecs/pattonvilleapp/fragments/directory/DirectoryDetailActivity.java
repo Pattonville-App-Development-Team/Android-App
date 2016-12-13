@@ -3,12 +3,19 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
 
@@ -19,6 +26,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
+        setTitle(R.string.title_activity_directoryDetail);
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
@@ -36,29 +44,61 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         schoolPhone.setText(school.mainNumber);
 
         TextView schoolAttendance = (TextView) findViewById(R.id.directory_attendanceNumber_textView);
-        schoolAttendance.setText(school.attendanceNumber);
+        if (school.attendanceNumber == null) {
+            schoolAttendance.setText(R.string.directory_info_unavaiable);
+        } else {
+            schoolAttendance.setText(school.attendanceNumber);
+        }
 
         TextView schoolFax = (TextView) findViewById(R.id.directory_faxNumber_textView);
-        schoolFax.setText(school.faxNumber);
-
-
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.directory_recycler_view);
-
-    }
-
-    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
+        if (school.faxNumber == null) {
+            schoolFax.setText(R.string.directory_info_unavaiable);
+        } else {
+            schoolFax.setText(school.faxNumber);
         }
 
 
-        @Override
-        public void onClick(View v) {
+        ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
 
-        }
+        listview.setAdapter(new BaseAdapter() {
+            List<Faculty> faculties = new ArrayList<Faculty>(10);
+
+            {
+                for (int i = 0; i < 10; i++) {
+                    faculties.add(new Faculty().setFaculty());
+                }
+            }
+
+            @Override
+            public int getCount() {
+                return faculties.size();
+            }
+
+            @Override
+            public Faculty getItem(int i) {
+                return faculties.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View convertView, ViewGroup parent) {
+                View view = convertView;
+                if (view == null)
+                    view = LayoutInflater.from(DirectoryDetailActivity.this).inflate(R.layout.list_faculty_item, parent, false);
+
+                Faculty f = getItem(i);
+                TextView nameTextView = (TextView) view.findViewById(R.id.directory_facultyName_textView);
+                nameTextView.setText(f.getName());
+
+                TextView departmentTextView = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
+                departmentTextView.setText(f.getDepartment());
+
+                return view;
+            }
+        });
     }
-
 }

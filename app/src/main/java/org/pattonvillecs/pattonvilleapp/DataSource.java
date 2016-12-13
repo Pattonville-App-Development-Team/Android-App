@@ -14,7 +14,7 @@ import java.util.Set;
  */
 
 public enum DataSource {
-    DISTRICT("District", 0, true, true, false, false, false, false,
+    DISTRICT("Pattonville School District", 0, true, true, false, false, false, false,
             "11097 St. Charles Rock Road, St. Ann, MO 63074",
             "(314) 213-8500",
             null,
