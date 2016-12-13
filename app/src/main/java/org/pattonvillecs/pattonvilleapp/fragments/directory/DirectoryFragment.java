@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
-    int[] images = {R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot,
+    int[] images = {R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot,
             R.drawable.rm_mascot, R.drawable.br_mascot, R.drawable.dr_mascot, R.drawable.pw_mascot,
             R.drawable.ra_mascot, R.drawable.wb_mascot};
     private ListView mListView;
@@ -82,7 +82,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                 }).collect(Collectors.<DataSource>toList());
       
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<String, String>();
             newsListItem.put("image", Integer.toString(images[i]));

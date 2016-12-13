@@ -46,20 +46,21 @@ public class NewsFragment extends Fragment {
 
         listView = (ListView) root.findViewById(R.id.news_listview);
 
-        List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
+        List<HashMap<String, String>> newsList = new ArrayList<HashMap<String, String>>();
 
         for (int i = 0; i < 12; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<String, String>();
             newsListItem.put("image", Integer.toString(HomeFragment.sampleImages[i]));
             newsListItem.put("headline", HomeFragment.sampleHeadlines[i]);
-            homeNewsList.add(newsListItem);
+            newsList.add(newsListItem);
         }
 
-        String[] homeNewsListFrom = {"image", "headline"};
-        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+        String[] newsListFrom = {"image", "headline"};
+        int[] newsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
 
-        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(root.getContext(), homeNewsList, R.layout.home_news_listview_item, homeNewsListFrom, homeNewsListTo);
+        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(root.getContext(), newsList,
+                R.layout.home_news_listview_item, newsListFrom, newsListTo);
         listView.setAdapter(newsListSimpleAdapter);
 
         return root;
