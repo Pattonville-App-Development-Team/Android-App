@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_peachjar:
-                launchWebsite("https://www.peachjar.com");
+                startActivity(new Intent(this, PeachjarActivity.class));
                 break;
 
             case R.id.nav_settings:

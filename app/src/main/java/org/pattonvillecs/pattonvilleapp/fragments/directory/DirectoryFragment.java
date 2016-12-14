@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
-    int[] images = {R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot,
+    public static int[] images = {R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot, R.drawable.d_mascot,
             R.drawable.rm_mascot, R.drawable.br_mascot, R.drawable.dr_mascot, R.drawable.pw_mascot,
             R.drawable.ra_mascot, R.drawable.wb_mascot};
     private ListView mListView;
