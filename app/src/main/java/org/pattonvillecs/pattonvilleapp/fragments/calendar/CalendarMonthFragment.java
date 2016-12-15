@@ -137,17 +137,16 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //dateSelected = null;
-        if (dateSelected != null) {
-            mCalendarView.setCurrentDate(dateSelected);
+        if (dateSelected == null)
+            dateSelected = CalendarDay.today();
 
-            try {
-                Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-                toCall.setAccessible(true);
-                toCall.invoke(mCalendarView, dateSelected, true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        mCalendarView.setCurrentDate(dateSelected);
+        try {
+            Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
+            toCall.setAccessible(true);
+            toCall.invoke(mCalendarView, dateSelected, true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
