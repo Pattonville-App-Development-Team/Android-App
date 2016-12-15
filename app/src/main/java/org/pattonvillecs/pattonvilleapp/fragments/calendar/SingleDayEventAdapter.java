@@ -111,7 +111,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
 
                                 @Override
                                 public void decorate(DayViewFacade view) {
-                                    StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.CYAN, context.getResources().getInteger(android.R.integer.config_shortAnimTime), null);
+                                    StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, context.getResources().getInteger(android.R.integer.config_shortAnimTime), null);
                                     view.setSelectionDrawable(stateListDrawable);
 
                                     //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
