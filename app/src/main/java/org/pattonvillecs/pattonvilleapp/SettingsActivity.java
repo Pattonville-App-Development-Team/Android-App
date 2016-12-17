@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import java.util.Arrays;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -16,6 +19,13 @@ public class SettingsActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PreferenceUtils.SELECTED_SCHOOLS = PreferenceUtils.getSelectedSchools(this);
+        Log.e("SELECTED SCHOOLS", "These are selected: " + Arrays.toString(PreferenceUtils.SELECTED_SCHOOLS));
     }
 
     public static class SettingsFragment extends PreferenceFragment

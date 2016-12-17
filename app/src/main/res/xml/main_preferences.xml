@@ -6,7 +6,7 @@
 
         <MultiSelectListPreference
             android:entries="@array/schools"
-            android:entryValues="@array/schools_values"
+            android:entryValues="@array/schools"
             android:key="@string/key_school_selection"
             android:summary="Select schools to recieve information from"
             android:title="Select Schools">

@@ -24,6 +24,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        PreferenceUtils.SELECTED_SCHOOLS = PreferenceUtils.getSelectedSchools(this);
+        Log.e("SELECTED SCHOOLS", "These are selected: " + Arrays.toString(PreferenceUtils.SELECTED_SCHOOLS));
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

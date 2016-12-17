@@ -20,26 +20,14 @@
 
     <string-array name="schools">
         <item>High School</item>
-        <item>Heights Middle School</item>
-        <item>Holman Middle School</item>
-        <item>Remington Traditional School</item>
-        <item>Bridgeway Elementary</item>
-        <item>Drummond Elementary</item>
-        <item>Rose Acres Elementary</item>
-        <item>Parkwood Elementary</item>
-        <item>Willow Brook Elementary</item>
-    </string-array>
-
-    <string-array name="schools_values">
-        <item>high</item>
-        <item>heights</item>
-        <item>holman</item>
-        <item>remington</item>
-        <item>willowbrook</item>
-        <item>bridgeway</item>
-        <item>drummond</item>
-        <item>roseacres</item>
-        <item>parkwood</item>
+        <item>Heights</item>
+        <item>Holman</item>
+        <item>Remington</item>
+        <item>Bridgeway</item>
+        <item>Drummond</item>
+        <item>Rose Acres</item>
+        <item>Parkwood</item>
+        <item>Willow Brook</item>
     </string-array>
 
     <string name="title_activity_calendar_event_details">CalendarEventDetailsActivity</string>
