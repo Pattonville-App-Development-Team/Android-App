@@ -26,13 +26,11 @@ public class DirectoryDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
-        setTitle(R.string.title_activity_directoryDetail);
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+
         Intent intent = getIntent();
         school = (DataSource) intent.getSerializableExtra("School");
 
+        setTitle(school.shortName + " Directory");
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
         schoolName.setText(school.name);
