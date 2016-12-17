@@ -36,6 +36,8 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
@@ -71,61 +73,64 @@ public class SingleDayEventAdapter extends BaseAdapter {
         });
         calendarEvents = new ArrayList<>();
         parsedCalendarEvents = new MultiValueMap<>();
-        Volley.newRequestQueue(context)
-                .add(new StringRequest("http://drummond.psdr3.org/ical/High%20School.ics", new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        StringReader stringReader = new StringReader(fixICalStrings(response));
-                        CalendarBuilder calendarBuilder = new CalendarBuilder();
-                        Calendar calendar = null;
-                        try {
-                            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-                            calendar = calendarBuilder.build(stringReader);
-                        } catch (IOException | ParserException e) {
-                            e.printStackTrace();
-                        }
-                        if (calendar != null) {
-                            Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
-                                @Override
-                                public boolean test(CalendarComponent value) {
-                                    return value instanceof VEvent;
-                                }
-                            }).map(new Function<CalendarComponent, VEvent>() {
-                                @Override
-                                public VEvent apply(CalendarComponent value) {
-                                    return (VEvent) value;
-                                }
-                            }).collect(Collectors.<VEvent>toSet());
-                            for (VEvent vEvent : vEventSet) {
-                                Date vEventDate = vEvent.getStartDate().getDate();
-                                parsedCalendarEvents.put(CalendarDay.from(vEventDate), vEvent);
+
+        for (DataSource source : PreferenceUtils.SELECTED_SCHOOLS) {
+
+            Volley.newRequestQueue(context).add(new StringRequest(source.dataLink, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    StringReader stringReader = new StringReader(fixICalStrings(response));
+                    CalendarBuilder calendarBuilder = new CalendarBuilder();
+                    Calendar calendar = null;
+                    try {
+                        CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+                        calendar = calendarBuilder.build(stringReader);
+                    } catch (IOException | ParserException e) {
+                        e.printStackTrace();
+                    }
+                    if (calendar != null) {
+                        Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
+                            @Override
+                            public boolean test(CalendarComponent value) {
+                                return value instanceof VEvent;
                             }
-                            mCalendarView.removeDecorators();
-                            mCalendarView.addDecorator(new DayViewDecorator() {
-                                float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, mContext.getResources().getDisplayMetrics());
-
-                                @Override
-                                public boolean shouldDecorate(CalendarDay day) {
-                                    return parsedCalendarEvents.containsKey(day);
-                                }
-
-                                @Override
-                                public void decorate(DayViewFacade view) {
-                                    StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, context.getResources().getInteger(android.R.integer.config_shortAnimTime), null);
-                                    view.setSelectionDrawable(stateListDrawable);
-
-                                    //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
-                                    view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(mContext)));
-                                }
-                            });
+                        }).map(new Function<CalendarComponent, VEvent>() {
+                            @Override
+                            public VEvent apply(CalendarComponent value) {
+                                return (VEvent) value;
+                            }
+                        }).collect(Collectors.<VEvent>toSet());
+                        for (VEvent vEvent : vEventSet) {
+                            Date vEventDate = vEvent.getStartDate().getDate();
+                            parsedCalendarEvents.put(CalendarDay.from(vEventDate), vEvent);
                         }
+                        mCalendarView.removeDecorators();
+                        mCalendarView.addDecorator(new DayViewDecorator() {
+                            float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, mContext.getResources().getDisplayMetrics());
+
+                            @Override
+                            public boolean shouldDecorate(CalendarDay day) {
+                                return parsedCalendarEvents.containsKey(day);
+                            }
+
+                            @Override
+                            public void decorate(DayViewFacade view) {
+                                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, context.getResources().getInteger(android.R.integer.config_shortAnimTime), null);
+                                view.setSelectionDrawable(stateListDrawable);
+
+                                //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                                view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(mContext)));
+                            }
+                        });
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                    }
-                }));
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, error.getLocalizedMessage());
+                }
+            }));
+        }
     }
 
     private static String fixICalStrings(String iCalString) {
