@@ -29,7 +29,7 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peachjar);
-        setTitle("Peachjar");
+        setTitle("Peachjar Links");
 
         mListView = (ListView) findViewById(R.id.peachjar_list_view);
 
