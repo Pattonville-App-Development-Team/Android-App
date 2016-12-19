@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -55,28 +55,27 @@ public class SingleDayEventAdapter extends BaseAdapter {
     private static final String TAG = SingleDayEventAdapter.class.getSimpleName();
     private final Context mContext;
     private final LayoutInflater mLayoutInflater;
-    private final FixedMaterialCalendarView mCalendarView;
+    private final FixedMaterialCalendarView mMaterialCalendarView;
     private CalendarDay currentCalendarDay;
     private List<VEvent> calendarEvents;
     private MultiValueMap<CalendarDay, VEvent> parsedCalendarEvents;
 
-    public SingleDayEventAdapter(final Context context, final FixedMaterialCalendarView mCalendarView) {
+    public SingleDayEventAdapter(final Context context, final FixedMaterialCalendarView materialCalendarView, RequestQueue requestQueue) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
-        this.mCalendarView = mCalendarView;
+        this.mMaterialCalendarView = materialCalendarView;
         this.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 Log.e(TAG, "Dataset changed!");
-                SingleDayEventAdapter.this.mCalendarView.invalidateDecorators();
+                SingleDayEventAdapter.this.mMaterialCalendarView.invalidateDecorators();
             }
         });
         calendarEvents = new ArrayList<>();
         parsedCalendarEvents = new MultiValueMap<>();
 
         for (DataSource source : PreferenceUtils.SELECTED_SCHOOLS) {
-
-            Volley.newRequestQueue(context).add(new StringRequest(source.dataLink, new Response.Listener<String>() {
+            requestQueue.add(new StringRequest(source.dataLink, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     StringReader stringReader = new StringReader(fixICalStrings(response));
@@ -104,8 +103,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
                             Date vEventDate = vEvent.getStartDate().getDate();
                             parsedCalendarEvents.put(CalendarDay.from(vEventDate), vEvent);
                         }
-                        mCalendarView.removeDecorators();
-                        mCalendarView.addDecorator(new DayViewDecorator() {
+                        materialCalendarView.removeDecorators();
+                        materialCalendarView.addDecorator(new DayViewDecorator() {
                             float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, mContext.getResources().getDisplayMetrics());
 
                             @Override
@@ -118,7 +117,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
                                 StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, context.getResources().getInteger(android.R.integer.config_shortAnimTime), null);
                                 view.setSelectionDrawable(stateListDrawable);
 
-                                //mCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                                //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
                                 view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(mContext)));
                             }
                         });

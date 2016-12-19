@@ -23,6 +23,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
@@ -117,7 +118,7 @@ public class CalendarMonthFragment extends Fragment {
 
         mMaxHeightListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
         mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext(), mCalendarView);
+        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext(), mCalendarView, PattonvilleApplication.get(getActivity()).getRequestQueue());
         mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
 
         mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
