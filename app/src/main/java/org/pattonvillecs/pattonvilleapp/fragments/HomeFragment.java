@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
         eventListView = (ListView) view.findViewById(R.id.home_upcoming_events_listview);
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             HashMap<String, String> eventListItem = new HashMap<>();
             eventListItem.put("event", sampleEvents[i]);
             homeEventsList.add(eventListItem);
