@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
+import org.apache.commons.collections4.Factory;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
@@ -44,6 +45,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCale
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +75,12 @@ public class SingleDayEventAdapter extends BaseAdapter {
             }
         });
         calendarEvents = new ArrayList<>();
-        parsedCalendarEvents = new MultiValueMap<>();
+        parsedCalendarEvents = MultiValueMap.multiValueMap(new HashMap<CalendarDay, HashSet<VEvent>>(), new Factory<HashSet<VEvent>>() {
+            @Override
+            public HashSet<VEvent> create() {
+                return new HashSet<>();
+            }
+        });
 
         for (DataSource source : PreferenceUtils.SELECTED_SCHOOLS) {
             requestQueue.add(new StringRequest(source.dataLink, new Response.Listener<String>() {
