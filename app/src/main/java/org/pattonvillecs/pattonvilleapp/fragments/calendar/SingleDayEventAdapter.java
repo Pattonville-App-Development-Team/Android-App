@@ -132,6 +132,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
                                 view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(mContext)));
                             }
                         });
+                        updateEventList();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -151,12 +152,12 @@ public class SingleDayEventAdapter extends BaseAdapter {
         Log.e(TAG, "Setting current calendar day " + newCalendarDay);
         currentCalendarDay = newCalendarDay;
         calendarEvents.clear();
+        updateEventList();
+    }
+
+    private void updateEventList() {
         if (parsedCalendarEvents.containsKey(currentCalendarDay))
             calendarEvents.addAll(parsedCalendarEvents.getCollection(currentCalendarDay));
-        /*DateFormat simpleDateFormat = SimpleDateFormat.getDateInstance();
-        for (int i = 0; i < count; i++) {
-            calendarEvents.add(new CalendarEvent("Date: " + simpleDateFormat.format(currentCalendarDay.getDate()) + " TEST" + i, currentCalendarDay.getDate(), "eventDetails", "Pattonville High School"));
-        }*/
         notifyDataSetChanged();
     }
 

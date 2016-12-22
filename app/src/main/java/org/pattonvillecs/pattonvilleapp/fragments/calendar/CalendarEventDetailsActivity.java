@@ -90,6 +90,6 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
         extraInfoTextView.setText(calendarEvent.getEventName() + "\n\n" + calendarEvent.getEventDetails());
 
-        SpotlightHelper.setupSpotlight(this, fab, "Add To Calendar", "Want to keep track of this event?\nAdd it to your personal calendar.").show();
+        SpotlightHelper.showSpotlight(this, fab, "Add To Calendar", "Want to keep track of this event?\nAdd it to your personal calendar.");
     }
 }

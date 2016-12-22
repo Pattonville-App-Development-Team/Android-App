@@ -26,11 +26,12 @@ import net.fortuna.ical4j.model.component.VEvent;
 
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.lang.reflect.Method;
 
-import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.setupSpotlight;
+import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +90,7 @@ public class CalendarMonthFragment extends Fragment {
                 // This could be called when the button is not there yet, so we must test for null
                 if (menuButton != null) {
                     // Found it! Do what you need with the button
-                    setupSpotlight(getActivity(), menuButton, "Today", "Touch this button to return to the current day.").show();
+                    showSpotlight(getActivity(), menuButton, "Today", "Touch this button to return to the current day.");
                     // Now you can get rid of this listener
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
                 }
@@ -150,6 +151,8 @@ public class CalendarMonthFragment extends Fragment {
         });
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
+
+        SpotlightHelper.showSpotlight(getActivity(), mLinearLayout, "Events", "Events occurring on the selected day are shown here.");
 
         return mLinearLayout;
     }

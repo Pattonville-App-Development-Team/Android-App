@@ -6,19 +6,26 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.wooplr.spotlight.SpotlightView;
+import com.wooplr.spotlight.utils.SpotlightListener;
+
+import java.util.LinkedList;
 
 /**
  * Created by Mitchell on 12/22/2016.
  */
 
 public final class SpotlightHelper {
+
+    private static final LinkedList<SpotlightView.Builder> builders = new LinkedList<>();
+    private static boolean spotlightCurrentlyOpen = false;
+
     private SpotlightHelper() {
     }
 
-    public static SpotlightView.Builder setupSpotlight(Activity activity, View target, String mainText, String subText) {
+    public static void showSpotlight(Activity activity, View target, String mainText, String subText) {
         int primaryColor = ContextCompat.getColor(activity, R.color.colorPrimary);
         int accentColor = ContextCompat.getColor(activity, R.color.colorAccent);
-        return new SpotlightView.Builder(activity)
+        builders.addLast(new SpotlightView.Builder(activity)
                 .introAnimationDuration(400)
                 .enableRevealAnimation(true)
                 .performClick(false)
@@ -36,6 +43,19 @@ public final class SpotlightHelper {
                 .dismissOnTouch(true)
                 .dismissOnBackPress(true)
                 .enableDismissAfterShown(true)
-                .usageId("TEST" + Double.doubleToRawLongBits(Math.random())); //UNIQUE ID
+                .usageId("TEST" + Double.doubleToRawLongBits(Math.random())) //UNIQUE ID
+                .setListener(new SpotlightListener() {
+                    @Override
+                    public void onUserClicked(String usageID) {
+                        if (builders.size() > 0)
+                            builders.pop().show();
+                        else
+                            spotlightCurrentlyOpen = false;
+                    }
+                }));
+        if (builders.size() == 1 && !spotlightCurrentlyOpen) {
+            builders.pop().show();
+            spotlightCurrentlyOpen = true;
+        }
     }
 }
