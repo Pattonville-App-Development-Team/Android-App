@@ -72,6 +72,10 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.8.0'
     compile 'com.google.firebase:firebase-messaging:9.8.0'
 
+    //Potential tutorial libraries
+    compile 'com.github.wooplr:Spotlight:1.2.3'
+    compile 'com.github.paolorotolo:appintro:4.1.0'
+
     testCompile 'junit:junit:4.12'
 }
 

@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wooplr.spotlight.SpotlightView;
+
 import org.pattonvillecs.pattonvilleapp.R;
 
 import java.text.DateFormat;
@@ -92,5 +94,26 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
 
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
         extraInfoTextView.setText(calendarEvent.getEventName() + "\n\n" + calendarEvent.getEventDetails());
+
+        new SpotlightView.Builder(this)
+                .introAnimationDuration(400)
+                .enableRevealAnimation(true)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .headingTvText("Add")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("Want to keep track of this event?\nAdd it to your personal calendar.")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(fab)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#eb273f"))
+                .dismissOnTouch(true)
+                .dismissOnBackPress(true)
+                .enableDismissAfterShown(true)
+                .usageId("TEST" + Double.doubleToRawLongBits(Math.random())) //UNIQUE ID
+                .show();
     }
 }
