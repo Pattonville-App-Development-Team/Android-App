@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
@@ -59,12 +60,14 @@ public class SingleDayEventAdapter extends BaseAdapter {
     private final Context mContext;
     private final LayoutInflater mLayoutInflater;
     private final FixedMaterialCalendarView mMaterialCalendarView;
+    private final Activity mActivity;
     private CalendarDay currentCalendarDay;
     private List<VEvent> calendarEvents;
     private MultiValueMap<CalendarDay, VEvent> parsedCalendarEvents;
 
-    public SingleDayEventAdapter(final Context context, final FixedMaterialCalendarView materialCalendarView, RequestQueue requestQueue) {
+    public SingleDayEventAdapter(Activity activity, final Context context, final FixedMaterialCalendarView materialCalendarView, RequestQueue requestQueue) {
         mContext = context;
+        mActivity = activity;
         mLayoutInflater = LayoutInflater.from(context);
         this.mMaterialCalendarView = materialCalendarView;
         this.registerDataSetObserver(new DataSetObserver() {

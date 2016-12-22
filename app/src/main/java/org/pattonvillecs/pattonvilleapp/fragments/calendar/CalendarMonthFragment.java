@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,6 +30,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCale
 
 import java.lang.reflect.Method;
 
+import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.setupSpotlight;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
@@ -38,10 +41,11 @@ public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
     private FixedMaterialCalendarView mCalendarView;
-    private ListView mMaxHeightListView;
+    private ListView mListView;
     private CalendarDay dateSelected;
     private SingleDayEventAdapter mSingleDayEventAdapter;
     private LinearLayout mLinearLayout;
+    private View mGotoTodayAction;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -75,11 +79,26 @@ public class CalendarMonthFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
+
+        //This terrifies me...
+        final ViewTreeObserver viewTreeObserver = getActivity().getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = getActivity().findViewById(R.id.action_goto_today);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    setupSpotlight(getActivity(), menuButton, "Today", "Touch this button to return to the current day.").show();
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_goto_today:
                 mCalendarView.setCurrentDate(CalendarDay.today());
@@ -90,9 +109,10 @@ public class CalendarMonthFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     @Override
@@ -116,12 +136,12 @@ public class CalendarMonthFragment extends Fragment {
             }
         });
 
-        mMaxHeightListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
-        mMaxHeightListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        mSingleDayEventAdapter = new SingleDayEventAdapter(getContext(), mCalendarView, PattonvilleApplication.get(getActivity()).getRequestQueue());
-        mMaxHeightListView.setAdapter(mSingleDayEventAdapter);
+        mListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
+        mListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        mSingleDayEventAdapter = new SingleDayEventAdapter(getActivity(), getContext(), mCalendarView, PattonvilleApplication.get(getActivity()).getRequestQueue());
+        mListView.setAdapter(mSingleDayEventAdapter);
 
-        mMaxHeightListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 VEvent calendarVEvent = (VEvent) parent.getAdapter().getItem(position);
@@ -130,7 +150,6 @@ public class CalendarMonthFragment extends Fragment {
         });
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
-
 
         return mLinearLayout;
     }
