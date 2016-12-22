@@ -21,7 +21,7 @@ public final class SpotlightHelper {
         return new SpotlightView.Builder(activity)
                 .introAnimationDuration(400)
                 .enableRevealAnimation(true)
-                .performClick(true)
+                .performClick(false)
                 .fadeinTextDuration(400)
                 .headingTvColor(primaryColor)
                 .headingTvSize(32)
