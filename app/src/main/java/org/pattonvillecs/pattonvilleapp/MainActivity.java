@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PreferenceUtils.SELECTED_SCHOOLS = PreferenceUtils.getSelectedSchools(this);
         Log.e("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 try {
                     launchWebsite("market://details?id="
                             + getString(R.string.package_name_powerschool));
-                } catch (android.content.ActivityNotFoundException anfe) {
+                } catch (ActivityNotFoundException e) {
                     launchWebsite("https://play.google.com/store/apps/details?id="
                             + getString(R.string.package_name_powerschool));
                 }
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Open store app if there, if not open in browser
             try {
                 launchWebsite("market://details?id=" + getString(R.string.package_name_nutrislice));
-            } catch (android.content.ActivityNotFoundException anfe) {
+            } catch (ActivityNotFoundException e) {
                 launchWebsite("https://play.google.com/store/apps/details?id="
                         + getString(R.string.package_name_nutrislice));
             }

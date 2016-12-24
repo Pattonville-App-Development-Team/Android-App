@@ -22,12 +22,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        PreferenceUtils.SELECTED_SCHOOLS = PreferenceUtils.getSelectedSchools(this);
         Log.e("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
-    public static class SettingsFragment extends PreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
