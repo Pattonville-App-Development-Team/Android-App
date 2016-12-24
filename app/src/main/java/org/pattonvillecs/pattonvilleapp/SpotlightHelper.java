@@ -17,6 +17,7 @@ import java.util.LinkedList;
 
 public final class SpotlightHelper {
 
+    private static final boolean DEBUG_MODE_ENABLED = true;
     private static final LinkedList<SpotlightView.Builder> builders = new LinkedList<>();
     private static final String TAG = "SpotlightHelper";
     private static volatile boolean spotlightCurrentlyOpen = false;
@@ -24,13 +25,14 @@ public final class SpotlightHelper {
     private SpotlightHelper() {
     }
 
-    public static void showSpotlight(Activity activity, final View target, String mainText, String subText) {
+    public static void showSpotlight(Activity activity, final View target, String uniqueID, String subText, String mainText) {
 
         // Get the colors to use. Pattonville green for highlights, white for text on dark background
         int primaryColor = ContextCompat.getColor(activity, R.color.colorPrimary);
         int accentColor = ContextCompat.getColor(activity, R.color.colorAccent);
 
         // Initialize the builder for the eventual Spotlight
+        @SuppressWarnings("ConstantConditions")
         final SpotlightView.Builder builder = new SpotlightView.Builder(activity)
                 .introAnimationDuration(400)
                 .enableRevealAnimation(true)
@@ -49,7 +51,7 @@ public final class SpotlightHelper {
                 .dismissOnTouch(true)
                 .dismissOnBackPress(true)
                 .enableDismissAfterShown(true)
-                .usageId("TEST" + Double.doubleToRawLongBits(Math.random())); //UNIQUE ID
+                .usageId(DEBUG_MODE_ENABLED ? "DEBUG_MODE_" + Double.doubleToRawLongBits(Math.random()) : uniqueID); //UNIQUE ID
 
         // Create an OnAttachStateChangeListener that will remove the builder from the queue and reset the spotlightCurrentlyOpen flag if it doesn't find itself in the queue (Already been popped and shown)
         final View.OnAttachStateChangeListener onAttachStateChangeListener = new View.OnAttachStateChangeListener() {
