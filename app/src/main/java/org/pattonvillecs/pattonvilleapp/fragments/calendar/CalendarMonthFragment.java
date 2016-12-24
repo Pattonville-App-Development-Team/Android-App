@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.animation.LayoutTransition;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -152,7 +153,19 @@ public class CalendarMonthFragment extends Fragment {
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
 
-        SpotlightHelper.showSpotlight(getActivity(), mLinearLayout, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
+        int spotlightPadding;
+        switch (getResources().getConfiguration().orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                spotlightPadding = 20;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                spotlightPadding = -250;
+                break;
+            case Configuration.ORIENTATION_UNDEFINED:
+            default:
+                throw new Error("Why would this ever happen?");
+        }
+        SpotlightHelper.showSpotlight(getActivity(), mLinearLayout, spotlightPadding, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
 
         return mLinearLayout;
     }

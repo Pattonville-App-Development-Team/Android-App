@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 public final class SpotlightHelper {
 
-    private static final boolean DEBUG_MODE_ENABLED = true;
+    private static final boolean DEBUG_MODE_ENABLED = false;
     private static final LinkedList<SpotlightView.Builder> builders = new LinkedList<>();
     private static final String TAG = "SpotlightHelper";
     private static volatile boolean spotlightCurrentlyOpen = false;
@@ -26,6 +26,10 @@ public final class SpotlightHelper {
     }
 
     public static void showSpotlight(Activity activity, final View target, String uniqueID, String subText, String mainText) {
+        showSpotlight(activity, target, 20, uniqueID, subText, mainText);
+    }
+
+    public static void showSpotlight(Activity activity, final View target, int targetPadding, String uniqueID, String subText, String mainText) {
 
         // Get the colors to use. Pattonville green for highlights, white for text on dark background
         int primaryColor = ContextCompat.getColor(activity, R.color.colorPrimary);
@@ -46,6 +50,7 @@ public final class SpotlightHelper {
                 .subHeadingTvText(subText)
                 .maskColor(Color.parseColor("#dc000000"))
                 .target(target)
+                .targetPadding(targetPadding)
                 .lineAnimDuration(400)
                 .lineAndArcColor(primaryColor)
                 .dismissOnTouch(true)
