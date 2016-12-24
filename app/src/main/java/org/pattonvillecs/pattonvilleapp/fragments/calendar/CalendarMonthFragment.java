@@ -48,6 +48,7 @@ public class CalendarMonthFragment extends Fragment {
     private SingleDayEventAdapter mSingleDayEventAdapter;
     private LinearLayout mLinearLayout;
     private View mGotoTodayAction;
+    private CalendarFragment mCalendarFragment;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -75,6 +76,7 @@ public class CalendarMonthFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mCalendarFragment = (CalendarFragment) getParentFragment();
     }
 
     @Override

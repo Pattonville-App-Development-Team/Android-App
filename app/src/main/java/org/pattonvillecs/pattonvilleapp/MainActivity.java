@@ -18,10 +18,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.pattonvillecs.pattonvilleapp.fragments.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 
 import java.io.File;

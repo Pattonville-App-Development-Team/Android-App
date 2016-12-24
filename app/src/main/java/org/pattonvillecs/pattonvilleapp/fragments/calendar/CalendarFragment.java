@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments;
+package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventsFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 
 /**
  * A simple {@link Fragment} subclass.
