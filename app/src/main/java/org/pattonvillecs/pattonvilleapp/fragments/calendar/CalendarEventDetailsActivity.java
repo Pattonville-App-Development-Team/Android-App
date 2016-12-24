@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,10 +43,6 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar snackbar = Snackbar.make(view, "Added to your calendar", Snackbar.LENGTH_LONG);
                 snackbar.getView().setBackgroundColor(Color.DKGRAY);
-                /*if (Build.VERSION.SDK_INT >= 23)
-                    snackbar = snackbar.setActionTextColor(getResources().getColor(R.color.colorAccent, getTheme()));
-                else
-                    snackbar = snackbar.setActionTextColor(getResources().getColor(R.color.colorAccent));*/
                 snackbar.setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -92,5 +89,7 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
 
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
         extraInfoTextView.setText(calendarEvent.getEventName() + "\n\n" + calendarEvent.getEventDetails());
+
+        SpotlightHelper.showSpotlight(this, fab, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
     }
 }
