@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarFragment#newInstance} factory method to
@@ -21,6 +24,7 @@ public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
     private ViewPager mViewPager;
+    private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -108,5 +112,22 @@ public class CalendarFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, mViewPager.getCurrentItem());
+    }
+
+    public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
+        listeners.add(listenerToAdd);
+    }
+
+    public void removeOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToRemove) {
+        listeners.remove(listenerToRemove);
+    }
+
+    private void updateAllListeners() {
+        for (OnCalendarDataUpdatedListener listener : listeners)
+            listener.update();
+    }
+
+    public interface OnCalendarDataUpdatedListener {
+        void update();
     }
 }
