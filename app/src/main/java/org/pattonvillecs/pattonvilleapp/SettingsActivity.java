@@ -6,8 +6,6 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import java.util.Arrays;
-
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
@@ -25,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         PreferenceUtils.SELECTED_SCHOOLS = PreferenceUtils.getSelectedSchools(this);
-        Log.e("SELECTED SCHOOLS", "These are selected: " + Arrays.toString(PreferenceUtils.SELECTED_SCHOOLS));
+        Log.e("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
     public static class SettingsFragment extends PreferenceFragment

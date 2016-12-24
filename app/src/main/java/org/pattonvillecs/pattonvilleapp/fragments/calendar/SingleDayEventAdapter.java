@@ -85,7 +85,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
             }
         });
 
-        for (DataSource source : PreferenceUtils.SELECTED_SCHOOLS) {
+        Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(mContext);
+        for (DataSource source : selectedSchools) {
             requestQueue.add(new StringRequest(source.dataLink, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
