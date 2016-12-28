@@ -145,7 +145,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
         }
     }
 
-    private static String fixICalStrings(String iCalString) {
+    static String fixICalStrings(String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 

@@ -14,6 +14,8 @@ import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +27,7 @@ public class CalendarFragment extends Fragment {
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
     private ViewPager mViewPager;
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -49,6 +52,11 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -122,12 +130,12 @@ public class CalendarFragment extends Fragment {
         listeners.remove(listenerToRemove);
     }
 
-    private void updateAllListeners() {
+    private void updateAllListeners(CalendarData calendarData) {
         for (OnCalendarDataUpdatedListener listener : listeners)
-            listener.update();
+            listener.update(calendarData);
     }
 
     public interface OnCalendarDataUpdatedListener {
-        void update();
+        void update(CalendarData calendarData);
     }
 }
