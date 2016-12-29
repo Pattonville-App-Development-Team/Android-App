@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
@@ -31,6 +32,7 @@ public class CalendarFragment extends Fragment {
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
     private CalendarData calendarData;
     private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
+    private ProgressBar progressBar;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -44,6 +46,18 @@ public class CalendarFragment extends Fragment {
      */
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
+    }
+
+    void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    ProgressBar getProgressBar() {
+        return progressBar;
     }
 
     @Override
@@ -60,8 +74,6 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //noinspection unchecked
-        currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
     }
 
     @Override
@@ -122,8 +134,13 @@ public class CalendarFragment extends Fragment {
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
         tabs.setupWithViewPager(viewPager);
 
+        progressBar = (ProgressBar) view.findViewById(R.id.progressbar_calendar);
+
         if (savedInstanceState != null)
             viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
+
+        //noinspection unchecked
+        currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
 
         return view;
     }

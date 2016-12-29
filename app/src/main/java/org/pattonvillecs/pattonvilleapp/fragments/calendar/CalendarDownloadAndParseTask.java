@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -96,12 +97,21 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     protected void onPreExecute() {
         super.onPreExecute();
         Log.e(TAG, "OnPreExecute called");
+        calendarFragment.showProgressBar();
+        calendarFragment.getProgressBar().setIndeterminate(false);
+        calendarFragment.getProgressBar().setMax(100);
     }
 
     @Override
     protected void onProgressUpdate(Double... values) {
         super.onProgressUpdate(values);
         Log.e(TAG, "OnProgressUpdate called: " + (float) (100 * values[0]) + "%");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            calendarFragment.getProgressBar().setProgress((int) (100 * values[0]), true);
+        else
+            calendarFragment.getProgressBar().setProgress((int) (100 * values[0]));
+
     }
 
     @Override
@@ -109,12 +119,14 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         super.onPostExecute(calendarData);
         Log.e(TAG, "OnPostExecute called");
         calendarFragment.setCalendarData(calendarData);
+        calendarFragment.hideProgressBar();
     }
 
     @Override
     protected void onCancelled(CalendarData calendarData) {
         super.onCancelled(calendarData);
         Log.e(TAG, "OnCancelled called");
+        calendarFragment.hideProgressBar();
     }
 
     @SafeVarargs
