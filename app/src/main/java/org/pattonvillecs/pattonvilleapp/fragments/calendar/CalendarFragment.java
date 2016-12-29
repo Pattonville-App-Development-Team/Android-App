@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -9,7 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.LinkedHashSet;
@@ -23,8 +28,11 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
+    private CalendarData calendarData;
+    private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
+    private ProgressBar progressBar;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -40,10 +48,27 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
+    void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_calendar);
+    }
+
+    public void setCalendarData(CalendarData calendarData) {
+        this.calendarData = calendarData;
+        updateAllListeners(this.calendarData);
     }
 
     @Override
@@ -52,13 +77,20 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (currentCalendarDownloadAndParseTask != null)
+            currentCalendarDownloadAndParseTask.cancel(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mViewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
-        mViewPager.setOffscreenPageLimit(2);
-        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
@@ -100,10 +132,15 @@ public class CalendarFragment extends Fragment {
         });
 
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
-        tabs.setupWithViewPager(mViewPager);
+        tabs.setupWithViewPager(viewPager);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progressbar_calendar);
 
         if (savedInstanceState != null)
-            mViewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
+            viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
+
+        //noinspection unchecked
+        currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
 
         return view;
     }
@@ -111,7 +148,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_TAB, mViewPager.getCurrentItem());
+        outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
     }
 
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
@@ -122,12 +159,12 @@ public class CalendarFragment extends Fragment {
         listeners.remove(listenerToRemove);
     }
 
-    private void updateAllListeners() {
+    private void updateAllListeners(CalendarData calendarData) {
         for (OnCalendarDataUpdatedListener listener : listeners)
-            listener.update();
+            listener.updateCalendarData(calendarData);
     }
 
     public interface OnCalendarDataUpdatedListener {
-        void update();
+        void updateCalendarData(CalendarData calendarData);
     }
 }

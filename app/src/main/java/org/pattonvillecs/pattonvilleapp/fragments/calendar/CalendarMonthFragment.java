@@ -4,10 +4,14 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,18 +23,25 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
+import org.apache.commons.collections4.map.MultiValueMap;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 
@@ -39,16 +50,15 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarMonthFragment extends Fragment {
+public class CalendarMonthFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
 
     public static final String TAG = "CalendarMonthFragment";
-    private FixedMaterialCalendarView mCalendarView;
-    private ListView mListView;
+    private FixedMaterialCalendarView materialCalendarView;
+    private ListView currentDayEventsListView;
     private CalendarDay dateSelected;
-    private SingleDayEventAdapter mSingleDayEventAdapter;
-    private LinearLayout mLinearLayout;
-    private View mGotoTodayAction;
-    private CalendarFragment mCalendarFragment;
+    private SingleDayEventAdapter singleDayEventAdapter;
+    private CalendarFragment calendarFragment;
+    private CalendarData calendarData = new CalendarData();
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -76,7 +86,14 @@ public class CalendarMonthFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mCalendarFragment = (CalendarFragment) getParentFragment();
+        calendarFragment = (CalendarFragment) getParentFragment();
+        calendarFragment.addOnCalendarDataUpdatedListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        calendarFragment.removeOnCalendarDataUpdatedListener(this);
     }
 
     @Override
@@ -105,11 +122,11 @@ public class CalendarMonthFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_today:
-                mCalendarView.setCurrentDate(CalendarDay.today());
+                materialCalendarView.setCurrentDate(CalendarDay.today());
                 try {
                     Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
                     toCall.setAccessible(true);
-                    toCall.invoke(mCalendarView, CalendarDay.today(), true);
+                    toCall.invoke(materialCalendarView, CalendarDay.today(), true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -123,29 +140,66 @@ public class CalendarMonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        mLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        mLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
+        rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
-        mCalendarView = (FixedMaterialCalendarView) mLinearLayout.findViewById(R.id.calendar_calendar);
-        mCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
-        mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+        materialCalendarView = (FixedMaterialCalendarView) rootLinearLayout.findViewById(R.id.calendar_calendar);
+        materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
-                mSingleDayEventAdapter.setCurrentCalendarDay(date);
-                Log.e(TAG, "Setting layout");
-                Log.e(TAG, mSingleDayEventAdapter.getCount() + " events present");
+                singleDayEventAdapter.setCurrentCalendarDay(date, calendarData);
+                Log.e(TAG, singleDayEventAdapter.getCount() + " events present");
+                //materialCalendarView.invalidateDecorators();
+            }
+        });
+        materialCalendarView.addDecorator(new DayViewDecorator() {
+            float radius;
+
+            {
+                switch (getResources().getConfiguration().orientation) {
+                    case Configuration.ORIENTATION_PORTRAIT:
+                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
+                        break;
+                    case Configuration.ORIENTATION_LANDSCAPE:
+                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getContext().getResources().getDisplayMetrics());
+                        break;
+                    case Configuration.ORIENTATION_UNDEFINED:
+                    default:
+                        throw new Error("Why would this ever happen?");
+                }
+            }
+
+            @Override
+            public boolean shouldDecorate(final CalendarDay day) {
+                return calendarData != null
+                        && Stream.of(calendarData.getCalendars()).anyMatch(new Predicate<Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>>>() {
+                    @Override
+                    public boolean test(Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> value) {
+                        return value.getValue().containsKey(day);
+                    }
+                });
+            }
+
+            @Override
+            public void decorate(DayViewFacade view) {
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                view.setSelectionDrawable(stateListDrawable);
+
+                //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
             }
         });
 
-        mListView = (ListView) mLinearLayout.findViewById(R.id.list_view_calendar);
-        mListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        mSingleDayEventAdapter = new SingleDayEventAdapter(getActivity(), getContext(), mCalendarView, PattonvilleApplication.get(getActivity()).getRequestQueue());
-        mListView.setAdapter(mSingleDayEventAdapter);
+        currentDayEventsListView = (ListView) rootLinearLayout.findViewById(R.id.list_view_calendar);
+        currentDayEventsListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        singleDayEventAdapter = new SingleDayEventAdapter(getContext());
+        currentDayEventsListView.setAdapter(singleDayEventAdapter);
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        currentDayEventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 VEvent calendarVEvent = (VEvent) parent.getAdapter().getItem(position);
@@ -167,9 +221,9 @@ public class CalendarMonthFragment extends Fragment {
             default:
                 throw new Error("Why would this ever happen?");
         }
-        SpotlightHelper.showSpotlight(getActivity(), mLinearLayout, spotlightPadding, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
+        SpotlightHelper.showSpotlight(getActivity(), rootLinearLayout, spotlightPadding, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
 
-        return mLinearLayout;
+        return rootLinearLayout;
     }
 
     @Override
@@ -178,13 +232,19 @@ public class CalendarMonthFragment extends Fragment {
         if (dateSelected == null)
             dateSelected = CalendarDay.today();
 
-        mCalendarView.setCurrentDate(dateSelected);
+        materialCalendarView.setCurrentDate(dateSelected);
         try {
             Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
             toCall.setAccessible(true);
-            toCall.invoke(mCalendarView, dateSelected, true);
+            toCall.invoke(materialCalendarView, dateSelected, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateCalendarData(CalendarData calendarData) {
+        this.calendarData = calendarData;
+        materialCalendarView.invalidateDecorators();
     }
 }

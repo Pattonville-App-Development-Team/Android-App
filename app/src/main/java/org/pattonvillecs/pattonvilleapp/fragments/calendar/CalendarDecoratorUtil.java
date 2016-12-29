@@ -45,7 +45,7 @@ public class CalendarDecoratorUtil {
         Drawable mask = generateCircleDrawable(Color.WHITE);
         RippleDrawable rippleDrawable = new RippleDrawable(list, null, mask);
         //API 21
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             rippleDrawable.setBounds(bounds);
         }
 
