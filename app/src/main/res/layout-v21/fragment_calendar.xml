@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment">
 
-    <ProgressBar
+    <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progressbar_calendar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

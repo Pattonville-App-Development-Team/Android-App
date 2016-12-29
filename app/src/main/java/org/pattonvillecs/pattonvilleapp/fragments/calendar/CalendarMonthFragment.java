@@ -157,7 +157,21 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
             }
         });
         materialCalendarView.addDecorator(new DayViewDecorator() {
-            float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
+            float radius;
+
+            {
+                switch (getResources().getConfiguration().orientation) {
+                    case Configuration.ORIENTATION_PORTRAIT:
+                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
+                        break;
+                    case Configuration.ORIENTATION_LANDSCAPE:
+                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getContext().getResources().getDisplayMetrics());
+                        break;
+                    case Configuration.ORIENTATION_UNDEFINED:
+                    default:
+                        throw new Error("Why would this ever happen?");
+                }
+            }
 
             @Override
             public boolean shouldDecorate(final CalendarDay day) {
