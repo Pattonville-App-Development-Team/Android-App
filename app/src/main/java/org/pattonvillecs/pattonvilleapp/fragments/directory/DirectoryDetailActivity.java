@@ -42,18 +42,16 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         schoolPhone.setText(school.mainNumber);
 
         TextView schoolAttendance = (TextView) findViewById(R.id.directory_attendanceNumber_textView);
-        if (school.attendanceNumber == null) {
+        if (school.attendanceNumber.isPresent())
+            schoolAttendance.setText(school.attendanceNumber.get());
+        else
             schoolAttendance.setText(R.string.directory_info_unavaiable);
-        } else {
-            schoolAttendance.setText(school.attendanceNumber);
-        }
 
         TextView schoolFax = (TextView) findViewById(R.id.directory_faxNumber_textView);
-        if (school.faxNumber == null) {
+        if (school.faxNumber.isPresent())
+            schoolFax.setText(school.faxNumber.get());
+        else
             schoolFax.setText(R.string.directory_info_unavaiable);
-        } else {
-            schoolFax.setText(school.faxNumber);
-        }
 
 
         ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
