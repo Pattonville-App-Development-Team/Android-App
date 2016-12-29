@@ -1,9 +1,13 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import com.android.volley.Cache;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
@@ -47,10 +51,13 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     private static final String TAG = "CalendarDPTask";
     private final CalendarFragment calendarFragment;
     private final RequestQueue requestQueue;
+    private final NetworkInfo activeNetwork;
 
     public CalendarDownloadAndParseTask(CalendarFragment calendarFragment, RequestQueue requestQueue) {
         this.calendarFragment = calendarFragment;
         this.requestQueue = requestQueue;
+        ConnectivityManager cm = (ConnectivityManager) calendarFragment.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        activeNetwork = cm.getActiveNetworkInfo();
     }
 
     private static String fixICalStrings(String iCalString) {
@@ -159,18 +166,39 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     }
 
     private Map<DataSource, String> downloadFiles(Set<DataSource> dataSources) throws ExecutionException, InterruptedException {
+        Cache cache = requestQueue.getCache();
+
         Map<DataSource, RequestFuture<String>> requests = new EnumMap<>(DataSource.class);
+        Map<DataSource, String> results = new EnumMap<>(DataSource.class);
+
         for (DataSource dataSource : dataSources) {
-            RequestFuture<String> future = RequestFuture.newFuture();
-            StringRequest request = new StringRequest(dataSource.calendarURL, future, future);
-            requestQueue.add(request);
-            requests.put(dataSource, future);
+            Cache.Entry entry = cache.get(dataSource.calendarURL);
+            if (entry != null)
+                Log.e(TAG, "Cache of " + dataSource.name + " isExpired: " + entry.isExpired() + " refreshNeeded: " + entry.refreshNeeded() + " responseHeaders: " + entry.responseHeaders);
+            if (entry != null && !entry.isExpired()) { //No download needed
+                results.put(dataSource, new String(entry.data));
+                Log.e(TAG, "Cached " + dataSource.name);
+            } else { //Needs to be downloaded
+                if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) { //Hope for download
+                    RequestFuture<String> future = RequestFuture.newFuture();
+                    StringRequest request = new StringRequest(dataSource.calendarURL, future, future);
+                    requestQueue.add(request);
+                    requests.put(dataSource, future);
+                    Log.e(TAG, "Downloading " + dataSource.name);
+                } else if (entry != null) { //No hope for download; if cached but out of date, use instead
+                    results.put(dataSource, new String(entry.data));
+                    Log.e(TAG, "Using old cache due to no Internet connection for " + dataSource.name);
+                }
+            }
         }
 
         int i = 0;
-        Map<DataSource, String> results = new EnumMap<>(DataSource.class);
         for (Map.Entry<DataSource, RequestFuture<String>> entry : requests.entrySet()) {
-            results.put(entry.getKey(), entry.getValue().get());
+            String result = entry.getValue().get();
+            if (result != null)
+                results.put(entry.getKey(), result);
+            else
+                Log.e(TAG, "Result was null for " + entry.getKey().name);
             if (isCancelled())
                 return results;
             publishProgress((double) (i++ + 1) / dataSources.size());
