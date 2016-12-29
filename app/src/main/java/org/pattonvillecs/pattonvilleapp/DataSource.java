@@ -166,7 +166,7 @@ public enum DataSource {
                 }
             })));
 
-    public final String name, shortName, address, mainNumber, dataLink;
+    public final String name, shortName, address, mainNumber, calendarURL;
     public final int id;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink;
@@ -188,6 +188,6 @@ public enum DataSource {
         this.attendanceNumber = attendanceNumber;
         this.faxNumber = faxNumber;
         this.peachjarLink = peachjarLink;
-        this.dataLink = calendarLink;
+        this.calendarURL = calendarLink;
     }
 }

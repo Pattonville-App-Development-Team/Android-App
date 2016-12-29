@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -10,12 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,9 +27,10 @@ import java.util.concurrent.Executors;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private CalendarData calendarData;
+    private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -49,14 +52,23 @@ public class CalendarFragment extends Fragment {
         getActivity().setTitle(R.string.title_fragment_calendar);
     }
 
+    public void setCalendarData(CalendarData calendarData) {
+        this.calendarData = calendarData;
+        updateAllListeners(this.calendarData);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //noinspection unchecked
+        currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (currentCalendarDownloadAndParseTask != null)
+            currentCalendarDownloadAndParseTask.cancel(true);
     }
 
     @Override
@@ -64,9 +76,9 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mViewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
-        mViewPager.setOffscreenPageLimit(2);
-        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
@@ -108,10 +120,10 @@ public class CalendarFragment extends Fragment {
         });
 
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
-        tabs.setupWithViewPager(mViewPager);
+        tabs.setupWithViewPager(viewPager);
 
         if (savedInstanceState != null)
-            mViewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
+            viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
 
         return view;
     }
@@ -119,7 +131,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_TAB, mViewPager.getCurrentItem());
+        outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
     }
 
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
@@ -132,10 +144,10 @@ public class CalendarFragment extends Fragment {
 
     private void updateAllListeners(CalendarData calendarData) {
         for (OnCalendarDataUpdatedListener listener : listeners)
-            listener.update(calendarData);
+            listener.updateCalendarData(calendarData);
     }
 
     public interface OnCalendarDataUpdatedListener {
-        void update(CalendarData calendarData);
+        void updateCalendarData(CalendarData calendarData);
     }
 }

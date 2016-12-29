@@ -17,7 +17,27 @@ import java.util.Map;
 public class CalendarData {
     private Map<DataSource, MultiValueMap<CalendarDay, VEvent>> calendars;
 
+    /**
+     * Uses the provided calendars
+     *
+     * @param calendars the calendars to be used
+     */
+    public CalendarData(Map<DataSource, MultiValueMap<CalendarDay, VEvent>> calendars) {
+        this.calendars = calendars;
+    }
+
+    /**
+     * Initializes empty
+     */
     public CalendarData() {
-        calendars = new EnumMap<>(DataSource.class);
+        this(new EnumMap<DataSource, MultiValueMap<CalendarDay, VEvent>>(DataSource.class));
+    }
+
+    public Map<DataSource, MultiValueMap<CalendarDay, VEvent>> getCalendars() {
+        return calendars;
+    }
+
+    public MultiValueMap<CalendarDay, VEvent> getCalendarForDataSource(DataSource dataSource) {
+        return calendars.get(dataSource);
     }
 }

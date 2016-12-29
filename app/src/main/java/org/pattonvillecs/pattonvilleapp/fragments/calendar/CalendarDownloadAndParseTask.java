@@ -3,6 +3,9 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -19,16 +22,16 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.collections4.Factory;
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import static org.pattonvillecs.pattonvilleapp.fragments.calendar.SingleDayEventAdapter.fixICalStrings;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Mitchell on 12/24/2016.
@@ -38,11 +41,19 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.SingleDayEvent
  * @author Mitchell Skaggs
  */
 
-public class CalendarParseTask extends AsyncTask<String, Double, List<MultiValueMap<CalendarDay, VEvent>>> {
+public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Double, CalendarData> {
 
-    private static final String TAG = "CalendarParseTask";
+    private static final String TAG = "CalendarDPTask";
+    private final CalendarFragment calendarFragment;
+    private final RequestQueue requestQueue;
 
-    public CalendarParseTask() {
+    public CalendarDownloadAndParseTask(CalendarFragment calendarFragment, RequestQueue requestQueue) {
+        this.calendarFragment = calendarFragment;
+        this.requestQueue = requestQueue;
+    }
+
+    private static String fixICalStrings(String iCalString) {
+        return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
     private MultiValueMap<CalendarDay, VEvent> parseFile(String iCalFile) {
@@ -90,32 +101,69 @@ public class CalendarParseTask extends AsyncTask<String, Double, List<MultiValue
     @Override
     protected void onProgressUpdate(Double... values) {
         super.onProgressUpdate(values);
-        Log.e(TAG, "OnProgressUpdate called");
+        Log.e(TAG, "OnProgressUpdate called: " + (float) (100 * values[0]) + "%");
     }
 
     @Override
-    protected void onPostExecute(List<MultiValueMap<CalendarDay, VEvent>> multiValueMaps) {
-        super.onPostExecute(multiValueMaps);
+    protected void onPostExecute(CalendarData calendarData) {
+        super.onPostExecute(calendarData);
         Log.e(TAG, "OnPostExecute called");
+        calendarFragment.setCalendarData(calendarData);
     }
 
     @Override
-    protected void onCancelled(List<MultiValueMap<CalendarDay, VEvent>> multiValueMaps) {
-        super.onCancelled(multiValueMaps);
+    protected void onCancelled(CalendarData calendarData) {
+        super.onCancelled(calendarData);
         Log.e(TAG, "OnCancelled called");
     }
 
+    @SafeVarargs
     @Override
-    protected List<MultiValueMap<CalendarDay, VEvent>> doInBackground(String... params) {
-        List<MultiValueMap<CalendarDay, VEvent>> results = new ArrayList<>(params.length);
-        for (int i = 0; i < params.length; i++) {
-            results.add(parseFile(params[i]));
-            publishProgress((double) (i + 1) / params.length);
+    protected final CalendarData doInBackground(Set<DataSource>... params) {
+        if (params.length != 1)
+            throw new IllegalStateException("Only one parameter expected!");
+        Set<DataSource> param = params[0];
+
+        Map<DataSource, String> downloadMap = new EnumMap<>(DataSource.class);
+        try {
+            downloadMap = downloadFiles(param);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (isCancelled())
+            return null;
+
+        Map<DataSource, MultiValueMap<CalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
+        int i = 0;
+        for (DataSource dataSource : param) {
+            results.put(dataSource, parseFile(downloadMap.get(dataSource)));
+            publishProgress((double) (i++ + 1) / param.size());
 
             //Break early
             if (isCancelled())
-                return results;
+                return new CalendarData(results);
         }
+        return new CalendarData(results);
+    }
+
+    private Map<DataSource, String> downloadFiles(Set<DataSource> dataSources) throws ExecutionException, InterruptedException {
+        Map<DataSource, RequestFuture<String>> requests = new EnumMap<>(DataSource.class);
+        for (DataSource dataSource : dataSources) {
+            RequestFuture<String> future = RequestFuture.newFuture();
+            StringRequest request = new StringRequest(dataSource.calendarURL, future, future);
+            requestQueue.add(request);
+            requests.put(dataSource, future);
+        }
+
+        int i = 0;
+        Map<DataSource, String> results = new EnumMap<>(DataSource.class);
+        for (Map.Entry<DataSource, RequestFuture<String>> entry : requests.entrySet()) {
+            results.put(entry.getKey(), entry.getValue().get());
+            if (isCancelled())
+                return results;
+            publishProgress((double) (i++ + 1) / dataSources.size());
+        }
+
         return results;
     }
 }
