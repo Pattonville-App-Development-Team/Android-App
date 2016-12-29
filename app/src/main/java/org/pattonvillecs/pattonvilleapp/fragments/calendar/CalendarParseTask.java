@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -38,6 +39,8 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.SingleDayEvent
  */
 
 public class CalendarParseTask extends AsyncTask<String, Double, List<MultiValueMap<CalendarDay, VEvent>>> {
+
+    private static final String TAG = "CalendarParseTask";
 
     public CalendarParseTask() {
     }
@@ -81,21 +84,25 @@ public class CalendarParseTask extends AsyncTask<String, Double, List<MultiValue
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        Log.e(TAG, "OnPreExecute called");
     }
 
     @Override
     protected void onProgressUpdate(Double... values) {
         super.onProgressUpdate(values);
+        Log.e(TAG, "OnProgressUpdate called");
     }
 
     @Override
     protected void onPostExecute(List<MultiValueMap<CalendarDay, VEvent>> multiValueMaps) {
         super.onPostExecute(multiValueMaps);
+        Log.e(TAG, "OnPostExecute called");
     }
 
     @Override
     protected void onCancelled(List<MultiValueMap<CalendarDay, VEvent>> multiValueMaps) {
         super.onCancelled(multiValueMaps);
+        Log.e(TAG, "OnCancelled called");
     }
 
     @Override
