@@ -301,7 +301,8 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         currentDayEventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                VEvent calendarVEvent = (VEvent) parent.getAdapter().getItem(position);
+                @SuppressWarnings("unchecked")
+                VEvent calendarVEvent = ((Pair<DataSource, VEvent>) parent.getAdapter().getItem(position)).getValue();
                 CalendarMonthFragment.this.startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
             }
         });

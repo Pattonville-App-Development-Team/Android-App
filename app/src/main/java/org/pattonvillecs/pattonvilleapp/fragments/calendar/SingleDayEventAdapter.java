@@ -6,8 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Function;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
@@ -15,6 +19,8 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
@@ -30,8 +36,7 @@ import java.util.Map;
 public class SingleDayEventAdapter extends BaseAdapter {
     private static final String TAG = SingleDayEventAdapter.class.getSimpleName();
     private final LayoutInflater layoutInflater;
-    private CalendarDay currentCalendarDay;
-    private List<VEvent> calendarEvents;
+    private List<Pair<DataSource, VEvent>> calendarEvents;
 
     public SingleDayEventAdapter(final Context context) {
         this.layoutInflater = LayoutInflater.from(context);
@@ -40,12 +45,19 @@ public class SingleDayEventAdapter extends BaseAdapter {
 
     public void setCurrentCalendarDay(CalendarDay newCalendarDay, CalendarData calendarData) {
         Log.e(TAG, "Setting current calendar day " + newCalendarDay);
-        currentCalendarDay = newCalendarDay;
         calendarEvents.clear();
-        for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
-            Collection<VEvent> events = entry.getValue().getCollection(currentCalendarDay);
+        for (final Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
+            final Collection<VEvent> events = entry.getValue().getCollection(newCalendarDay);
             if (events != null)
-                calendarEvents.addAll(events);
+                calendarEvents.addAll(
+                        Stream.of(events)
+                                .map(new Function<VEvent, Pair<DataSource, VEvent>>() {
+                                    @Override
+                                    public Pair<DataSource, VEvent> apply(VEvent vEvent) {
+                                        return new ImmutablePair<>(entry.getKey(), vEvent);
+                                    }
+                                })
+                                .collect(Collectors.<Pair<DataSource, VEvent>>toList()));
         }
         notifyDataSetChanged();
     }
@@ -56,7 +68,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
     }
 
     @Override
-    public VEvent getItem(int position) {
+    public Pair<DataSource, VEvent> getItem(int position) {
         return calendarEvents.get(position);
     }
 
@@ -74,7 +86,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
         TextView topText = (TextView) view.findViewById(R.id.text_top);
         TextView bottomText = (TextView) view.findViewById(R.id.text_bottom);
 
-        VEvent calendarEvent = calendarEvents.get(position);
+        Pair<DataSource, VEvent> pair = calendarEvents.get(position);
+        VEvent calendarEvent = pair.getValue();
         Summary summary = calendarEvent.getSummary();
         Location location = calendarEvent.getLocation();
 
@@ -90,6 +103,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
             bottomText.setVisibility(View.GONE);
             bottomText.setText(R.string.no_location);
         }
+        ImageView schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
+        schoolColorImageView.setColorFilter(pair.getKey().calendarColor);
 
         return view;
     }

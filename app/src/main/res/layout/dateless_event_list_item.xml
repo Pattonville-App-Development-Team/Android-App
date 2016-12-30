@@ -2,17 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/event_list_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants">
+
+    <ImageView
+        android:id="@+id/school_color_circle"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/school_color_circle"
+        android:src="@drawable/event_color_circle"
+        android:tint="@color/colorPrimary" />
 
     <ToggleButton
         android:id="@+id/pinned_button"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
+        android:layout_toLeftOf="@id/school_color_circle"
+        android:layout_toStartOf="@id/school_color_circle"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:button="@drawable/button_pinned"
         android:contentDescription="@string/pin_content_description"
