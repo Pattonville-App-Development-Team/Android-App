@@ -18,7 +18,7 @@ import org.apache.commons.lang3.tuple.Triple;
  */
 
 public class EnhancedDotSpan implements LineBackgroundSpan {
-
+    private final int plusColor = Color.parseColor("lightgray");
     private final float radius;
     private final float xOffset;
     private final int color;
@@ -63,7 +63,7 @@ public class EnhancedDotSpan implements LineBackgroundSpan {
         canvas.drawCircle(xCenter + xOffset, circleYCenter, radius, paint);
 
         if (hasPlus) {
-            paint.setColor(Color.parseColor("lightgray"));
+            paint.setColor(plusColor);
             float width = radius * 0.15f;
             float height = radius * 0.65f;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
