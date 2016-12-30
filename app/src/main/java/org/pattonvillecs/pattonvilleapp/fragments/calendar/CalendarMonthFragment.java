@@ -23,18 +23,17 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Predicate;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
@@ -136,16 +135,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView called");
-        // Inflate the layout for this fragment
-        LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
-
-        rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
-
-        materialCalendarView = (FixedMaterialCalendarView) rootLinearLayout.findViewById(R.id.calendar_calendar);
+    private void setUpMaterialCalendarView(FixedMaterialCalendarView materialCalendarView) {
         materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -156,32 +146,38 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 //materialCalendarView.invalidateDecorators();
             }
         });
-        materialCalendarView.addDecorator(new DayViewDecorator() {
-            float radius;
 
-            {
-                switch (getResources().getConfiguration().orientation) {
-                    case Configuration.ORIENTATION_PORTRAIT:
-                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
-                        break;
-                    case Configuration.ORIENTATION_LANDSCAPE:
-                        radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getContext().getResources().getDisplayMetrics());
-                        break;
-                    case Configuration.ORIENTATION_UNDEFINED:
-                    default:
-                        throw new Error("Why would this ever happen?");
-                }
+        final int dotColor = CalendarDecoratorUtil.getThemeAccentColor(getContext());
+        final float radius;
+        {
+            switch (getResources().getConfiguration().orientation) {
+                case Configuration.ORIENTATION_PORTRAIT:
+                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
+                    break;
+                case Configuration.ORIENTATION_LANDSCAPE:
+                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getContext().getResources().getDisplayMetrics());
+                    break;
+                case Configuration.ORIENTATION_UNDEFINED:
+                default:
+                    throw new Error("Why would this ever happen?");
             }
+        }
+        //Single decorator
+        materialCalendarView.addDecorator(new DayViewDecorator() {
 
             @Override
             public boolean shouldDecorate(final CalendarDay day) {
-                return calendarData != null
-                        && Stream.of(calendarData.getCalendars()).anyMatch(new Predicate<Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>>>() {
-                    @Override
-                    public boolean test(Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> value) {
-                        return value.getValue().containsKey(day);
+                if (calendarData == null)
+                    return false;
+
+                int numPresent = 0;
+                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(day)) {
+                        numPresent += entry.getValue().size(day);
+                        if (numPresent > 1)
+                            return false;
                     }
-                });
+                return numPresent == 1;
             }
 
             @Override
@@ -190,9 +186,82 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 view.setSelectionDrawable(stateListDrawable);
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
-                view.addSpan(new DotSpan(radius, CalendarDecoratorUtil.getThemeAccentColor(getContext())));
+                view.addSpan(EnhancedDotSpan.createSingle(radius, dotColor));
             }
         });
+        //Double decorator
+        materialCalendarView.addDecorator(new DayViewDecorator() {
+
+            @Override
+            public boolean shouldDecorate(final CalendarDay day) {
+                if (calendarData == null)
+                    return false;
+
+                int numPresent = 0;
+                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(day)) {
+                        numPresent += entry.getValue().size(day);
+                        if (numPresent > 2)
+                            return false;
+                    }
+                return numPresent == 2;
+            }
+
+            @Override
+            public void decorate(DayViewFacade view) {
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                view.setSelectionDrawable(stateListDrawable);
+
+                //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                Pair<EnhancedDotSpan, EnhancedDotSpan> pair = EnhancedDotSpan.createPair(radius, dotColor, dotColor);
+                view.addSpan(pair.getLeft());
+                view.addSpan(pair.getRight());
+            }
+        });
+        //Triple+ decorator
+        materialCalendarView.addDecorator(new DayViewDecorator() {
+
+            @Override
+            public boolean shouldDecorate(final CalendarDay day) {
+                if (calendarData == null)
+                    return false;
+
+                int numPresent = 0;
+                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(day)) {
+                        numPresent += entry.getValue().size(day);
+                        //if (numPresent > 3)
+                        //    return false;
+                    }
+                return numPresent >= 3;
+            }
+
+            @Override
+            public void decorate(DayViewFacade view) {
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                view.setSelectionDrawable(stateListDrawable);
+
+                //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> triple = EnhancedDotSpan.createTriple(radius, dotColor, dotColor, dotColor);
+                view.addSpan(triple.getLeft());
+                view.addSpan(triple.getMiddle());
+                view.addSpan(triple.getRight());
+            }
+        });
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView called");
+        // Inflate the layout for this fragment
+        LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+
+        rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
+
+        materialCalendarView = (FixedMaterialCalendarView) rootLinearLayout.findViewById(R.id.calendar_calendar);
+        setUpMaterialCalendarView(materialCalendarView);
 
         currentDayEventsListView = (ListView) rootLinearLayout.findViewById(R.id.list_view_calendar);
         currentDayEventsListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
