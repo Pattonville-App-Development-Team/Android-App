@@ -218,7 +218,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 view.addSpan(pair.getRight());
             }
         });
-        //Triple+ decorator
+        //Triple decorator
         materialCalendarView.addDecorator(new DayViewDecorator() {
 
             @Override
@@ -230,10 +230,10 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
                     if (entry.getValue().containsKey(day)) {
                         numPresent += entry.getValue().size(day);
-                        //if (numPresent > 3)
-                        //    return false;
+                        if (numPresent > 3)
+                            return false;
                     }
-                return numPresent >= 3;
+                return numPresent == 3;
             }
 
             @Override
@@ -243,6 +243,36 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
                 Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> triple = EnhancedDotSpan.createTriple(radius, dotColor, dotColor, dotColor);
+                view.addSpan(triple.getLeft());
+                view.addSpan(triple.getMiddle());
+                view.addSpan(triple.getRight());
+            }
+        });
+        //>Triple decorator
+        materialCalendarView.addDecorator(new DayViewDecorator() {
+
+            @Override
+            public boolean shouldDecorate(final CalendarDay day) {
+                if (calendarData == null)
+                    return false;
+
+                int numPresent = 0;
+                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(day)) {
+                        numPresent += entry.getValue().size(day);
+                        if (numPresent > 3)
+                            return true;
+                    }
+                return numPresent > 3;
+            }
+
+            @Override
+            public void decorate(DayViewFacade view) {
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                view.setSelectionDrawable(stateListDrawable);
+
+                //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
+                Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> triple = EnhancedDotSpan.createTripleWithPlus(radius, dotColor, dotColor, dotColor);
                 view.addSpan(triple.getLeft());
                 view.addSpan(triple.getMiddle());
                 view.addSpan(triple.getRight());
