@@ -86,7 +86,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             e.printStackTrace();
         }
         stopWatch.stop();
-        Log.e(TAG, "Calendar built time: " + stopWatch.getTime() + "ms");
+        Log.e(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
         if (calendar != null) {
             Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
                 @Override
