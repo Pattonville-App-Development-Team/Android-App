@@ -27,6 +27,7 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.collections4.Factory;
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     }
 
     private MultiValueMap<CalendarDay, VEvent> parseFile(String iCalFile) {
+        Log.e(TAG, "Initial");
         MultiValueMap<CalendarDay, VEvent> map = MultiValueMap.multiValueMap(new HashMap<CalendarDay, HashSet<VEvent>>(), new Factory<HashSet<VEvent>>() {
             @Override
             public HashSet<VEvent> create() {
@@ -74,12 +76,17 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
+        Log.e(TAG, "Readers done");
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         try {
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             calendar = calendarBuilder.build(stringReader);
         } catch (IOException | ParserException e) {
             e.printStackTrace();
         }
+        stopWatch.stop();
+        Log.e(TAG, "Calendar built time: " + stopWatch.getTime() + "ms");
         if (calendar != null) {
             Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
                 @Override
@@ -92,10 +99,12 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                     return (VEvent) value;
                 }
             }).collect(Collectors.<VEvent>toSet());
+            Log.e(TAG, "Set built");
             for (VEvent vEvent : vEventSet) {
                 Date vEventDate = vEvent.getStartDate().getDate();
                 map.put(CalendarDay.from(vEventDate), vEvent);
             }
+            Log.e(TAG, "Map built");
         }
         return map;
     }
