@@ -1,7 +1,5 @@
 package org.pattonvillecs.pattonvilleapp;
 
-import android.graphics.Color;
-
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
@@ -19,7 +17,6 @@ public enum DataSource {
             Optional.<String>empty(),
             Optional.<String>empty(),
             "http://drummond.psdr3.org/ical/District.ics",
-            Color.parseColor("#007a33"),
             Optional.<String>empty()),
     HIGH_SCHOOL("Pattonville High School", "High School", 1, true, true, true, false, false,
             "2497 Creve Coeur Mill Road, Maryland Heights, MO 63043",
@@ -27,7 +24,6 @@ public enum DataSource {
             Optional.of("(314) 213-8351"),
             Optional.of("(314) 213-8696"),
             "http://drummond.psdr3.org/ical/High%20School.ics",
-            Color.parseColor("#008080"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94969")),
     HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights", 2, true, true, false, true, false,
             "195 Fee Fee Road, Maryland Heights, MO 63043 ",
@@ -35,7 +31,6 @@ public enum DataSource {
             Optional.of("(314) 213-8333"),
             Optional.of("(314) 213-8633"),
             "http://drummond.psdr3.org/ical/Heights.ics",
-            Color.parseColor("#FF0000"),
             Optional.<String>empty()),
     HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman", 3, true, true, false, true, false,
             "11055 St. Charles Rock Road, St. Ann, MO 63074",
@@ -43,7 +38,6 @@ public enum DataSource {
             Optional.of("(314) 213-8332"),
             Optional.of("(314) 213-8632"),
             "http://drummond.psdr3.org/ical/Holman.ics",
-            Color.parseColor("#FF8C00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94975")),
     REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remingon", 4, true, true, false, true, true,
             "102 Fee Fee Rd, Maryland Heights, MO 63043",
@@ -51,7 +45,6 @@ public enum DataSource {
             Optional.of("(314) 213-8116"),
             Optional.of("(314) 213-8616"),
             "http://drummond.psdr3.org/ical/Remington.ics",
-            Color.parseColor("#FFD700"),
             Optional.<String>empty()),
     BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway", 5, true, true, false, false, true,
             "11635 Oakbury Court, Bridgeton, MO 63044",
@@ -59,7 +52,6 @@ public enum DataSource {
             Optional.of("(314) 213-8112"),
             Optional.of("(314) 213-8612"),
             "http://drummond.psdr3.org/ical/Bridgeway.ics",
-            Color.parseColor("#EE82EE"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94979")),
     DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drumond", 6, true, true, false, false, true,
             "3721 St. Bridget Lane, St Ann, MO 63074",
@@ -67,7 +59,6 @@ public enum DataSource {
             Optional.of("(314) 213-8519"),
             Optional.of("(314) 213-8619"),
             "http://drummond.psdr3.org/ical/Drummond.ics",
-            Color.parseColor("#4B0082"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94976")),
     ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres", 7, true, true, false, false, true,
             "2905 Rose Acres Lane, Maryland Heights, MO 63043",
@@ -75,7 +66,6 @@ public enum DataSource {
             Optional.of("(314) 213-8117"),
             Optional.of("(314) 213-8617"),
             "http://drummond.psdr3.org/ical/Rose%20Acres.ics",
-            Color.parseColor("#0000CD"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94970")),
     PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood", 8, true, true, false, false, true,
             "3199 Parkwood Lane, Maryland Heights, MO 63043",
@@ -83,7 +73,6 @@ public enum DataSource {
             Optional.of("(314) 213-8115"),
             Optional.of("(314) 213-8615"),
             "http://drummond.psdr3.org/ical/Parkwood.ics",
-            Color.parseColor("#BC8F8F"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94967")),
     WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook", 9, true, true, false, false, true,
             "11022 Schuetz Road, Creve Coeur, MO 63146",
@@ -91,7 +80,6 @@ public enum DataSource {
             Optional.of("(314) 213-8118"),
             Optional.of("(314) 213-8618"),
             "http://drummond.psdr3.org/ical/Willow%20Brook.ics",
-            Color.parseColor("#808000"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"));
 
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
@@ -179,12 +167,14 @@ public enum DataSource {
             })));
 
     public final String name, shortName, address, mainNumber, calendarURL;
-    public final int id, calendarColor;
+    public final int id;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink;
 
 
-    DataSource(String name, String shortName, int id, boolean hasNews, boolean isDisableable, boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool, String address, String mainNumber, Optional<String> attendanceNumber, Optional<String> faxNumber, String calendarLink, int calendarColor, Optional<String> peachjarLink) {
+    DataSource(String name, String shortName, int id, boolean hasNews, boolean isDisableable,
+               boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool,
+               String address, String mainNumber, Optional<String> attendanceNumber, Optional<String> faxNumber, String calendarLink, Optional<String> peachjarLink) {
         this.name = name;
         this.shortName = shortName;
         this.id = id;
@@ -199,6 +189,5 @@ public enum DataSource {
         this.faxNumber = faxNumber;
         this.peachjarLink = peachjarLink;
         this.calendarURL = calendarLink;
-        this.calendarColor = calendarColor;
     }
 }
