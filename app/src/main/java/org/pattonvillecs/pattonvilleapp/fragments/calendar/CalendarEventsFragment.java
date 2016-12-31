@@ -87,7 +87,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
             Date eventDate = eventAdapter.getItem(i).pair.getValue().getStartDate().getDate();
-            if (eventDate.before(today))
+            if (!eventDate.after(today))
                 mostRecentEventPosition = i;
             else {
                 mostRecentEventPosition = i;
