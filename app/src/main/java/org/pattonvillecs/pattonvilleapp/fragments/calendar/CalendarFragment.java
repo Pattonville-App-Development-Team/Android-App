@@ -67,7 +67,7 @@ public class CalendarFragment extends Fragment {
         getActivity().setTitle(R.string.title_fragment_calendar);
     }
 
-    public void setCalendarData(CalendarData calendarData) {
+    public synchronized void setCalendarData(CalendarData calendarData) {
         this.calendarData = calendarData;
         updateAllListeners(this.calendarData);
     }
@@ -157,7 +157,7 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public synchronized void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
         outState.putSerializable(KEY_CURRENT_CALENDAR_DATA, calendarData);

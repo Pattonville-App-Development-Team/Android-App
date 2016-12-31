@@ -56,7 +56,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     private EventAdapter eventAdapter;
     private CalendarFragment calendarFragment;
     private CalendarData calendarData = new CalendarData();
-    private boolean scrollToCurrentDayAfterUpdate = false;
+    private TextView noItemsTextView;
 
     public CalendarEventsFragment() {
         // Required empty public constructor
@@ -140,6 +140,11 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
+
+        if (savedInstanceState != null)
+            goToCurrentDay();
+
         return layout;
     }
 
@@ -162,6 +167,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
                 .sorted(new Comparator<Pair<DataSource, VEvent>>() {
                     @Override
                     public int compare(Pair<DataSource, VEvent> o1, Pair<DataSource, VEvent> o2) {
+                        //This is Google Calendar style scrolling: future events to the bottom
                         return o1.getValue().getStartDate().getDate().compareTo(o2.getValue().getStartDate().getDate());
                     }
                 })
@@ -172,6 +178,12 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
                     }
                 })
                 .collect(Collectors.<EventFlexibleItem>toList());
+
+        if (items.size() > 0)
+            noItemsTextView.setVisibility(View.GONE);
+        else
+            noItemsTextView.setVisibility(View.VISIBLE);
+
         eventAdapter.addItems(eventAdapter.getItemCount(), items);
     }
 
