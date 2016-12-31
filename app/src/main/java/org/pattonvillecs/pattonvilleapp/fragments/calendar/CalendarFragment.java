@@ -151,7 +151,7 @@ public class CalendarFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            this.calendarData = (CalendarData) savedInstanceState.getSerializable(KEY_CURRENT_CALENDAR_DATA);
+            this.calendarData = savedInstanceState.getParcelable(KEY_CURRENT_CALENDAR_DATA);
             updateAllListeners(calendarData);
         }
     }
@@ -160,7 +160,7 @@ public class CalendarFragment extends Fragment {
     public synchronized void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
-        outState.putSerializable(KEY_CURRENT_CALENDAR_DATA, calendarData);
+        outState.putParcelable(KEY_CURRENT_CALENDAR_DATA, calendarData);
     }
 
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {

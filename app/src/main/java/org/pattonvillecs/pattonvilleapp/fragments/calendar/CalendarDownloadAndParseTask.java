@@ -162,7 +162,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         if (isCancelled())
             return null;
 
-        Map<DataSource, MultiValueMap<CalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
+        EnumMap<DataSource, MultiValueMap<CalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
         int i = 0;
         for (DataSource dataSource : param) {
             results.put(dataSource, parseFile(downloadMap.get(dataSource)));

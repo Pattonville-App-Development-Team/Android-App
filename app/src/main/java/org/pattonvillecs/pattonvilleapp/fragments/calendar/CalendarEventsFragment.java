@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.annimon.stream.Collectors;
@@ -25,6 +26,8 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -214,6 +217,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
 
     private static class EventViewHolder extends FlexibleViewHolder {
         final TextView topText, bottomText;
+        public ImageView schoolColorImageView;
 
         public EventViewHolder(View view, FlexibleAdapter adapter) {
             this(view, adapter, false);
@@ -223,6 +227,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
             super(view, adapter, stickyHeader);
             topText = (TextView) view.findViewById(R.id.text_top);
             bottomText = (TextView) view.findViewById(R.id.text_bottom);
+            schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
         }
     }
 
@@ -256,7 +261,25 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
 
         @Override
         public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
-            holder.topText.setText(pair.getValue().getSummary().getValue());
+            //holder.topText.setText(pair.getValue().getSummary().getValue());
+
+            VEvent calendarEvent = pair.getValue();
+            Summary summary = calendarEvent.getSummary();
+            Location location = calendarEvent.getLocation();
+
+            if (summary != null)
+                holder.topText.setText(summary.getValue());
+            else
+                holder.topText.setText(R.string.no_summary);
+
+            if (location != null) {
+                holder.bottomText.setVisibility(View.VISIBLE);
+                holder.bottomText.setText(location.getValue());
+            } else {
+                holder.bottomText.setVisibility(View.GONE);
+                holder.bottomText.setText(R.string.no_location);
+            }
+            holder.schoolColorImageView.setColorFilter(pair.getKey().calendarColor);
         }
     }
 }
