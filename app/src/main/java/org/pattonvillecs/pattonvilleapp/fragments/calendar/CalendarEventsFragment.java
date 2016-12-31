@@ -1,29 +1,42 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Function;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import net.fortuna.ical4j.model.component.VEvent;
+
+import org.apache.commons.collections4.map.MultiValueMap;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
+import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.utils.Utils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
@@ -31,8 +44,11 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * Use the {@link CalendarEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarEventsFragment extends Fragment {
-    private RecyclerView mRecyclerView;
+public class CalendarEventsFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
+    private RecyclerView recyclerView;
+    private EventAdapter eventAdapter;
+    private CalendarFragment calendarFragment;
+    private CalendarData calendarData = new CalendarData();
 
     public CalendarEventsFragment() {
         // Required empty public constructor
@@ -51,6 +67,14 @@ public class CalendarEventsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        calendarFragment = (CalendarFragment) getParentFragment();
+        calendarFragment.addOnCalendarDataUpdatedListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        calendarFragment.removeOnCalendarDataUpdatedListener(this);
     }
 
     @Override
@@ -59,19 +83,52 @@ public class CalendarEventsFragment extends Fragment {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_calendar_events, container, false);
 
-        mRecyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
-        List<EventFlexibleItem> items = Arrays.asList(new EventFlexibleItem("A"), new EventFlexibleItem("B"), new EventFlexibleItem("C"), new EventFlexibleItem("D"), new EventFlexibleItem("E"),
-                new EventFlexibleItem("F"), new EventFlexibleItem("G"), new EventFlexibleItem("H"), new EventFlexibleItem("I"));
+        recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
-        @SuppressWarnings("unchecked")
-        FlexibleAdapter<EventFlexibleItem> flexibleAdapter = new EventAdapter(new ArrayList<>(items))
-                .setEndlessScrollThreshold(20);
+        eventAdapter = new EventAdapter();
 
-        mRecyclerView.setAdapter(flexibleAdapter);
-        mRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        recyclerView.setAdapter(eventAdapter);
+        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+
+        eventAdapter.setFastScroller((FastScroller) layout.findViewById(R.id.fast_scroller), Utils.fetchAccentColor(getContext(), Color.RED));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
 
         return layout;
+    }
+
+    @Override
+    public void updateCalendarData(CalendarData calendarData) {
+        this.calendarData = calendarData;
+        eventAdapter.clear();
+        List<EventFlexibleItem> items = Stream.of(calendarData.getCalendars())
+                .flatMap(new Function<Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
+                    @Override
+                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> dataSourceMultiValueMapEntry) {
+                        return Stream.of(dataSourceMultiValueMapEntry.getValue().iterator()).map(new Function<Map.Entry<CalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
+                            @Override
+                            public Pair<DataSource, VEvent> apply(Map.Entry<CalendarDay, VEvent> calendarDayVEventEntry) {
+                                return new ImmutablePair<>(dataSourceMultiValueMapEntry.getKey(), calendarDayVEventEntry.getValue());
+                            }
+                        });
+                    }
+                })
+                .sorted(new Comparator<Pair<DataSource, VEvent>>() {
+                    @Override
+                    public int compare(Pair<DataSource, VEvent> o1, Pair<DataSource, VEvent> o2) {
+                        return o1.getValue().getStartDate().getDate().compareTo(o2.getValue().getStartDate().getDate());
+                    }
+                })
+                .map(new Function<Pair<DataSource, VEvent>, EventFlexibleItem>() {
+                    @Override
+                    public EventFlexibleItem apply(Pair<DataSource, VEvent> dataSourceVEventPair) {
+                        return new EventFlexibleItem(dataSourceVEventPair);
+                    }
+                })
+                .collect(Collectors.<EventFlexibleItem>toList());
+        eventAdapter.addItems(eventAdapter.getItemCount(), items);
     }
 
     private static class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
@@ -84,6 +141,10 @@ public class CalendarEventsFragment extends Fragment {
                 UPDATE = 0, FILTER = 1, CONFIRM_DELETE = 2,
                 LOAD_MORE_COMPLETE = 8, LOAD_MORE_RESET = 9;
 
+        public EventAdapter() {
+            this(new ArrayList<EventFlexibleItem>());
+        }
+
         public EventAdapter(@Nullable List<EventFlexibleItem> items) {
             this(items, null);
         }
@@ -94,53 +155,17 @@ public class CalendarEventsFragment extends Fragment {
 
         public EventAdapter(@Nullable List<EventFlexibleItem> items, @Nullable Object listeners, boolean stableIds) {
             super(items, listeners, stableIds);
-            this.setEndlessScrollListener(new EndlessScrollListener() {
-                private int inc = 0;
-
-                @Override
-                public void onLoadMore() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<EventFlexibleItem> items = new ArrayList<>();
-                            for (int i = 0; i < 4; i++) {
-                                items.add(new EventFlexibleItem("New item #" + inc++));
-                            }
-                            onLoadMoreComplete(items);
-                        }
-                    }, 1000);
-                }
-            }, new LoadingEventFlexibleItem());
         }
 
-        public void onLoadMoreComplete(@Nullable List<EventFlexibleItem> newItems, @IntRange(from = -1) long delay) {
-            //Delete the progress item with delay
-            mHandler.sendEmptyMessageDelayed(LOAD_MORE_COMPLETE, delay);
-            //Add the new items or reset the loading status
-            if (newItems != null && newItems.size() > 0) {
-                if (DEBUG)
-                    Log.i(this.getClass().getSimpleName(), "onLoadMore performing adding " + newItems.size() + " new Items!");
-                addItems(getItemCount(), newItems);
-                //Reset OnLoadMore -delayed- instant
-                mHandler.sendEmptyMessageDelayed(LOAD_MORE_RESET, 0L);//200L);
-            } else {
-                noMoreLoad();
-            }
-        }
-
-        /**
-         * Called when no more items are loaded.
-         */
-        private void noMoreLoad() {
-            if (DEBUG) Log.v(this.getClass().getSimpleName(), "onLoadMore noMoreLoad!");
-            notifyItemChanged(getItemCount() - 1, Payload.NO_MORE_LOAD);
-            //Reset OnLoadMore delayed
-            mHandler.sendEmptyMessageDelayed(LOAD_MORE_RESET, 200L);
+        @Override
+        public String onCreateBubbleText(int position) {
+            EventFlexibleItem item = getItem(position);
+            return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
         }
     }
 
     private static class EventViewHolder extends FlexibleViewHolder {
-        final TextView mTitle;
+        final TextView topText, bottomText;
 
         public EventViewHolder(View view, FlexibleAdapter adapter) {
             this(view, adapter, false);
@@ -148,31 +173,17 @@ public class CalendarEventsFragment extends Fragment {
 
         public EventViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
             super(view, adapter, stickyHeader);
-            mTitle = (TextView) view.findViewById(R.id.title);
-        }
-    }
-
-    private static class LoadingEventFlexibleItem extends EventFlexibleItem {
-        public LoadingEventFlexibleItem() {
-            super(null);
-        }
-
-        @Override
-        public int getLayoutRes() {
-            return R.layout.calendar_event_view_card_loading;
-        }
-
-        @Override
-        public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
+            topText = (TextView) view.findViewById(R.id.text_top);
+            bottomText = (TextView) view.findViewById(R.id.text_bottom);
         }
     }
 
     private static class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
 
-        private final String name;
+        private final Pair<DataSource, VEvent> pair;
 
-        public EventFlexibleItem(String name) {
-            this.name = name;
+        public EventFlexibleItem(Pair<DataSource, VEvent> pair) {
+            this.pair = pair;
         }
 
         @Override
@@ -187,7 +198,7 @@ public class CalendarEventsFragment extends Fragment {
 
         @Override
         public int getLayoutRes() {
-            return R.layout.calendar_event_view_card;
+            return R.layout.dateless_event_list_item;
         }
 
         @Override
@@ -197,7 +208,7 @@ public class CalendarEventsFragment extends Fragment {
 
         @Override
         public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
-            holder.mTitle.setText(name + " Pos: " + position);
+            holder.topText.setText(pair.getValue().getSummary().getValue());
         }
     }
 }
