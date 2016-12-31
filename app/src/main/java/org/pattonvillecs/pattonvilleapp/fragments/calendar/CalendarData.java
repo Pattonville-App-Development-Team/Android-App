@@ -7,6 +7,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * Created by Mitchell on 12/24/2016.
  */
 
-public class CalendarData {
+public class CalendarData implements Serializable {
     private Map<DataSource, MultiValueMap<CalendarDay, VEvent>> calendars;
 
     /**

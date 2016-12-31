@@ -28,6 +28,7 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
+    private static final String KEY_CURRENT_CALENDAR_DATA = "CURRENT_CALENDAR_DATA";
     private ViewPager viewPager;
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
     private CalendarData calendarData;
@@ -136,19 +137,30 @@ public class CalendarFragment extends Fragment {
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar_calendar);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
-
-        //noinspection unchecked
-        currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+        } else {
+            //noinspection unchecked
+            currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+        }
 
         return view;
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            this.calendarData = (CalendarData) savedInstanceState.getSerializable(KEY_CURRENT_CALENDAR_DATA);
+            updateAllListeners(calendarData);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
+        outState.putSerializable(KEY_CURRENT_CALENDAR_DATA, calendarData);
     }
 
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {

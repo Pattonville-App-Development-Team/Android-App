@@ -9,7 +9,11 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.collections4.map.MultiValueMap;
@@ -27,6 +32,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,10 +51,12 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * create an instance of this fragment.
  */
 public class CalendarEventsFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
+    private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private CalendarFragment calendarFragment;
     private CalendarData calendarData = new CalendarData();
+    private boolean scrollToCurrentDayAfterUpdate = false;
 
     public CalendarEventsFragment() {
         // Required empty public constructor
@@ -67,14 +75,51 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         calendarFragment = (CalendarFragment) getParentFragment();
         calendarFragment.addOnCalendarDataUpdatedListener(this);
     }
+
+    private void goToCurrentDay() {
+        int mostRecentEventPosition = 0;
+        Date today = new Date();
+        Log.e(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
+
+        for (int i = 0; i < eventAdapter.getItemCount(); i++) {
+            Date eventDate = eventAdapter.getItem(i).pair.getValue().getStartDate().getDate();
+            if (eventDate.before(today))
+                mostRecentEventPosition = i;
+            else {
+                mostRecentEventPosition = i;
+                break;
+            }
+        }
+
+        recyclerView.scrollToPosition(mostRecentEventPosition);
+    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         calendarFragment.removeOnCalendarDataUpdatedListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_goto_today:
+                goToCurrentDay();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
     }
 
     @Override
@@ -94,7 +139,6 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-
 
         return layout;
     }
@@ -132,14 +176,6 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     }
 
     private static class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
-
-        /**
-         * Handler operations
-         */
-        @SuppressWarnings("unused")
-        private static final int
-                UPDATE = 0, FILTER = 1, CONFIRM_DELETE = 2,
-                LOAD_MORE_COMPLETE = 8, LOAD_MORE_RESET = 9;
 
         public EventAdapter() {
             this(new ArrayList<EventFlexibleItem>());
