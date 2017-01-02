@@ -13,6 +13,7 @@ import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
 
 import java.util.Date;
 
@@ -61,6 +62,11 @@ public class CalendarEvent implements Parcelable {
      */
     @NonNull
     private final String eventLocation;
+    /**
+     * The unique ID of this event. Always present.
+     */
+    @NonNull
+    private final String uid;
 
     /**
      * A constructor that takes every part individually. Typically called by other constructors.
@@ -69,12 +75,14 @@ public class CalendarEvent implements Parcelable {
      * @param dateAndTime   The date of the event. Must be valid.
      * @param eventDetails  The details of the event. May be the empty string.
      * @param eventLocation The name of the location of the event. May be the empty string.
+     * @param uid           The unique identifier of this event
      */
-    public CalendarEvent(@NonNull String eventName, @NonNull Date dateAndTime, @NonNull String eventDetails, @NonNull String eventLocation) {
+    public CalendarEvent(@NonNull String eventName, @NonNull Date dateAndTime, @NonNull String eventDetails, @NonNull String eventLocation, @NonNull String uid) {
         this.eventName = eventName;
         this.dateAndTime = dateAndTime;
         this.eventDetails = eventDetails;
         this.eventLocation = eventLocation;
+        this.uid = uid;
     }
 
     /**
@@ -89,6 +97,7 @@ public class CalendarEvent implements Parcelable {
         dateAndTime = (Date) in.readSerializable();
         eventDetails = in.readString();
         eventLocation = in.readString();
+        uid = in.readString();
     }
 
     /**
@@ -125,7 +134,18 @@ public class CalendarEvent implements Parcelable {
                     public String apply(Location location) {
                         return location.getValue();
                     }
-                }).orElse(""));
+                }).orElse(""),
+                Optional.ofNullable(calendarVEvent.getUid()).map(new Function<Uid, String>() {
+                    @Override
+                    public String apply(Uid uid) {
+                        return uid.getValue();
+                    }
+                }).orElseThrow(new Supplier<RuntimeException>() {
+                    @Override
+                    public RuntimeException get() {
+                        return new IllegalArgumentException("UID required!");
+                    }
+                }));
     }
 
     /**
