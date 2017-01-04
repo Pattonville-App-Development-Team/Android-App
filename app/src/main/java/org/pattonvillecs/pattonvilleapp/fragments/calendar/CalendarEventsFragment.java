@@ -3,12 +3,10 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.annimon.stream.Collectors;
@@ -26,27 +23,23 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import eu.davidea.fastscroller.FastScroller;
-import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.utils.Utils;
-import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -190,96 +183,4 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         eventAdapter.addItems(eventAdapter.getItemCount(), items);
     }
 
-    private static class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
-
-        public EventAdapter() {
-            this(new ArrayList<EventFlexibleItem>());
-        }
-
-        public EventAdapter(@Nullable List<EventFlexibleItem> items) {
-            this(items, null);
-        }
-
-        public EventAdapter(@Nullable List<EventFlexibleItem> items, @Nullable Object listeners) {
-            this(items, listeners, false);
-        }
-
-        public EventAdapter(@Nullable List<EventFlexibleItem> items, @Nullable Object listeners, boolean stableIds) {
-            super(items, listeners, stableIds);
-        }
-
-        @Override
-        public String onCreateBubbleText(int position) {
-            EventFlexibleItem item = getItem(position);
-            return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
-        }
-    }
-
-    private static class EventViewHolder extends FlexibleViewHolder {
-        final TextView topText, bottomText;
-        public ImageView schoolColorImageView;
-
-        public EventViewHolder(View view, FlexibleAdapter adapter) {
-            this(view, adapter, false);
-        }
-
-        public EventViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
-            super(view, adapter, stickyHeader);
-            topText = (TextView) view.findViewById(R.id.text_top);
-            bottomText = (TextView) view.findViewById(R.id.text_bottom);
-            schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
-        }
-    }
-
-    private static class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
-
-        private final Pair<DataSource, VEvent> pair;
-
-        public EventFlexibleItem(Pair<DataSource, VEvent> pair) {
-            this.pair = pair;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return this == o;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public int getLayoutRes() {
-            return R.layout.dateless_event_list_item;
-        }
-
-        @Override
-        public EventViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-            return new EventViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
-        }
-
-        @Override
-        public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
-            //holder.topText.setText(pair.getValue().getSummary().getValue());
-
-            VEvent calendarEvent = pair.getValue();
-            Summary summary = calendarEvent.getSummary();
-            Location location = calendarEvent.getLocation();
-
-            if (summary != null)
-                holder.topText.setText(summary.getValue());
-            else
-                holder.topText.setText(R.string.no_summary);
-
-            if (location != null) {
-                holder.bottomText.setVisibility(View.VISIBLE);
-                holder.bottomText.setText(location.getValue());
-            } else {
-                holder.bottomText.setVisibility(View.GONE);
-                holder.bottomText.setText(R.string.no_location);
-            }
-            holder.schoolColorImageView.setColorFilter(pair.getKey().calendarColor);
-        }
-    }
 }

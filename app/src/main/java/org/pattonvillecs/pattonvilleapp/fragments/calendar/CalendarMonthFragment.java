@@ -37,6 +37,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 
 import java.lang.reflect.Method;

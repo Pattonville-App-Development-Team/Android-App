@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.CalendarEvent;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
