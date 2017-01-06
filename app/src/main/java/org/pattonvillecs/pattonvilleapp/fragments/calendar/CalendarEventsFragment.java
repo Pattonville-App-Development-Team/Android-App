@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -31,6 +30,7 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -149,12 +149,12 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         this.calendarData = calendarData;
         eventAdapter.clear();
         List<EventFlexibleItem> items = Stream.of(calendarData.getCalendars())
-                .flatMap(new Function<Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
+                .flatMap(new Function<Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
-                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> dataSourceMultiValueMapEntry) {
-                        return Stream.of(dataSourceMultiValueMapEntry.getValue().iterator()).map(new Function<Map.Entry<CalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
+                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> dataSourceMultiValueMapEntry) {
+                        return Stream.of(dataSourceMultiValueMapEntry.getValue().iterator()).map(new Function<Map.Entry<SerializableCalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
                             @Override
-                            public Pair<DataSource, VEvent> apply(Map.Entry<CalendarDay, VEvent> calendarDayVEventEntry) {
+                            public Pair<DataSource, VEvent> apply(Map.Entry<SerializableCalendarDay, VEvent> calendarDayVEventEntry) {
                                 return new ImmutablePair<>(dataSourceMultiValueMapEntry.getKey(), calendarDayVEventEntry.getValue());
                             }
                         });

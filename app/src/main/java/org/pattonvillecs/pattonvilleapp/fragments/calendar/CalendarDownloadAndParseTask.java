@@ -25,10 +25,11 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
-import org.apache.commons.collections4.Factory;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SetFactories;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -65,14 +66,9 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
-    private MultiValueMap<CalendarDay, VEvent> parseFile(String iCalFile) {
+    private MultiValueMap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
         Log.e(TAG, "Initial");
-        MultiValueMap<CalendarDay, VEvent> map = MultiValueMap.multiValueMap(new HashMap<CalendarDay, HashSet<VEvent>>(), new Factory<HashSet<VEvent>>() {
-            @Override
-            public HashSet<VEvent> create() {
-                return new HashSet<>();
-            }
-        });
+        MultiValueMap<SerializableCalendarDay, VEvent> map = MultiValueMap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
@@ -103,7 +99,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             Log.e(TAG, "Set built");
             for (VEvent vEvent : vEventSet) {
                 Date vEventDate = vEvent.getStartDate().getDate();
-                map.put(CalendarDay.from(vEventDate), vEvent);
+                map.put(SerializableCalendarDay.of(CalendarDay.from(vEventDate)), vEvent);
             }
             Log.e(TAG, "Map built");
         }
@@ -162,7 +158,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         if (isCancelled())
             return null;
 
-        EnumMap<DataSource, MultiValueMap<CalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
+        EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
         int i = 0;
         for (DataSource dataSource : param) {
             results.put(dataSource, parseFile(downloadMap.get(dataSource)));

@@ -39,6 +39,7 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -122,14 +123,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_today:
-                materialCalendarView.setCurrentDate(CalendarDay.today());
-                try {
-                    Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-                    toCall.setAccessible(true);
-                    toCall.invoke(materialCalendarView, CalendarDay.today(), true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                CalendarDay today = CalendarDay.today();
+                materialCalendarView.setCurrentDate(today);
+                callOnDateClicked(materialCalendarView, today);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -142,7 +138,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
-                singleDayEventAdapter.setCurrentCalendarDay(date, calendarData);
+                singleDayEventAdapter.setCurrentCalendarDay(SerializableCalendarDay.of(date), calendarData);
                 Log.e(TAG, singleDayEventAdapter.getCount() + " events present");
                 //materialCalendarView.invalidateDecorators();
             }
@@ -171,10 +167,11 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 if (calendarData == null)
                     return false;
 
+                SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
-                    if (entry.getValue().containsKey(day)) {
-                        numPresent += entry.getValue().size(day);
+                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(serializableCalendarDay)) {
+                        numPresent += entry.getValue().size(serializableCalendarDay);
                         if (numPresent > 1)
                             return false;
                     }
@@ -198,10 +195,11 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 if (calendarData == null)
                     return false;
 
+                SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
-                    if (entry.getValue().containsKey(day)) {
-                        numPresent += entry.getValue().size(day);
+                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(serializableCalendarDay)) {
+                        numPresent += entry.getValue().size(serializableCalendarDay);
                         if (numPresent > 2)
                             return false;
                     }
@@ -227,10 +225,11 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 if (calendarData == null)
                     return false;
 
+                SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
-                    if (entry.getValue().containsKey(day)) {
-                        numPresent += entry.getValue().size(day);
+                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(serializableCalendarDay)) {
+                        numPresent += entry.getValue().size(serializableCalendarDay);
                         if (numPresent > 3)
                             return false;
                     }
@@ -257,10 +256,11 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 if (calendarData == null)
                     return false;
 
+                SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
-                    if (entry.getValue().containsKey(day)) {
-                        numPresent += entry.getValue().size(day);
+                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                    if (entry.getValue().containsKey(serializableCalendarDay)) {
+                        numPresent += entry.getValue().size(serializableCalendarDay);
                         if (numPresent > 3)
                             return true;
                     }
@@ -334,6 +334,10 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
             dateSelected = CalendarDay.today();
 
         materialCalendarView.setCurrentDate(dateSelected);
+        callOnDateClicked(materialCalendarView, dateSelected);
+    }
+
+    private void callOnDateClicked(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
         try {
             Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
             toCall.setAccessible(true);
