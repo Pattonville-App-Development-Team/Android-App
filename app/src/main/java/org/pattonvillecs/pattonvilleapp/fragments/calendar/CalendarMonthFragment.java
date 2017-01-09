@@ -337,7 +337,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         try {
             Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
             toCall.setAccessible(true);
-            toCall.invoke(materialCalendarView, dateSelected, true);
+            toCall.invoke(materialCalendarView, calendarDay, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
