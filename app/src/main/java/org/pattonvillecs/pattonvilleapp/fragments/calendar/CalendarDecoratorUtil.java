@@ -18,12 +18,12 @@ import android.util.TypedValue;
  */
 
 public class CalendarDecoratorUtil {
-    static StateListDrawable generateBackground(int color, int fadeTime, Rect bounds) {
+    static StateListDrawable generateBackground(int color) {
         StateListDrawable drawable = new StateListDrawable();
-        drawable.setExitFadeDuration(fadeTime);
+        drawable.setExitFadeDuration(0);
         drawable.addState(new int[]{android.R.attr.state_checked}, generateCircleDrawable(color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable.addState(new int[]{android.R.attr.state_pressed}, generateRippleDrawable(color, bounds));
+            drawable.addState(new int[]{android.R.attr.state_pressed}, generateRippleDrawable(color, drawable.copyBounds()));
         } else {
             drawable.addState(new int[]{android.R.attr.state_pressed}, generateCircleDrawable(color));
         }

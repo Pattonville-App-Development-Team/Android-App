@@ -3,7 +3,6 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -134,7 +133,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         }
     }
 
-    private void setUpMaterialCalendarView(FixedMaterialCalendarView materialCalendarView) {
+    private void setUpMaterialCalendarView(final FixedMaterialCalendarView materialCalendarView) {
         materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -181,7 +180,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
             @Override
             public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
                 view.setSelectionDrawable(stateListDrawable);
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
@@ -209,7 +208,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
             @Override
             public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
                 view.setSelectionDrawable(stateListDrawable);
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
@@ -239,7 +238,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
             @Override
             public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
                 view.setSelectionDrawable(stateListDrawable);
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
@@ -270,7 +269,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
             @Override
             public void decorate(DayViewFacade view) {
-                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY, getContext().getResources().getInteger(android.R.integer.config_shortAnimTime), new Rect());
+                StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
                 view.setSelectionDrawable(stateListDrawable);
 
                 //materialCalendarView.getChildAt(1).getWidth() / 7f / 10f
