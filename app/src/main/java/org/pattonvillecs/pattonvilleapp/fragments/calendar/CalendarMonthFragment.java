@@ -1,8 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
-import android.animation.LayoutTransition;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -10,6 +8,9 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,9 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -37,12 +36,15 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 
@@ -55,9 +57,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
     public static final String TAG = "CalendarMonthFragment";
     private FixedMaterialCalendarView materialCalendarView;
-    private ListView currentDayEventsListView;
+    private RecyclerView eventRecyclerView;
     private CalendarDay dateSelected;
-    private SingleDayEventAdapter singleDayEventAdapter;
+    private EventAdapter eventAdapter;
     private CalendarFragment calendarFragment;
     private CalendarData calendarData = new CalendarData();
 
@@ -138,9 +140,8 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
-                singleDayEventAdapter.setCurrentCalendarDay(SerializableCalendarDay.of(date), calendarData);
-                Log.e(TAG, singleDayEventAdapter.getCount() + " events present");
-                //materialCalendarView.invalidateDecorators();
+                eventAdapter.clear();
+                eventAdapter.addItems(0, calendarData.getItemsForDay(date));
             }
         });
 
@@ -288,25 +289,21 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         // Inflate the layout for this fragment
         LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
+        //rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        //rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
         materialCalendarView = (FixedMaterialCalendarView) rootLinearLayout.findViewById(R.id.calendar_calendar);
         setUpMaterialCalendarView(materialCalendarView);
 
-        currentDayEventsListView = (ListView) rootLinearLayout.findViewById(R.id.list_view_calendar);
-        currentDayEventsListView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        singleDayEventAdapter = new SingleDayEventAdapter(getContext());
-        currentDayEventsListView.setAdapter(singleDayEventAdapter);
+        eventRecyclerView = (RecyclerView) rootLinearLayout.findViewById(R.id.event_recycler_view);
+        eventAdapter = new EventAdapter();
+        eventRecyclerView.setAdapter(eventAdapter);
+        eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        currentDayEventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                @SuppressWarnings("unchecked")
-                VEvent calendarVEvent = ((Pair<DataSource, VEvent>) parent.getAdapter().getItem(position)).getValue();
-                CalendarMonthFragment.this.startActivity(new Intent(getContext(), CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
-            }
-        });
+        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getContext()));
+
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
 
