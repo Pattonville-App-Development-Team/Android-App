@@ -15,14 +15,12 @@
         app:mcv_dateTextAppearance="@style/PSD.Calendar.Date"
         app:mcv_showOtherDates="other_months|decorated_disabled" />
 
-    <ListView
-        android:id="@+id/list_view_calendar"
+    <include
+        layout="@layout/calendar_event_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_weight="1"
-        android:animateLayoutChanges="true"
-        android:minWidth="300dp"
-        tools:listitem="@layout/dateless_event_list_item" />
+        android:minWidth="300dp" />
 
 </LinearLayout>
