@@ -3,11 +3,19 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
+
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,6 +23,10 @@ import org.pattonvillecs.pattonvilleapp.R;
  * create an instance of this fragment.
  */
 public class CalendarPinnedFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private EventAdapter eventAdapter;
+    private TextView noItemsTextView;
 
     public CalendarPinnedFragment() {
         // Required empty public constructor
@@ -38,10 +50,24 @@ public class CalendarPinnedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar_pinned, container, false);
+        FrameLayout layout = (FrameLayout) inflater.inflate(R.layout.fragment_calendar_pinned, container, false);
+
+
+        recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
+
+        eventAdapter = new EventAdapter();
+
+        recyclerView.setAdapter(eventAdapter);
+        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
+
+        return layout;
     }
 
 }

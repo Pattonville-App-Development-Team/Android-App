@@ -131,10 +131,10 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
 
-        eventAdapter.setFastScroller((FastScroller) layout.findViewById(R.id.fast_scroller), Utils.fetchAccentColor(getContext(), Color.RED));
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
+
+        eventAdapter.setFastScroller((FastScroller) layout.findViewById(R.id.fast_scroller), Utils.fetchAccentColor(getContext(), Color.RED));
 
         noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
 
