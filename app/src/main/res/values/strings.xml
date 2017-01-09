@@ -40,6 +40,7 @@
 
     <string name="directory_detail_school_name">School Name Here…</string>
     <string name="directory_school_image">School Image Here</string>
+    <string name="directory_school_websiteURL">Website</string>
     <string name="directory_info_unavaiable">N/A</string>
 
     <string name="package_name_powerschool">com.powerschool.portal</string>

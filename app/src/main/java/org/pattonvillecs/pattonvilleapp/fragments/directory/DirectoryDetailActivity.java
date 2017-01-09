@@ -53,6 +53,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         else
             schoolFax.setText(R.string.directory_info_unavaiable);
 
+        TextView schoolWebsiteURL = (TextView) findViewById(R.id.directory_websiteURL_textView);
 
         ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
 
