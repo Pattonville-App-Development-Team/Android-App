@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
 
@@ -17,13 +16,11 @@
         app:mcv_dateTextAppearance="@style/PSD.Calendar.Date"
         app:mcv_showOtherDates="other_months|decorated_disabled" />
 
-    <ListView
-        android:id="@+id/list_view_calendar"
+    <include
+        layout="@layout/calendar_event_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.3"
-        android:animateLayoutChanges="true"
-        android:minHeight="150dp"
-        tools:listitem="@layout/dateless_event_list_item" />
+        android:minHeight="150dp" />
 
 </LinearLayout>

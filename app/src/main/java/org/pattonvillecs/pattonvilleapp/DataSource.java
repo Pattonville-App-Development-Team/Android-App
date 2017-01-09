@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+@SuppressWarnings("RedundantTypeArguments")
 public enum DataSource {
     DISTRICT("Pattonville School District", "District", 0, true, false, false, false, false,
             "11097 St. Charles Rock Road, St. Ann, MO 63074",
@@ -45,7 +46,7 @@ public enum DataSource {
             "http://drummond.psdr3.org/ical/Holman.ics",
             Color.parseColor("#FF8C00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94975")),
-    REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remingon", 4, true, true, false, true, true,
+    REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington", 4, true, true, false, true, true,
             "102 Fee Fee Rd, Maryland Heights, MO 63043",
             "(314) 213-8016",
             Optional.of("(314) 213-8116"),
@@ -61,7 +62,7 @@ public enum DataSource {
             "http://drummond.psdr3.org/ical/Bridgeway.ics",
             Color.parseColor("#EE82EE"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94979")),
-    DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drumond", 6, true, true, false, false, true,
+    DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond", 6, true, true, false, false, true,
             "3721 St. Bridget Lane, St Ann, MO 63074",
             "(314) 213-8419",
             Optional.of("(314) 213-8519"),
