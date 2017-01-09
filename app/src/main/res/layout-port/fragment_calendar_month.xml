@@ -11,7 +11,7 @@
         android:id="@+id/calendar_calendar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.75"
+        android:layout_weight="0.7"
         app:mcv_dateTextAppearance="@style/PSD.Calendar.Date"
         app:mcv_showOtherDates="other_months|decorated_disabled" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/list_view_calendar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.25"
+        android:layout_weight="0.3"
         android:animateLayoutChanges="true"
         android:minHeight="150dp"
         tools:listitem="@layout/dateless_event_list_item" />
