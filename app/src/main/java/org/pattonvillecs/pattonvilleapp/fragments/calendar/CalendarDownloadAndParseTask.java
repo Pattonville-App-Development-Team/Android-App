@@ -159,9 +159,11 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
 
         File calendarDataCache = new File(calendarFragment.getActivity().getCacheDir(), FILENAME);
         if (calendarDataCache.exists()
-                && TimeUnit.MILLISECONDS.convert(System.currentTimeMillis() - calendarDataCache.lastModified(), TimeUnit.HOURS) < 48 //Time before cache refresh
+                && TimeUnit.HOURS.convert(System.currentTimeMillis() - calendarDataCache.lastModified(), TimeUnit.MILLISECONDS) < 48 //Time before cache refresh
                 ) {
-            Log.i(TAG, "Loading serialized calendar cache, " + (calendarDataCache.length() / 1024) + " KB");
+            Log.i(TAG, "Loading serialized calendar cache, " + (calendarDataCache.length() / 1024) + " KB, " + (System.currentTimeMillis() - calendarDataCache.lastModified()) + "ms old");
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
             //A cache exists
             ObjectInputStream inputStream = null;
             FileInputStream fileInputStream = null;
@@ -193,7 +195,8 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                     }
                 }
             }
-            Log.i(TAG, "Loaded calendar data");
+            stopWatch.stop();
+            Log.i(TAG, "Loaded calendar data in " + stopWatch.getTime() + "ms");
         } else {
             Log.i(TAG, "Calendar cache does not exist or is expired, redownloading");
         }
