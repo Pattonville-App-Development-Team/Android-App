@@ -109,7 +109,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         final int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
         final int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        Log.e("MCV", "onMeasure called " + specWidthSize + " " + specHeightSize);
+        Log.i("MCV", "onMeasure called " + specWidthSize + " " + specHeightSize);
 
         //We need to disregard padding for a while. This will be added back later
         final int desiredWidth = specWidthSize - getPaddingLeft() - getPaddingRight();

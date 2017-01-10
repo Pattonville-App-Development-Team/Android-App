@@ -33,7 +33,7 @@ public class ResourceFragment extends Fragment {
     public static ResourceFragment retrieveResourceFragment(FragmentManager fragmentManager) {
         ResourceFragment resourceFragment = (ResourceFragment) fragmentManager.findFragmentByTag(ResourceFragment.FRAGMENT_TAG);
         if (resourceFragment == null) {
-            Log.e(TAG, "ResourceFragment null, recreating...");
+            Log.i(TAG, "ResourceFragment null, recreating...");
             resourceFragment = new ResourceFragment();
             fragmentManager.beginTransaction().add(resourceFragment, ResourceFragment.FRAGMENT_TAG).commitNow();
         }
@@ -48,7 +48,7 @@ public class ResourceFragment extends Fragment {
 
         setRetainInstance(true);
 
-        Log.e(TAG, "Finished onCreate");
+        Log.i(TAG, "Finished onCreate");
     }
 
     @Override

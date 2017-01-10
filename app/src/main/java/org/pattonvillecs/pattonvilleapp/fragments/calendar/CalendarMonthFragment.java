@@ -74,7 +74,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static CalendarMonthFragment newInstance() {
-        Log.e(TAG, "New instance created...");
+        Log.i(TAG, "New instance created...");
         return new CalendarMonthFragment();
     }
 
@@ -284,7 +284,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView called");
+        Log.i(TAG, "onCreateView called");
         // Inflate the layout for this fragment
         LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
 

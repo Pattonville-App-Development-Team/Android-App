@@ -68,8 +68,8 @@ public final class SpotlightHelper {
              */
             @Override
             public void onViewAttachedToWindow(View v) {
-                Log.e(TAG, "onAttach of " + builder);
-                Log.e(TAG, "BuilderQueue: " + builders);
+                Log.d(TAG, "onAttach of " + builder);
+                Log.d(TAG, "BuilderQueue: " + builders);
             }
 
             /**
@@ -81,14 +81,14 @@ public final class SpotlightHelper {
             public void onViewDetachedFromWindow(View v) {
                 //Used to cut down on virtual method calls
                 LinkedList<SpotlightView.Builder> tempBuilders = builders;
-                Log.e(TAG, "onDetach of " + builder);
-                Log.e(TAG, "ToPop: " + tempBuilders);
+                Log.d(TAG, "onDetach of " + builder);
+                Log.i(TAG, "ToPop: " + tempBuilders);
                 //Try to remove it
                 boolean wasPresent = tempBuilders.remove(builder);
                 //Has this builder already been popped (shown)?
                 if (!wasPresent)
                     spotlightCurrentlyOpen = false;
-                Log.e(TAG, "PostPop: " + tempBuilders);
+                Log.i(TAG, "PostPop: " + tempBuilders);
             }
         };
 

@@ -79,7 +79,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     private void goToCurrentDay() {
         int mostRecentEventPosition = 0;
         Date today = new Date();
-        Log.e(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
+        Log.i(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
             Date eventDate = eventAdapter.getItem(i).pair.getValue().getStartDate().getDate();

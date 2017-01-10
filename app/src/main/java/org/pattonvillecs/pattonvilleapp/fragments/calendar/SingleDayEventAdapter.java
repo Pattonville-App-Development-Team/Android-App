@@ -44,7 +44,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
     }
 
     public void setCurrentCalendarDay(SerializableCalendarDay newCalendarDay, CalendarData calendarData) {
-        Log.e(TAG, "Setting current calendar day " + newCalendarDay);
+        Log.i(TAG, "Setting current calendar day " + newCalendarDay);
         calendarEvents.clear();
         for (final Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
             final Collection<VEvent> events = entry.getValue().getCollection(newCalendarDay);

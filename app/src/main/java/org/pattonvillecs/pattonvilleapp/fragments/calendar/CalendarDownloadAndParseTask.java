@@ -74,12 +74,12 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     }
 
     private MultiValueMap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
-        Log.e(TAG, "Initial");
+        Log.d(TAG, "Initial");
         MultiValueMap<SerializableCalendarDay, VEvent> map = MultiValueMap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
-        Log.e(TAG, "Readers done");
+        Log.d(TAG, "Readers done");
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         try {
@@ -89,8 +89,8 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             e.printStackTrace();
         }
         stopWatch.stop();
-        Log.e(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
-        Log.e(TAG, Runtime.getRuntime().availableProcessors() + " possible simultanious tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
+        Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
+        Log.d(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
         if (calendar != null) {
             Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
                 @Override
@@ -103,12 +103,12 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                     return (VEvent) value;
                 }
             }).collect(Collectors.<VEvent>toSet());
-            Log.e(TAG, "Set built");
+            Log.d(TAG, "Set built");
             for (VEvent vEvent : vEventSet) {
                 Date vEventDate = vEvent.getStartDate().getDate();
                 map.put(SerializableCalendarDay.of(CalendarDay.from(vEventDate)), vEvent);
             }
-            Log.e(TAG, "Map built");
+            Log.d(TAG, "Map built");
         }
         return map;
     }
@@ -116,7 +116,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.e(TAG, "OnPreExecute called");
+        Log.d(TAG, "OnPreExecute called");
         calendarFragment.showProgressBar();
         calendarFragment.getProgressBar().setIndeterminate(false);
         calendarFragment.getProgressBar().setMax(100);
@@ -125,7 +125,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     @Override
     protected void onProgressUpdate(Double... values) {
         super.onProgressUpdate(values);
-        Log.e(TAG, "OnProgressUpdate called: " + (float) (100 * values[0]) + "%");
+        Log.d(TAG, "OnProgressUpdate called: " + (float) (100 * values[0]) + "%");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             calendarFragment.getProgressBar().setProgress((int) (100 * values[0]), true);
@@ -137,7 +137,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     @Override
     protected void onPostExecute(CalendarData calendarData) {
         super.onPostExecute(calendarData);
-        Log.e(TAG, "OnPostExecute called");
+        Log.d(TAG, "OnPostExecute called");
         calendarFragment.setCalendarData(calendarData);
         calendarFragment.hideProgressBar();
     }
@@ -145,7 +145,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     @Override
     protected void onCancelled(CalendarData calendarData) {
         super.onCancelled(calendarData);
-        Log.e(TAG, "OnCancelled called");
+        Log.d(TAG, "OnCancelled called");
         calendarFragment.hideProgressBar();
     }
 
@@ -264,20 +264,20 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         for (DataSource dataSource : dataSources) {
             Cache.Entry entry = cache.get(dataSource.calendarURL);
             if (entry != null)
-                Log.e(TAG, "Cache of " + dataSource.name + " isExpired: " + entry.isExpired() + " refreshNeeded: " + entry.refreshNeeded() + " responseHeaders: " + entry.responseHeaders);
+                Log.d(TAG, "Cache of " + dataSource.name + " isExpired: " + entry.isExpired() + " refreshNeeded: " + entry.refreshNeeded() + " responseHeaders: " + entry.responseHeaders);
             if (entry != null && !entry.isExpired()) { //No download needed
                 results.put(dataSource, new String(entry.data));
-                Log.e(TAG, "Cached " + dataSource.name);
+                Log.d(TAG, "Cached " + dataSource.name);
             } else { //Needs to be downloaded
                 if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) { //Hope for download
                     RequestFuture<String> future = RequestFuture.newFuture();
                     StringRequest request = new StringRequest(dataSource.calendarURL, future, future);
                     requestQueue.add(request);
                     requests.put(dataSource, future);
-                    Log.e(TAG, "Downloading " + dataSource.name);
+                    Log.d(TAG, "Downloading " + dataSource.name);
                 } else if (entry != null) { //No hope for download; if cached but out of date, use instead
                     results.put(dataSource, new String(entry.data));
-                    Log.e(TAG, "Using old cache due to no Internet connection for " + dataSource.name);
+                    Log.i(TAG, "Using old cache due to no Internet connection for " + dataSource.name);
                 }
             }
         }
@@ -288,7 +288,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             if (result != null)
                 results.put(entry.getKey(), result);
             else
-                Log.e(TAG, "Result was null for " + entry.getKey().name);
+                Log.i(TAG, "Result was null for " + entry.getKey().name);
             if (isCancelled())
                 return results;
             publishProgress((double) (i++ + 1) / dataSources.size());

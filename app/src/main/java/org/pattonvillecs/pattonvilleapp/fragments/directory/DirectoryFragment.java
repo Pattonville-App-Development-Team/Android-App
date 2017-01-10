@@ -108,7 +108,7 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
         intent.putExtra("School", schools.get(position));
 
-        Log.e("DIRECTORY", "WE GOT HERE :)");
+        Log.d("DIRECTORY", "WE GOT HERE :)");
         startActivity(intent);
         //how does this interact with the DataSource class?
     }
