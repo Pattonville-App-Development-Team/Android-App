@@ -31,7 +31,12 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SetFactories;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -39,6 +44,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Mitchell on 12/24/2016.
@@ -51,6 +57,7 @@ import java.util.concurrent.ExecutionException;
 public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Double, CalendarData> {
 
     private static final String TAG = "CalendarDPTask";
+    private static final String FILENAME = "calendar_data.bin";
     private final CalendarFragment calendarFragment;
     private final RequestQueue requestQueue;
     private final NetworkInfo activeNetwork;
@@ -148,7 +155,56 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         if (params.length != 1)
             throw new IllegalStateException("Only one parameter expected!");
         Set<DataSource> param = params[0];
+        EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
 
+        File calendarDataCache = new File(calendarFragment.getActivity().getCacheDir(), FILENAME);
+        if (calendarDataCache.exists()
+                && TimeUnit.MILLISECONDS.convert(System.currentTimeMillis() - calendarDataCache.lastModified(), TimeUnit.HOURS) < 48 //Time before cache refresh
+                ) {
+            Log.i(TAG, "Loading serialized calendar cache, " + (calendarDataCache.length() / 1024) + " KB");
+            //A cache exists
+            ObjectInputStream inputStream = null;
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(calendarDataCache);
+                inputStream = new ObjectInputStream(fileInputStream);
+                CalendarData cachedCalendarData = (CalendarData) inputStream.readObject();
+
+                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : cachedCalendarData.getCalendars().entrySet())
+                    if (param.contains(entry.getKey()))
+                        results.put(entry.getKey(), entry.getValue());
+
+            } catch (IOException | ClassNotFoundException e) {
+                //Proceed to the download if failure
+                e.printStackTrace();
+            } finally { //Prevent any resource leaks
+                if (fileInputStream != null) {
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            Log.i(TAG, "Loaded calendar data");
+        } else {
+            Log.i(TAG, "Calendar cache does not exist or is expired, redownloading");
+        }
+
+        //Remove duplicate DataSources
+        int initialParamSize = param.size(); //Keep the initial value to start the progress bar from
+        for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : results.entrySet())
+            param.remove(entry.getKey());
+        int removed = initialParamSize - param.size(); //How many were reused
+
+        //The data that is not cached
         Map<DataSource, String> downloadMap = new EnumMap<>(DataSource.class);
         try {
             downloadMap = downloadFiles(param);
@@ -158,17 +214,45 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         if (isCancelled())
             return null;
 
-        EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
-        int i = 0;
+        int i = removed; //Start mid-way through downloads
         for (DataSource dataSource : param) {
             results.put(dataSource, parseFile(downloadMap.get(dataSource)));
-            publishProgress((double) (i++ + 1) / param.size());
+            publishProgress((double) (i++ + 1) / initialParamSize);
 
-            //Break early
+            //Break early if cancelled
             if (isCancelled())
                 return new CalendarData(results);
         }
-        return new CalendarData(results);
+        CalendarData calendarData = new CalendarData(results);
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(calendarDataCache);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(calendarData);
+
+            if (!calendarDataCache.setLastModified(System.currentTimeMillis()))
+                Log.e(TAG, "Failed to set last modified time!");
+        } catch (IOException e) {
+            Log.e(TAG, "Error writing file!!");
+            e.printStackTrace();
+        } finally { //Prevent any resource leaks
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (objectOutputStream != null) {
+                try {
+                    objectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return calendarData;
     }
 
     private Map<DataSource, String> downloadFiles(Set<DataSource> dataSources) throws ExecutionException, InterruptedException {

@@ -13,6 +13,7 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.Map;
  * Created by Mitchell on 12/24/2016.
  */
 
-public class CalendarData implements Parcelable {
+public class CalendarData implements Parcelable, Serializable {
     public static final Creator<CalendarData> CREATOR = new Creator<CalendarData>() {
         @Override
         public CalendarData createFromParcel(Parcel in) {
