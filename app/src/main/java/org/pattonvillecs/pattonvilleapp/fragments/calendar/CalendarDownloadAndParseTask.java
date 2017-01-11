@@ -15,15 +15,55 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Predicate;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.NumberList;
+import net.fortuna.ical4j.model.ParameterFactoryImpl;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.PropertyFactoryImpl;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.property.Categories;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.validate.EmptyValidator;
+import net.fortuna.ical4j.validate.component.VEventAddValidator;
+import net.fortuna.ical4j.validate.component.VEventCancelValidator;
+import net.fortuna.ical4j.validate.component.VEventCounterValidator;
+import net.fortuna.ical4j.validate.component.VEventDeclineCounterValidator;
+import net.fortuna.ical4j.validate.component.VEventPublishValidator;
+import net.fortuna.ical4j.validate.component.VEventRefreshValidator;
+import net.fortuna.ical4j.validate.component.VEventReplyValidator;
+import net.fortuna.ical4j.validate.component.VEventRequestValidator;
 
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.time.StopWatch;
@@ -33,18 +73,22 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SetFactories;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.StringReader;
+import java.net.URI;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import de.javakaffee.kryoserializers.EnumMapSerializer;
 
 /**
  * Created by Mitchell on 12/24/2016.
@@ -61,12 +105,69 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     private final CalendarFragment calendarFragment;
     private final RequestQueue requestQueue;
     private final NetworkInfo activeNetwork;
+    private final Kryo kryo;
 
     public CalendarDownloadAndParseTask(CalendarFragment calendarFragment, RequestQueue requestQueue) {
         this.calendarFragment = calendarFragment;
         this.requestQueue = requestQueue;
         ConnectivityManager cm = (ConnectivityManager) calendarFragment.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetwork = cm.getActiveNetworkInfo();
+        this.kryo = new Kryo();
+        this.kryo.setRegistrationRequired(true);
+
+        registerKryoClasses(this.kryo);
+    }
+
+    private static void registerKryoClasses(Kryo kryo) {
+        kryo.register(CalendarData.class);
+        kryo.register(EnumMap.class, new EnumMapSerializer());
+        kryo.register(DataSource.class);
+        kryo.register(MultiValueMap.class);
+        kryo.register(SerializableCalendarDay.class);
+        kryo.register(CalendarDay.class);
+        kryo.register(HashSet.class);
+        kryo.register(VEvent.class);
+        kryo.register(ComponentList.class);
+        kryo.register(HashMap.class);
+        kryo.register(Method.ADD.getClass());
+        kryo.register(PropertyFactoryImpl.class);
+        kryo.register(ParameterList.class);
+        kryo.register(Collections.EMPTY_LIST.getClass());
+        kryo.register(EmptyValidator.class);
+        kryo.register(VEventRequestValidator.class);
+        kryo.register(VEventReplyValidator.class);
+        kryo.register(VEventCounterValidator.class);
+        kryo.register(VEventDeclineCounterValidator.class);
+        kryo.register(VEventPublishValidator.class);
+        kryo.register(VEventAddValidator.class);
+        kryo.register(VEventCancelValidator.class);
+        kryo.register(VEventRefreshValidator.class);
+        kryo.register(PropertyList.class);
+        kryo.register(LastModified.class);
+        kryo.register(DateTime.class);
+        kryo.register(CopyOnWriteArrayList.class);
+        kryo.register(Value.class);
+        kryo.register(ParameterFactoryImpl.class);
+        kryo.register(DtStart.class);
+        kryo.register(Duration.class);
+        kryo.register(Dur.class);
+        kryo.register(Organizer.class);
+        kryo.register(URI.class);
+        kryo.register(Cn.class);
+        kryo.register(Summary.class);
+        kryo.register(Location.class);
+        kryo.register(Transp.TRANSPARENT.getClass());
+        kryo.register(Uid.class);
+        kryo.register(Categories.class);
+        kryo.register(TextList.class);
+        kryo.register(Description.class);
+        kryo.register(Url.class);
+        kryo.register(RRule.class);
+        kryo.register(Recur.class);
+        kryo.register(WeekDayList.class);
+        kryo.register(NumberList.class);
+        kryo.register(WeekDay.Day.class);
+        kryo.register(WeekDay.class);
     }
 
     private static String fixICalStrings(String iCalString) {
@@ -165,31 +266,40 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             //A cache exists
-            ObjectInputStream inputStream = null;
             FileInputStream fileInputStream = null;
+            Input input = null;
             try {
                 fileInputStream = new FileInputStream(calendarDataCache);
-                inputStream = new ObjectInputStream(fileInputStream);
-                CalendarData cachedCalendarData = (CalendarData) inputStream.readObject();
+                input = new Input(fileInputStream);
+                CalendarData cachedCalendarData = kryo.readObject(input, CalendarData.class);
 
                 for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : cachedCalendarData.getCalendars().entrySet())
                     if (param.contains(entry.getKey()))
                         results.put(entry.getKey(), entry.getValue());
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 //Proceed to the download if failure
                 e.printStackTrace();
+            } catch (KryoException | IndexOutOfBoundsException e) {
+                //If Kryo can't load the file
+                if (calendarDataCache.delete()) {
+                    Log.d(TAG, "Corrupted cache file deleted");
+                    e.printStackTrace();
+                } else {
+                    Log.d(TAG, "Failed to delete corrupt cache!");
+                    e.printStackTrace();
+                }
             } finally { //Prevent any resource leaks
-                if (fileInputStream != null) {
+                if (input != null) {
                     try {
-                        fileInputStream.close();
-                    } catch (IOException e) {
+                        input.close();
+                    } catch (KryoException e) {
                         e.printStackTrace();
                     }
                 }
-                if (inputStream != null) {
+                if (fileInputStream != null) {
                     try {
-                        inputStream.close();
+                        fileInputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -228,11 +338,11 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         }
         CalendarData calendarData = new CalendarData(results);
         FileOutputStream fileOutputStream = null;
-        ObjectOutputStream objectOutputStream = null;
+        Output output = null;
         try {
             fileOutputStream = new FileOutputStream(calendarDataCache);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(calendarData);
+            output = new Output(fileOutputStream);
+            kryo.writeObject(output, calendarData);
 
             if (!calendarDataCache.setLastModified(System.currentTimeMillis()))
                 Log.e(TAG, "Failed to set last modified time!");
@@ -240,16 +350,16 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             Log.e(TAG, "Error writing file!!");
             e.printStackTrace();
         } finally { //Prevent any resource leaks
-            if (fileOutputStream != null) {
+            if (output != null) {
                 try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
+                    output.close();
+                } catch (KryoException e) {
                     e.printStackTrace();
                 }
             }
-            if (objectOutputStream != null) {
+            if (fileOutputStream != null) {
                 try {
-                    objectOutputStream.close();
+                    fileOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
