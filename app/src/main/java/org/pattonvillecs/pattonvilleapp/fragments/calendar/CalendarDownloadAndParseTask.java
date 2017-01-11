@@ -19,6 +19,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -129,7 +130,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(VEvent.class);
         kryo.register(ComponentList.class);
         kryo.register(HashMap.class);
-        kryo.register(Method.ADD.getClass());
+        kryo.register(Method.ADD.getClass(), new JavaSerializer());
         kryo.register(PropertyFactoryImpl.class);
         kryo.register(ParameterList.class);
         kryo.register(Collections.EMPTY_LIST.getClass());
@@ -146,17 +147,17 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(LastModified.class);
         kryo.register(DateTime.class);
         kryo.register(CopyOnWriteArrayList.class);
-        kryo.register(Value.class);
+        kryo.register(Value.class, new JavaSerializer());
         kryo.register(ParameterFactoryImpl.class);
         kryo.register(DtStart.class);
         kryo.register(Duration.class);
-        kryo.register(Dur.class);
+        kryo.register(Dur.class, new JavaSerializer());
         kryo.register(Organizer.class);
         kryo.register(URI.class);
-        kryo.register(Cn.class);
+        kryo.register(Cn.class, new JavaSerializer());
         kryo.register(Summary.class);
         kryo.register(Location.class);
-        kryo.register(Transp.TRANSPARENT.getClass());
+        kryo.register(Transp.TRANSPARENT.getClass(), new JavaSerializer());
         kryo.register(Uid.class);
         kryo.register(Categories.class);
         kryo.register(TextList.class);
@@ -167,7 +168,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(WeekDayList.class);
         kryo.register(NumberList.class);
         kryo.register(WeekDay.Day.class);
-        kryo.register(WeekDay.class);
+        kryo.register(WeekDay.class, new JavaSerializer());
     }
 
     private static String fixICalStrings(String iCalString) {
