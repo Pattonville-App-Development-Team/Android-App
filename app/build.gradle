@@ -78,6 +78,10 @@ dependencies {
     //App settings
     compile 'com.github.paolorotolo:appintro:4.1.0'
 
+    //Serialization
+    compile 'com.esotericsoftware:kryo:3.0.3'
+    compile 'de.javakaffee:kryo-serializers:0.41'
+
     testCompile 'junit:junit:4.12'
 }
 

@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
+import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -29,7 +30,6 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -169,9 +169,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
-                        numPresent += entry.getValue().size(serializableCalendarDay);
+                        numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 1)
                             return false;
                     }
@@ -197,9 +197,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
-                        numPresent += entry.getValue().size(serializableCalendarDay);
+                        numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 2)
                             return false;
                     }
@@ -227,9 +227,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
-                        numPresent += entry.getValue().size(serializableCalendarDay);
+                        numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 3)
                             return false;
                     }
@@ -258,9 +258,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
-                        numPresent += entry.getValue().size(serializableCalendarDay);
+                        numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 3)
                             return true;
                     }

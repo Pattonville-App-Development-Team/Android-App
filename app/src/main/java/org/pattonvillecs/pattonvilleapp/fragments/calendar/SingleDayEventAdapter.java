@@ -12,12 +12,12 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
+import com.google.common.collect.HashMultimap;
 
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 
-import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -46,8 +46,8 @@ public class SingleDayEventAdapter extends BaseAdapter {
     public void setCurrentCalendarDay(SerializableCalendarDay newCalendarDay, CalendarData calendarData) {
         Log.i(TAG, "Setting current calendar day " + newCalendarDay);
         calendarEvents.clear();
-        for (final Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
-            final Collection<VEvent> events = entry.getValue().getCollection(newCalendarDay);
+        for (final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
+            final Collection<VEvent> events = entry.getValue().get(newCalendarDay);
             if (events != null)
                 calendarEvents.addAll(
                         Stream.of(events)
