@@ -20,6 +20,7 @@ import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.CollectionSerializer;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterators;
@@ -130,7 +131,19 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
         kryo.register(SerializableCalendarDay.class);
-        kryo.register(CalendarDay.class);
+        kryo.register(CalendarDay.class, new Serializer<CalendarDay>() {
+            @Override
+            public void write(Kryo kryo, Output output, CalendarDay object) {
+                kryo.writeObject(output, object.getYear());
+                kryo.writeObject(output, object.getMonth());
+                kryo.writeObject(output, object.getDay());
+            }
+
+            @Override
+            public CalendarDay read(Kryo kryo, Input input, Class<CalendarDay> type) {
+                return CalendarDay.from(kryo.readObject(input, int.class), kryo.readObject(input, int.class), kryo.readObject(input, int.class));
+            }
+        });
         kryo.register(HashSet.class);
         kryo.register(VEvent.class, new Serializer<VEvent>() {
             @Override
@@ -190,9 +203,30 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(VEventAddValidator.class);
         kryo.register(VEventCancelValidator.class);
         kryo.register(VEventRefreshValidator.class);
-        kryo.register(PropertyList.class);
-        kryo.register(LastModified.class);
-        kryo.register(DateTime.class);
+        kryo.register(PropertyList.class, new CollectionSerializer());
+        kryo.register(LastModified.class, new Serializer<LastModified>() {
+            @Override
+            public void write(Kryo kryo, Output output, LastModified object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getDateTime());
+            }
+
+            @Override
+            public LastModified read(Kryo kryo, Input input, Class<LastModified> type) {
+                return new LastModified(kryo.readObject(input, ParameterList.class), kryo.readObject(input, DateTime.class));
+            }
+        });
+        kryo.register(DateTime.class, new Serializer<DateTime>() {
+            @Override
+            public void write(Kryo kryo, Output output, DateTime object) {
+                kryo.writeObject(output, object.getTime());
+            }
+
+            @Override
+            public DateTime read(Kryo kryo, Input input, Class<DateTime> type) {
+                return new DateTime(kryo.readObject(input, long.class));
+            }
+        });
         kryo.register(CopyOnWriteArrayList.class);
         kryo.register(Value.class, new Serializer<Value>() {
             @Override
@@ -206,8 +240,30 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             }
         });
         kryo.register(ParameterFactoryImpl.class);
-        kryo.register(DtStart.class);
-        kryo.register(Duration.class);
+        kryo.register(DtStart.class, new Serializer<DtStart>() {
+            @Override
+            public void write(Kryo kryo, Output output, DtStart object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getDate());
+            }
+
+            @Override
+            public DtStart read(Kryo kryo, Input input, Class<DtStart> type) {
+                return new DtStart(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
+            }
+        });
+        kryo.register(Duration.class, new Serializer<Duration>() {
+            @Override
+            public void write(Kryo kryo, Output output, Duration object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getDuration());
+            }
+
+            @Override
+            public Duration read(Kryo kryo, Input input, Class<Duration> type) {
+                return new Duration(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Dur.class));
+            }
+        });
         kryo.register(Dur.class, new Serializer<Dur>() {
             @Override
             public void write(Kryo kryo, Output output, Dur object) {
@@ -318,9 +374,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(TextList.class, new Serializer<TextList>() {
             @Override
             public void write(Kryo kryo, Output output, TextList object) {
-                ArrayList<String> contents = new ArrayList<>(object.size());
-                Iterators.addAll(contents, object.iterator());
-                kryo.writeObject(output, contents.toArray(new String[contents.size()]));
+                kryo.writeObject(output, Iterators.toArray(object.iterator(), String.class));
             }
 
             @Override
@@ -353,11 +407,22 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 return new Url(kryo.readObject(input, ParameterList.class), kryo.readObject(input, URI.class));
             }
         });
-        kryo.register(RRule.class);
+        kryo.register(RRule.class, new Serializer<RRule>() {
+            @Override
+            public void write(Kryo kryo, Output output, RRule object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getRecur());
+            }
+
+            @Override
+            public RRule read(Kryo kryo, Input input, Class<RRule> type) {
+                return new RRule(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Recur.class));
+            }
+        });
         kryo.register(Recur.class);
         kryo.register(WeekDayList.class);
         kryo.register(NumberList.class);
-        kryo.register(WeekDay.Day.class, new DefaultSerializers.EnumSerializer(WeekDay.Day.class));
+        kryo.register(WeekDay.Day.class);
         kryo.register(WeekDay.class, new Serializer<WeekDay>() {
             @Override
             public void write(Kryo kryo, Output output, WeekDay object) {
@@ -371,6 +436,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         });
         kryo.register(ArrayList.class);
         kryo.register(String[].class);
+        kryo.register(Date.class);
     }
 
     private static String fixICalStrings(String iCalString) {
