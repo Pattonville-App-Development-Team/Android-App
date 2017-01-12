@@ -21,8 +21,8 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterators;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -42,6 +42,7 @@ import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -92,6 +93,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import de.javakaffee.kryoserializers.EnumMapSerializer;
+import de.javakaffee.kryoserializers.URISerializer;
 import de.javakaffee.kryoserializers.guava.HashMultimapSerializer;
 
 /**
@@ -130,10 +132,52 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(SerializableCalendarDay.class);
         kryo.register(CalendarDay.class);
         kryo.register(HashSet.class);
-        kryo.register(VEvent.class);
+        kryo.register(VEvent.class, new Serializer<VEvent>() {
+            @Override
+            public void write(Kryo kryo, Output output, VEvent object) {
+                kryo.writeObject(output, object.getProperties());
+                kryo.writeObject(output, object.getAlarms());
+            }
+
+            @Override
+            public VEvent read(Kryo kryo, Input input, Class<VEvent> type) {
+                //noinspection unchecked
+                return new VEvent(kryo.readObject(input, PropertyList.class), ((ComponentList<VAlarm>) kryo.readObject(input, ComponentList.class)));
+            }
+        });
         kryo.register(ComponentList.class);
         kryo.register(HashMap.class);
-        kryo.register(Method.ADD.getClass(), new JavaSerializer());
+        kryo.register(Method.ADD.getClass(), new Serializer<Method>() {
+            @Override
+            public void write(Kryo kryo, Output output, Method object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Method read(Kryo kryo, Input input, Class<Method> type) {
+                ParameterList parameterList = kryo.readObject(input, ParameterList.class);
+                String value = kryo.readObject(input, String.class);
+                switch (value) {
+                    case "PUBLISH":
+                        return Method.PUBLISH;
+                    case "REPLY":
+                        return Method.REPLY;
+                    case "ADD":
+                        return Method.ADD;
+                    case "CANCEL":
+                        return Method.CANCEL;
+                    case "REFRESH":
+                        return Method.REFRESH;
+                    case "COUNTER":
+                        return Method.COUNTER;
+                    case "DECLINE-COUNTER":
+                        return Method.DECLINE_COUNTER;
+                    default:
+                        return new Method(parameterList, value);
+                }
+            }
+        });
         kryo.register(PropertyFactoryImpl.class);
         kryo.register(ParameterList.class);
         kryo.register(Collections.EMPTY_LIST.getClass(), new DefaultSerializers.CollectionsEmptyListSerializer());
@@ -175,8 +219,19 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 return new Dur(kryo.readObject(input, String.class));
             }
         });
-        kryo.register(Organizer.class);
-        kryo.register(URI.class);
+        kryo.register(Organizer.class, new Serializer<Organizer>() {
+            @Override
+            public void write(Kryo kryo, Output output, Organizer object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getCalAddress());
+            }
+
+            @Override
+            public Organizer read(Kryo kryo, Input input, Class<Organizer> type) {
+                return new Organizer(kryo.readObject(input, ParameterList.class), kryo.readObject(input, URI.class));
+            }
+        });
+        kryo.register(URI.class, new URISerializer());
         kryo.register(Cn.class, new Serializer<Cn>() {
             @Override
             public void write(Kryo kryo, Output output, Cn object) {
@@ -200,7 +255,18 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 return new Summary(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
             }
         });
-        kryo.register(Location.class);
+        kryo.register(Location.class, new Serializer<Location>() {
+            @Override
+            public void write(Kryo kryo, Output output, Location object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Location read(Kryo kryo, Input input, Class<Location> type) {
+                return new Location(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
         kryo.register(Transp.TRANSPARENT.getClass(), new Serializer<Transp>() {
             @Override
             public void write(Kryo kryo, Output output, Transp object) {
@@ -225,11 +291,68 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 return null;
             }
         });
-        kryo.register(Uid.class);
-        kryo.register(Categories.class);
-        kryo.register(TextList.class);
-        kryo.register(Description.class);
-        kryo.register(Url.class);
+        kryo.register(Uid.class, new Serializer<Uid>() {
+            @Override
+            public void write(Kryo kryo, Output output, Uid object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Uid read(Kryo kryo, Input input, Class<Uid> type) {
+                return new Uid(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(Categories.class, new Serializer<Categories>() {
+            @Override
+            public void write(Kryo kryo, Output output, Categories object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getCategories());
+            }
+
+            @Override
+            public Categories read(Kryo kryo, Input input, Class<Categories> type) {
+                return new Categories(kryo.readObject(input, ParameterList.class), kryo.readObject(input, TextList.class));
+            }
+        });
+        kryo.register(TextList.class, new Serializer<TextList>() {
+            @Override
+            public void write(Kryo kryo, Output output, TextList object) {
+                ArrayList<String> contents = new ArrayList<>(object.size());
+                Iterators.addAll(contents, object.iterator());
+                kryo.writeObject(output, contents.toArray(new String[contents.size()]));
+            }
+
+            @Override
+            public TextList read(Kryo kryo, Input input, Class<TextList> type) {
+                return new TextList(kryo.readObject(input, String[].class));
+            }
+        });
+        kryo.register(Description.class, new Serializer<Description>() {
+            @Override
+            public void write(Kryo kryo, Output output, Description object) {
+
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Description read(Kryo kryo, Input input, Class<Description> type) {
+                return new Description(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(Url.class, new Serializer<Url>() {
+            @Override
+            public void write(Kryo kryo, Output output, Url object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getUri());
+            }
+
+            @Override
+            public Url read(Kryo kryo, Input input, Class<Url> type) {
+                return new Url(kryo.readObject(input, ParameterList.class), kryo.readObject(input, URI.class));
+            }
+        });
         kryo.register(RRule.class);
         kryo.register(Recur.class);
         kryo.register(WeekDayList.class);
@@ -247,6 +370,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
             }
         });
         kryo.register(ArrayList.class);
+        kryo.register(String[].class);
     }
 
     private static String fixICalStrings(String iCalString) {
