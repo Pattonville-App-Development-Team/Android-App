@@ -19,11 +19,11 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
+import com.google.common.collect.HashMultimap;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -149,13 +149,13 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         this.calendarData = calendarData;
         eventAdapter.clear();
         List<EventFlexibleItem> items = Stream.of(calendarData.getCalendars())
-                .flatMap(new Function<Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
+                .flatMap(new Function<Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
-                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> dataSourceMultiValueMapEntry) {
-                        return Stream.of(dataSourceMultiValueMapEntry.getValue().iterator()).map(new Function<Map.Entry<SerializableCalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
+                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> dataSourceHashMultimapEntry) {
+                        return Stream.of(dataSourceHashMultimapEntry.getValue().entries()).map(new Function<Map.Entry<SerializableCalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
                             @Override
                             public Pair<DataSource, VEvent> apply(Map.Entry<SerializableCalendarDay, VEvent> calendarDayVEventEntry) {
-                                return new ImmutablePair<>(dataSourceMultiValueMapEntry.getKey(), calendarDayVEventEntry.getValue());
+                                return new ImmutablePair<>(dataSourceHashMultimapEntry.getKey(), calendarDayVEventEntry.getValue());
                             }
                         });
                     }

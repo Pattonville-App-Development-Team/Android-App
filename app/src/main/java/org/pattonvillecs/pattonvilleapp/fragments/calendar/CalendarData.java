@@ -3,11 +3,11 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
@@ -35,14 +35,14 @@ public class CalendarData implements Parcelable, Serializable {
             return new CalendarData[size];
         }
     };
-    private EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> calendars;
+    private EnumMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendars;
 
     /**
      * Uses the provided calendars
      *
      * @param calendars the calendars to be used
      */
-    public CalendarData(EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> calendars) {
+    public CalendarData(EnumMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendars) {
         this.calendars = calendars;
     }
 
@@ -50,19 +50,19 @@ public class CalendarData implements Parcelable, Serializable {
      * Initializes empty
      */
     public CalendarData() {
-        this(new EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>>(DataSource.class));
+        this(new EnumMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>(DataSource.class));
     }
 
     protected CalendarData(Parcel in) {
         //noinspection unchecked
-        this.calendars = (EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>>) in.readSerializable();
+        this.calendars = (EnumMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>) in.readSerializable();
     }
 
-    public Map<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> getCalendars() {
+    public Map<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendars() {
         return calendars;
     }
 
-    public MultiValueMap<SerializableCalendarDay, VEvent> getCalendarForDataSource(DataSource dataSource) {
+    public HashMultimap<SerializableCalendarDay, VEvent> getCalendarForDataSource(DataSource dataSource) {
         return calendars.get(dataSource);
     }
 
@@ -72,8 +72,8 @@ public class CalendarData implements Parcelable, Serializable {
 
     private List<VEvent> getEventsForDay(SerializableCalendarDay day) {
         List<VEvent> events = new ArrayList<>();
-        for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendars.entrySet()) {
-            events.addAll(entry.getValue().getCollection(day));
+        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendars.entrySet()) {
+            events.addAll(entry.getValue().get(day));
         }
         return events;
     }
@@ -84,9 +84,9 @@ public class CalendarData implements Parcelable, Serializable {
 
     private List<EventFlexibleItem> getItemsForDay(SerializableCalendarDay day) {
         List<EventFlexibleItem> events = new ArrayList<>();
-        for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : calendars.entrySet()) {
+        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendars.entrySet()) {
             if (entry.getValue().containsKey(day))
-                for (VEvent vEvent : entry.getValue().getCollection(day)) {
+                for (VEvent vEvent : entry.getValue().get(day)) {
                     events.add(new EventFlexibleItem(new ImmutablePair<>(entry.getKey(), vEvent)));
                 }
         }

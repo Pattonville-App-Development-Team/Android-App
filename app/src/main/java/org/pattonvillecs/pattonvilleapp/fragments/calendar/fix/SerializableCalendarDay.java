@@ -29,6 +29,9 @@ public class SerializableCalendarDay implements Serializable, Parcelable {
     };
     private CalendarDay calendarDay;
 
+    private SerializableCalendarDay() {
+        this(CalendarDay.today());
+    }
 
     private SerializableCalendarDay(CalendarDay calendarDay) {
         this.calendarDay = calendarDay;
