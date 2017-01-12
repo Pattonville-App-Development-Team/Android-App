@@ -1,20 +1,14 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
@@ -22,8 +16,6 @@ import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import groovyjarjarantlr.HTMLCodeGenerator;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
 
@@ -62,6 +54,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             schoolFax.setText(school.faxNumber.get());
         else
             schoolFax.setText(R.string.directory_info_unavaiable);
+/*
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
         websiteView.setOnClickListener(new View.OnClickListener(){
@@ -70,6 +63,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
+*/
 
         ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
 
