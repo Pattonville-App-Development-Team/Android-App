@@ -21,9 +21,4 @@
 
     <style name="PSD.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="PSD.Calendar.Date" parent="TextAppearance.MaterialCalendarWidget.Date">
-        <item name="android:textColor">@color/mcv_text_date_light</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
 </resources>
