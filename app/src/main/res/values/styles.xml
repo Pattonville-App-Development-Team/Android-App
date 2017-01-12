@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
-    <style name="PSD.NoActionBar">
+    <style name="PSD.NoActionBar" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
