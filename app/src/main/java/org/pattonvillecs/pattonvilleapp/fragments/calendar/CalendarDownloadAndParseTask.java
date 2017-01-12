@@ -17,9 +17,12 @@ import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Predicate;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
+import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -66,11 +69,9 @@ import net.fortuna.ical4j.validate.component.VEventRefreshValidator;
 import net.fortuna.ical4j.validate.component.VEventReplyValidator;
 import net.fortuna.ical4j.validate.component.VEventRequestValidator;
 
-import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SetFactories;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,6 +80,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -90,6 +92,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import de.javakaffee.kryoserializers.EnumMapSerializer;
+import de.javakaffee.kryoserializers.guava.HashMultimapSerializer;
 
 /**
  * Created by Mitchell on 12/24/2016.
@@ -123,7 +126,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(CalendarData.class);
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
-        kryo.register(MultiValueMap.class);
+        kryo.register(HashMultimap.class, new HashMultimapSerializer());
         kryo.register(SerializableCalendarDay.class);
         kryo.register(CalendarDay.class);
         kryo.register(HashSet.class);
@@ -133,7 +136,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(Method.ADD.getClass(), new JavaSerializer());
         kryo.register(PropertyFactoryImpl.class);
         kryo.register(ParameterList.class);
-        kryo.register(Collections.EMPTY_LIST.getClass());
+        kryo.register(Collections.EMPTY_LIST.getClass(), new DefaultSerializers.CollectionsEmptyListSerializer());
         kryo.register(EmptyValidator.class);
         kryo.register(VEventRequestValidator.class);
         kryo.register(VEventReplyValidator.class);
@@ -147,17 +150,81 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(LastModified.class);
         kryo.register(DateTime.class);
         kryo.register(CopyOnWriteArrayList.class);
-        kryo.register(Value.class, new JavaSerializer());
+        kryo.register(Value.class, new Serializer<Value>() {
+            @Override
+            public void write(Kryo kryo, Output output, Value object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Value read(Kryo kryo, Input input, Class<Value> type) {
+                return new Value(kryo.readObject(input, String.class));
+            }
+        });
         kryo.register(ParameterFactoryImpl.class);
         kryo.register(DtStart.class);
         kryo.register(Duration.class);
-        kryo.register(Dur.class, new JavaSerializer());
+        kryo.register(Dur.class, new Serializer<Dur>() {
+            @Override
+            public void write(Kryo kryo, Output output, Dur object) {
+                kryo.writeObject(output, object.toString());
+            }
+
+            @Override
+            public Dur read(Kryo kryo, Input input, Class<Dur> type) {
+                return new Dur(kryo.readObject(input, String.class));
+            }
+        });
         kryo.register(Organizer.class);
         kryo.register(URI.class);
-        kryo.register(Cn.class, new JavaSerializer());
-        kryo.register(Summary.class);
+        kryo.register(Cn.class, new Serializer<Cn>() {
+            @Override
+            public void write(Kryo kryo, Output output, Cn object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Cn read(Kryo kryo, Input input, Class<Cn> type) {
+                return new Cn(kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(Summary.class, new Serializer<Summary>() {
+            @Override
+            public void write(Kryo kryo, Output output, Summary object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Summary read(Kryo kryo, Input input, Class<Summary> type) {
+                return new Summary(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
         kryo.register(Location.class);
-        kryo.register(Transp.TRANSPARENT.getClass(), new JavaSerializer());
+        kryo.register(Transp.TRANSPARENT.getClass(), new Serializer<Transp>() {
+            @Override
+            public void write(Kryo kryo, Output output, Transp object) {
+                switch (object.getValue()) {
+                    case "OPAQUE":
+                        kryo.writeObject(output, 0);
+                        break;
+                    case "TRANSPARENT":
+                        kryo.writeObject(output, 1);
+                        break;
+                }
+            }
+
+            @Override
+            public Transp read(Kryo kryo, Input input, Class<Transp> type) {
+                switch (kryo.readObject(input, int.class)) {
+                    case 0:
+                        return Transp.OPAQUE;
+                    case 1:
+                        return Transp.TRANSPARENT;
+                }
+                return null;
+            }
+        });
         kryo.register(Uid.class);
         kryo.register(Categories.class);
         kryo.register(TextList.class);
@@ -167,17 +234,28 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         kryo.register(Recur.class);
         kryo.register(WeekDayList.class);
         kryo.register(NumberList.class);
-        kryo.register(WeekDay.Day.class);
-        kryo.register(WeekDay.class, new JavaSerializer());
+        kryo.register(WeekDay.Day.class, new DefaultSerializers.EnumSerializer(WeekDay.Day.class));
+        kryo.register(WeekDay.class, new Serializer<WeekDay>() {
+            @Override
+            public void write(Kryo kryo, Output output, WeekDay object) {
+                kryo.writeObject(output, object.getDay());
+            }
+
+            @Override
+            public WeekDay read(Kryo kryo, Input input, Class<WeekDay> type) {
+                return WeekDay.getWeekDay(kryo.readObject(input, WeekDay.Day.class));
+            }
+        });
+        kryo.register(ArrayList.class);
     }
 
     private static String fixICalStrings(String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
-    private MultiValueMap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
+    private HashMultimap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
         Log.d(TAG, "Initial");
-        MultiValueMap<SerializableCalendarDay, VEvent> map = MultiValueMap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
+        HashMultimap<SerializableCalendarDay, VEvent> map = HashMultimap.create();//HashMultimap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
@@ -257,7 +335,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         if (params.length != 1)
             throw new IllegalStateException("Only one parameter expected!");
         Set<DataSource> param = params[0];
-        EnumMap<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
+        EnumMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> results = new EnumMap<>(DataSource.class);
 
         File calendarDataCache = new File(calendarFragment.getActivity().getCacheDir(), FILENAME);
         if (calendarDataCache.exists()
@@ -274,8 +352,8 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 input = new Input(fileInputStream);
                 CalendarData cachedCalendarData = kryo.readObject(input, CalendarData.class);
 
-                for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : cachedCalendarData.getCalendars().entrySet())
-                    if (param.contains(entry.getKey()))
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : cachedCalendarData.getCalendars().entrySet())
+                    if (param.contains(entry.getKey()) && entry.getValue().size() != 0)
                         results.put(entry.getKey(), entry.getValue());
 
             } catch (FileNotFoundException e) {
@@ -314,7 +392,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
 
         //Remove duplicate DataSources
         int initialParamSize = param.size(); //Keep the initial value to start the progress bar from
-        for (Map.Entry<DataSource, MultiValueMap<SerializableCalendarDay, VEvent>> entry : results.entrySet())
+        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : results.entrySet())
             param.remove(entry.getKey());
         int removed = initialParamSize - param.size(); //How many were reused
 
