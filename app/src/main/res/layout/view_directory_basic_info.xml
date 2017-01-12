@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/vpi__background_holo_light"
-    android:elevation="2dp"
     android:orientation="vertical">
 
 
@@ -30,6 +30,7 @@
         android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
         android:contentDescription="@string/directory_school_image"
+        android:layout_marginBottom="16dp"
         app:srcCompat="@color/colorPrimary" />
 
     <TextView
@@ -123,19 +124,5 @@
         android:layout_toEndOf="@id/directory_faxLabel_textView"
         android:layout_toRightOf="@id/directory_faxLabel_textView"
         android:text="fax number..." />
-
-    <TextView
-        android:id="@+id/directory_websiteURL_textView"
-        android:text="Website"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/directory_school_image"
-        android:layout_alignLeft="@id/directory_school_image"
-        android:layout_alignStart="@id/directory_school_image"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:contentDescription="@string/directory_school_websiteURL"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="normal|bold"/>
 
 </RelativeLayout>
