@@ -14,7 +14,6 @@
         android:layout_weight="0"
         android:elevation="2dp"
         android:outlineProvider="bounds"
-        app:mcv_dateTextAppearance="@style/PSD.Calendar.Date"
         app:mcv_showOtherDates="other_months|decorated_disabled" />
 
     <include

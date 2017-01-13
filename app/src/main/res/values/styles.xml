@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
-    <style name="PSD.NoActionBar">
+    <style name="PSD.NoActionBar" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -20,10 +20,5 @@
     <style name="PSD.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="PSD.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="PSD.Calendar.Date" parent="TextAppearance.MaterialCalendarWidget.Date">
-        <item name="android:textColor">@color/mcv_text_date_light</item>
-        <item name="android:textSize">16sp</item>
-    </style>
 
 </resources>
