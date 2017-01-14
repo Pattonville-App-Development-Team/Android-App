@@ -162,7 +162,10 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
 
             @Override
             public CalendarDay read(Kryo kryo, Input input, Class<CalendarDay> type) {
-                return CalendarDay.from(kryo.readObject(input, int.class), kryo.readObject(input, int.class), kryo.readObject(input, int.class));
+                int year = kryo.readObject(input, int.class);
+                int month = kryo.readObject(input, int.class);
+                int day = kryo.readObject(input, int.class);
+                return CalendarDay.from(year, month, day);
             }
         });
         kryo.register(HashSet.class);
