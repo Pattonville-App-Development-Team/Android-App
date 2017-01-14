@@ -240,17 +240,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
                 return new LastModified(kryo.readObject(input, ParameterList.class), kryo.readObject(input, DateTime.class));
             }
         });
-        kryo.register(DateTime.class, new Serializer<DateTime>() {
-            @Override
-            public void write(Kryo kryo, Output output, DateTime object) {
-                kryo.writeObject(output, object.getTime());
-            }
-
-            @Override
-            public DateTime read(Kryo kryo, Input input, Class<DateTime> type) {
-                return new DateTime(kryo.readObject(input, long.class));
-            }
-        });
+        kryo.register(DateTime.class);
         kryo.register(CopyOnWriteArrayList.class);
         kryo.register(Value.class, new Serializer<Value>() {
             @Override
