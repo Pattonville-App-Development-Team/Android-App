@@ -19,10 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment;
 
 import java.io.File;
 
