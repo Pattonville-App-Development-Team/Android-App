@@ -40,7 +40,7 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
 
     @Override
     public int getLayoutRes() {
-        return R.layout.dateless_event_list_item;
+        return R.layout.calendar_dateless_event_list_item;
     }
 
     @Override

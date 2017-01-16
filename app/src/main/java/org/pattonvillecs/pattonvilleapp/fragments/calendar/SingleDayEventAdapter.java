@@ -81,7 +81,7 @@ public class SingleDayEventAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null)
-            view = layoutInflater.inflate(R.layout.dateless_event_list_item, parent, false);
+            view = layoutInflater.inflate(R.layout.calendar_dateless_event_list_item, parent, false);
 
         TextView topText = (TextView) view.findViewById(R.id.text_top);
         TextView bottomText = (TextView) view.findViewById(R.id.text_bottom);
