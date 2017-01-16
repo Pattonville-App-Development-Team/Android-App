@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,8 +14,9 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * Created by skaggsm on 1/4/17.
  */
 public class EventViewHolder extends FlexibleViewHolder {
-    final TextView topText, bottomText;
-    public ImageView schoolColorImageView;
+    private static final String TAG = "EventViewHolder";
+    final TextView topText, bottomText, shortSchoolName;
+    final ImageView schoolColorImageView;
 
     public EventViewHolder(View view, FlexibleAdapter adapter) {
         this(view, adapter, false);
@@ -25,5 +27,12 @@ public class EventViewHolder extends FlexibleViewHolder {
         topText = (TextView) view.findViewById(R.id.text_top);
         bottomText = (TextView) view.findViewById(R.id.text_bottom);
         schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
+        shortSchoolName = (TextView) view.findViewById(R.id.school_short_name);
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        Log.i(TAG, "Clicked view: " + view);
     }
 }
