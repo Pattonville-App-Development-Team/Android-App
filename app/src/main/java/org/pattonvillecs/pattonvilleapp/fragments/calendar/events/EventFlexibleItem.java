@@ -50,8 +50,6 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
-        //holder.topText.setText(pair.getValue().getSummary().getValue());
-
         VEvent calendarEvent = pair.getRight();
         Summary summary = calendarEvent.getSummary();
         Location location = calendarEvent.getLocation();
