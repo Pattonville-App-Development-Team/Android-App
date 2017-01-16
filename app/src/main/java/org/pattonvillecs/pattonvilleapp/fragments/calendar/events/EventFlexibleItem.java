@@ -52,7 +52,7 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
     public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
         //holder.topText.setText(pair.getValue().getSummary().getValue());
 
-        VEvent calendarEvent = pair.getValue();
+        VEvent calendarEvent = pair.getRight();
         Summary summary = calendarEvent.getSummary();
         Location location = calendarEvent.getLocation();
 
@@ -68,6 +68,9 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
             holder.bottomText.setVisibility(View.GONE);
             holder.bottomText.setText(R.string.no_location);
         }
-        holder.schoolColorImageView.setColorFilter(pair.getKey().calendarColor);
+
+        holder.schoolColorImageView.setColorFilter(pair.getLeft().calendarColor);
+
+        holder.shortSchoolName.setText(pair.getLeft().shortName);
     }
 }
