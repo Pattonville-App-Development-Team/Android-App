@@ -24,8 +24,9 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/school_color_circle"
-        android:layout_toStartOf="@id/school_color_circle"
+        android:layout_margin="4dp"
+        android:layout_toLeftOf="@+id/school_color_circle"
+        android:layout_toStartOf="@+id/school_color_circle"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:button="@drawable/button_pinned"
         android:contentDescription="@string/pin_content_description"
@@ -54,4 +55,14 @@
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
         android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+    <TextView
+        android:id="@+id/school_short_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/pinned_button"
+        android:layout_margin="4dp" />
 </RelativeLayout>
