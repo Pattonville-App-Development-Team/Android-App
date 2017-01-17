@@ -1,8 +1,9 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.os.Build;
 import android.view.View;
 
 import net.fortuna.ical4j.model.component.VEvent;
@@ -29,7 +30,12 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
     public boolean onItemClick(int position) {
         VEvent calendarVEvent = eventAdapter.getItem(position).pair.getValue();
         View view = eventAdapter.getRecyclerView().getChildAt(position).findViewById(R.id.school_color_circle);
-        activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)), ActivityOptionsCompat.makeSceneTransitionAnimation(activity, view, "color").toBundle());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)), ActivityOptions.makeSceneTransitionAnimation(activity, view, "color").toBundle());
+        } else {
+            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
+        }
         return false;
     }
 }
