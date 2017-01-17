@@ -301,7 +301,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getContext()));
+        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");

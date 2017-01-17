@@ -1,10 +1,13 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.view.View;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -15,17 +18,18 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemClickListener {
     private final EventAdapter eventAdapter;
-    private final Context context;
+    private final Activity activity;
 
-    public EventDetailsOnItemClickListener(EventAdapter eventAdapter, Context context) {
+    public EventDetailsOnItemClickListener(EventAdapter eventAdapter, Activity activity) {
         this.eventAdapter = eventAdapter;
-        this.context = context;
+        this.activity = activity;
     }
 
     @Override
     public boolean onItemClick(int position) {
         VEvent calendarVEvent = eventAdapter.getItem(position).pair.getValue();
-        context.startActivity(new Intent(context, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)));
+        View view = eventAdapter.getRecyclerView().getChildAt(position).findViewById(R.id.school_color_circle);
+        activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent)), ActivityOptionsCompat.makeSceneTransitionAnimation(activity, view, "color").toBundle());
         return false;
     }
 }

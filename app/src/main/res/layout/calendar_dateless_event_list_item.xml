@@ -17,7 +17,8 @@
         android:layout_marginTop="4dp"
         android:contentDescription="@string/school_color_circle"
         android:src="@drawable/event_color_circle"
-        android:tint="@color/colorPrimary" />
+        android:tint="@color/colorPrimary"
+        android:transitionName="color" />
 
     <ToggleButton
         android:id="@+id/pinned_button"

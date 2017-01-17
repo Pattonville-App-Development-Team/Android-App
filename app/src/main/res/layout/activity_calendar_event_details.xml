@@ -30,6 +30,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/test_news_2"
+                android:transitionName="color"
                 app:layout_collapseMode="parallax" />
 
             <View
