@@ -15,6 +15,7 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 
 import java.util.Date;
@@ -154,6 +155,10 @@ public class CalendarEvent implements Parcelable {
                         return new IllegalArgumentException("UID required!");
                     }
                 }), dataSource);
+    }
+
+    public CalendarEvent(Pair<DataSource, VEvent> pair) {
+        this(pair.getRight(), pair.getLeft());
     }
 
     /**

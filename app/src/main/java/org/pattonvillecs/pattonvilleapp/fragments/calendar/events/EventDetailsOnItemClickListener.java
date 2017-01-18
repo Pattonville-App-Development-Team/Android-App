@@ -9,6 +9,7 @@ import android.view.View;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity;
 
@@ -29,7 +30,8 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
 
     @Override
     public boolean onItemClick(int position) {
-        VEvent calendarVEvent = eventAdapter.getItem(position).pair.getValue();
+        org.apache.commons.lang3.tuple.Pair<DataSource, VEvent> pair = eventAdapter.getItem(position).pair;
+        CalendarEvent calendarEvent = new CalendarEvent(pair);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View listItem = eventAdapter.getRecyclerView().getChildAt(position);
@@ -37,13 +39,13 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
             View textTop = listItem.findViewById(R.id.text_top);
             View textBottom = listItem.findViewById(R.id.text_bottom);
 
-            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent, )), ActivityOptions.makeSceneTransitionAnimation(activity,
+            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent), ActivityOptions.makeSceneTransitionAnimation(activity,
                     new Pair<>(textTop, "text_top"),
                     new Pair<>(textBottom, "text_bottom"),
                     new Pair<>(schoolColorCircle, "school_color_circle")
             ).toBundle());
         } else {
-            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", new CalendarEvent(calendarVEvent, )));
+            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
         }
         return false;
     }
