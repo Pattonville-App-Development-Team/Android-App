@@ -15,7 +15,6 @@
         android:id="@+id/directory_website_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="School Website"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textColor="@color/colorPrimary"
