@@ -32,6 +32,7 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
     public boolean onItemClick(int position) {
         org.apache.commons.lang3.tuple.Pair<DataSource, VEvent> pair = eventAdapter.getItem(position).pair;
         CalendarEvent calendarEvent = new CalendarEvent(pair);
+        Intent intent = new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View listItem = eventAdapter.getRecyclerView().getChildAt(position);
@@ -39,13 +40,13 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
             View textTop = listItem.findViewById(R.id.text_top);
             View textBottom = listItem.findViewById(R.id.text_bottom);
 
-            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent), ActivityOptions.makeSceneTransitionAnimation(activity,
+            activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,
                     new Pair<>(textTop, "text_top"),
                     new Pair<>(textBottom, "text_bottom"),
                     new Pair<>(schoolColorCircle, "school_color_circle")
             ).toBundle());
         } else {
-            activity.startActivity(new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", calendarEvent));
+            activity.startActivity(intent);
         }
         return false;
     }
