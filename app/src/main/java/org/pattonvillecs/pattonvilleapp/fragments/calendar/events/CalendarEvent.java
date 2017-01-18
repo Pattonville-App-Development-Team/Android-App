@@ -15,6 +15,8 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
+
 import java.util.Date;
 
 /**
@@ -68,6 +70,8 @@ public class CalendarEvent implements Parcelable {
     @NonNull
     private final String uid;
 
+    private final DataSource dataSource;
+
     /**
      * A constructor that takes every part individually. Typically called by other constructors.
      *
@@ -76,13 +80,15 @@ public class CalendarEvent implements Parcelable {
      * @param eventDetails  The details of the event. May be the empty string.
      * @param eventLocation The name of the location of the event. May be the empty string.
      * @param uid           The unique identifier of this event
+     * @param dataSource
      */
-    public CalendarEvent(@NonNull String eventName, @NonNull Date dateAndTime, @NonNull String eventDetails, @NonNull String eventLocation, @NonNull String uid) {
+    public CalendarEvent(@NonNull String eventName, @NonNull Date dateAndTime, @NonNull String eventDetails, @NonNull String eventLocation, @NonNull String uid, DataSource dataSource) {
         this.eventName = eventName;
         this.dateAndTime = dateAndTime;
         this.eventDetails = eventDetails;
         this.eventLocation = eventLocation;
         this.uid = uid;
+        this.dataSource = dataSource;
     }
 
     /**
@@ -98,14 +104,16 @@ public class CalendarEvent implements Parcelable {
         eventDetails = in.readString();
         eventLocation = in.readString();
         uid = in.readString();
+        dataSource = (DataSource) in.readSerializable();
     }
 
     /**
      * A constructor that takes in a VEvent parsed from an iCal file using iCal4j.
      *
      * @param calendarVEvent The VEvent from which the new calendar event is created
+     * @param dataSource
      */
-    public CalendarEvent(@NonNull VEvent calendarVEvent) {
+    public CalendarEvent(@NonNull VEvent calendarVEvent, DataSource dataSource) {
         this(Optional.ofNullable(calendarVEvent.getSummary()).map(new Function<Summary, String>() { //TODO Should the name be required? Is it ever not provided?
                     @Override
                     public String apply(Summary summary) {
@@ -145,7 +153,7 @@ public class CalendarEvent implements Parcelable {
                     public RuntimeException get() {
                         return new IllegalArgumentException("UID required!");
                     }
-                }));
+                }), dataSource);
     }
 
     /**
@@ -204,5 +212,10 @@ public class CalendarEvent implements Parcelable {
         dest.writeSerializable(dateAndTime);
         dest.writeString(eventDetails);
         dest.writeString(eventLocation);
+        dest.writeSerializable(dataSource);
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
     }
 }

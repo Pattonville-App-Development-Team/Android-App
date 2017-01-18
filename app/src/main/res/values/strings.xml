@@ -30,7 +30,7 @@
         <item>Willow Brook</item>
     </string-array>
 
-    <string name="title_activity_calendar_event_details">CalendarEventDetailsActivity</string>
+    <string name="title_activity_calendar_event_details">Event Details</string>
     <string name="action_settings">Settings</string>
     <string name="event_image">Event Image</string>
     <string name="date_time_placeholder">Date here…\nTime here…</string>
