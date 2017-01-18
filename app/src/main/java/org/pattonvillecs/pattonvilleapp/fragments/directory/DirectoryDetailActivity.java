@@ -1,14 +1,18 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
@@ -54,7 +58,6 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             schoolFax.setText(school.faxNumber.get());
         else
             schoolFax.setText(R.string.directory_info_unavaiable);
-/*
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
         websiteView.setOnClickListener(new View.OnClickListener(){
@@ -63,7 +66,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
-*/
+
 
         ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
 
@@ -92,8 +95,9 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public View getView(int i, View convertView, ViewGroup parent) {
+            public View getView(final int i, View convertView, ViewGroup parent) {
                 View view = convertView;
+
                 if (view == null)
                     view = LayoutInflater.from(DirectoryDetailActivity.this).inflate(R.layout.list_faculty_item, parent, false);
 
@@ -103,6 +107,18 @@ public class DirectoryDetailActivity extends AppCompatActivity {
 
                 TextView departmentTextView = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
                 departmentTextView.setText(f.getDepartment());
+
+                ImageButton emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
+                emailButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        faculties.get(i).setEmail("exampleemail@psdr3.org");
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                        emailIntent.setData(Uri.parse("mailto:"));
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{faculties.get(i).getEmail()});
+                        startActivity(Intent.createChooser(emailIntent, "Send email using"));
+                    }
+                });
 
                 return view;
             }
