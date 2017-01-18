@@ -110,6 +110,5 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
 
         Log.d("DIRECTORY", "WE GOT HERE :)");
         startActivity(intent);
-        //how does this interact with the DataSource class?
     }
 }
