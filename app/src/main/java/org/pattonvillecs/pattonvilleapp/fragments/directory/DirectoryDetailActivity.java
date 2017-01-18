@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
@@ -60,6 +59,10 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             schoolFax.setText(R.string.directory_info_unavaiable);
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
+        if(school.name.equalsIgnoreCase("pattonville school district")){
+            websiteView.setText("District Website");
+        } else { websiteView.setText("School Website");}
+
         websiteView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
@@ -116,7 +119,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                         emailIntent.setData(Uri.parse("mailto:"));
                         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{faculties.get(i).getEmail()});
-                        startActivity(Intent.createChooser(emailIntent, "Send email using"));
+                        startActivity(emailIntent);
                     }
                 });
 
