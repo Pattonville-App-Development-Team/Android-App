@@ -217,6 +217,7 @@ public class CalendarEvent implements Parcelable {
         dest.writeSerializable(dateAndTime);
         dest.writeString(eventDetails);
         dest.writeString(eventLocation);
+        dest.writeString(uid);
         dest.writeSerializable(dataSource);
     }
 
