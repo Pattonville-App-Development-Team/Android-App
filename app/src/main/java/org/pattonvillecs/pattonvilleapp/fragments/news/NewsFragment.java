@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +28,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 public class NewsFragment extends Fragment {
@@ -83,6 +87,7 @@ public class NewsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -123,5 +128,82 @@ public class NewsFragment extends Fragment {
             queue.add(stringRequest);
         }
 
+    }
+
+    class NewsRecyclerViewAdapter extends RecyclerView.Adapter<org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder> {
+
+        private final View.OnClickListener onClickListener;
+        private ArrayList<NewsArticle> newsArticles;
+
+        NewsRecyclerViewAdapter(ArrayList<NewsArticle> NewsArticles, View.OnClickListener onClickListener) {
+            this.newsArticles = NewsArticles;
+            this.onClickListener = onClickListener;
+        }
+
+        @Override
+        public org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_news_listview_item, parent, false);
+            v.setOnClickListener(onClickListener);
+            return new org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder holder, int position) {
+
+            NewsArticle item = newsArticles.get(position);
+            holder.bind(item);
+        }
+
+        @Override
+        public void onBindViewHolder(org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder holder, int position, List<Object> payloads) {
+
+            NewsArticle item = newsArticles.get(position);
+            holder.bind(item);
+        }
+
+        @Override
+        public int getItemCount() {
+            return newsArticles.size();
+        }
+
+        class NewsArticleViewHolder extends RecyclerView.ViewHolder {
+
+            NewsArticle mArticle;
+            TextView titleView;
+            ImageView imageView, sourceView;
+
+            NewsArticleViewHolder(View view) {
+                super(view);
+
+                titleView = (TextView) itemView.findViewById(R.id.home_news_listview_item_textView);
+                imageView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_imageView);
+                sourceView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_color);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("NewsFragment", "Opening NewsDetailActivityNoImage");
+
+                        if (true) {
+                            Intent intent = new Intent(getContext(), NewsDetailActivityNoImage.class);
+                            intent.putExtra("NewsArticle", mArticle);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                            intent.putExtra("NewsArticle", mArticle);
+                            startActivity(intent);
+                        }
+                    }
+                });
+            }
+
+            void bind(NewsArticle item) {
+                titleView.setText(item.getTitle());
+                imageView.setImageResource(R.drawable.test_news_1);
+                sourceView.setBackgroundColor(item.getSourceColor());
+                mArticle = item;
+            }
+        }
     }
 }
