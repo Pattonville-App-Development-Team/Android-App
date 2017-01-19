@@ -4,7 +4,7 @@ sudo: false
 
 env:
   matrix:
-    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=x86_64
 
 android:
   components:
@@ -13,7 +13,7 @@ android:
     - build-tools-24.0.3
 
     - $ANDROID_TARGET
-    - sys-img-armeabi-v7a-$ANDROID_TARGET
+    - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
     - extra-android-m2repository
     - extra-google-m2repository
