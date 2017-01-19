@@ -18,6 +18,7 @@ public class NewsArticle implements Parcelable {
     };
     private Date publishDate;
     private String title, content;
+    private int sourceColor;
 
     public NewsArticle() {
 
@@ -64,6 +65,14 @@ public class NewsArticle implements Parcelable {
         title = strings[0];
         content = strings[1];
         publishDate = new Date(parcel.readLong());
+    }
+
+    public int getSourceColor() {
+        return sourceColor;
+    }
+
+    public void setSourceColor(int sourceColor) {
+        this.sourceColor = sourceColor;
     }
 
     public Date getPublishDate() {

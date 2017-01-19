@@ -1,29 +1,40 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 
 public class NewsFragment extends Fragment {
 
-    private ListView listView;
+    private RecyclerView mRecyclerView;
+
+    private NewsRecyclerViewAdapter mAdapter;
+    private ArrayList<NewsArticle> newsArticles;
+
+    private long time;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -49,60 +60,68 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
-        listView = (ListView) root.findViewById(R.id.news_listview);
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        List<HashMap<String, String>> newsList = new ArrayList<HashMap<String, String>>();
-
-        for (int i = 0; i < 12; i++) {
-
-            HashMap<String, String> newsListItem = new HashMap<String, String>();
-            newsListItem.put("image", Integer.toString(HomeFragment.sampleImages[i]));
-            newsListItem.put("headline", HomeFragment.sampleHeadlines[i]);
-            newsList.add(newsListItem);
-        }
-
-        String[] newsListFrom = {"image", "headline"};
-        int[] newsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
-
-        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(root.getContext(), newsList,
-                R.layout.home_news_listview_item, newsListFrom, newsListTo);
-        listView.setAdapter(newsListSimpleAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Log.e("NewsFragment", "Opening NewsDetailActivityNoImage");
-
-                if (i % 2 == 0) {
-                    Intent intent = new Intent(getContext(), NewsDetailActivityNoImage.class);
-                    intent.putExtra("Position", i);
-                    intent.putExtra("NewsArticle", new NewsArticle());
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-                    intent.putExtra("Position", i);
-                    intent.putExtra("NewsArticle", new NewsArticle());
-                    startActivity(intent);
-                }
-            }
-        });
+        newsArticles = new ArrayList<>();
+        updateList();
 
         return root;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    private void updateUI() {
+
+        Collections.sort(newsArticles, new Comparator<NewsArticle>() {
+            @Override
+            public int compare(NewsArticle newsArticle, NewsArticle t1) {
+
+                return t1.getPublishDate().compareTo(newsArticle.getPublishDate());
+            }
+        });
+
+        mAdapter = new NewsRecyclerViewAdapter(newsArticles, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
+    private void updateList() {
+        RequestQueue queue = Volley.newRequestQueue(NewsFragment.this.getActivity());
 
-    @Override
-    public void onResume() {
-        super.onResume();
+        newsArticles.clear();
+
+        Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(getContext());
+        selectedSchools.add(DataSource.DISTRICT);
+
+        for (final Object school : selectedSchools.toArray()) {
+
+            final String url = "http://fccms.psdr3.org/" + ((DataSource) school).newsName + "/news/?plugin=xml&leaves";
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            Log.d("NewsFragment", "Response Receivied: " + (System.currentTimeMillis() - time));
+                            NewsParser parser = new NewsParser(response, ((DataSource) school).calendarColor);
+                            parser.getXml();
+                            newsArticles.addAll(parser.getItems());
+                            updateUI();
+                        }
+
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("News Fragment", "Error");
+                }
+            });
+
+            time = System.currentTimeMillis();
+            queue.add(stringRequest);
+        }
+
     }
 }

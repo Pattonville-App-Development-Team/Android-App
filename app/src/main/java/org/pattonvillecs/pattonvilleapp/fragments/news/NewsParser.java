@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -23,9 +24,11 @@ public class NewsParser extends DefaultHandler {
     String currentValue = "";
     ArrayList<NewsArticle> items = new ArrayList<>();
     String responseData;
+    int sourceColor;
 
-    public NewsParser(String responseData) {
+    public NewsParser(String responseData, int sourceColor) {
         this.responseData = responseData;
+        this.sourceColor = sourceColor;
     }
 
     public ArrayList<NewsArticle> getItems() {
@@ -41,18 +44,14 @@ public class NewsParser extends DefaultHandler {
             case "item":
                 item = new NewsArticle();
                 break;
-
         }
-
     }
 
     // prints data stored in between '<' and '>' tags
     public void characters(char ch[], int start, int length)
             throws SAXException {
         currentValue = currentValue + new String(ch, start, length);
-
     }
-
 
     // calls by the parser whenever '>' end tag is found in xml
     // makes tags flag to 'close'
@@ -61,6 +60,7 @@ public class NewsParser extends DefaultHandler {
         if (item != null) {
             switch (qName.toLowerCase()) {
                 case "item":
+                    item.setSourceColor(sourceColor);
                     items.add(item);
                     break;
                 case "title":
@@ -74,7 +74,7 @@ public class NewsParser extends DefaultHandler {
                     break;
                 case "pubdate":
 
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss -ZZZZ");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss Z", Locale.US);
                     try {
                         item.setPublishDate(dateFormat.parse(currentValue));
                     } catch (ParseException e) {
