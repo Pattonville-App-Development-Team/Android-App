@@ -10,7 +10,7 @@ android:
   components:
     - platform-tools
     - tools
-    - build-tools-24.0.3
+    - build-tools-25.0.2
 
     - $ANDROID_TARGET
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
