@@ -9,7 +9,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "org.pattonvillecs.pattonvilleapp.MultidexJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -79,6 +79,7 @@ dependencies {
     compile 'de.javakaffee:kryo-serializers:0.41'
 
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support.test:runner:0.5'
 }
 
 apply plugin: 'com.google.gms.google-services' //Must be at bottom
