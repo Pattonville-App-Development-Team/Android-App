@@ -43,6 +43,7 @@
         android:layout_margin="8dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
+        android:text="@string/test_text"
         android:textAppearance="?attr/textAppearanceListItem"
         android:transitionName="@string/text_top_transition_name" />
 
@@ -56,6 +57,7 @@
         android:layout_margin="8dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
+        android:text="@string/test_text"
         android:textAppearance="?attr/textAppearanceListItemSmall"
         android:transitionName="@string/text_bottom_transition_name" />
 
@@ -67,5 +69,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/pinned_button"
-        android:layout_margin="4dp" />
+        android:layout_margin="4dp"
+        android:text="@string/test_text" />
 </RelativeLayout>
