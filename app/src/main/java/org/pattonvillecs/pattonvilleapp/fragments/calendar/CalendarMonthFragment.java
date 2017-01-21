@@ -7,7 +7,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -286,7 +285,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        NestedScrollView rootLayout = (NestedScrollView) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        View rootLayout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
         //rootLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         //rootLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
