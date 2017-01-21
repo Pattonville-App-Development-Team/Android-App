@@ -41,9 +41,9 @@ public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemCl
             View textBottom = listItem.findViewById(R.id.text_bottom);
 
             activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,
-                    new Pair<>(textTop, "text_top"),
-                    new Pair<>(textBottom, "text_bottom"),
-                    new Pair<>(schoolColorCircle, "school_color_circle")
+                    Pair.create(textTop, activity.getResources().getString(R.string.text_top_transition_name)),
+                    Pair.create(textBottom, activity.getResources().getString(R.string.text_bottom_transition_name)),
+                    Pair.create(schoolColorCircle, activity.getResources().getString(R.string.school_color_circle_transition_name))
             ).toBundle());
         } else {
             activity.startActivity(intent);

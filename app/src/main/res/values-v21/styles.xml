@@ -8,6 +8,12 @@
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">@transition/image_change_bounds
+        </item>
+        <item name="android:windowSharedElementExitTransition">@transition/image_change_bounds
+        </item>
     </style>
 
 

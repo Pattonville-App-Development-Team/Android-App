@@ -54,4 +54,7 @@
     <string name="no_location">No location provided...</string>
     <string name="no_summary">No summary provided...</string>
     <string name="school_color_circle">School color circle</string>
+    <string name="text_top_transition_name">text_top_transition</string>
+    <string name="text_bottom_transition_name">text_bottom</string>
+    <string name="school_color_circle_transition_name">school_color_circle</string>
 </resources>

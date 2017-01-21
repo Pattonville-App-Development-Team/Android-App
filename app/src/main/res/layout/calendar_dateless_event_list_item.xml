@@ -3,8 +3,7 @@
     android:id="@+id/event_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="beforeDescendants"
-    android:transitionName="list_item">
+    android:descendantFocusability="beforeDescendants">
 
     <ImageView
         android:id="@+id/school_color_circle"
@@ -19,7 +18,7 @@
         android:contentDescription="@string/school_color_circle"
         android:src="@drawable/event_color_circle"
         android:tint="@color/colorPrimary"
-        android:transitionName="school_color_circle" />
+        android:transitionName="@string/school_color_circle_transition_name" />
 
     <ToggleButton
         android:id="@+id/pinned_button"
@@ -27,8 +26,8 @@
         android:layout_height="36dp"
         android:layout_centerVertical="true"
         android:layout_margin="4dp"
-        android:layout_toLeftOf="@+id/school_color_circle"
-        android:layout_toStartOf="@+id/school_color_circle"
+        android:layout_toLeftOf="@id/school_color_circle"
+        android:layout_toStartOf="@id/school_color_circle"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:button="@drawable/button_pinned"
         android:contentDescription="@string/pin_content_description"
@@ -45,7 +44,7 @@
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:transitionName="text_top" />
+        android:transitionName="@string/text_top_transition_name" />
 
     <TextView
         android:id="@+id/text_bottom"
@@ -58,7 +57,7 @@
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
         android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:transitionName="text_bottom" />
+        android:transitionName="@string/text_bottom_transition_name" />
 
     <TextView
         android:id="@+id/school_short_name"

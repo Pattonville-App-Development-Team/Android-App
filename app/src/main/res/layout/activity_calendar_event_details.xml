@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity">
 
     <ImageView
         android:id="@+id/school_color_circle"
@@ -14,7 +16,7 @@
         android:contentDescription="@string/school_color_circle"
         android:src="@drawable/event_color_circle"
         android:tint="@color/colorPrimary"
-        android:transitionName="school_color_circle" />
+        android:transitionName="@string/school_color_circle_transition_name" />
 
     <TextView
         android:id="@+id/extra_info"
@@ -30,7 +32,7 @@
         android:drawableStart="@drawable/ic_calendar_text_grey600_36dp"
         android:padding="16dp"
         android:text="@string/extra_info_placeholder"
-        android:transitionName="top_text" />
+        android:transitionName="@string/text_top_transition_name" />
 
     <TextView
         android:id="@+id/time_and_date"
@@ -60,6 +62,6 @@
         android:drawableStart="@drawable/ic_map_marker_grey600_36dp"
         android:padding="16dp"
         android:text="@string/location_placeholder"
-        android:transitionName="text_bottom" />
+        android:transitionName="@string/text_bottom_transition_name" />
 
 </RelativeLayout>

@@ -15,9 +15,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/PSD.NoActionBar"
-            android:windowAllowEnterTransitionOverlap="false"
-            android:windowAllowReturnTransitionOverlap="false">
+            android:theme="@style/PSD.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,9 +35,7 @@
             android:name=".fragments.calendar.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/PSD"
-            android:windowAllowEnterTransitionOverlap="false"
-            android:windowAllowReturnTransitionOverlap="false">
+            android:theme="@style/PSD">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
