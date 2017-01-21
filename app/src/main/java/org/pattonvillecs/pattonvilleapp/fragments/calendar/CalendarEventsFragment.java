@@ -29,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
@@ -127,6 +128,7 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
         eventAdapter = new EventAdapter();
+        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));

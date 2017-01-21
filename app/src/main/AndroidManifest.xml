@@ -35,7 +35,7 @@
             android:name=".fragments.calendar.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/PSD.NoActionBar">
+            android:theme="@style/PSD">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
