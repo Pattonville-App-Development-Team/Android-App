@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
+        System.out.println("Testing Java code!");
         assertEquals(4, 2 + 2);
     }
 }
