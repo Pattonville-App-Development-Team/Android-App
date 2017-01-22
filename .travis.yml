@@ -15,13 +15,13 @@ android:
     - android-24
     - android-23
     - android-22
-    - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-android-24
     - extra-android-m2repository
     - extra-google-m2repository
 
 before_script:
   # Create and start emulator
-  - echo no | android create avd --force -n test -t android-22 --abi default/armeabi-v7a
+  - echo no | android create avd --force -n test -t android-24 --abi default/armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
