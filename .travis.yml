@@ -29,8 +29,8 @@ before_script:
   - adb logcat &
 
 script:
-  - ./gradlew connectedAndroidTest --info
-  - ./gradlew test --info
+  - ./gradlew connectedAndroidTest
+  - ./gradlew test
 
 after_script:
   - "cat $TRAVIS_BUILD_DIR/app/build/test-results/"
