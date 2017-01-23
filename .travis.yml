@@ -30,13 +30,14 @@ before_script:
 
 script:
   - ./gradlew connectedAndroidTest
+  - adb emu kill
   - ./gradlew test
 
 after_script:
   - "cat $TRAVIS_BUILD_DIR/app/build/test-results/"
 
-after_failure: "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
-
+after_failure:
+  - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
