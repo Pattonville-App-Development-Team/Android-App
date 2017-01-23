@@ -8,26 +8,27 @@
     android:orientation="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/PSD.AppBarOverlay"
-        app:elevation="0dp">
+        app:cardCornerRadius="0dp"
+        app:cardElevation="4dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="wrap_content"
+            android:theme="@style/PSD.AppBarOverlay"
+            app:elevation="0dp">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_default" />
+    </android.support.v7.widget.CardView>
 
-        <include layout="@layout/toolbar_shadow" />
-    </FrameLayout>
+    <include layout="@layout/content_default" />
 
 </LinearLayout>
