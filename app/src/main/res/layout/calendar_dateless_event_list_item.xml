@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/event_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,9 +16,10 @@
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
-        android:contentDescription="@string/school_color_circle"
         android:src="@drawable/event_color_circle"
-        android:tint="@color/colorPrimary" />
+        android:tint="@color/colorPrimary"
+        android:transitionName="@string/school_color_circle_transition_name"
+        tools:ignore="ContentDescription" />
 
     <ToggleButton
         android:id="@+id/pinned_button"
@@ -25,8 +27,8 @@
         android:layout_height="36dp"
         android:layout_centerVertical="true"
         android:layout_margin="4dp"
-        android:layout_toLeftOf="@+id/school_color_circle"
-        android:layout_toStartOf="@+id/school_color_circle"
+        android:layout_toLeftOf="@id/school_color_circle"
+        android:layout_toStartOf="@id/school_color_circle"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:button="@drawable/button_pinned"
         android:contentDescription="@string/pin_content_description"
@@ -42,7 +44,9 @@
         android:layout_margin="8dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:text="@string/test_text"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:transitionName="@string/text_top_transition_name" />
 
     <TextView
         android:id="@+id/text_bottom"
@@ -54,7 +58,9 @@
         android:layout_margin="8dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
-        android:textAppearance="?attr/textAppearanceListItemSmall" />
+        android:text="@string/test_text"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:transitionName="@string/text_bottom_transition_name" />
 
     <TextView
         android:id="@+id/school_short_name"
@@ -64,5 +70,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/pinned_button"
-        android:layout_margin="4dp" />
+        android:layout_margin="4dp"
+        android:text="@string/test_text" />
 </RelativeLayout>
