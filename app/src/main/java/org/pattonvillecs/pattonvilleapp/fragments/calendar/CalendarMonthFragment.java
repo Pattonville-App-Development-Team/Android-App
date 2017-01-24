@@ -7,7 +7,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -299,8 +298,8 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        eventRecyclerView.addItemDecoration(dividerItemDecoration);
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        //eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
         eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
