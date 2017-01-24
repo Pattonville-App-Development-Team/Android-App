@@ -37,7 +37,7 @@ public class Faculty {
 
     public String getExtenstionNumber(){ return mExtensionNumber;}
 
-    public void setmExtensionNumber(String extension) {this.mExtensionNumber = "x" + extension;}
+    public void setExtensionNumber(String extension) {this.mExtensionNumber = "x" + extension;}
 
     //dummy data for now
     public Faculty setFaculty() {

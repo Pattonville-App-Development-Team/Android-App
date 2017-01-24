@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,14 +14,12 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.R;
 
-
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
+    private static DataSource school;
     private RecyclerView facultyView;
     private DirectoryAdapter directoryAdapter;
-
-    private static DataSource school;
     //Intent
 
     @Override
@@ -31,7 +28,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_directory_detail);
 
         directoryAdapter = new DirectoryAdapter();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             directoryAdapter.addItem(new DirectoryFlexibleItem(new Faculty().setFaculty()));
         }
 
@@ -70,12 +67,14 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             schoolFax.setText(R.string.directory_info_unavaiable);
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
-        if(school.name.equalsIgnoreCase("pattonville school district")){
+        if (school == DataSource.DISTRICT) {
             websiteView.setText("District Website");
-        } else { websiteView.setText("School Website");}
+        } else {
+            websiteView.setText("School Website");
+        }
 
-        websiteView.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        websiteView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
                 startActivity(browserIntent);
             }
