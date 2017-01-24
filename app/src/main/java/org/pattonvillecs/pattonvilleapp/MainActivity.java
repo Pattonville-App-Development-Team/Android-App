@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment;
 
@@ -200,5 +201,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void launchWebsite(String url) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    }
+
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        int id;
+        if (fragment instanceof NewsFragment) id = R.id.nav_news;
+        else if (fragment instanceof DirectoryFragment) id = R.id.nav_directory;
+        else if (fragment instanceof CalendarFragment) id = R.id.nav_calendar;
+        else if (fragment instanceof CalendarPinnedFragment) id = R.id.nav_calendar;
+        else return;
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(id);
     }
 }
