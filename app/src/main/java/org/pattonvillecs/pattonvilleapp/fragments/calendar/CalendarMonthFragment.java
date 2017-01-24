@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.LinearLayout;
 
 import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -286,22 +285,24 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView called");
         // Inflate the layout for this fragment
-        LinearLayout rootLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_calendar_month, container, false);
+        View rootLayout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
-        //rootLinearLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        //rootLinearLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
+        //rootLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        //rootLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
-        materialCalendarView = (FixedMaterialCalendarView) rootLinearLayout.findViewById(R.id.calendar_calendar);
+        materialCalendarView = (FixedMaterialCalendarView) rootLayout.findViewById(R.id.calendar_calendar);
         setUpMaterialCalendarView(materialCalendarView);
 
-        eventRecyclerView = (RecyclerView) rootLinearLayout.findViewById(R.id.event_recycler_view);
+        eventRecyclerView = (RecyclerView) rootLayout.findViewById(R.id.event_recycler_view);
+        eventRecyclerView.setNestedScrollingEnabled(false);
         eventAdapter = new EventAdapter();
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getContext()));
+        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable("dateSelected");
@@ -318,9 +319,9 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
             default:
                 throw new Error("Why would this ever happen?");
         }
-        SpotlightHelper.showSpotlight(getActivity(), rootLinearLayout, spotlightPadding, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
+        SpotlightHelper.showSpotlight(getActivity(), rootLayout, spotlightPadding, "CalendarMonthFragment_SelectedDayEventList", "Events occurring on the selected day are shown here.", "Events");
 
-        return rootLinearLayout;
+        return rootLayout;
     }
 
     @Override
