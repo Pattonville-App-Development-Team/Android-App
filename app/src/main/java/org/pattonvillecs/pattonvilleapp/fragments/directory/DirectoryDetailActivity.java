@@ -1,26 +1,26 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
+    private RecyclerView facultyView;
+    private DirectoryAdapter directoryAdapter;
 
     private static DataSource school;
     //Intent
@@ -29,6 +29,17 @@ public class DirectoryDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
+
+        directoryAdapter = new DirectoryAdapter();
+        for(int i = 0; i < 10; i++) {
+            directoryAdapter.addItem(new DirectoryFlexibleItem(new Faculty().setFaculty()));
+        }
+
+        facultyView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
+        facultyView.setAdapter(directoryAdapter);
+        facultyView.setLayoutManager(new SmoothScrollLinearLayoutManager(this, OrientationHelper.VERTICAL, false));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
+        facultyView.addItemDecoration(dividerItemDecoration);
 
         Intent intent = getIntent();
         school = (DataSource) intent.getSerializableExtra("School");
@@ -67,63 +78,6 @@ public class DirectoryDetailActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
                 startActivity(browserIntent);
-            }
-        });
-
-
-        ListView listview = (ListView) findViewById(R.id.directory_detail_list_view);
-
-        listview.setAdapter(new BaseAdapter() {
-            List<Faculty> faculties = new ArrayList<Faculty>(10);
-
-            {
-                for (int i = 0; i < 10; i++) {
-                    faculties.add(new Faculty().setFaculty());
-                }
-            }
-
-            @Override
-            public int getCount() {
-                return faculties.size();
-            }
-
-            @Override
-            public Faculty getItem(int i) {
-                return faculties.get(i);
-            }
-
-            @Override
-            public long getItemId(int i) {
-                return i;
-            }
-
-            @Override
-            public View getView(final int i, View convertView, ViewGroup parent) {
-                View view = convertView;
-
-                if (view == null)
-                    view = LayoutInflater.from(DirectoryDetailActivity.this).inflate(R.layout.list_faculty_item, parent, false);
-
-                Faculty f = getItem(i);
-                TextView nameTextView = (TextView) view.findViewById(R.id.directory_facultyName_textView);
-                nameTextView.setText(f.getName());
-
-                TextView departmentTextView = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
-                departmentTextView.setText(f.getDepartment());
-
-                ImageButton emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
-                emailButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        faculties.get(i).setEmail("exampleemail@psdr3.org");
-                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                        emailIntent.setData(Uri.parse("mailto:"));
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{faculties.get(i).getEmail()});
-                        startActivity(emailIntent);
-                    }
-                });
-
-                return view;
             }
         });
     }
