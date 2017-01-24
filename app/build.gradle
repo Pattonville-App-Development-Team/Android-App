@@ -83,7 +83,7 @@ dependencies {
     compile 'de.javakaffee:kryo-serializers:0.41'
 
     //Pin button
-    compile 'com.github.varunest:sparkbutton:1.0.3'
+    compile 'com.github.magneticflux-:sparkbutton:-SNAPSHOT'
 
     testCompile 'junit:junit:4.12'
 }
