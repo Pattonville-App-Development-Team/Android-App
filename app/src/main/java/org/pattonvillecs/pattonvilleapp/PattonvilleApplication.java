@@ -3,12 +3,15 @@ package org.pattonvillecs.pattonvilleapp;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,8 +19,14 @@ import java.util.Set;
  */
 
 public class PattonvilleApplication extends MultiDexApplication implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = PattonvilleApplication.class.getSimpleName();
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
+
+    /**
+     * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
+     */
+    private Map<String, Integer> keyModificationCounts;
 
     public static PattonvilleApplication get(Activity activity) {
         return (PattonvilleApplication) activity.getApplication();
@@ -28,8 +37,16 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         super.onCreate();
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new LinkedList<>();
+        keyModificationCounts = new HashMap<>();
 
         PreferenceUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public int getPreferenceKeyModificationCount(String key) {
+        if (keyModificationCounts.containsKey(key))
+            return keyModificationCounts.get(key);
+        else
+            return 0;
     }
 
     public RequestQueue getRequestQueue() {
@@ -46,6 +63,13 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.i(TAG, "Preference changed: " + key);
+
+        if (keyModificationCounts.containsKey(key))
+            keyModificationCounts.put(key, keyModificationCounts.get(key) + 1);
+        else
+            keyModificationCounts.put(key, 1);
+
         for (OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener : onSharedPreferenceKeyChangedListeners) {
             if (onSharedPreferenceKeyChangedListener.getListenedKeys().contains(key))
                 onSharedPreferenceKeyChangedListener.keyChanged(sharedPreferences, key);
