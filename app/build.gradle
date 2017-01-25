@@ -91,6 +91,9 @@ dependencies {
     compile 'com.esotericsoftware:kryo:3.0.3'
     compile 'de.javakaffee:kryo-serializers:0.41'
 
+    //Pin button
+    compile 'com.github.magneticflux-:sparkbutton:-SNAPSHOT'
+
     //News content parsing is in Jsoup jar
     compile 'org.jsoup:jsoup:1.10.2'
 
