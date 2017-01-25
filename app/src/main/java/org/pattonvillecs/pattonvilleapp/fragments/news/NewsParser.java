@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -24,11 +25,11 @@ public class NewsParser extends DefaultHandler {
     String currentValue = "";
     ArrayList<NewsArticle> items = new ArrayList<>();
     String responseData;
-    int sourceColor;
+    DataSource dataSource;
 
-    public NewsParser(String responseData, int sourceColor) {
+    public NewsParser(String responseData, DataSource dataSource) {
         this.responseData = responseData;
-        this.sourceColor = sourceColor;
+        this.dataSource = dataSource;
     }
 
     public ArrayList<NewsArticle> getItems() {
@@ -60,14 +61,14 @@ public class NewsParser extends DefaultHandler {
         if (item != null) {
             switch (qName.toLowerCase()) {
                 case "item":
-                    item.setSourceColor(sourceColor);
+                    item.setSourceColor(dataSource.calendarColor);
                     items.add(item);
                     break;
                 case "title":
                     item.setTitle(currentValue);
                     break;
                 case "link":
-                    //item.setLink(currentValue);
+                    item.setUrl(dataSource.websiteURL + "/?" + currentValue);
                     break;
                 case "author":
                     //item.setAuthor(currentValue);

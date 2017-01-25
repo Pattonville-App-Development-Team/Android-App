@@ -94,6 +94,9 @@ dependencies {
     //Pin button
     compile 'com.github.magneticflux-:sparkbutton:-SNAPSHOT'
 
+    //News content parsing is in Jsoup jar
+    compile 'org.jsoup:jsoup:1.10.2'
+
     testCompile 'junit:junit:4.12'
 }
 

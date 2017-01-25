@@ -212,6 +212,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (fragment instanceof CalendarPinnedFragment) id = R.id.nav_calendar;
         else return;
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(id);
+
+        if (navigationView != null) {
+            navigationView.setCheckedItem(id);
+        }
     }
 }
