@@ -115,7 +115,7 @@ public class NewsFragment extends Fragment {
                         public void onResponse(String response) {
 
                             Log.d("NewsFragment", "Response Receivied: " + (System.currentTimeMillis() - time));
-                            NewsParser parser = new NewsParser(response, ((DataSource) school).calendarColor);
+                            NewsParser parser = new NewsParser(response, (DataSource) school);
                             parser.getXml();
                             newsArticles.addAll(parser.getItems());
                             updateUI();

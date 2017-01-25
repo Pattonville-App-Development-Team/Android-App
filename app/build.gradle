@@ -35,6 +35,15 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+
+    }
 }
 
 dependencies {
@@ -81,6 +90,9 @@ dependencies {
     //Serialization
     compile 'com.esotericsoftware:kryo:3.0.3'
     compile 'de.javakaffee:kryo-serializers:0.41'
+
+    //News content parsing is in Jsoup jar
+    compile 'org.jsoup:jsoup:1.10.2'
 
     testCompile 'junit:junit:4.12'
 }
