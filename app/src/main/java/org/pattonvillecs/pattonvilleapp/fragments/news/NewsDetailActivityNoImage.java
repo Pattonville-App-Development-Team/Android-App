@@ -36,7 +36,7 @@ public class NewsDetailActivityNoImage extends AppCompatActivity {
 
         mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
 
-        mWebView.loadData(newsArticle.getContent(), "text/html", null);
+        newsArticle.loadContent(mWebView);
     }
 
     @Override
