@@ -9,6 +9,7 @@ public class Faculty {
     private String mName;
     private String mDepartment;
     private String mEmail;
+    private String mExtensionNumber;
 
     public String getName() {
         return mName;
@@ -33,6 +34,10 @@ public class Faculty {
     public void setEmail(String mEmail) {
         this.mEmail = mEmail;
     }
+
+    public String getExtenstionNumber(){ return mExtensionNumber;}
+
+    public void setExtensionNumber(String extension) {this.mExtensionNumber = "x" + extension;}
 
     //dummy data for now
     public Faculty setFaculty() {
