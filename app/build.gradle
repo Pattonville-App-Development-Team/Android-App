@@ -65,7 +65,9 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
 
     //All for iCal4j library
-    compile 'org.mnode.ical4j:ical4j:2.0.0'
+    compile('org.mnode.ical4j:ical4j:2.0.0') {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
     //compile 'backport-util-concurrent:backport-util-concurrent:3.1'
     compile 'commons-codec:commons-codec:1.8'
     compile 'commons-lang:commons-lang:2.6'
