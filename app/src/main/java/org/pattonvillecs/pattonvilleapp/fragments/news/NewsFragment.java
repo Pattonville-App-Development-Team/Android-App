@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,11 +34,11 @@ import java.util.Set;
 
 public class NewsFragment extends Fragment {
 
+    private static int x = 0;
     private RecyclerView mRecyclerView;
-
+    private SwipeRefreshLayout mRefreshLayout;
     private NewsRecyclerViewAdapter mAdapter;
     private ArrayList<NewsArticle> newsArticles;
-
     private long time;
 
     public NewsFragment() {
@@ -64,10 +65,20 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
+        newsArticles = new ArrayList<>();
+
         mRecyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        newsArticles = new ArrayList<>();
+        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateList();
+            }
+        });
+
+        mRefreshLayout.setRefreshing(true);
         updateList();
 
         return root;
@@ -83,13 +94,7 @@ public class NewsFragment extends Fragment {
             }
         });
 
-        mAdapter = new NewsRecyclerViewAdapter(newsArticles, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
+        mAdapter = new NewsRecyclerViewAdapter(newsArticles);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -98,7 +103,7 @@ public class NewsFragment extends Fragment {
 
         newsArticles.clear();
 
-        Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(getContext());
+        final Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(getContext());
         selectedSchools.add(DataSource.DISTRICT);
 
         for (final Object school : selectedSchools.toArray()) {
@@ -128,23 +133,22 @@ public class NewsFragment extends Fragment {
             queue.add(stringRequest);
         }
 
+        mRefreshLayout.setRefreshing(false);
+
     }
 
     class NewsRecyclerViewAdapter extends RecyclerView.Adapter<org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder> {
 
-        private final View.OnClickListener onClickListener;
         private ArrayList<NewsArticle> newsArticles;
 
-        NewsRecyclerViewAdapter(ArrayList<NewsArticle> NewsArticles, View.OnClickListener onClickListener) {
+        NewsRecyclerViewAdapter(ArrayList<NewsArticle> NewsArticles) {
             this.newsArticles = NewsArticles;
-            this.onClickListener = onClickListener;
         }
 
         @Override
         public org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_news_listview_item, parent, false);
-            v.setOnClickListener(onClickListener);
             return new org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment.NewsRecyclerViewAdapter.NewsArticleViewHolder(v);
         }
 
