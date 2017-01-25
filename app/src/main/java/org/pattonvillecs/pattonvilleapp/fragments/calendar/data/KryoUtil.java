@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.calendar;
+package org.pattonvillecs.pattonvilleapp.fragments.calendar.data;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
@@ -72,7 +72,7 @@ public final class KryoUtil {
     private KryoUtil() {
     }
 
-    static void registerKryoClasses(Kryo kryo) {
+    public static void registerKryoClasses(Kryo kryo) {
         kryo.register(CalendarData.class, new Serializer<CalendarData>() {
             @Override
             public void write(Kryo kryo, Output output, CalendarData object) {

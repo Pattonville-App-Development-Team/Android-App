@@ -16,6 +16,8 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarDownloadAndParseTask;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -49,15 +51,15 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
-    void showProgressBar() {
+    public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    void hideProgressBar() {
+    public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 
-    ProgressBar getProgressBar() {
+    public ProgressBar getProgressBar() {
         return progressBar;
     }
 

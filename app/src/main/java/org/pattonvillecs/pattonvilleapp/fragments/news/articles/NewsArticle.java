@@ -34,6 +34,7 @@ public class NewsArticle implements Parcelable {
         url = "www.psdr3.org";
 
     }
+
     public NewsArticle(Parcel parcel) {
 
         String[] strings = parcel.createStringArray();

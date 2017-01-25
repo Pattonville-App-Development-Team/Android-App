@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.calendar;
+package org.pattonvillecs.pattonvilleapp.fragments.calendar.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

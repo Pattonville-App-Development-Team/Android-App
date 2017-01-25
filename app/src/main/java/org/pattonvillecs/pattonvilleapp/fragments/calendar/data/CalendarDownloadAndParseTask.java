@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.calendar;
+package org.pattonvillecs.pattonvilleapp.fragments.calendar.data;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -32,6 +32,7 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.io.File;
