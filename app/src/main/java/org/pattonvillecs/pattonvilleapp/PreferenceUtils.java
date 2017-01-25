@@ -69,12 +69,4 @@ public final class PreferenceUtils {
     public static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
-
-    public static void registerOnSharedPreferenceChangeListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    public static void unregisterOnSharedPreferenceChangeListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(listener);
-    }
 }
