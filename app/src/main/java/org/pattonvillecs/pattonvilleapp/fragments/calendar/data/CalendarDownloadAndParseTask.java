@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.volley.Cache;
@@ -73,7 +74,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         this.kryo = PattonvilleApplication.get(calendarFragment.getActivity()).borrowKryo();
     }
 
-    private static String fixICalStrings(String iCalString) {
+    public static String fixICalStrings(@NonNull String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
