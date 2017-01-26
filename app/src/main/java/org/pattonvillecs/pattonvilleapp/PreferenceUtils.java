@@ -21,7 +21,20 @@ public final class PreferenceUtils {
     }
 
     public static Set<DataSource> getSelectedSchoolsSet(Context context) {
-        return Stream.of(getSharedPreferences(context).getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<String>()))
+        return getSelectedSchoolsSet(getSharedPreferences(context));
+    }
+
+    public static boolean getPowerSchoolIntent(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    public static Set<DataSource> getSelectedSchoolsSet(SharedPreferences sharedPreferences) {
+        return Stream.of(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<String>()))
                 .map(new Function<String, DataSource>() {
                     @Override
                     public DataSource apply(String s) {
@@ -59,14 +72,5 @@ public final class PreferenceUtils {
                         value1.add(value2);
                     }
                 });
-    }
-
-    public static boolean getPowerSchoolIntent(Context context) {
-        SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
-    }
-
-    public static SharedPreferences getSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 }
