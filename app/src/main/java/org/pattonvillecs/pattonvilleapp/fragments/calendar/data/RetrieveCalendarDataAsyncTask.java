@@ -1,6 +1,5 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.data;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,18 +36,16 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarD
 public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, HashMultimap<SerializableCalendarDay, VEvent>> {
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
-    private final Activity activity;
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
 
-    public RetrieveCalendarDataAsyncTask(Activity activity) {
-        this.activity = activity;
+    public RetrieveCalendarDataAsyncTask(PattonvilleApplication pattonvilleApplication) {
+        this.pattonvilleApplication = pattonvilleApplication;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        this.pattonvilleApplication = PattonvilleApplication.get(activity);
         this.kryo = pattonvilleApplication.borrowKryo();
     }
 
@@ -56,12 +53,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     protected HashMultimap<SerializableCalendarDay, VEvent> doInBackground(DataSource... params) {
         DataSource dataSource = params[0];
 
-        NetworkInfo networkInfo = ((ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        Log.i(TAG, "Getting calendar for " + dataSource.shortName);
+
+        NetworkInfo networkInfo = ((ConnectivityManager) pattonvilleApplication.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         boolean hasInternet = networkInfo != null && networkInfo.isConnected();
 
         // Begin caching operations.
 
-        File calendarDataCache = new File(this.activity.getCacheDir(), dataSource.shortName + ".bin");
+        File calendarDataCache = new File(this.pattonvilleApplication.getCacheDir(), dataSource.shortName + ".bin");
 
         boolean cacheExists = calendarDataCache.exists();
         long cacheAge = System.currentTimeMillis() - calendarDataCache.lastModified();
@@ -70,14 +69,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
-            HashMultimap<SerializableCalendarDay, VEvent> data = null;
+            HashMultimap<SerializableCalendarDay, VEvent> calendarData = null;
 
             Input input = null;
             try {
                 input = new Input(new FileInputStream(calendarDataCache));
 
                 //noinspection unchecked
-                data = this.kryo.readObject(input, HashMultimap.class);
+                calendarData = this.kryo.readObject(input, HashMultimap.class);
                 isCacheCorrupt = false;
             } catch (FileNotFoundException e) {
                 Log.wtf(TAG, "This should never happen. The file should already be checked to exist before opening.");
@@ -94,8 +93,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             }
 
             if (!isCacheCorrupt) {
-                assert data != null;
-                return data;
+                assert calendarData != null;
+
+                Log.i(TAG, "Got calendar for " + dataSource.shortName);
+                return calendarData;
             }
         }
 
@@ -150,6 +151,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                     }
                 }
 
+                Log.i(TAG, "Got calendar for " + dataSource.shortName);
                 return calendarData;
             }
         }

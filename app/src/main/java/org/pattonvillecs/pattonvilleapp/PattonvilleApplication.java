@@ -2,6 +2,7 @@ package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -9,9 +10,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
+import com.google.common.collect.HashMultimap;
+
+import net.fortuna.ical4j.model.component.VEvent;
 
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
+import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +36,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
+    private Map<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -44,8 +54,24 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         onSharedPreferenceKeyChangedListeners = new LinkedList<>();
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
+        calendarData = new EnumMap<>(DataSource.class);
 
         PreferenceUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
+        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
+            @Override
+            public void keyChanged(SharedPreferences sharedPreferences, String key) {
+                Set<DataSource> dataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+
+                dataSources.removeAll(calendarData.keySet()); //Remove DataSources that are already present
+
+                for (DataSource dataSource : dataSources) {
+                    new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+                }
+
+                //TODO: PLAN THE DATA FLOW!!!
+            }
+        });
     }
 
     public synchronized Kryo borrowKryo() {
@@ -77,7 +103,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.i(TAG, "Preference changed: " + key);
+        Log.i(TAG, "Preference changed: " + key + " modifications are now: " + keyModificationCounts);
 
         if (keyModificationCounts.containsKey(key))
             keyModificationCounts.put(key, keyModificationCounts.get(key) + 1);
@@ -90,9 +116,4 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         }
     }
 
-    public interface OnSharedPreferenceKeyChangedListener {
-        Set<String> getListenedKeys();
-
-        void keyChanged(SharedPreferences sharedPreferences, String key);
-    }
 }
