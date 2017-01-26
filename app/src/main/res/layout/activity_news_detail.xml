@@ -15,7 +15,12 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_calendar_event_details">
 
-        <include layout="@layout/activity_news_detail_content" />
+        <WebView
+            android:id="@+id/newsDetail_webView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="9dp"
+            android:isScrollContainer="false" />
 
     </android.support.v4.widget.NestedScrollView>
 
