@@ -32,6 +32,7 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
@@ -69,17 +70,14 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         this.requestQueue = requestQueue;
         ConnectivityManager cm = (ConnectivityManager) calendarFragment.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetwork = cm.getActiveNetworkInfo();
-        this.kryo = new Kryo();
-        this.kryo.setRegistrationRequired(true);
-
-        KryoUtil.registerKryoClasses(this.kryo);
+        this.kryo = PattonvilleApplication.get(calendarFragment.getActivity()).borrowKryo();
     }
 
     private static String fixICalStrings(String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
-    private HashMultimap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
+    public static HashMultimap<SerializableCalendarDay, VEvent> parseFile(String iCalFile) {
         Log.d(TAG, "Initial");
         HashMultimap<SerializableCalendarDay, VEvent> map = HashMultimap.create();//HashMultimap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
@@ -146,6 +144,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         Log.d(TAG, "OnPostExecute called");
         calendarFragment.setCalendarData(calendarData);
         calendarFragment.hideProgressBar();
+        PattonvilleApplication.get(calendarFragment.getActivity()).releaseKryo(this.kryo);
     }
 
     @Override
@@ -153,6 +152,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         super.onCancelled(calendarData);
         Log.d(TAG, "OnCancelled called");
         calendarFragment.hideProgressBar();
+        PattonvilleApplication.get(calendarFragment.getActivity()).releaseKryo(this.kryo);
     }
 
     @SafeVarargs

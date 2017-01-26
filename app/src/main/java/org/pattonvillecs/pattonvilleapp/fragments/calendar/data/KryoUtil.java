@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.serializers.CollectionSerializer;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.google.common.collect.HashMultimap;
@@ -72,7 +73,7 @@ public final class KryoUtil {
     private KryoUtil() {
     }
 
-    public static void registerKryoClasses(Kryo kryo) {
+    public static Kryo registerKryoClasses(Kryo kryo) {
         kryo.register(CalendarData.class, new Serializer<CalendarData>() {
             @Override
             public void write(Kryo kryo, Output output, CalendarData object) {
@@ -395,5 +396,15 @@ public final class KryoUtil {
         kryo.register(ArrayList.class);
         kryo.register(String[].class);
         kryo.register(Date.class);
+
+        return kryo;
+    }
+
+    public static class KryoRegistrationFactory implements KryoFactory {
+
+        @Override
+        public Kryo create() {
+            return registerKryoClasses(new Kryo());
+        }
     }
 }

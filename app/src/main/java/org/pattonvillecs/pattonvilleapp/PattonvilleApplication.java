@@ -7,6 +7,10 @@ import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.pool.KryoPool;
+
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,6 +26,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
+    private KryoPool kryoPool;
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -38,8 +43,17 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new LinkedList<>();
         keyModificationCounts = new HashMap<>();
+        kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
 
         PreferenceUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public synchronized Kryo borrowKryo() {
+        return kryoPool.borrow();
+    }
+
+    public synchronized void releaseKryo(Kryo kryo) {
+        kryoPool.release(kryo);
     }
 
     public int getPreferenceKeyModificationCount(String key) {
