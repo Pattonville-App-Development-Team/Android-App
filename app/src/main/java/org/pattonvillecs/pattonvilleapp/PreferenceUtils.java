@@ -14,6 +14,8 @@ import java.util.Set;
 
 public final class PreferenceUtils {
 
+    public static final String APP_INTRO_FIRST_START_PREFERENCE_KEY = "first_start";
+
     private PreferenceUtils() {
     }
 
