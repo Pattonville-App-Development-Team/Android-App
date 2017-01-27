@@ -20,6 +20,8 @@ public class NewsDetailActivityNoImage extends AppCompatActivity {
     private TextView mTextView;
     private WebView mWebView;
 
+    private NewsArticle newsArticle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,21 +32,39 @@ public class NewsDetailActivityNoImage extends AppCompatActivity {
 
         mTextView = (TextView) findViewById(R.id.newsDetail_dateView);
 
-        NewsArticle newsArticle = getIntent().getParcelableExtra("NewsArticle");
+        newsArticle = getIntent().getParcelableExtra("NewsArticle");
 
         setTitle(newsArticle.getTitle());
 
         mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
 
-        mWebView.loadData(newsArticle.getContent(), "text/html", null);
+        newsArticle.loadContent(mWebView);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.activity_newsdetail, menu);
-        MenuItem item = menu.findItem(R.id.newsDetail_share);
-        item.setIntent(Intent.createChooser(new Intent(android.content.Intent.ACTION_SEND).setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "http://www.psdr3.org"), "Share Link:"));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.newsDetail_share:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, newsArticle.getUrl());
+                startActivity(Intent.createChooser(sharingIntent, "Share Article:"));
+                break;
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
         return true;
     }
 }
