@@ -6,7 +6,9 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.webkit.WebView;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.util.Date;
 
@@ -107,6 +109,7 @@ public class NewsArticle implements Parcelable {
 
         public NewsContent(WebView webView) {
 
+            Log.e("News Parsing", "Created NewsContent Aysnc");
             this.webView = webView;
         }
 
@@ -115,15 +118,22 @@ public class NewsArticle implements Parcelable {
 
             try {
 
-                String result = Jsoup.connect(strings[0]).get()
-                        .getElementsByTag("article").last()
+
+                Connection resultC = Jsoup.connect(strings[0]);
+                Log.e("News Parsing", "Jsoup Connected");
+
+                Document resultD = resultC.get();
+
+                Log.e("News Parsing", "Got Document");
+
+                String result = resultD.getElementsByTag("article").last()
                         .getElementsByTag("table").last()
                         .getElementsByTag("tbody").first()
                         .getElementsByTag("tr").get(1)
                         .getElementsByTag("td").get(1)
                         .html();
 
-                Log.e("NewsArticle", result);
+                Log.e("News Parsing", "Got HTML");
                 return result;
 
             } catch (Exception e) {
@@ -134,7 +144,10 @@ public class NewsArticle implements Parcelable {
 
         @Override
         protected void onPostExecute(String s) {
+
+            Log.e("News Parsing", "Starting WebView load");
             webView.loadData(s, "text/html", null);
+            Log.e("News Parsing", "Loaded Data?");
         }
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -45,6 +46,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
 
+        Log.e("News Parsing", "Starting");
         newsArticle.loadContent(mWebView);
     }
 
