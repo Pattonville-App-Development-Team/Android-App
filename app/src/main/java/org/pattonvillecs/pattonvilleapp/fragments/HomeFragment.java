@@ -102,7 +102,6 @@ public class HomeFragment extends Fragment {
 
         for (int i = 0; i < 3; i++) {
             HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(sampleImages[i]));
             newsListItem.put("headline", sampleHeadlines[i]);
             homeNewsList.add(newsListItem);
         }
@@ -134,11 +133,11 @@ public class HomeFragment extends Fragment {
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
 
-        String[] homeNewsListFrom = {"image", "headline"};
+        String[] homeNewsListFrom = {"headline"};
         String[] homeEventListFrom = {"event"};
         String[] homePinnedListFrom = {"pin"};
 
-        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+        int[] homeNewsListTo = {R.id.home_news_listview_item_textView};
         int[] homeEventListTo = {R.id.home_upcoming_events_listview_textview};
         int[] homePinnedEventTo = {R.id.home_pinned_events_listview_textview};
 

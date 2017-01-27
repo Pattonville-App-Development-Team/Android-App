@@ -91,12 +91,10 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         }
         String[] homeNewsListFrom = {"image", "headline"};
 
-        String[] homeEventListFrom = {"event"};
-
-        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+        int[] homeNewsListTo = {R.id.schools_listview_item_imageView, R.id.schools_listview_item_textView};
 
 
-        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(layout.getContext(), homeNewsList, R.layout.home_news_listview_item, homeNewsListFrom, homeNewsListTo);
+        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(layout.getContext(), homeNewsList, R.layout.schools_listview_item, homeNewsListFrom, homeNewsListTo);
         mListView.setAdapter(newsListSimpleAdapter);
         mListView.setOnItemClickListener(this);
 
