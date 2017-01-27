@@ -175,14 +175,15 @@ public class NewsFragment extends Fragment {
 
             NewsArticle mArticle;
             TextView titleView;
-            ImageView imageView, sourceView;
+            ImageView sourceView;
+            TextView schoolIDText;
 
             NewsArticleViewHolder(View view) {
                 super(view);
 
                 titleView = (TextView) itemView.findViewById(R.id.home_news_listview_item_textView);
-                imageView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_imageView);
-                sourceView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_color);
+                sourceView = (ImageView) itemView.findViewById(R.id.news_front_imageview);
+                schoolIDText = (TextView) itemView.findViewById(R.id.news_circle_school_id);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -204,8 +205,8 @@ public class NewsFragment extends Fragment {
 
             void bind(NewsArticle item) {
                 titleView.setText(item.getTitle());
-                imageView.setImageResource(R.drawable.test_news_1);
-                sourceView.setBackgroundColor(item.getSourceColor());
+                sourceView.setColorFilter(item.getSourceColor());
+                schoolIDText.setText(item.getTitle().substring(0, 2).toUpperCase());
                 mArticle = item;
             }
         }
