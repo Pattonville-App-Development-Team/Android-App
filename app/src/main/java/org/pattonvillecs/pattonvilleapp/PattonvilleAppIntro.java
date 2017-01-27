@@ -1,6 +1,5 @@
 package org.pattonvillecs.pattonvilleapp;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,6 +29,7 @@ public class PattonvilleAppIntro extends AppIntro2 {
 
         addSlide(AppIntro2Fragment.newInstance("", "Tap the check mark to enter the app...", R.drawable.psd_logo, color));
 
+
         showSkipButton(false);
         showStatusBar(false);
 
@@ -47,6 +47,6 @@ public class PattonvilleAppIntro extends AppIntro2 {
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
 
-        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }
