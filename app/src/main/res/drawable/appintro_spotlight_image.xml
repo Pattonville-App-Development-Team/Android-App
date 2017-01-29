@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/appintro_spotlight_image_corner_radius" />
+            <size
+                android:width="@dimen/appintro_spotlight_image_background_size"
+                android:height="@dimen/appintro_spotlight_image_background_size" />
+            <gradient
+                android:centerColor="#FF000000"
+                android:centerX="0"
+                android:centerY="1"
+                android:gradientRadius="285dp"
+                android:startColor="#00000000"
+                android:type="radial"
+                android:useLevel="false" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|left|start">
+        <shape
+            android:shape="rectangle"
+            android:tint="@color/colorPrimary">
+            <corners
+                android:bottomLeftRadius="@dimen/appintro_spotlight_image_corner_radius"
+                android:topRightRadius="@dimen/appintro_spotlight_image_arc_outer_radius" />
+            <size
+                android:width="@dimen/appintro_spotlight_image_arc_outer_radius"
+                android:height="@dimen/appintro_spotlight_image_arc_outer_radius" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|left|start">
         <shape
             android:shape="rectangle"
             android:tint="@color/colorAccent">
-            <corners android:radius="2dp" />
+            <corners
+                android:bottomLeftRadius="@dimen/appintro_spotlight_image_corner_radius"
+                android:topRightRadius="@dimen/appintro_spotlight_image_arc_inner_radius" />
             <size
-                android:width="100dp"
-                android:height="100dp" />
-        </shape>
-    </item>
-    <item>
-        <shape
-            android:innerRadius="50dp"
-            android:shape="ring"
-            android:thickness="15dp"
-            android:tint="@color/colorPrimary">
-
+                android:width="@dimen/appintro_spotlight_image_arc_inner_radius"
+                android:height="@dimen/appintro_spotlight_image_arc_inner_radius" />
         </shape>
     </item>
 </layer-list>
