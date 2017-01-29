@@ -25,7 +25,7 @@ public class PattonvilleAppIntro extends AppIntro2 {
 
         addSlide(AppIntro2Fragment.newInstance("Welcome!", "", R.drawable.psd_logo, color));
 
-        addSlide(AppIntro2Fragment.newInstance("The Spotlight", "The Spotlight explains features of the app when you first encounter them.", R.drawable.psd_logo, color));
+        addSlide(AppIntro2Fragment.newInstance("The Spotlight", "The Spotlight explains features of the app when you first encounter them.", R.drawable.appintro_spotlight_image, color));
 
         addSlide(AppIntro2Fragment.newInstance("", "Tap the check mark to enter the app...", R.drawable.psd_logo, color));
 
