@@ -188,17 +188,12 @@ public class NewsFragment extends Fragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("NewsFragment", "Opening NewsDetailActivityNoImage");
+                        Log.e("NewsFragment", "Opening NewsDetailActivity");
 
-                        if (true) {
-                            Intent intent = new Intent(getContext(), NewsDetailActivityNoImage.class);
-                            intent.putExtra("NewsArticle", mArticle);
-                            startActivity(intent);
-                        } else {
-                            Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-                            intent.putExtra("NewsArticle", mArticle);
-                            startActivity(intent);
-                        }
+                        Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                        intent.putExtra("NewsArticle", mArticle);
+                        startActivity(intent);
+
                     }
                 });
             }
