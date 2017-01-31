@@ -61,4 +61,17 @@
     <string name="see_more">See More</string>
     <string name="school_color_circle">School color circle</string>
     <string name="test_date">04/20/2017</string>
+
+    <string name="nav_menu_title_home">Home</string>
+    <string name="nav_menu_title_news">News</string>
+    <string name="nav_menu_title_calendar">Calendar</string>
+    <string name="nav_menu_title_directory">Directory</string>
+    <string name="nav_menu_title_district_website">District Website</string>
+    <string name="nav_menu_title_nutrislice">Nutrislice (Menus)</string>
+    <string name="nav_menu_title_powerschool">Powerschool</string>
+    <string name="nav_menu_title_peachar">Peachjar (E-Flyers)</string>
+    <string name="nav_menu_title_activities">Activities</string>
+    <string name="nav_menu_title_notifications">Notifications</string>
+    <string name="nav_menu_title_settings">Settings</string>
+    <string name="nav_menu_title_feedback">Feedback</string>
 </resources>
