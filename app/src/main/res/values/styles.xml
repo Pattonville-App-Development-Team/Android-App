@@ -8,12 +8,12 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
-    <style name="PSD.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="PSD.NoActionBar" parent="PSD">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="PSD.PreferenceFixTheme.NoActionBar" parent="PreferenceFixTheme.Light.NoActionBar" />
+    <style name="PSD.PreferenceFixTheme.NoActionBar" parent="PreferenceFixTheme.DayNight.NoActionBar" />
 
     <style name="PSD.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
