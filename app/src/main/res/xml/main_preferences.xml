@@ -8,7 +8,7 @@
             android:entries="@array/schools"
             android:entryValues="@array/schools"
             android:key="@string/key_school_selection"
-            android:summary="Select schools to recieve information from"
+            android:summary="Select schools to receive information from"
             android:title="Select Schools">
 
         </MultiSelectListPreference>

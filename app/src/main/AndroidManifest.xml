@@ -30,7 +30,7 @@
         <activity
             android:name=".PattonvilleAppIntro"
             android:label="@string/app_intro"
-            android:theme="@style/PSD.NoActionBar" />
+            android:theme="@style/PSD.PreferenceFixTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
