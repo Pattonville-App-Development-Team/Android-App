@@ -109,7 +109,7 @@
         <ListView
             android:id="@+id/home_upcoming_events_listview"
             android:layout_width="match_parent"
-            android:layout_height="192dp"
+            android:layout_height="204dp"
             android:nestedScrollingEnabled="false" />
 
 
@@ -155,7 +155,7 @@
         <ListView
             android:id="@+id/home_pinned_events_listview"
             android:layout_width="match_parent"
-            android:layout_height="192dp"
+            android:layout_height="204dp"
             android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
