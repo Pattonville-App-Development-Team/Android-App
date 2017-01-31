@@ -7,6 +7,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
@@ -59,6 +61,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
     private EventAdapter eventAdapter;
     private CalendarFragment calendarFragment;
     private CalendarData calendarData = new CalendarData();
+    private NestedScrollView nestedScrollView;
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -139,6 +142,19 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 dateSelected = date;
                 eventAdapter.clear();
                 eventAdapter.addItems(0, calendarData.getItemsForDay(date));
+            }
+        });
+        materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+                if (nestedScrollView != null) {
+                    nestedScrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            nestedScrollView.fullScroll(View.FOCUS_UP);
+                        }
+                    });
+                }
             }
         });
 
@@ -310,9 +326,12 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         switch (getResources().getConfiguration().orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 spotlightPadding = 20;
+                nestedScrollView = (NestedScrollView) rootLayout;
+                nestedScrollView.setSmoothScrollingEnabled(true);
                 break;
             case Configuration.ORIENTATION_LANDSCAPE:
                 spotlightPadding = -250;
+                nestedScrollView = null;
                 break;
             case Configuration.ORIENTATION_UNDEFINED:
             default:
