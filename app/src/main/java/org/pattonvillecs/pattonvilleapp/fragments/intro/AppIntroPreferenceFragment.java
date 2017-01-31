@@ -79,7 +79,7 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRetainInstance(true);
+        setRetainInstance(false); //Undo from super
 
         if (getArguments() != null && getArguments().size() != 0) {
             drawable = getArguments().getInt(ARG_DRAWABLE);
