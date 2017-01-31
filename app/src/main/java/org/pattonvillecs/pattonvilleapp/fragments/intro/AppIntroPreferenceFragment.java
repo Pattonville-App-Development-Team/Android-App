@@ -18,8 +18,14 @@ import org.pattonvillecs.pattonvilleapp.R;
  * Created by skaggsm on 1/31/17.
  */
 public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
-    private int drawable, bgColor, titleColor, descColor, layoutId;
-    private String title, titleTypeface, description, descTypeface;
+    private int drawable;
+    private int bgColor;
+    private int titleColor;
+    private int descColor;
+    private String title;
+    private String titleTypeface;
+    private String description;
+    private String descTypeface;
 
     public static AppIntroPreferenceFragment newInstance(String title, String description, int color) {
         AppIntroPreferenceFragment appIntroPreferenceFragment = new AppIntroPreferenceFragment();
