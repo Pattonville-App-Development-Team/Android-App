@@ -13,7 +13,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="PSD.PreferenceFixTheme.NoActionBar" parent="PreferenceFixTheme.DayNight.NoActionBar" />
+    <style name="PSD.PreferenceFixTheme.NoActionBar" parent="PreferenceFixTheme.NoActionBar" />
 
     <style name="PSD.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
