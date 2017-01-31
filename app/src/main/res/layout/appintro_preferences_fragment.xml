@@ -31,12 +31,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="32dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             app:cardCornerRadius="2dp"
-            app:cardMaxElevation="4dp"
+            app:cardMaxElevation="8dp"
             app:cardUseCompatPadding="true"
-            app:elevation="4dp">
+            app:elevation="8dp">
 
             <FrameLayout
                 android:id="@+id/content_frame"
