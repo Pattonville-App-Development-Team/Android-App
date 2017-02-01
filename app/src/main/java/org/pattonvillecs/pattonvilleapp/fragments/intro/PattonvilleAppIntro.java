@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.fragments.intro;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntro2Fragment;
 
-import org.pattonvillecs.pattonvilleapp.fragments.intro.AppIntroPreferenceFragment;
+import org.pattonvillecs.pattonvilleapp.R;
 
 /**
  * Created by skaggsm on 1/27/17.

@@ -26,6 +26,7 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
     private String titleTypeface;
     private String description;
     private String descTypeface;
+    private InitialPreferenceFragment fragment;
 
     public static AppIntroPreferenceFragment newInstance(String title, String description, int color) {
         AppIntroPreferenceFragment appIntroPreferenceFragment = new AppIntroPreferenceFragment();
@@ -68,11 +69,20 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
         }
         mainLayout.setBackgroundColor(bgColor);
 
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, new InitialPreferenceFragment());
-        transaction.commit();
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            fragment = new InitialPreferenceFragment();
+            transaction.replace(R.id.content_frame, fragment);
+            transaction.commit();
+        }
 
         return view;
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override
@@ -115,13 +125,13 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt(ARG_DRAWABLE, drawable);
         outState.putString(ARG_TITLE, title);
         outState.putString(ARG_DESC, description);
         outState.putInt(ARG_BG_COLOR, bgColor);
         outState.putInt(ARG_TITLE_COLOR, titleColor);
         outState.putInt(ARG_DESC_COLOR, descColor);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
