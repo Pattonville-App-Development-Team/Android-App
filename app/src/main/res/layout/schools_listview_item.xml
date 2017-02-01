@@ -38,11 +38,5 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/schools_listview_item_color"
-        android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:background="#F0F000" />
-
 </LinearLayout>
 
