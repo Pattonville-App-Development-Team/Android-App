@@ -236,12 +236,22 @@ public class NewsFragment extends Fragment {
                     case -1146130:
                         schoolIDText.setText("BW");
                         break;
+                    case -10496:
+                        schoolIDText.setText("RE");
+                        break;
+                    case -8355840:
+                        schoolIDText.setText("WB");
+                        break;
+                    case -16777011:
+                        schoolIDText.setText("RA");
+                        break;
+                    case -29696:
+                        schoolIDText.setText("HO");
+                        break;
 
                 }
                 sourceView.setColorFilter(item.getSourceColor());
                 //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getSourceColor());
-                //schoolIDText.setText(item.getTitle().substring(0, 2).toUpperCase());
-
 
                 String articleDate = (new SimpleDateFormat("MM/dd/yy", Locale.US)).format(item.getPublishDate());
 
