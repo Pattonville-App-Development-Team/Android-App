@@ -65,7 +65,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             case R.id.newsDetail_share:
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, newsArticle.getUrl());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, newsArticle.getPublicUrl());
                 startActivity(Intent.createChooser(sharingIntent, "Share Article:"));
                 break;
 
