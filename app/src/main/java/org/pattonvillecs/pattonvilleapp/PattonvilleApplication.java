@@ -17,6 +17,8 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
@@ -31,7 +33,7 @@ import java.util.Set;
  * Created by skaggsm on 12/19/16.
  */
 
-public class PattonvilleApplication extends MultiDexApplication implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PattonvilleApplication extends MultiDexApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
@@ -116,4 +118,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         }
     }
 
+    @Override
+    public void pause(PauseableListener pauseableListener) {
+    }
+
+    @Override
+    public void resume(PauseableListener pauseableListener) {
+    }
 }

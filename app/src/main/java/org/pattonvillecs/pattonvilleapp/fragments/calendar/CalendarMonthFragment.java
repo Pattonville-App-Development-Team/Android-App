@@ -34,7 +34,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
@@ -58,14 +57,27 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    private static final Method onDateClickedMethod;
+
+    static {
+        Method method = null;
+        try {
+            method = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        onDateClickedMethod = method;
+    }
+
     private FixedMaterialCalendarView materialCalendarView;
     private RecyclerView eventRecyclerView;
     private CalendarDay dateSelected;
     private EventAdapter eventAdapter;
     private CalendarData calendarData = new CalendarData();
-    private int currentCalendarPreferenceModificationCount;
     private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
+
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -359,29 +371,29 @@ public class CalendarMonthFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.i(TAG, "onPause called");
-        currentCalendarPreferenceModificationCount = pattonvilleApplication.getPreferenceKeyModificationCount(PreferenceUtils.SCHOOL_SELECTION_PREFERENCE_KEY);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop called");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume called");
-        int newCalendarPreferenceModificationCount = pattonvilleApplication.getPreferenceKeyModificationCount(PreferenceUtils.SCHOOL_SELECTION_PREFERENCE_KEY);
-
-        if (currentCalendarPreferenceModificationCount != newCalendarPreferenceModificationCount) {
-        }
     }
 
     private void callOnDateClicked(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
         try {
-            Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-            toCall.setAccessible(true);
-            toCall.invoke(materialCalendarView, calendarDay, true);
+            onDateClickedMethod.invoke(materialCalendarView, calendarDay, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Deprecated
     public void updateCalendarData(Map<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
         for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet()) {
             this.calendarData.getCalendars().put(entry.getKey(), entry.getValue());
