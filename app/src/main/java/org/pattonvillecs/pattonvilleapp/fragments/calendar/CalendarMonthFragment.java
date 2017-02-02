@@ -41,6 +41,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.listeners.calendar.CalendarParsingUpdateData;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -58,6 +60,7 @@ public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
     private static final Method onDateClickedMethod;
+    private static final long CALENDAR_LISTENER_ID = 1203481279561092801L;
 
     static {
         Method method = null;
@@ -77,6 +80,7 @@ public class CalendarMonthFragment extends Fragment {
     private CalendarData calendarData = new CalendarData();
     private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
+    private PauseableListener<CalendarParsingUpdateData> listener;
 
 
     public CalendarMonthFragment() {
@@ -107,6 +111,22 @@ public class CalendarMonthFragment extends Fragment {
         setHasOptionsMenu(true);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<CalendarParsingUpdateData>(true) {
+            @Override
+            public long getID() {
+                return CALENDAR_LISTENER_ID;
+            }
+
+            @Override
+            protected void onReceiveData(CalendarParsingUpdateData data) {
+                super.onReceiveData(data);
+            }
+
+            @Override
+            protected void onResume(CalendarParsingUpdateData data) {
+                super.onResume(data);
+            }
+        };
     }
 
     @Override
@@ -365,12 +385,15 @@ public class CalendarMonthFragment extends Fragment {
 
         materialCalendarView.setCurrentDate(dateSelected);
         callOnDateClicked(materialCalendarView, dateSelected);
+
+        listener.attach(pattonvilleApplication);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.i(TAG, "onPause called");
+        listener.pause();
     }
 
     @Override
@@ -380,9 +403,17 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView called");
+        listener.unattach();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume called");
+        listener.resume();
     }
 
     private void callOnDateClicked(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
