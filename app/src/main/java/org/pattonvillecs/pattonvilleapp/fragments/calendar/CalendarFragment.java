@@ -13,11 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarDownloadAndParseTask;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -146,7 +143,7 @@ public class CalendarFragment extends Fragment {
             viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
         } else {
             //noinspection unchecked
-            currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+            //currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
         }
 
         return view;
