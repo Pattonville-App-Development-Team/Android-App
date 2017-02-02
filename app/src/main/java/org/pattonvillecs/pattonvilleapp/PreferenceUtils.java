@@ -21,6 +21,7 @@ public final class PreferenceUtils {
 
     public static Set<DataSource> getSelectedSchoolsSet(Context context) {
         final EnumSet<DataSource> enumSet = EnumSet.noneOf(DataSource.class);
+        enumSet.add(DataSource.DISTRICT);
         Stream.of(getSharedPreferences(context).getStringSet("schoolselection", new HashSet<String>()))
                 .map(new Function<String, DataSource>() {
                     @Override
