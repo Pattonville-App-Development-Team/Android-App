@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
 
         //  Create a new boolean and preference and set it to true
-        //TODO: CHANGE BEFORE PR
-        boolean isFirstStart = true; //sharedPreferences.getBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, true);
+        boolean isFirstStart = sharedPreferences.getBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, true);
 
         //  If the activity has never started before...
         if (isFirstStart) {
