@@ -119,10 +119,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     @Override
-    public void pause(PauseableListener pauseableListener) {
+    public void pause(PauseableListener<?> pauseableListener) {
+
     }
 
     @Override
-    public void resume(PauseableListener pauseableListener) {
+    public void resume(PauseableListener<?> pauseableListener) {
     }
 }

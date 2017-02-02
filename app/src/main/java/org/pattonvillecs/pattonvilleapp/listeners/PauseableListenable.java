@@ -10,12 +10,12 @@ public interface PauseableListenable {
      *
      * @param pauseableListener the listener to pause
      */
-    void pause(PauseableListener pauseableListener);
+    void pause(PauseableListener<?> pauseableListener);
 
     /**
      * Must call {@link PauseableListener#onResume(Object data)} to complete the request
      *
      * @param pauseableListener the listener to resume
      */
-    void resume(PauseableListener pauseableListener);
+    void resume(PauseableListener<?> pauseableListener);
 }
