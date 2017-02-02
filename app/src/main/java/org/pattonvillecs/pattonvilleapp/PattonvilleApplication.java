@@ -46,6 +46,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
      */
     private Map<String, Integer> keyModificationCounts;
+    private List<PauseableListener<?>> pauseableListeners;
 
     public static PattonvilleApplication get(Activity activity) {
         return (PattonvilleApplication) activity.getApplication();
@@ -56,6 +57,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         super.onCreate();
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new LinkedList<>();
+        pauseableListeners = new LinkedList<>();
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
         calendarData = new EnumMap<>(DataSource.class);
@@ -105,6 +107,15 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             onSharedPreferenceKeyChangedListeners.add(onSharedPreferenceKeyChangedListener);
     }
 
+    private void updateCalendarParseingUpdateData(CalendarParsingUpdateData data) {
+        for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            if (pauseableListener.getID() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
+                //noinspection unchecked
+                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
+            }
+        }
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.i(TAG, "Preference changed: " + key + " modifications are now: " + keyModificationCounts);
@@ -144,6 +155,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             default:
                 throw new IllegalArgumentException("Listener not known!");
         }
+    }
+
+    @Override
+    public void registerPauseableListener(PauseableListener<?> pauseableListener) {
+        pauseableListeners.add(pauseableListener);
     }
 
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {

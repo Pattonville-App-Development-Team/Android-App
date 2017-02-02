@@ -18,4 +18,6 @@ public interface PauseableListenable {
      * @param pauseableListener the listener to resume
      */
     void resume(PauseableListener<?> pauseableListener);
+
+    void registerPauseableListener(PauseableListener<?> pauseableListener);
 }
