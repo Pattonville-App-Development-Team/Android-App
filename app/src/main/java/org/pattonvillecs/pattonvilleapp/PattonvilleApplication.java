@@ -20,6 +20,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendar
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.listeners.calendar.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
@@ -119,17 +120,33 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getID()) {
             case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+                Log.i(TAG, "CalendarMonthFragment listener paused!");
+                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
                 break;
             default:
-                throw new IllegalArgumentException("Listener not found!");
+                throw new IllegalArgumentException("Listener not known!");
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
+        switch (pauseableListener.getID()) {
+            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+                Log.i(TAG, "CalendarMonthFragment listener resumed!");
+                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
+                break;
+            default:
+                throw new IllegalArgumentException("Listener not known!");
+        }
+    }
+
+    private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
+        return new CalendarParsingUpdateData();
     }
 }

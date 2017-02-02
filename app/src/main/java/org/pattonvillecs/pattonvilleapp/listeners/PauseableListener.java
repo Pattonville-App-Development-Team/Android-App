@@ -56,7 +56,7 @@ public abstract class PauseableListener<E> {
      * @param data
      */
     @CallSuper
-    protected void onReceiveData(E data) {
+    public void onReceiveData(E data) {
         checkAttachedToListenable();
     }
 
@@ -81,7 +81,7 @@ public abstract class PauseableListener<E> {
      * @param data The final data to give.
      */
     @CallSuper
-    protected void onPause(E data) {
+    public void onPause(E data) {
         checkAttachedToListenable();
     }
 
@@ -91,7 +91,7 @@ public abstract class PauseableListener<E> {
      * @param data The current data at the time of resume.
      */
     @CallSuper
-    protected void onResume(E data) {
+    public void onResume(E data) {
         checkAttachedToListenable();
     }
 }

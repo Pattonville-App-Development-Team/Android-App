@@ -118,12 +118,12 @@ public class CalendarMonthFragment extends Fragment {
             }
 
             @Override
-            protected void onReceiveData(CalendarParsingUpdateData data) {
+            public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
             }
 
             @Override
-            protected void onResume(CalendarParsingUpdateData data) {
+            public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
             }
         };
