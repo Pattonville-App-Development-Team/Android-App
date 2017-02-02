@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
      */
+    @Deprecated
     private void enableHttpResponseCache() {
         try {
             long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
@@ -139,7 +140,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_feedback:
-                startActivity(new Intent(this, FeedbackActivity.class));
+                launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
+                //startActivity(new Intent(this, FeedbackActivity.class));
                 break;
 
             case R.id.nav_notifications:
