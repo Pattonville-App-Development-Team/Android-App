@@ -24,12 +24,13 @@ import org.pattonvillecs.pattonvilleapp.listeners.calendar.CalendarParsingUpdate
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by skaggsm on 12/19/16.
@@ -40,7 +41,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
-    private Map<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -60,7 +61,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         pauseableListeners = new LinkedList<>();
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
-        calendarData = new EnumMap<>(DataSource.class);
+        calendarData = new ConcurrentHashMap<>();
 
         PreferenceUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 
@@ -164,5 +165,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
         return new CalendarParsingUpdateData();
+    }
+
+    public ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendarData() {
+        return calendarData;
     }
 }

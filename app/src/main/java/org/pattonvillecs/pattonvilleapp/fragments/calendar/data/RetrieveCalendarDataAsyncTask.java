@@ -38,6 +38,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
+    private DataSource dataSource;
 
     public RetrieveCalendarDataAsyncTask(PattonvilleApplication pattonvilleApplication) {
         this.pattonvilleApplication = pattonvilleApplication;
@@ -51,7 +52,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
     @Override
     protected HashMultimap<SerializableCalendarDay, VEvent> doInBackground(DataSource... params) {
-        DataSource dataSource = params[0];
+        this.dataSource = params[0];
 
         Log.i(TAG, "Getting calendar for " + dataSource.shortName);
 
@@ -166,6 +167,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     @Override
     protected void onPostExecute(HashMultimap<SerializableCalendarDay, VEvent> result) {
         releaseKryo();
+        pattonvilleApplication.getCalendarData().put(dataSource, result);
     }
 
     @Override
