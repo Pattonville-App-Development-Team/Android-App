@@ -29,10 +29,14 @@ import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class NewsFragment extends Fragment {
@@ -183,6 +187,11 @@ public class NewsFragment extends Fragment {
             TextView titleView;
             ImageView sourceView;
             TextView schoolIDText;
+            TextView newsDateText;
+
+            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            String todayDate = df.format(Calendar.getInstance().getTime());
+
 
             NewsArticleViewHolder(View view) {
                 super(view);
@@ -190,6 +199,7 @@ public class NewsFragment extends Fragment {
                 titleView = (TextView) itemView.findViewById(R.id.home_news_listview_item_textView);
                 sourceView = (ImageView) itemView.findViewById(R.id.news_front_imageview);
                 schoolIDText = (TextView) itemView.findViewById(R.id.news_circle_school_id);
+                newsDateText = (TextView) itemView.findViewById(R.id.news_list_article_date_textview);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -209,7 +219,7 @@ public class NewsFragment extends Fragment {
                 switch (item.getSourceColor()) {
 
                     case -65536:
-                        schoolIDText.setText("HE");
+                        schoolIDText.setText("HT");
                         break;
                     case -16744320:
                         schoolIDText.setText("HS");
@@ -218,19 +228,40 @@ public class NewsFragment extends Fragment {
                         schoolIDText.setText("PSD");
                         break;
                     case -4419697:
-                        schoolIDText.setText("PRK");
+                        schoolIDText.setText("PW");
                         break;
                     case -11861886:
-                        schoolIDText.setText("DRM");
+                        schoolIDText.setText("DR");
                         break;
                     case -1146130:
-                        schoolIDText.setText("BR");
+                        schoolIDText.setText("BW");
+                        break;
+                    case -10496:
+                        schoolIDText.setText("RE");
+                        break;
+                    case -8355840:
+                        schoolIDText.setText("WB");
+                        break;
+                    case -16777011:
+                        schoolIDText.setText("RA");
+                        break;
+                    case -29696:
+                        schoolIDText.setText("HO");
                         break;
 
                 }
                 sourceView.setColorFilter(item.getSourceColor());
                 //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getSourceColor());
-                //schoolIDText.setText(item.getTitle().substring(0, 2).toUpperCase());
+
+                String articleDate = (new SimpleDateFormat("MM/dd/yy", Locale.US)).format(item.getPublishDate());
+
+                if (todayDate.equals(articleDate)) {
+
+                    newsDateText.setText("Today");
+
+                } else {
+                    newsDateText.setText(articleDate);
+                }
                 mArticle = item;
             }
         }
