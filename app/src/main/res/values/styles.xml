@@ -13,6 +13,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="PSD.PreferenceFixTheme.NoActionBar" parent="PreferenceFixTheme.Light.NoActionBar">
+        <!-- Required to restate because colors are overridden by parent -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
     <style name="PSD.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="PSD.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

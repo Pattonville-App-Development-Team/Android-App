@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <MultiSelectListPreference
+        android:entries="@array/schools"
+        android:entryValues="@array/schools"
+        android:key="@string/key_school_selection"
+        android:summary="@string/preferences_schools_summary"
+        android:title="@string/preferences_schools_title">
+
+    </MultiSelectListPreference>
+</PreferenceScreen>

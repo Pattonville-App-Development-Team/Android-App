@@ -2,6 +2,7 @@ package org.pattonvillecs.pattonvilleapp;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
+import org.pattonvillecs.pattonvilleapp.fragments.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment;
 
 import java.io.File;
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "savedInstanceState == null is " + (savedInstanceState == null));
+
+        checkAppIntro();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +68,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
         enableHttpResponseCache();
+    }
+
+    private void checkAppIntro() {
+        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
+
+        //  Create a new boolean and preference and set it to true
+        //TODO: CHANGE BEFORE PR
+        boolean isFirstStart = true; //sharedPreferences.getBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, true);
+
+        //  If the activity has never started before...
+        if (isFirstStart) {
+            Intent i = new Intent(this, PattonvilleAppIntro.class);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            editor.putBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, false);
+            editor.apply();
+
+            startActivity(i);
+        }
     }
 
     /**

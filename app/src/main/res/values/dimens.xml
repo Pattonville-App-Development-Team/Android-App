@@ -9,4 +9,8 @@
     <dimen name="calendar_month_slide_in_drawer_max_height">125dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="appintro_spotlight_image_corner_radius">8dp</dimen>
+    <dimen name="appintro_spotlight_image_arc_outer_radius">225dp</dimen>
+    <dimen name="appintro_spotlight_image_arc_inner_radius">200dp</dimen>
+    <dimen name="appintro_spotlight_image_background_size">250dp</dimen>
 </resources>
