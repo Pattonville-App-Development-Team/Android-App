@@ -59,6 +59,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/news_list_article_date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
