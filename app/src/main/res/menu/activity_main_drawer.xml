@@ -7,19 +7,19 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="Home" />
+            android:title="@string/nav_menu_title_home" />
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_subject_black_24dp"
-            android:title="News" />
+            android:title="@string/nav_menu_title_news" />
         <item
             android:id="@+id/nav_calendar"
             android:icon="@drawable/ic_event_black_24dp"
-            android:title="Calendar" />
+            android:title="@string/nav_menu_title_calendar" />
         <item
             android:id="@+id/nav_directory"
             android:icon="@drawable/ic_contacts_black_24dp"
-            android:title="Directory" />
+            android:title="@string/nav_menu_title_directory" />
     </group>
 
     <item
@@ -28,19 +28,19 @@
         <menu>
             <item
                 android:id="@+id/nav_psd"
-                android:title="District Website" />
+                android:title="@string/nav_menu_title_district_website" />
             <item
                 android:id="@+id/nav_nutrislice"
-                android:title="Nutrislice" />
+                android:title="@string/nav_menu_title_nutrislice" />
             <item
                 android:id="@+id/nav_powerschool"
-                android:title="Powerschool" />
+                android:title="@string/nav_menu_title_powerschool" />
             <item
                 android:id="@+id/nav_peachjar"
-                android:title="Peachjar" />
+                android:title="@string/nav_menu_title_peachar" />
             <item
                 android:id="@+id/nav_activities"
-                android:title="Activites" />
+                android:title="@string/nav_menu_title_activities" />
         </menu>
     </item>
 
@@ -50,15 +50,15 @@
         <item
             android:id="@+id/nav_notifications"
             android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="Notifications" />
+            android:title="@string/nav_menu_title_notifications" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black_24dp"
-            android:title="Settings" />
+            android:title="@string/nav_menu_title_settings" />
         <item
             android:id="@+id/nav_feedback"
             android:icon="@drawable/ic_feedback_black_24dp"
-            android:title="Feedback" />
+            android:title="@string/nav_menu_title_feedback" />
     </group>
 
 </menu>
