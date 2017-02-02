@@ -48,7 +48,7 @@ public abstract class PauseableListener<E> {
      * @return a unique {@code long} that determines the response of the listened.
      */
     @SuppressWarnings("unused")
-    public abstract long getID();
+    public abstract int getID();
 
     /**
      * Called whenever new data is available <em>and</em> the listener is not paused.

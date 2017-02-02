@@ -59,8 +59,8 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    public static final int CALENDAR_LISTENER_ID = 1203481279;
     private static final Method onDateClickedMethod;
-    private static final long CALENDAR_LISTENER_ID = 1203481279561092801L;
 
     static {
         Method method = null;
@@ -113,7 +113,7 @@ public class CalendarMonthFragment extends Fragment {
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
-            public long getID() {
+            public int getID() {
                 return CALENDAR_LISTENER_ID;
             }
 

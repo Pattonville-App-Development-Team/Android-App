@@ -14,6 +14,7 @@ import com.google.common.collect.HashMultimap;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
@@ -120,7 +121,12 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
-
+        switch (pauseableListener.getID()) {
+            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+                break;
+            default:
+                throw new IllegalArgumentException("Listener not found!");
+        }
     }
 
     @Override
