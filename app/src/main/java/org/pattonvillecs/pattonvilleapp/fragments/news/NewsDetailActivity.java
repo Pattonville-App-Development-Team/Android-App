@@ -5,10 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -22,38 +22,58 @@ public class NewsDetailActivity extends AppCompatActivity {
     private TextView mTextView;
     private WebView mWebView;
 
+    private NewsArticle newsArticle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        setTitle("Headline With A Really Long Title");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ImageView imageView = (ImageView) findViewById(R.id.preview_image);
-        imageView.setImageResource(R.drawable.test_news_3);
-
-        mTextView = (TextView) findViewById(R.id.newsDetail_dateView);
 
         mWebView = (WebView) findViewById(R.id.newsDetail_webView);
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
 
-        NewsArticle newsArticle = getIntent().getParcelableExtra("NewsArticle");
-        setTitle(newsArticle.getTitle());
+        mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
+
+        newsArticle = getIntent().getParcelableExtra("NewsArticle");
+
+        setTitle("News");
+
+        ((TextView) findViewById(R.id.newsDetail_toolbar_title)).setText(newsArticle.getTitle());
+
         mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
-        mWebView.loadData(newsArticle.getContent(), "text/html", null);
+
+        Log.e("News Parsing", "Starting");
+        newsArticle.loadContent(mWebView);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.activity_newsdetail, menu);
-        MenuItem item = menu.findItem(R.id.newsDetail_share);
-        item.setIntent(Intent.createChooser(new Intent(android.content.Intent.ACTION_SEND).setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "http://www.psdr3.org"), "Share Link:"));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.newsDetail_share:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, newsArticle.getPublicUrl());
+                startActivity(Intent.createChooser(sharingIntent, "Share Article:"));
+                break;
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
         return true;
     }
 }

@@ -1,6 +1,9 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,10 +29,14 @@ import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class NewsFragment extends Fragment {
@@ -96,6 +103,9 @@ public class NewsFragment extends Fragment {
 
         mAdapter = new NewsRecyclerViewAdapter(newsArticles);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(
+                getActivity().getApplicationContext()
+        ));
     }
 
     private void updateList() {
@@ -175,39 +185,114 @@ public class NewsFragment extends Fragment {
 
             NewsArticle mArticle;
             TextView titleView;
-            ImageView imageView, sourceView;
+            ImageView sourceView;
+            TextView schoolIDText;
+            TextView newsDateText;
+
+            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            String todayDate = df.format(Calendar.getInstance().getTime());
+
 
             NewsArticleViewHolder(View view) {
                 super(view);
 
                 titleView = (TextView) itemView.findViewById(R.id.home_news_listview_item_textView);
-                imageView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_imageView);
-                sourceView = (ImageView) itemView.findViewById(R.id.home_news_listview_item_color);
+                sourceView = (ImageView) itemView.findViewById(R.id.news_front_imageview);
+                schoolIDText = (TextView) itemView.findViewById(R.id.news_circle_school_id);
+                newsDateText = (TextView) itemView.findViewById(R.id.news_list_article_date_textview);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("NewsFragment", "Opening NewsDetailActivityNoImage");
+                        Log.e("NewsFragment", "Opening NewsDetailActivity");
 
-                        if (true) {
-                            Intent intent = new Intent(getContext(), NewsDetailActivityNoImage.class);
-                            intent.putExtra("NewsArticle", mArticle);
-                            startActivity(intent);
-                        } else {
-                            Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-                            intent.putExtra("NewsArticle", mArticle);
-                            startActivity(intent);
-                        }
+                        Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                        intent.putExtra("NewsArticle", mArticle);
+                        startActivity(intent);
+
                     }
                 });
             }
 
             void bind(NewsArticle item) {
                 titleView.setText(item.getTitle());
-                imageView.setImageResource(R.drawable.test_news_1);
-                sourceView.setBackgroundColor(item.getSourceColor());
+                switch (item.getSourceColor()) {
+
+                    case -65536:
+                        schoolIDText.setText("HT");
+                        break;
+                    case -16744320:
+                        schoolIDText.setText("HS");
+                        break;
+                    case -16745933:
+                        schoolIDText.setText("PSD");
+                        break;
+                    case -4419697:
+                        schoolIDText.setText("PW");
+                        break;
+                    case -11861886:
+                        schoolIDText.setText("DR");
+                        break;
+                    case -1146130:
+                        schoolIDText.setText("BW");
+                        break;
+                    case -10496:
+                        schoolIDText.setText("RE");
+                        break;
+                    case -8355840:
+                        schoolIDText.setText("WB");
+                        break;
+                    case -16777011:
+                        schoolIDText.setText("RA");
+                        break;
+                    case -29696:
+                        schoolIDText.setText("HO");
+                        break;
+
+                }
+                sourceView.setColorFilter(item.getSourceColor());
+                //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getSourceColor());
+
+                String articleDate = (new SimpleDateFormat("MM/dd/yy", Locale.US)).format(item.getPublishDate());
+
+                if (todayDate.equals(articleDate)) {
+
+                    newsDateText.setText("Today");
+
+                } else {
+                    newsDateText.setText(articleDate);
+                }
                 mArticle = item;
             }
         }
     }
+
+    public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+        private Drawable mDivider;
+
+        public SimpleDividerItemDecoration(Context context) {
+            mDivider = context.getResources().getDrawable(R.drawable.news_recycler_divider);
+        }
+
+        @Override
+        public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            int left = parent.getPaddingLeft();
+            int right = parent.getWidth() - parent.getPaddingRight();
+
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = parent.getChildAt(i);
+
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + mDivider.getIntrinsicHeight();
+
+                mDivider.setBounds(left, top, right, bottom);
+                mDivider.draw(c);
+            }
+        }
+    }
+
 }
+

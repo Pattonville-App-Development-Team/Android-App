@@ -9,10 +9,9 @@
 
     <ImageView
         android:id="@+id/home_upcoming_events_listview_imageview"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:paddingLeft="8dp"
         app:srcCompat="@drawable/calendar_text" />
 
     <TextView
@@ -28,5 +27,5 @@
         android:paddingStart="16dp"
         android:text="@string/event_placeholder"
         android:textColor="#000000"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 </LinearLayout>

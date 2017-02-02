@@ -30,13 +30,8 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    public static String[] sampleHeadlines = {"Pattonville App in development",
-            "Pattonville Robotics Club wins recent match!",
-            "PHS to host basketball celebration on Jan. 20",
-            "Students, staff recognized at November board meeting",
-            "Pattonville ranked No. 6 in Missouri, tops in U.S. on annual \"best of\" list",
-            "Headline Six", "Headline Seven", "Headline Eight", "Headline Nine", "Headline Ten",
-            "Headline Eleven", "Headline Twelve"};
+    public static String[] sampleHeadlines = {"Example Headline 1",
+            "Example Headline 2", "Example Headline 3"};
 
     public static int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2,
             R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1,
@@ -57,7 +52,7 @@ public class HomeFragment extends Fragment {
     ImageView upcomingSeeMoreArrow;
     ImageView pinnedSeeMoreArrow;
     NavigationView mNavigationView;
-    String[] sampleEvents = {"Board Meeting", "Pattonville Official App Release", "Independence Day"};
+    String[] sampleEvents = {"Example Event 1", "Example Event 2", "Example Event 3"};
 
     ImageListener imageListener = new ImageListener() {
         @Override
@@ -102,19 +97,18 @@ public class HomeFragment extends Fragment {
 
         for (int i = 0; i < 3; i++) {
             HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(sampleImages[i]));
             newsListItem.put("headline", sampleHeadlines[i]);
             homeNewsList.add(newsListItem);
         }
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             HashMap<String, String> eventListItem = new HashMap<>();
             eventListItem.put("event", sampleEvents[i]);
             homeEventsList.add(eventListItem);
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
 
             HashMap<String, String> pinnedListItem = new HashMap<>();
             pinnedListItem.put("pin", samplePinnedEvents[i]);
@@ -134,11 +128,11 @@ public class HomeFragment extends Fragment {
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
 
-        String[] homeNewsListFrom = {"image", "headline"};
+        String[] homeNewsListFrom = {"headline"};
         String[] homeEventListFrom = {"event"};
         String[] homePinnedListFrom = {"pin"};
 
-        int[] homeNewsListTo = {R.id.home_news_listview_item_imageView, R.id.home_news_listview_item_textView};
+        int[] homeNewsListTo = {R.id.home_news_listview_item_textView};
         int[] homeEventListTo = {R.id.home_upcoming_events_listview_textview};
         int[] homePinnedEventTo = {R.id.home_pinned_events_listview_textview};
 

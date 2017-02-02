@@ -6,7 +6,10 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.webkit.WebView;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 
 import java.util.Date;
 
@@ -24,14 +27,15 @@ public class NewsArticle implements Parcelable {
     private Date publishDate;
     private String title;
     private String content;
-    private String url;
+    private String publicUrl, privateUrl;
     private int sourceColor;
 
     public NewsArticle() {
 
         publishDate = new Date(1484357778);
         title = "Some Title";
-        url = "www.psdr3.org";
+        publicUrl = "www.psdr3.org";
+        privateUrl = "fccms.psdr3.org";
 
     }
 
@@ -40,16 +44,25 @@ public class NewsArticle implements Parcelable {
         String[] strings = parcel.createStringArray();
         title = strings[0];
         content = strings[1];
-        url = strings[2];
+        publicUrl = strings[2];
+        privateUrl = strings[3];
         publishDate = new Date(parcel.readLong());
     }
 
-    public String getUrl() {
-        return url;
+    public String getPrivateUrl() {
+        return privateUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setPrivateUrl(String privateUrl) {
+        this.privateUrl = privateUrl;
+    }
+
+    public String getPublicUrl() {
+        return publicUrl;
+    }
+
+    public void setPublicUrl(String url) {
+        this.publicUrl = url;
     }
 
     public int getSourceColor() {
@@ -85,7 +98,7 @@ public class NewsArticle implements Parcelable {
     }
 
     public void loadContent(WebView webView) {
-        new NewsArticle.NewsContent(webView).execute(url);
+        new NewsArticle.NewsContent(webView).execute(privateUrl);
     }
 
     @Override
@@ -96,7 +109,7 @@ public class NewsArticle implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
 
-        String[] strings = new String[]{title, content, url};
+        String[] strings = new String[]{title, content, publicUrl, privateUrl};
 
         parcel.writeStringArray(strings);
         parcel.writeLong(publishDate.getTime());
@@ -108,6 +121,7 @@ public class NewsArticle implements Parcelable {
 
         public NewsContent(WebView webView) {
 
+            Log.e("News Parsing", "Created NewsContent Aysnc");
             this.webView = webView;
         }
 
@@ -116,15 +130,33 @@ public class NewsArticle implements Parcelable {
 
             try {
 
-                String result = Jsoup.connect(strings[0]).get()
-                        .getElementsByTag("article").last()
+
+                Connection resultC = Jsoup.connect(strings[0]);
+                Log.e("News Parsing", "Jsoup Connected");
+
+
+                Document resultD = resultC.get();
+
+                resultD.outputSettings().charset("ASCII");
+                resultD.outputSettings().escapeMode(Entities.EscapeMode.extended);
+                resultD.outputSettings().prettyPrint(false);
+
+                Log.e("News Parsing", "Got Document");
+
+                String result = resultD//.getElementsByTag("article").last()
                         .getElementsByTag("table").last()
-                        .getElementsByTag("tbody").first()
+                        //.getElementsByTag("tbody").first()
                         .getElementsByTag("tr").get(1)
                         .getElementsByTag("td").get(1)
                         .html();
 
-                Log.e("NewsArticle", result);
+                Log.e("News Parsing", "HTML Result:\n" + result);
+
+                result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
+                result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
+                result = result + "<br>";
+
+                Log.e("News Parsing", "Got HTML");
                 return result;
 
             } catch (Exception e) {
@@ -135,7 +167,10 @@ public class NewsArticle implements Parcelable {
 
         @Override
         protected void onPostExecute(String s) {
+
+            Log.e("News Parsing", "Starting WebView load");
             webView.loadData(s, "text/html", null);
+            Log.e("News Parsing", "Loaded Data?");
         }
     }
 }
