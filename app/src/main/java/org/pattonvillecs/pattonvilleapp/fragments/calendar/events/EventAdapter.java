@@ -32,6 +32,9 @@ public class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
     @Override
     public String onCreateBubbleText(int position) {
         EventFlexibleItem item = getItem(position);
-        return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
+        if (item != null)
+            return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
+        else
+            return "";
     }
 }
