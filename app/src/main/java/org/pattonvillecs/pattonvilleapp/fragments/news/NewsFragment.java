@@ -114,7 +114,6 @@ public class NewsFragment extends Fragment {
         newsArticles.clear();
 
         final Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(getContext());
-        selectedSchools.add(DataSource.DISTRICT);
 
         for (final Object school : selectedSchools.toArray()) {
 
