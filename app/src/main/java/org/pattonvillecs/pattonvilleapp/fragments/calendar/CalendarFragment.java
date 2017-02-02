@@ -30,10 +30,13 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
+    @Deprecated
     private static final String KEY_CURRENT_CALENDAR_DATA = "CURRENT_CALENDAR_DATA";
     private ViewPager viewPager;
+    @Deprecated
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
     private CalendarData calendarData;
+    @Deprecated
     private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
     private ProgressBar progressBar;
 
@@ -165,19 +168,23 @@ public class CalendarFragment extends Fragment {
         outState.putParcelable(KEY_CURRENT_CALENDAR_DATA, calendarData);
     }
 
+    @Deprecated
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
         listeners.add(listenerToAdd);
     }
 
+    @Deprecated
     public void removeOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToRemove) {
         listeners.remove(listenerToRemove);
     }
 
+    @Deprecated
     private void updateAllListeners(CalendarData calendarData) {
         for (OnCalendarDataUpdatedListener listener : listeners)
             listener.updateCalendarData(calendarData);
     }
 
+    @Deprecated
     public interface OnCalendarDataUpdatedListener {
         void updateCalendarData(CalendarData calendarData);
     }
