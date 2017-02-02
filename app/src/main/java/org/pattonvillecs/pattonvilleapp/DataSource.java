@@ -20,7 +20,7 @@ public enum DataSource {
             "(314) 213-8500",
             Optional.<String>empty(),
             Optional.<String>empty(),
-            "http://drummond.psdr3.org/ical/District.ics",
+            "http://drummond.psdr3.org/ical/Learning%20Center.ics",
             "District",
             Color.parseColor("#007a33"),
             Optional.<String>empty()),
