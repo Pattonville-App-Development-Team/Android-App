@@ -3,8 +3,11 @@ package org.pattonvillecs.pattonvilleapp;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -27,15 +30,28 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+        private NumberPickerPreference mNumberPickerPreference;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.main_preferences);
+            PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
+
+            mNumberPickerPreference = (NumberPickerPreference) findPreference("homenewsamount");
+            mNumberPickerPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homenewsamount", 3) + " News Articles");
+
 
         }
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            switch (key) {
+                case "homenewsamount":
+                    mNumberPickerPreference.setSummary(sharedPreferences.getInt("homenewsamount", 3) + " News Articles");
+                    break;
+            }
         }
     }
 }
