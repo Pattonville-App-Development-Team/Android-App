@@ -20,4 +20,6 @@ public interface PauseableListenable {
     void resume(PauseableListener<?> pauseableListener);
 
     void registerPauseableListener(PauseableListener<?> pauseableListener);
+
+    void unregisterPauseableListener(PauseableListener<?> pauseableListener);
 }

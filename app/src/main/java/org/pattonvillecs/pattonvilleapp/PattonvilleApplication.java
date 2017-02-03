@@ -172,6 +172,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         pauseableListeners.add(pauseableListener);
     }
 
+    @Override
+    public void unregisterPauseableListener(PauseableListener<?> pauseableListener) {
+        pauseableListeners.remove(pauseableListener);
+    }
+
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
         return new CalendarParsingUpdateData(calendarData);
     }

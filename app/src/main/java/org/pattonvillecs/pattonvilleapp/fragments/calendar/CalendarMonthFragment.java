@@ -120,11 +120,19 @@ public class CalendarMonthFragment extends Fragment {
             @Override
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
+                Log.i(TAG, "Received new data!");
             }
 
             @Override
             public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
+                Log.i(TAG, "Received data after resume!");
+            }
+
+            @Override
+            public void onPause(CalendarParsingUpdateData data) {
+                super.onPause(data);
+                Log.i(TAG, "Received data before pause!");
             }
         };
     }
@@ -132,6 +140,8 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
     }
 
     @Override
