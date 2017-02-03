@@ -22,7 +22,15 @@
         </CheckBoxPreference>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Home"></PreferenceCategory>
+    <PreferenceCategory android:title="Home">
+
+        <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
+            android:defaultValue="3"
+            android:key="homenewsamount"
+            android:summary="How many news articles show"
+            android:title="Recent News Article Amount" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="News"></PreferenceCategory>
 
