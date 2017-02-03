@@ -108,13 +108,22 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             onSharedPreferenceKeyChangedListeners.add(onSharedPreferenceKeyChangedListener);
     }
 
-    private void updateCalendarParseingUpdateData(CalendarParsingUpdateData data) {
+    private void updateCalendarListeners(CalendarParsingUpdateData data) {
+        Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (pauseableListener.getID() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
-                //noinspection unchecked
-                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
-            }
+            if (!pauseableListener.isPaused())
+                if (pauseableListener.getID() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
+                    //noinspection unchecked
+                    ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
+                }
         }
+    }
+
+    /**
+     * Calls {@link PattonvilleApplication#updateCalendarListeners(CalendarParsingUpdateData)} with {@link PattonvilleApplication#getCurrentCalendarParsingUpdateData()} as the argument
+     */
+    public void updateCalendarListeners() {
+        updateCalendarListeners(getCurrentCalendarParsingUpdateData());
     }
 
     @Override
@@ -164,7 +173,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
-        return new CalendarParsingUpdateData();
+        return new CalendarParsingUpdateData(calendarData);
     }
 
     public ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendarData() {

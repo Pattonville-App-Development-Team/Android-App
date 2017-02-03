@@ -94,4 +94,8 @@ public abstract class PauseableListener<E> {
     public void onResume(E data) {
         checkAttachedToListenable();
     }
+
+    public boolean isPaused() {
+        return paused;
+    }
 }
