@@ -64,6 +64,16 @@
     <string name="preferences_schools_summary">Select schools from which you wish to receive information</string>
     <string name="preferences_schools_title">Select Schools</string>
     <string name="test_date">Test Date: 01/02/2017</string>
+    <string name="HeightsInitial">HT</string>
+    <string name="HighSchoolInitial">HS</string>
+    <string name="DistrictInitial">PSD</string>
+    <string name="ParkwoodInitial">PW</string>
+    <string name="DrummondInitial">DR</string>
+    <string name="BridgewayInitial">BW</string>
+    <string name="RemmingtonInitial">RE</string>
+    <string name="WillowBrookInitial">WB</string>
+    <string name="RoseAcresInitial">RA</string>
+    <string name="HolmanInitial">HO</string>
 
     <string name="nav_drawer_title_home">Home</string>
     <string name="nav_drawer_title_news">News</string>
@@ -72,7 +82,7 @@
     <string name="nav_drawer_title_district_website">District Website</string>
     <string name="nav_drawer_title_nutrislice">Nutrislice (Menus)</string>
     <string name="nav_drawer_title_powerschool">Powerschool</string>
-    <string name="nav_drawer_title_peachjar">Peacherjar (E-Flyers)</string>
+    <string name="nav_drawer_title_peachjar">Peachjar (E-Flyers)</string>
     <string name="nav_drawer_title_activities">Activities</string>
     <string name="nav_drawer_title_notifications">Notifications</string>
     <string name="nav_drawer_title_settings">Settings</string>

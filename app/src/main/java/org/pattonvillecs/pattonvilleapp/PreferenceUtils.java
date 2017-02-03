@@ -66,7 +66,7 @@ public final class PreferenceUtils {
                 }).collect(new Supplier<EnumSet<DataSource>>() {
                     @Override
                     public EnumSet<DataSource> get() {
-                        return EnumSet.noneOf(DataSource.class);
+                        return EnumSet.of(DataSource.DISTRICT);
                     }
                 }, new BiConsumer<EnumSet<DataSource>, DataSource>() {
                     @Override
