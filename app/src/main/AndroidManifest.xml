@@ -7,7 +7,7 @@
     <application
         android:name=".PattonvilleApplication"
         android:allowBackup="true"
-        android:icon="@drawable/psd_logo"
+        android:icon="@drawable/psd_logo_shadowed"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/PSD">
