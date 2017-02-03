@@ -217,36 +217,46 @@ public class NewsFragment extends Fragment {
                 titleView.setText(item.getTitle());
                 switch (item.getSourceColor()) {
 
-                    case -65536:
-                        schoolIDText.setText("HT");
-                        break;
-                    case -16744320:
-                        schoolIDText.setText("HS");
-                        break;
                     case -16745933:
-                        schoolIDText.setText("PSD");
+                        schoolIDText.setText(R.string.DistrictInitial);
                         break;
-                    case -4419697:
-                        schoolIDText.setText("PW");
+
+                    case -16744320:
+                        schoolIDText.setText(R.string.HighSchoolInitial);
                         break;
-                    case -11861886:
-                        schoolIDText.setText("DR");
+
+                    case -65536:
+                        schoolIDText.setText(R.string.HeightsInitial);
                         break;
-                    case -1146130:
-                        schoolIDText.setText("BW");
-                        break;
-                    case -10496:
-                        schoolIDText.setText("RE");
-                        break;
-                    case -8355840:
-                        schoolIDText.setText("WB");
-                        break;
-                    case -16777011:
-                        schoolIDText.setText("RA");
-                        break;
+
                     case -29696:
-                        schoolIDText.setText("HO");
+                        schoolIDText.setText(R.string.HolmanInitial);
                         break;
+
+                    case -4419697:
+                        schoolIDText.setText(R.string.ParkwoodInitial);
+                        break;
+
+                    case -11861886:
+                        schoolIDText.setText(R.string.DrummondInitial);
+                        break;
+
+                    case -1146130:
+                        schoolIDText.setText(R.string.BridgewayInitial);
+                        break;
+
+                    case -10496:
+                        schoolIDText.setText(R.string.RemmingtonInitial);
+                        break;
+
+                    case -8355840:
+                        schoolIDText.setText(R.string.WillowBrookInitial);
+                        break;
+
+                    case -16777011:
+                        schoolIDText.setText(R.string.RoseAcresInitial);
+                        break;
+
 
                 }
                 sourceView.setColorFilter(item.getSourceColor());
