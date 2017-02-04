@@ -30,7 +30,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private NumberPickerPreference mNumberPickerPreference;
+        private NumberPickerPreference mNewsPreference;
+        private NumberPickerPreference mUpcomingEventsPreference;
+        private NumberPickerPreference mPinnedEventsPreference;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -38,9 +40,14 @@ public class SettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.main_preferences);
             PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
 
-            mNumberPickerPreference = (NumberPickerPreference) findPreference("homenewsamount");
-            mNumberPickerPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homenewsamount", 3) + " News Articles");
+            mNewsPreference = (NumberPickerPreference) findPreference("homenewsamount");
+            mNewsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homenewsamount", 3) + " News Articles");
 
+            mUpcomingEventsPreference = (NumberPickerPreference) findPreference("homeeventsamount");
+            mUpcomingEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homeeventsamount", 3) + " Upcoming Events");
+
+            mPinnedEventsPreference = (NumberPickerPreference) findPreference("homepinnedamount");
+            mPinnedEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homepinnedamount", 3) + " Pinned Events");
 
         }
 
@@ -49,7 +56,13 @@ public class SettingsActivity extends AppCompatActivity {
 
             switch (key) {
                 case "homenewsamount":
-                    mNumberPickerPreference.setSummary(sharedPreferences.getInt("homenewsamount", 3) + " News Articles");
+                    mNewsPreference.setSummary(sharedPreferences.getInt("homenewsamount", 3) + " News Articles");
+                    break;
+                case "homeeventsamount":
+                    mUpcomingEventsPreference.setSummary(sharedPreferences.getInt("homeeventsamount", 3) + " Upcoming Events");
+                    break;
+                case "homepinnedamount":
+                    mPinnedEventsPreference.setSummary(sharedPreferences.getInt("homepinnedamount", 3) + " Pinned Events");
                     break;
             }
         }
