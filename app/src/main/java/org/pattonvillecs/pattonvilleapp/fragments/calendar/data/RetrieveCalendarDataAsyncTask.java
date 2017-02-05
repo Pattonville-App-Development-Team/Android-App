@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.esotericsoftware.kryo.Kryo;
@@ -107,6 +108,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             //Add a request
             RequestFuture<String> requestFuture = RequestFuture.newFuture();
             StringRequest request = new StringRequest(dataSource.calendarURL, requestFuture, requestFuture);
+            request.setRetryPolicy(new DefaultRetryPolicy(3000, 10, 1.3f));
             pattonvilleApplication.getRequestQueue().add(request);
 
             //Wait for the request
