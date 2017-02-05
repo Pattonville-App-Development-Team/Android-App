@@ -67,7 +67,7 @@ import de.javakaffee.kryoserializers.URISerializer;
 import de.javakaffee.kryoserializers.guava.HashMultimapSerializer;
 
 /**
- * Created by Mitchell on 1/25/2017.
+ * Created by Mitchell Skaggs on 1/25/2017.
  */
 public final class KryoUtil {
     private KryoUtil() {

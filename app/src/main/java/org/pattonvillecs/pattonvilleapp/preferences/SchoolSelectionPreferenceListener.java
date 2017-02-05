@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by skaggsm on 1/26/17.
+ * Created by Mitchell Skaggs on 1/26/17.
  */
 
 public abstract class SchoolSelectionPreferenceListener implements OnSharedPreferenceKeyChangedListener {

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeoutException;
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarDownloadAndParseTask.parseFile;
 
 /**
- * Created by Mitchell on 1/25/2017.
+ * Created by Mitchell Skaggs on 1/25/2017.
  */
 
 public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, HashMultimap<SerializableCalendarDay, VEvent>> {

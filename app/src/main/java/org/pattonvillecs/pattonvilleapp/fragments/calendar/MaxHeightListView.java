@@ -9,7 +9,7 @@ import android.widget.ListView;
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
- * Created by Mitchell on 10/19/2016.
+ * Created by Mitchell Skaggs on 10/19/2016.
  */
 public class MaxHeightListView extends ListView {
 

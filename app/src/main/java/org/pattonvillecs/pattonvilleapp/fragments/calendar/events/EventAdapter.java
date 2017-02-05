@@ -9,7 +9,7 @@ import java.util.List;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 /**
- * Created by skaggsm on 1/4/17.
+ * Created by Mitchell Skaggs on 1/4/17.
  */
 public class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
 

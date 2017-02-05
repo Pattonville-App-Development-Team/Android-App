@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Mitchell on 10/18/2016.
+ * Created by Mitchell Skaggs on 10/18/2016.
  */
 
 public class SingleDayEventAdapter extends BaseAdapter {

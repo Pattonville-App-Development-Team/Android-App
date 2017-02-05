@@ -10,7 +10,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalen
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Created by skaggsm on 2/2/17.
+ * Created by Mitchell Skaggs on 2/2/17.
  */
 public class CalendarParsingUpdateData {
     private final ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;

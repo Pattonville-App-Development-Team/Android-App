@@ -11,7 +11,7 @@ import com.github.paolorotolo.appintro.AppIntro2Fragment;
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
- * Created by skaggsm on 1/27/17.
+ * Created by Mitchell Skaggs on 1/27/17.
  */
 
 public class PattonvilleAppIntro extends AppIntro2 {

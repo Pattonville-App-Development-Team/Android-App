@@ -50,7 +50,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Mitchell on 12/24/2016.
+ * Created by Mitchell Skaggs on 12/24/2016.
  * <p>
  * This class implements the asynchronous parsing of a downloaded iCal file.
  *

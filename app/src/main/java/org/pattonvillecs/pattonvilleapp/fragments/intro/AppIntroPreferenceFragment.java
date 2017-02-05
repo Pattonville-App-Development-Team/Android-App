@@ -15,7 +15,7 @@ import com.github.paolorotolo.appintro.CustomFontCache;
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
- * Created by skaggsm on 1/31/17.
+ * Created by Mitchell Skaggs on 1/31/17.
  */
 public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
     private int drawable;
