@@ -63,22 +63,39 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
         calendarData = new ConcurrentHashMap<>();
 
-        PreferenceUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
 
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        setUpCalendarParsing();
+    }
+
+    private void setUpCalendarParsing() {
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> dataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
 
-                dataSources.removeAll(calendarData.keySet()); //Remove DataSources that are already present
-
-                for (DataSource dataSource : dataSources) {
-                    new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+                for (DataSource dataSource : calendarData.keySet()) {
+                    if (!newSelectedDataSources.contains(dataSource)) {
+                        calendarData.remove(dataSource);
+                    }
                 }
 
-                //TODO: PLAN THE DATA FLOW!!!
+                newSelectedDataSources.removeAll(calendarData.keySet()); //Remove DataSources that are already present
+
+                executeCalendarDataTasks(newSelectedDataSources);
             }
         });
+
+        //Initial download of calendar
+        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    private void executeCalendarDataTasks(Set<DataSource> dataSources) {
+        for (DataSource dataSource : dataSources) {
+            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+        }
     }
 
     public synchronized Kryo borrowKryo() {
