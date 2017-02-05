@@ -113,7 +113,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             String result = null;
             boolean downloadSucceeded;
             try {
-                result = requestFuture.get(60, TimeUnit.SECONDS);
+                result = requestFuture.get(5, TimeUnit.MINUTES);
                 downloadSucceeded = true;
             } catch (InterruptedException e) {
                 Log.e(TAG, "Thread interrupted!");
