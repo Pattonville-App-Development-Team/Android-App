@@ -47,7 +47,7 @@ import eu.davidea.flexibleadapter.utils.Utils;
  * Use the {@link CalendarEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarEventsFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
+public class CalendarEventsFragment extends Fragment {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -73,8 +73,6 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        calendarFragment = (CalendarFragment) getParentFragment();
-        calendarFragment.addOnCalendarDataUpdatedListener(this);
     }
 
     private void goToCurrentDay() {
@@ -99,7 +97,6 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        calendarFragment.removeOnCalendarDataUpdatedListener(this);
     }
 
     @Override
@@ -146,7 +143,6 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         return layout;
     }
 
-    @Override
     public void updateCalendarData(CalendarData calendarData) {
         this.calendarData = calendarData;
         eventAdapter.clear();
