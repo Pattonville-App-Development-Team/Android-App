@@ -167,8 +167,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     @Override
     protected void onPostExecute(HashMultimap<SerializableCalendarDay, VEvent> result) {
         releaseKryo();
-        pattonvilleApplication.getCalendarData().put(dataSource, result);
-        pattonvilleApplication.updateCalendarListeners();
+        if (result != null) {
+            pattonvilleApplication.getCalendarData().put(dataSource, result);
+            pattonvilleApplication.updateCalendarListeners();
+        }
     }
 
     @Override
