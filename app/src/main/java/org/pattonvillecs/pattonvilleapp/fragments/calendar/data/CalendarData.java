@@ -23,6 +23,7 @@ import java.util.Map;
  * Created by Mitchell on 12/24/2016.
  */
 
+@Deprecated
 public class CalendarData implements Parcelable, Serializable {
     public static final Creator<CalendarData> CREATOR = new Creator<CalendarData>() {
         @Override

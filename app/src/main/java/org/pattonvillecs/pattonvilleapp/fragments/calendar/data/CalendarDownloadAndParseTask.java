@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
  * @author Mitchell Skaggs
  */
 
+@Deprecated
 public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Double, CalendarData> {
 
     private static final String TAG = "CalendarDPTask";
