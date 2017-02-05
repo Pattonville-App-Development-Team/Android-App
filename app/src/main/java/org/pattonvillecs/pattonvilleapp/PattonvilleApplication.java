@@ -129,7 +129,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
             if (!pauseableListener.isPaused())
-                if (pauseableListener.getID() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
+                if (pauseableListener.getIdentifier() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }
@@ -161,7 +161,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @SuppressWarnings("unchecked")
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
-        switch (pauseableListener.getID()) {
+        switch (pauseableListener.getIdentifier()) {
             case CalendarMonthFragment.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener paused!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
@@ -174,7 +174,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @SuppressWarnings("unchecked")
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
-        switch (pauseableListener.getID()) {
+        switch (pauseableListener.getIdentifier()) {
             case CalendarMonthFragment.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener resumed!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());

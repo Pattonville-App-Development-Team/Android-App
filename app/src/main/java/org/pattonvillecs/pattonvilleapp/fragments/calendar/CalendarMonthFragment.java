@@ -118,7 +118,7 @@ public class CalendarMonthFragment extends Fragment {
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
-            public int getID() {
+            public int getIdentifier() {
                 return CALENDAR_LISTENER_ID;
             }
 
@@ -126,6 +126,8 @@ public class CalendarMonthFragment extends Fragment {
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
+
+                setCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -444,7 +446,6 @@ public class CalendarMonthFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.i(TAG, "onDestroyView called");
-        listener.unattach();
     }
 
     @Override
