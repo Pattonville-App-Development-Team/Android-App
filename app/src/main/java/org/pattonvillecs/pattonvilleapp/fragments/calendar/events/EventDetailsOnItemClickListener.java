@@ -19,7 +19,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
- * Created by skaggsm on 1/9/17.
+ * Created by Mitchell Skaggs on 1/9/17.
  */
 
 public class EventDetailsOnItemClickListener implements FlexibleAdapter.OnItemClickListener {
