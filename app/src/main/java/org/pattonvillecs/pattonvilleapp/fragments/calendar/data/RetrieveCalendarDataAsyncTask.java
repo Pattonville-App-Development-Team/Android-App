@@ -174,7 +174,9 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (result != null) {
             pattonvilleApplication.getCalendarData().put(dataSource, result);
         }
+        Log.i(TAG, "Removing from size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
         pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
+        Log.i(TAG, "Now size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
         pattonvilleApplication.updateCalendarListeners();
     }
 

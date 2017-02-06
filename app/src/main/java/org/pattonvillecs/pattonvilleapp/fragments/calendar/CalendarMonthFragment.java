@@ -143,6 +143,7 @@ public class CalendarMonthFragment extends Fragment {
                 Log.i(TAG, "Received data before pause!");
             }
         };
+        pattonvilleApplication.registerPauseableListener(listener);
     }
 
     private void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
@@ -237,7 +238,7 @@ public class CalendarMonthFragment extends Fragment {
         {
             switch (getResources().getConfiguration().orientation) {
                 case Configuration.ORIENTATION_PORTRAIT:
-                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getContext().getResources().getDisplayMetrics());
+                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getContext().getResources().getDisplayMetrics());
                     break;
                 case Configuration.ORIENTATION_LANDSCAPE:
                     radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getContext().getResources().getDisplayMetrics());

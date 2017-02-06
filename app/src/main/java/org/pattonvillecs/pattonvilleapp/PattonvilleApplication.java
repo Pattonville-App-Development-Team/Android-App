@@ -97,7 +97,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources) {
         for (DataSource dataSource : dataSources) {
-            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, dataSource);
         }
     }
 
@@ -131,11 +131,16 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private void updateCalendarListeners(CalendarParsingUpdateData data) {
         Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (!pauseableListener.isPaused())
+            if (!pauseableListener.isPaused()) {
+                Log.d(TAG, "Updating listener " + pauseableListener);
                 if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
+                    Log.d(TAG, "Updating calendar listener " + pauseableListener);
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }
+            } else {
+                Log.d(TAG, "Skipping paused listener");
+            }
         }
     }
 
@@ -207,5 +212,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public Set<RetrieveCalendarDataAsyncTask> getRunningCalendarAsyncTasks() {
         return runningCalendarAsyncTasks;
+    }
+
+    public void refreshCalendarData() {
+        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
     }
 }

@@ -54,7 +54,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
@@ -68,26 +68,41 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
+                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
-                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
+                checkRefresh(data);
+            }
+
+            private void checkRefresh(CalendarParsingUpdateData data) {
+                boolean refresh = data.getRunningCalendarAsyncTasks().size() > 0;
+                if (refresh && !swipeRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Starting refreshing");
+                    swipeRefreshLayout.setRefreshing(true);
+                } else if (!refresh && swipeRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Ending refreshing");
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
             public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
+                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
-                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
+                checkRefresh(data);
             }
 
             @Override
             public void onPause(CalendarParsingUpdateData data) {
                 super.onPause(data);
                 Log.i(TAG, "Received data before pause!");
+                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
-                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
+                checkRefresh(data);
             }
         };
+        pattonvilleApplication.registerPauseableListener(listener);
     }
 
     @Override
@@ -188,6 +203,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
+        pattonvilleApplication.refreshCalendarData();
     }
 
     @Override
