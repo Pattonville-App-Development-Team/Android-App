@@ -46,7 +46,7 @@
         <CheckBoxPreference
             android:defaultValue="0"
             android:key="@string/key_news_notifications"
-            android:summary="Recieve notifications for new news articles"
+            android:summary="Recieve notifications for newly published articles"
             android:title="News Notifications" />
 
     </PreferenceCategory>
