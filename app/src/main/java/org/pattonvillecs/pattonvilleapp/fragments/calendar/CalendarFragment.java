@@ -9,10 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,8 +21,6 @@ public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
     private ViewPager viewPager;
-    @Deprecated
-    private ProgressBar progressBar;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -40,33 +36,10 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
-    @Deprecated
-    public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Deprecated
-    public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    public ProgressBar getProgressBar() {
-        return progressBar;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_calendar);
-    }
-
-    /**
-     * No-op
-     *
-     * @param calendarData unused
-     */
-    @Deprecated
-    public synchronized void setCalendarData(CalendarData calendarData) {
     }
 
     @Override
