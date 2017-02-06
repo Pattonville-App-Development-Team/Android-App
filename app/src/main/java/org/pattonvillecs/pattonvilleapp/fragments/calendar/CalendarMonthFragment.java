@@ -432,26 +432,26 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause called");
+        Log.v(TAG, "onPause called");
         listener.pause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(TAG, "onStop called");
+        Log.v(TAG, "onStop called");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i(TAG, "onDestroyView called");
+        Log.v(TAG, "onDestroyView called");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume called");
+        Log.v(TAG, "onResume called");
         listener.resume();
     }
 

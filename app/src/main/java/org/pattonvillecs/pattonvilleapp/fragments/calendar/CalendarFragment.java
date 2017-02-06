@@ -6,21 +6,32 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment.CALENDAR_LISTENER_ID;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
+    private static final String TAG = "CalendarFragment";
     private ViewPager viewPager;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private PattonvilleApplication pattonvilleApplication;
+    private PauseableListener<CalendarParsingUpdateData> listener;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -45,11 +56,54 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<CalendarParsingUpdateData>(true) {
+            @Override
+            public int getIdentifier() {
+                return CALENDAR_LISTENER_ID;
+            }
+
+            @Override
+            public void onReceiveData(CalendarParsingUpdateData data) {
+                super.onReceiveData(data);
+                Log.i(TAG, "Received new data!");
+            }
+
+            @Override
+            public void onResume(CalendarParsingUpdateData data) {
+                super.onResume(data);
+                Log.i(TAG, "Received data after resume!");
+            }
+
+            @Override
+            public void onPause(CalendarParsingUpdateData data) {
+                super.onPause(data);
+                Log.i(TAG, "Received data before pause!");
+            }
+        };
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        swipeRefreshLayout.setOnRefreshListener(null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        listener.attach(pattonvilleApplication);
     }
 
     @Override
@@ -103,7 +157,9 @@ public class CalendarFragment extends Fragment {
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
         tabs.setupWithViewPager(viewPager);
 
-        //progressBar = (ProgressBar) view.findViewById(R.id.progress_calendar);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
@@ -122,5 +178,29 @@ public class CalendarFragment extends Fragment {
     public synchronized void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
+    }
+
+    @Override
+    public void onRefresh() {
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause called");
+        listener.pause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume called");
+        listener.resume();
     }
 }
