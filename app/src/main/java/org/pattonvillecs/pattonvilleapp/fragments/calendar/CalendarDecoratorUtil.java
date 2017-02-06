@@ -14,7 +14,7 @@ import android.os.Build;
 import android.util.TypedValue;
 
 /**
- * Created by Mitchell on 10/15/2016.
+ * Created by Mitchell Skaggs on 10/15/2016.
  */
 
 public class CalendarDecoratorUtil {

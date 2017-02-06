@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.calendar;
+package org.pattonvillecs.pattonvilleapp.fragments.calendar.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Mitchell on 12/24/2016.
+ * Created by Mitchell Skaggs on 12/24/2016.
  */
 
+@Deprecated
 public class CalendarData implements Parcelable, Serializable {
     public static final Creator<CalendarData> CREATOR = new Creator<CalendarData>() {
         @Override

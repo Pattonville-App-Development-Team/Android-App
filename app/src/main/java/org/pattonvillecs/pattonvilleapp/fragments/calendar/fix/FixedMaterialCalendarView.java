@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 
 /**
- * Created by skaggsm on 10/12/16.
+ * Created by Mitchell Skaggs on 10/12/16.
  */
 
 public class FixedMaterialCalendarView extends MaterialCalendarView {
