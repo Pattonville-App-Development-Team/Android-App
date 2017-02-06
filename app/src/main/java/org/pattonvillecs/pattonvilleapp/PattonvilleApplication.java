@@ -14,7 +14,6 @@ import com.google.common.collect.HashMultimap;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
@@ -129,7 +128,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
             if (!pauseableListener.isPaused())
-                if (pauseableListener.getIdentifier() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
+                if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }
@@ -162,7 +161,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener paused!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
                 break;
@@ -175,7 +174,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener resumed!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
                 break;

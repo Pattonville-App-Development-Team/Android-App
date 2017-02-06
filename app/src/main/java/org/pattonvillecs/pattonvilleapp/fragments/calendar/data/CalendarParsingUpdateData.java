@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Mitchell Skaggs on 2/2/17.
  */
 public class CalendarParsingUpdateData {
+    public static final int CALENDAR_LISTENER_ID = 1203481279;
+
     private final ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
 
     public CalendarParsingUpdateData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {

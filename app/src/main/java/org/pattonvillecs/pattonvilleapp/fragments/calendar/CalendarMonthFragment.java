@@ -64,7 +64,6 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
-    public static final int CALENDAR_LISTENER_ID = 1203481279;
     private static final Method onDateClickedMethod;
 
     static {
@@ -119,7 +118,7 @@ public class CalendarMonthFragment extends Fragment {
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
             public int getIdentifier() {
-                return CALENDAR_LISTENER_ID;
+                return CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
             }
 
             @Override

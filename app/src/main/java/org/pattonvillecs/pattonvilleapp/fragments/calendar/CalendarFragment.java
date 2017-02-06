@@ -17,7 +17,7 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
-import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment.CALENDAR_LISTENER_ID;
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
 
 /**
  * A simple {@link Fragment} subclass.

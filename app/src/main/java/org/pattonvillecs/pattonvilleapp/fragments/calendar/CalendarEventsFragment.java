@@ -46,7 +46,7 @@ import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.utils.Utils;
 
-import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment.CALENDAR_LISTENER_ID;
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
 
 /**
  * A simple {@link Fragment} subclass.
