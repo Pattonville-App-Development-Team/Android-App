@@ -1,6 +1,5 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -12,12 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,14 +22,8 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
-    @Deprecated
-    private static final String KEY_CURRENT_CALENDAR_DATA = "CURRENT_CALENDAR_DATA";
     private ViewPager viewPager;
     @Deprecated
-    private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
-    private CalendarData calendarData;
-    @Deprecated
-    private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
     private ProgressBar progressBar;
 
     public CalendarFragment() {
@@ -51,10 +40,12 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
+    @Deprecated
     public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    @Deprecated
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
@@ -69,9 +60,13 @@ public class CalendarFragment extends Fragment {
         getActivity().setTitle(R.string.title_fragment_calendar);
     }
 
+    /**
+     * No-op
+     *
+     * @param calendarData unused
+     */
+    @Deprecated
     public synchronized void setCalendarData(CalendarData calendarData) {
-        this.calendarData = calendarData;
-        updateAllListeners(this.calendarData);
     }
 
     @Override
@@ -82,8 +77,6 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (currentCalendarDownloadAndParseTask != null)
-            currentCalendarDownloadAndParseTask.cancel(true);
     }
 
     @Override
@@ -137,13 +130,11 @@ public class CalendarFragment extends Fragment {
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
         tabs.setupWithViewPager(viewPager);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progressbar_calendar);
+        //progressBar = (ProgressBar) view.findViewById(R.id.progress_calendar);
 
         if (savedInstanceState != null) {
-            viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
-        } else {
-            //noinspection unchecked
-            //currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+            if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
+                viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
         }
 
         return view;
@@ -152,37 +143,11 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            this.calendarData = savedInstanceState.getParcelable(KEY_CURRENT_CALENDAR_DATA);
-            updateAllListeners(calendarData);
-        }
     }
 
     @Override
     public synchronized void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
-        outState.putParcelable(KEY_CURRENT_CALENDAR_DATA, calendarData);
-    }
-
-    @Deprecated
-    public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
-        listeners.add(listenerToAdd);
-    }
-
-    @Deprecated
-    public void removeOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToRemove) {
-        listeners.remove(listenerToRemove);
-    }
-
-    @Deprecated
-    private void updateAllListeners(CalendarData calendarData) {
-        for (OnCalendarDataUpdatedListener listener : listeners)
-            listener.updateCalendarData(calendarData);
-    }
-
-    @Deprecated
-    public interface OnCalendarDataUpdatedListener {
-        void updateCalendarData(CalendarData calendarData);
     }
 }
