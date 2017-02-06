@@ -30,18 +30,27 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
@@ -52,16 +61,32 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarMonthFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
+public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
+    public static final int CALENDAR_LISTENER_ID = 1203481279;
+    private static final Method onDateClickedMethod;
+
+    static {
+        Method method = null;
+        try {
+            method = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        onDateClickedMethod = method;
+    }
+
     private FixedMaterialCalendarView materialCalendarView;
     private RecyclerView eventRecyclerView;
     private CalendarDay dateSelected;
     private EventAdapter eventAdapter;
-    private CalendarFragment calendarFragment;
-    private CalendarData calendarData = new CalendarData();
+    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
+    private PauseableListener<CalendarParsingUpdateData> listener;
+
 
     public CalendarMonthFragment() {
         // Required empty public constructor
@@ -89,14 +114,49 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        calendarFragment = (CalendarFragment) getParentFragment();
-        calendarFragment.addOnCalendarDataUpdatedListener(this);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<CalendarParsingUpdateData>(true) {
+            @Override
+            public int getIdentifier() {
+                return CALENDAR_LISTENER_ID;
+            }
+
+            @Override
+            public void onReceiveData(CalendarParsingUpdateData data) {
+                super.onReceiveData(data);
+                Log.i(TAG, "Received new data!");
+
+                setCalendarData(data.getCalendarData());
+            }
+
+            @Override
+            public void onResume(CalendarParsingUpdateData data) {
+                super.onResume(data);
+                Log.i(TAG, "Received data after resume!");
+
+                setCalendarData(data.getCalendarData());
+            }
+
+            @Override
+            public void onPause(CalendarParsingUpdateData data) {
+                super.onPause(data);
+                Log.i(TAG, "Received data before pause!");
+            }
+        };
+    }
+
+    private void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
+        this.calendarData = calendarData;
+        materialCalendarView.invalidateDecorators();
+        setRecyclerViewItems(dateSelected);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        calendarFragment.removeOnCalendarDataUpdatedListener(this);
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
     }
 
     @Override
@@ -134,14 +194,29 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         }
     }
 
+    private List<EventFlexibleItem> getItemsForDay(CalendarDay calendarDay) {
+        List<EventFlexibleItem> events = new ArrayList<>();
+        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet()) {
+            if (entry.getValue().containsKey(SerializableCalendarDay.of(calendarDay)))
+                for (VEvent vEvent : entry.getValue().get(SerializableCalendarDay.of(calendarDay))) {
+                    events.add(new EventFlexibleItem(new ImmutablePair<>(entry.getKey(), vEvent)));
+                }
+        }
+        return events;
+    }
+
+    private void setRecyclerViewItems(CalendarDay date) {
+        eventAdapter.clear();
+        eventAdapter.addItems(0, getItemsForDay(date));
+    }
+
     private void setUpMaterialCalendarView(final FixedMaterialCalendarView materialCalendarView) {
         materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 dateSelected = date;
-                eventAdapter.clear();
-                eventAdapter.addItems(0, calendarData.getItemsForDay(date));
+                setRecyclerViewItems(date);
             }
         });
         materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
@@ -163,10 +238,10 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
         {
             switch (getResources().getConfiguration().orientation) {
                 case Configuration.ORIENTATION_PORTRAIT:
-                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getContext().getResources().getDisplayMetrics());
+                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getContext().getResources().getDisplayMetrics());
                     break;
                 case Configuration.ORIENTATION_LANDSCAPE:
-                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getContext().getResources().getDisplayMetrics());
+                    radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getContext().getResources().getDisplayMetrics());
                     break;
                 case Configuration.ORIENTATION_UNDEFINED:
                 default:
@@ -183,7 +258,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
                         numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 1)
@@ -211,7 +286,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
                         numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 2)
@@ -241,7 +316,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
                         numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 3)
@@ -262,7 +337,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
                 view.addSpan(triple.getRight());
             }
         });
-        //>Triple decorator
+        //>Three decorator
         materialCalendarView.addDecorator(new DayViewDecorator() {
 
             @Override
@@ -272,7 +347,7 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
                 SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
                 int numPresent = 0;
-                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet())
+                for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
                     if (entry.getValue().containsKey(serializableCalendarDay)) {
                         numPresent += entry.getValue().get(serializableCalendarDay).size();
                         if (numPresent > 3)
@@ -350,21 +425,41 @@ public class CalendarMonthFragment extends Fragment implements CalendarFragment.
 
         materialCalendarView.setCurrentDate(dateSelected);
         callOnDateClicked(materialCalendarView, dateSelected);
+
+        listener.attach(pattonvilleApplication);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause called");
+        listener.pause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop called");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume called");
+        listener.resume();
     }
 
     private void callOnDateClicked(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
         try {
-            Method toCall = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-            toCall.setAccessible(true);
-            toCall.invoke(materialCalendarView, calendarDay, true);
+            onDateClickedMethod.invoke(materialCalendarView, calendarDay, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void updateCalendarData(CalendarData calendarData) {
-        this.calendarData = calendarData;
-        materialCalendarView.invalidateDecorators();
     }
 }

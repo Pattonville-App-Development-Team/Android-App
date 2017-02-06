@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,10 +27,13 @@ import java.util.Set;
 public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
+    @Deprecated
     private static final String KEY_CURRENT_CALENDAR_DATA = "CURRENT_CALENDAR_DATA";
     private ViewPager viewPager;
+    @Deprecated
     private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
     private CalendarData calendarData;
+    @Deprecated
     private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
     private ProgressBar progressBar;
 
@@ -49,15 +51,15 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
-    void showProgressBar() {
+    public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    void hideProgressBar() {
+    public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 
-    ProgressBar getProgressBar() {
+    public ProgressBar getProgressBar() {
         return progressBar;
     }
 
@@ -141,7 +143,7 @@ public class CalendarFragment extends Fragment {
             viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
         } else {
             //noinspection unchecked
-            currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+            //currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
         }
 
         return view;
@@ -163,19 +165,23 @@ public class CalendarFragment extends Fragment {
         outState.putParcelable(KEY_CURRENT_CALENDAR_DATA, calendarData);
     }
 
+    @Deprecated
     public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
         listeners.add(listenerToAdd);
     }
 
+    @Deprecated
     public void removeOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToRemove) {
         listeners.remove(listenerToRemove);
     }
 
+    @Deprecated
     private void updateAllListeners(CalendarData calendarData) {
         for (OnCalendarDataUpdatedListener listener : listeners)
             listener.updateCalendarData(calendarData);
     }
 
+    @Deprecated
     public interface OnCalendarDataUpdatedListener {
         void updateCalendarData(CalendarData calendarData);
     }
