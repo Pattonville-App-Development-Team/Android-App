@@ -68,18 +68,24 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
+
+                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
             }
 
             @Override
             public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
+
+                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
             }
 
             @Override
             public void onPause(CalendarParsingUpdateData data) {
                 super.onPause(data);
                 Log.i(TAG, "Received data before pause!");
+
+                swipeRefreshLayout.setRefreshing(data.getRunningCalendarAsyncTasks().size() > 0);
             }
         };
     }
