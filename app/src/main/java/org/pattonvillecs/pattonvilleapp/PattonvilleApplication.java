@@ -97,7 +97,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources) {
         for (DataSource dataSource : dataSources) {
-            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, dataSource);
+            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
         }
     }
 
