@@ -9,7 +9,7 @@ import java.util.List;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 /**
- * Created by skaggsm on 1/4/17.
+ * Created by Mitchell Skaggs on 1/4/17.
  */
 public class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
 
@@ -32,6 +32,9 @@ public class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
     @Override
     public String onCreateBubbleText(int position) {
         EventFlexibleItem item = getItem(position);
-        return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
+        if (item != null)
+            return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
+        else
+            return "";
     }
 }

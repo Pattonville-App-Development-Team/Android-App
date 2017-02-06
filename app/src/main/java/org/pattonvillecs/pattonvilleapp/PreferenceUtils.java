@@ -5,14 +5,17 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Consumer;
+import com.annimon.stream.function.BiConsumer;
 import com.annimon.stream.function.Function;
+import com.annimon.stream.function.Supplier;
 
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class PreferenceUtils {
+    public static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
+    public static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
 
     public static final String APP_INTRO_FIRST_START_PREFERENCE_KEY = "first_start";
 
@@ -20,9 +23,20 @@ public final class PreferenceUtils {
     }
 
     public static Set<DataSource> getSelectedSchoolsSet(Context context) {
-        final EnumSet<DataSource> enumSet = EnumSet.noneOf(DataSource.class);
-        enumSet.add(DataSource.DISTRICT);
-        Stream.of(getSharedPreferences(context).getStringSet("schoolselection", new HashSet<String>()))
+        return getSelectedSchoolsSet(getSharedPreferences(context));
+    }
+
+    public static boolean getPowerSchoolIntent(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    public static Set<DataSource> getSelectedSchoolsSet(SharedPreferences sharedPreferences) {
+        return Stream.of(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<String>()))
                 .map(new Function<String, DataSource>() {
                     @Override
                     public DataSource apply(String s) {
@@ -49,30 +63,16 @@ public final class PreferenceUtils {
                                 throw new Error("Invalid school selection value! Was: " + s);
                         }
                     }
-                })
-                .forEach(new Consumer<DataSource>() {
+                }).collect(new Supplier<EnumSet<DataSource>>() {
                     @Override
-                    public void accept(DataSource dataSource) {
-                        enumSet.add(dataSource);
+                    public EnumSet<DataSource> get() {
+                        return EnumSet.of(DataSource.DISTRICT);
+                    }
+                }, new BiConsumer<EnumSet<DataSource>, DataSource>() {
+                    @Override
+                    public void accept(EnumSet<DataSource> value1, DataSource value2) {
+                        value1.add(value2);
                     }
                 });
-        return enumSet;
-    }
-
-    public static boolean getPowerSchoolIntent(Context context) {
-        SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getBoolean("powerschoolintent", false);
-    }
-
-    public static SharedPreferences getSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-    }
-
-    public static void registerOnSharedPreferenceChangeListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    public static void unregisterOnSharedPreferenceChangeListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

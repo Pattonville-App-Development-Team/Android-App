@@ -11,7 +11,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
- * Created by skaggsm on 1/4/17.
+ * Created by Mitchell Skaggs on 1/4/17.
  */
 public class EventViewHolder extends FlexibleViewHolder {
     private static final String TAG = "EventViewHolder";

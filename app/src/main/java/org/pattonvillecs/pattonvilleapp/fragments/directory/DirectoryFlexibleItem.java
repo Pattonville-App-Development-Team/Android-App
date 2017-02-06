@@ -5,16 +5,9 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import net.fortuna.ical4j.model.component.VEvent;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventViewHolder;
 
 import java.util.List;
 

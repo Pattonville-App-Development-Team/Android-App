@@ -8,7 +8,7 @@ import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import org.pattonvillecs.pattonvilleapp.R;
 
 /**
- * Created by skaggsm on 1/31/17.
+ * Created by Mitchell Skaggs on 1/31/17.
  */
 public final class InitialPreferenceFragment extends PreferenceFragmentCompat {
 

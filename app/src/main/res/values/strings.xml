@@ -14,13 +14,14 @@
     <string name="title_activity_directoryDetail">Directory</string>
     <string name="calendar_fragment_action_today">Today</string>
 
-
+  
     <string name="key_school_selection">schoolselection</string>
     <string name="key_powerschool_intent">powerschoolintent</string>
     <string name="key_home_newsamount">homenewsamount</string>
     <string name="key_home_eventsamount">homeeventsamount</string>
     <string name="key_home_pinnedamount">homepinnedamount</string>
 
+  
     <string-array name="schools">
         <item>High School</item>
         <item>Heights</item>
