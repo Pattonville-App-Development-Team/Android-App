@@ -35,6 +35,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         mWebView = (WebView) findViewById(R.id.newsDetail_webView);
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
+        mWebView.setHorizontalScrollBarEnabled(false);
 
         mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
 
