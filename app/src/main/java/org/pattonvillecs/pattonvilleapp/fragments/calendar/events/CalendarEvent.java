@@ -21,7 +21,7 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import java.util.Date;
 
 /**
- * Created by Mitchell on 10/18/2016.
+ * Created by Mitchell Skaggs on 10/18/2016.
  * <p>
  * This class represents a single calendar event.
  *

@@ -18,7 +18,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 /**
- * Created by skaggsm on 1/4/17.
+ * Created by Mitchell Skaggs on 1/4/17.
  */
 public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
 

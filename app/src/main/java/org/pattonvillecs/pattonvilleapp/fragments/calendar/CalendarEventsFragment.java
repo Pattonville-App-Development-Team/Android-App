@@ -26,32 +26,40 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.utils.Utils;
+
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment.CALENDAR_LISTENER_ID;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarEventsFragment extends Fragment implements CalendarFragment.OnCalendarDataUpdatedListener {
+public class CalendarEventsFragment extends Fragment {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
-    private CalendarFragment calendarFragment;
-    private CalendarData calendarData = new CalendarData();
+    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private PattonvilleApplication pattonvilleApplication;
+    private PauseableListener<CalendarParsingUpdateData> listener;
     private TextView noItemsTextView;
 
     public CalendarEventsFragment() {
@@ -72,8 +80,36 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        calendarFragment = (CalendarFragment) getParentFragment();
-        calendarFragment.addOnCalendarDataUpdatedListener(this);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<CalendarParsingUpdateData>(true) {
+            @Override
+            public int getIdentifier() {
+                return CALENDAR_LISTENER_ID;
+            }
+
+            @Override
+            public void onReceiveData(CalendarParsingUpdateData data) {
+                super.onReceiveData(data);
+                Log.i(TAG, "Received new data!");
+
+                setCalendarData(data.getCalendarData());
+            }
+
+            @Override
+            public void onResume(CalendarParsingUpdateData data) {
+                super.onResume(data);
+                Log.i(TAG, "Received data after resume!");
+
+                setCalendarData(data.getCalendarData());
+            }
+
+            @Override
+            public void onPause(CalendarParsingUpdateData data) {
+                super.onPause(data);
+                Log.i(TAG, "Received data before pause!");
+            }
+        };
     }
 
     private void goToCurrentDay() {
@@ -98,7 +134,8 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        calendarFragment.removeOnCalendarDataUpdatedListener(this);
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
     }
 
     @Override
@@ -145,11 +182,10 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         return layout;
     }
 
-    @Override
-    public void updateCalendarData(CalendarData calendarData) {
+    public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
         eventAdapter.clear();
-        List<EventFlexibleItem> items = Stream.of(calendarData.getCalendars())
+        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
                 .flatMap(new Function<Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
                     public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> dataSourceHashMultimapEntry) {
@@ -184,4 +220,21 @@ public class CalendarEventsFragment extends Fragment implements CalendarFragment
         eventAdapter.addItems(eventAdapter.getItemCount(), items);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        listener.resume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        listener.attach(pattonvilleApplication);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        listener.pause();
+    }
 }

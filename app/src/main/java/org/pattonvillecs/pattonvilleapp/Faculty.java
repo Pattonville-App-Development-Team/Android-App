@@ -35,9 +35,13 @@ public class Faculty {
         this.mEmail = mEmail;
     }
 
-    public String getExtenstionNumber(){ return mExtensionNumber;}
+    public String getExtenstionNumber() {
+        return mExtensionNumber;
+    }
 
-    public void setExtensionNumber(String extension) {this.mExtensionNumber = "x" + extension;}
+    public void setExtensionNumber(String extension) {
+        this.mExtensionNumber = "x" + extension;
+    }
 
     //dummy data for now
     public Faculty setFaculty() {
