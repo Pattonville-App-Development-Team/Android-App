@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -61,6 +62,8 @@ public class CalendarEventsFragment extends Fragment {
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
     private TextView noItemsTextView;
+    private FastScroller fastScroller;
+    private CalendarFragment calendarFragment;
 
     public CalendarEventsFragment() {
         // Required empty public constructor
@@ -77,10 +80,16 @@ public class CalendarEventsFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        calendarFragment = (CalendarFragment) getParentFragment();
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
@@ -172,7 +181,28 @@ public class CalendarEventsFragment extends Fragment {
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         //recyclerView.addItemDecoration(dividerItemDecoration);
 
-        eventAdapter.setFastScroller((FastScroller) layout.findViewById(R.id.fast_scroller), Utils.fetchAccentColor(getContext(), Color.RED));
+        fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
+        fastScroller.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "Touched fastScroller with:" + event);
+                if (calendarFragment != null)
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            calendarFragment.setSwipeRefreshEnabledDisabled(true); //The fast scroll action has ended
+                            break;
+                        case MotionEvent.ACTION_DOWN: //The fast scroller errantly sends these events, not reliable
+                            break;
+                        case MotionEvent.ACTION_MOVE: //This means that the fast scroller is *definitely* moving
+                        default: //Probably ought to just be safe and allow scrolling instead of easy refresh
+                            calendarFragment.setSwipeRefreshEnabledDisabled(false);
+                            break;
+                    }
+                return false;
+            }
+        });
+        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED));
 
         noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
 
