@@ -209,7 +209,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void setSwipeRefreshEnabledDisabled(boolean enabled) {
         if (swipeRefreshLayout != null) {
-            Log.i(TAG, "Set swipe state to: " + enabled + " from " + tag);
+            Log.i(TAG, "Set swipe state to: " + enabled);
             swipeRefreshLayout.setEnabled(enabled);
         }
     }
