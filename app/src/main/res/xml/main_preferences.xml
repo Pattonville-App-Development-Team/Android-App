@@ -16,15 +16,40 @@
         <CheckBoxPreference
             android:defaultValue="0"
             android:key="@string/key_powerschool_intent"
-            android:summary="Switch between a browser view or app"
+            android:summary="Switch between a browser view or app for student/parent access"
             android:title="Use PowerSchool App">
 
         </CheckBoxPreference>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Home"></PreferenceCategory>
+    <PreferenceCategory android:title="Home">
 
-    <PreferenceCategory android:title="News"></PreferenceCategory>
+        <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
+            android:defaultValue="3"
+            android:key="@string/key_home_newsamount"
+            android:title="Recent News Articles" />
+
+        <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
+            android:defaultValue="3"
+            android:key="@string/key_home_eventsamount"
+            android:title="Upcomming Events" />
+
+        <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
+            android:defaultValue="3"
+            android:key="@string/key_home_pinnedamount"
+            android:title="Pinned Events" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="News">
+
+        <CheckBoxPreference
+            android:defaultValue="0"
+            android:key="@string/key_news_notifications"
+            android:summary="Recieve notifications for newly published articles"
+            android:title="News Notifications" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="Calendar"></PreferenceCategory>
 

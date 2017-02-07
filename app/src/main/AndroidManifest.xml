@@ -72,6 +72,9 @@
         <activity
             android:name=".PeachjarActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".PowerschoolActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
