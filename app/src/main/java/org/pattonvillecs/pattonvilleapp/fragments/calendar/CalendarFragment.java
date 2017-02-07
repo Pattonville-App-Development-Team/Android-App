@@ -32,6 +32,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     private SwipeRefreshLayout swipeRefreshLayout;
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
+    private ViewPager.OnPageChangeListener onPageChangeListener;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -117,6 +118,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDestroyView() {
         super.onDestroyView();
 
+        viewPager.removeOnPageChangeListener(onPageChangeListener);
         swipeRefreshLayout.setOnRefreshListener(null);
     }
 
@@ -174,6 +176,21 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return 3;
             }
         });
+        onPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                setSwipeRefreshEnabledDisabled(state == ViewPager.SCROLL_STATE_IDLE);
+            }
+        };
+        viewPager.addOnPageChangeListener(onPageChangeListener);
 
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
         tabs.setupWithViewPager(viewPager);
@@ -188,6 +205,11 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         return view;
+    }
+
+    private void setSwipeRefreshEnabledDisabled(boolean enabled) {
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setEnabled(enabled);
     }
 
     @Override
