@@ -40,14 +40,14 @@ public class SettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.main_preferences);
             PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
 
-            mNewsPreference = (NumberPickerPreference) findPreference("homenewsamount");
-            mNewsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homenewsamount", 3) + " News Articles");
+            mNewsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_newsamount));
+            mNewsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_newsamount), 3) + " News Articles");
 
-            mUpcomingEventsPreference = (NumberPickerPreference) findPreference("homeeventsamount");
-            mUpcomingEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homeeventsamount", 3) + " Upcoming Events");
+            mUpcomingEventsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_eventsamount));
+            mUpcomingEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_eventsamount), 3) + " Upcoming Events");
 
-            mPinnedEventsPreference = (NumberPickerPreference) findPreference("homepinnedamount");
-            mPinnedEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt("homepinnedamount", 3) + " Pinned Events");
+            mPinnedEventsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_pinnedamount));
+            mPinnedEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_pinnedamount), 3) + " Pinned Events");
 
         }
 
@@ -55,14 +55,14 @@ public class SettingsActivity extends AppCompatActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
             switch (key) {
-                case "homenewsamount":
-                    mNewsPreference.setSummary(sharedPreferences.getInt("homenewsamount", 3) + " News Articles");
+                case PreferenceUtils.HOME_NEWS_AMOUNT_KEY:
+                    mNewsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_newsamount), 3) + " News Articles");
                     break;
-                case "homeeventsamount":
-                    mUpcomingEventsPreference.setSummary(sharedPreferences.getInt("homeeventsamount", 3) + " Upcoming Events");
+                case PreferenceUtils.HOME_EVENTS_AMOUNT_KEY:
+                    mUpcomingEventsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_eventsamount), 3) + " Upcoming Events");
                     break;
-                case "homepinnedamount":
-                    mPinnedEventsPreference.setSummary(sharedPreferences.getInt("homepinnedamount", 3) + " Pinned Events");
+                case PreferenceUtils.HOME_PINNED_AMOUNT_KEY:
+                    mPinnedEventsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_pinnedamount), 3) + " Pinned Events");
                     break;
             }
         }
