@@ -43,7 +43,7 @@ public enum DataSource {
             "http://drummond.psdr3.org/ical/Heights.ics",
             "Heights",
             Color.parseColor("#FF0000"),
-            Optional.<String>empty()),
+            Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94968")),
     HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman", 3, true, true, false, true, false,
             "http://ho.psdr3.org/",
             "11055 St. Charles Rock Road, St. Ann, MO 63074",
