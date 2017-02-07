@@ -169,7 +169,7 @@ public class NewsArticle implements Parcelable {
         protected void onPostExecute(String s) {
 
             Log.e("News Parsing", "Starting WebView load");
-            webView.loadData(s, "text/html", null);
+            webView.loadData("<style>img{display: inline;height: auto;max-width: 100%;}</style>" + s, "text/html", null);
             Log.e("News Parsing", "Loaded Data?");
         }
     }
