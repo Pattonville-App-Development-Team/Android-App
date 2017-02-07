@@ -17,6 +17,10 @@ public final class PreferenceUtils {
     public static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
     public static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
 
+    public static final String HOME_NEWS_AMOUNT_KEY = "home_news_amount";
+    public static final String HOME_EVENTS_AMOUNT_KEY = "home_events_amount";
+    public static final String HOME_PINNED_AMOUNT_KEY = "home_pinned_amount";
+
     public static final String APP_INTRO_FIRST_START_PREFERENCE_KEY = "first_start";
 
     private PreferenceUtils() {
