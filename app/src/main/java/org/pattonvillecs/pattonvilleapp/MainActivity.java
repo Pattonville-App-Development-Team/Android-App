@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_powerschool:
-                launchPowerSchool();
+                startActivity(new Intent(this, PowerschoolActivity.class));
                 break;
 
             case R.id.nav_activities:
@@ -184,29 +184,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         supportInvalidateOptionsMenu();
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void launchPowerSchool() {
-        // Check between using app or browser
-        if (PreferenceUtils.getPowerSchoolIntent(this)) {
-
-            // If app installed, launch, if not, open play store to it
-            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_powerschool)) != null) {
-                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_powerschool)));
-            } else {
-
-                // Open store app if there, if not open in browser
-                try {
-                    launchWebsite("market://details?id="
-                            + getString(R.string.package_name_powerschool));
-                } catch (ActivityNotFoundException e) {
-                    launchWebsite("https://play.google.com/store/apps/details?id="
-                            + getString(R.string.package_name_powerschool));
-                }
-            }
-        } else {
-            launchWebsite("https://powerschool.psdr3.org");
-        }
     }
 
     private void launchNutrislice() {

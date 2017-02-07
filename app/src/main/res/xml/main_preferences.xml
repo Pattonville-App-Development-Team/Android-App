@@ -16,7 +16,7 @@
         <CheckBoxPreference
             android:defaultValue="0"
             android:key="@string/key_powerschool_intent"
-            android:summary="Switch between a browser view or app"
+            android:summary="Switch between a browser view or app for student/parent access"
             android:title="Use PowerSchool App">
 
         </CheckBoxPreference>
