@@ -5,7 +5,7 @@
     tools:context="org.pattonvillecs.pattonvilleapp.PeachjarActivity">
 
     <ListView
-        android:id="@+id/peachjar_list_view"
+        android:id="@+id/school_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

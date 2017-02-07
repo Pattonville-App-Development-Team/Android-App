@@ -12,9 +12,12 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 /**
- * Created by skaggsm on 1/6/17.
+ * Created by Mitchell Skaggs on 1/6/17.
+ *
+ * @deprecated Will soon be unnecessary, Kryo handles nonserializable objects with ease.
  */
 
+@Deprecated
 public class SerializableCalendarDay implements Serializable, Parcelable {
     public static final Creator<SerializableCalendarDay> CREATOR = new Creator<SerializableCalendarDay>() {
         @Override

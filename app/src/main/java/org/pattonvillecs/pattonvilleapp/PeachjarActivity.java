@@ -28,10 +28,10 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_peachjar);
+        setContentView(R.layout.activity_simple_school_list);
         setTitle("Peachjar Links");
 
-        mListView = (ListView) findViewById(R.id.peachjar_list_view);
+        mListView = (ListView) findViewById(R.id.school_list_view);
 
         schools = Stream.of(DataSource.PEACHJAR)
                 .sortBy(new Function<DataSource, String>() {
@@ -56,7 +56,7 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
                 }).collect(Collectors.<DataSource>toList());
 
         List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<String, String>();
             newsListItem.put("image", Integer.toString(DirectoryFragment.images[schools.get(i).id]));

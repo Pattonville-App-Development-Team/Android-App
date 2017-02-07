@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
- * Created by skaggsm on 12/29/16.
+ * Created by Mitchell Skaggs on 12/29/16.
  *
  * @see com.prolificinteractive.materialcalendarview.spans.DotSpan
  */

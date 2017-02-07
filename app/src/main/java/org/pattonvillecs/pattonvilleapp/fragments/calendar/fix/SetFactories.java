@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 /**
- * Created by skaggsm on 1/4/17.
+ * Created by Mitchell Skaggs on 1/4/17.
  */
 
 public final class SetFactories {
