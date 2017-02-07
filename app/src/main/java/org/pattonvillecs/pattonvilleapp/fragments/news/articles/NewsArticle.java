@@ -154,9 +154,10 @@ public class NewsArticle implements Parcelable {
 
                 result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
                 result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
+                result = result.replaceAll("font-size.+pt;", "font-size:13px;");
                 result = result + "<br>";
 
-                Log.e("News Parsing", "Got HTML");
+                Log.e("News Parsing", "Got HTML: \n" + result);
                 return result;
 
             } catch (Exception e) {
