@@ -7,26 +7,32 @@
 
     <include layout="@layout/app_bar_news_detail" />
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foreground="?android:windowContentOverlay"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/activity_calendar_event_details">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <WebView
-            android:id="@+id/newsDetail_webView"
+        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:isScrollContainer="false"
-            android:scrollbars="none" />
+            android:layout_height="match_parent"
+            tools:showIn="@layout/activity_calendar_event_details">
 
-    </android.support.v4.widget.NestedScrollView>
+            <WebView
+                android:id="@+id/newsDetail_webView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:isScrollContainer="false"
+                android:scrollbars="none" />
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
