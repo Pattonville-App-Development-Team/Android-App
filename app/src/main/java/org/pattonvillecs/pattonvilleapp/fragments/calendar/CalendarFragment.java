@@ -92,8 +92,8 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
-                Log.i(TAG, "Received new data!");
-                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+                Log.d(TAG, "Received new data!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
                 checkRefresh(data);
             }
@@ -112,8 +112,8 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
-                Log.i(TAG, "Received data after resume!");
-                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+                Log.d(TAG, "Received data after resume!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
                 checkRefresh(data);
             }
@@ -121,8 +121,8 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onPause(CalendarParsingUpdateData data) {
                 super.onPause(data);
-                Log.i(TAG, "Received data before pause!");
-                Log.i(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+                Log.d(TAG, "Received data before pause!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
 
                 checkRefresh(data);
             }
@@ -222,6 +222,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
