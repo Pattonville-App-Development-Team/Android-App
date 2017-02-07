@@ -162,7 +162,7 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu);
 
         //This terrifies me...
         final ViewTreeObserver viewTreeObserver = getActivity().getWindow().getDecorView().getViewTreeObserver();

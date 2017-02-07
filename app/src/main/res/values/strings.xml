@@ -12,7 +12,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_feedback">Feedback</string>
     <string name="title_activity_directoryDetail">Directory</string>
-    <string name="calendar_fragment_action_today">Today</string>
+    <string name="calendar_fragment_action_today_title">Goto Today</string>
 
 
     <string name="key_school_selection">school_selection</string>
@@ -88,4 +88,5 @@
     <string name="nav_drawer_title_settings">Settings</string>
     <string name="nav_drawer_title_feedback">Feedback</string>
     <string name="calendar_fragment_action_refresh">Refresh</string>
+    <string name="calendar_fragment_action_today_title_condensed">Today</string>
 </resources>

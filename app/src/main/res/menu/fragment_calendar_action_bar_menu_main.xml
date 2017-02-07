@@ -7,10 +7,4 @@
         android:title="@string/calendar_fragment_action_refresh"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_goto_today"
-        android:icon="@drawable/ic_calendar_today_white_48dp"
-        android:title="@string/calendar_fragment_action_today"
-        app:showAsAction="ifRoom" />
-
 </menu>

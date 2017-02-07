@@ -161,7 +161,7 @@ public class CalendarEventsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_calendar_action_bar_menu, menu);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu);
     }
 
     @Override
