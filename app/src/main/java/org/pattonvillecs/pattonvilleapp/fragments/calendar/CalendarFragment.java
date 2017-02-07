@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -57,7 +58,12 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
             case R.id.action_refresh:
                 if (swipeRefreshLayout != null) {
                     swipeRefreshLayout.setRefreshing(true);
-                    this.onRefresh();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onRefresh();
+                        }
+                    }, 500);
                     return true;
                 }
             default:
@@ -252,7 +258,12 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        pattonvilleApplication.refreshCalendarData();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pattonvilleApplication.refreshCalendarData();
+            }
+        }, 500);
     }
 
     @Override
