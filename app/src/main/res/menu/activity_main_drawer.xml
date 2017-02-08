@@ -30,6 +30,9 @@
                 android:id="@+id/nav_psd"
                 android:title="@string/nav_drawer_title_district_website" />
             <item
+                android:id="@+id/nav_moodle"
+                android:title="@string/nav_drawer_title_moodle" />
+            <item
                 android:id="@+id/nav_nutrislice"
                 android:title="@string/nav_drawer_title_nutrislice" />
             <item

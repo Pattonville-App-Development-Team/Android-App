@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PeachjarActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+/**
+ * Created by gadsonk on 2/8/17.
+ */
 
+public class NutrisliceActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private List<DataSource> schools;
     private ListView mListView;
@@ -29,11 +32,11 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_school_list);
-        setTitle("Peachjar Links");
+        setTitle("Nutrislice Links");
 
         mListView = (ListView) findViewById(R.id.school_list_view);
 
-        schools = Stream.of(DataSource.PEACHJAR)
+        schools = Stream.of(DataSource.NUTRISLICE)
                 .sortBy(new Function<DataSource, String>() {
                     @Override
                     public String apply(DataSource dataSource) {
@@ -58,7 +61,7 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
         List<HashMap<String, String>> homeNewsList = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
 
-            HashMap<String, String> newsListItem = new HashMap<>();
+            HashMap<String, String> newsListItem = new HashMap<String, String>();
             newsListItem.put("image", Integer.toString(DirectoryFragment.images[schools.get(i).id]));
             newsListItem.put("headline", schools.get(i).name);
             homeNewsList.add(newsListItem);
@@ -76,6 +79,7 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).peachjarLink.get())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).nutrisliceLink.get())));
     }
 }
+
