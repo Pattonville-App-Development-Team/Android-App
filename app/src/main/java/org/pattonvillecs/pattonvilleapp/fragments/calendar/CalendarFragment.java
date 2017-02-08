@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pattonvillecs.pattonvilleapp.MainActivity;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
@@ -36,6 +38,7 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     private SwipeRefreshLayout swipeRefreshLayout;
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
+    private TabLayout tabLayout;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -75,6 +78,16 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_calendar_action_bar_menu_main, menu);
@@ -84,6 +97,10 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_calendar);
+
+        tabLayout = ((MainActivity) getActivity()).getTabLayout();
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -145,6 +162,9 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         listener.unattach();
         pattonvilleApplication.unregisterPauseableListener(listener);
+
+        tabLayout.setVisibility(View.GONE);
+        tabLayout.setupWithViewPager(null);
     }
 
     @Override
@@ -210,9 +230,13 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
         viewPager.addOnPageChangeListener(this);
 
-
-        TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
-        tabs.setupWithViewPager(viewPager);
+        /*
+        if (tabLayout == null) { //Fallback?
+            tabLayout = (TabLayout) view.findViewById(R.id.tabs_calendar);
+            Log.w(TAG, "Falling back to different tabs.");
+        }
+        tabLayout.setupWithViewPager(viewPager);
+        */
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
