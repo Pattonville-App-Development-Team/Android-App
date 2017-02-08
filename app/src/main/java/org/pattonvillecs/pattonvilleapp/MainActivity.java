@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,11 +34,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
+    private TabLayout tabLayout;
+    private Toolbar toolbar;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    public TabLayout getTabLayout() {
+        return tabLayout;
     }
 
     @Override
@@ -48,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         checkAppIntro();
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
         setSupportActionBar(toolbar);
 
         Log.d("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
@@ -105,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "HTTP response cache is unavailable.");
         }
     }
-
 
     @Override
     public void onBackPressed() {
