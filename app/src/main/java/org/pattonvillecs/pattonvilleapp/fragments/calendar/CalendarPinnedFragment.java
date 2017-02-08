@@ -2,7 +2,9 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +24,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
  * Use the {@link CalendarPinnedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarPinnedFragment extends Fragment {
+public class CalendarPinnedFragment extends Fragment implements SwipeRefreshLayout.OnChildScrollUpCallback {
 
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -70,4 +72,12 @@ public class CalendarPinnedFragment extends Fragment {
         return layout;
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
+    @Override
+    public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+        if (recyclerView != null)
+            return recyclerView.canScrollVertically(-1);
+        else
+            return false;
+    }
 }

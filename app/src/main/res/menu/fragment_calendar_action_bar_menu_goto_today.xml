@@ -4,7 +4,8 @@
     <item
         android:id="@+id/action_goto_today"
         android:icon="@drawable/ic_calendar_today_white_48dp"
-        android:title="@string/calendar_fragment_action_today"
-        app:showAsAction="always" />
+        android:title="@string/calendar_fragment_action_today_title"
+        android:titleCondensed="@string/calendar_fragment_action_today_title_condensed"
+        app:showAsAction="ifRoom" />
 
 </menu>
