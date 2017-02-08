@@ -164,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 launchWebsite("http://www.psdr3.org");
                 break;
 
+            case R.id.nav_moodle:
+                launchWebsite("http://moodle.psdr3.org");
+                break;
+
             case R.id.nav_feedback:
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
                 //startActivity(new Intent(this, FeedbackActivity.class));
