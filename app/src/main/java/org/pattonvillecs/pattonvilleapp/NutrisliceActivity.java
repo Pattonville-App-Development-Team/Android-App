@@ -79,7 +79,7 @@ public class NutrisliceActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).peachjarLink.get())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).nutrisliceLink.get())));
     }
 }
 
