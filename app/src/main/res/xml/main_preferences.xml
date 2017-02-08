@@ -20,6 +20,14 @@
             android:title="Use PowerSchool App">
 
         </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="0"
+            android:key="@string/key_nutrislice_intent"
+            android:summary="Switch between a browser view or app for Nutrislice (Menu) access"
+            android:title="Use Nutrislice App">
+
+        </CheckBoxPreference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Home">

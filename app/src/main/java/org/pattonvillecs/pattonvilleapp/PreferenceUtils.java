@@ -16,6 +16,7 @@ import java.util.Set;
 public final class PreferenceUtils {
     public static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
     public static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
+    public static final String NUTRISLICE_INTENT_PREFERENCE_KEY = "nutrislice_intent";
 
     public static final String HOME_NEWS_AMOUNT_KEY = "home_news_amount";
     public static final String HOME_EVENTS_AMOUNT_KEY = "home_events_amount";
@@ -33,6 +34,11 @@ public final class PreferenceUtils {
     public static boolean getPowerSchoolIntent(Context context) {
         SharedPreferences sharedPrefs = getSharedPreferences(context);
         return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
+    }
+
+    public static boolean getNutrisliceIntent(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getBoolean(NUTRISLICE_INTENT_PREFERENCE_KEY, false);
     }
 
     public static SharedPreferences getSharedPreferences(Context context) {
