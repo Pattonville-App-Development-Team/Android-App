@@ -17,9 +17,9 @@
 
     <string name="key_school_selection">school_selection</string>
     <string name="key_powerschool_intent">powerschool_intent</string>
-    <string name="key_home_newsamount">homenewsamount</string>
-    <string name="key_home_eventsamount">homeeventsamount</string>
-    <string name="key_home_pinnedamount">homepinnedamount</string>
+    <string name="key_home_newsamount">home_news_amount</string>
+    <string name="key_home_eventsamount">home_events_amount</string>
+    <string name="key_home_pinnedamount">home_pinned_amount</string>
 
     <string-array name="schools">
         <item>High School</item>
