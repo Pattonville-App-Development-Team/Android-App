@@ -164,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 launchWebsite("http://www.psdr3.org");
                 break;
 
+            case R.id.nav_moodle:
+                launchWebsite("http://moodle.psdr3.org");
+                break;
+
             case R.id.nav_feedback:
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
                 //startActivity(new Intent(this, FeedbackActivity.class));
@@ -188,18 +192,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void launchNutrislice() {
 
-        // If app installed, launch, if not, open play store to it
-        if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)) != null) {
-            startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)));
-        } else {
+        if (PreferenceUtils.getNutrisliceIntent(getApplicationContext())) {
 
-            // Open store app if there, if not open in browser
-            try {
-                launchWebsite("market://details?id=" + getString(R.string.package_name_nutrislice));
-            } catch (ActivityNotFoundException e) {
-                launchWebsite("https://play.google.com/store/apps/details?id="
-                        + getString(R.string.package_name_nutrislice));
+            // If app installed, launch, if not, open play store to it
+            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)) != null) {
+                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)));
+            } else {
+
+                // Open store app if there, if not open in browser
+                try {
+                    launchWebsite("market://details?id=" + getString(R.string.package_name_nutrislice));
+                } catch (ActivityNotFoundException e) {
+                    launchWebsite("https://play.google.com/store/apps/details?id="
+                            + getString(R.string.package_name_nutrislice));
+                }
             }
+        } else {
+            startActivity(new Intent(this, NutrisliceActivity.class));
         }
     }
 
