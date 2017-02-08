@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -61,7 +64,7 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarMonthFragment extends Fragment {
+public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayout.OnChildScrollUpCallback {
 
     public static final String TAG = "CalendarMonthFragment";
     private static final Method onDateClickedMethod;
@@ -85,6 +88,7 @@ public class CalendarMonthFragment extends Fragment {
     private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
     private PauseableListener<CalendarParsingUpdateData> listener;
+    private CalendarFragment calendarFragment;
 
 
     public CalendarMonthFragment() {
@@ -114,6 +118,7 @@ public class CalendarMonthFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        calendarFragment = (CalendarFragment) getParentFragment();
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
@@ -373,7 +378,7 @@ public class CalendarMonthFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        Log.i(TAG, "onCreateView called");
+        Log.d(TAG, "onCreateView called");
         // Inflate the layout for this fragment
         View rootLayout = inflater.inflate(R.layout.fragment_calendar_month, container, false);
 
@@ -389,6 +394,14 @@ public class CalendarMonthFragment extends Fragment {
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
+
+        eventRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "Touch, canScroll=" + eventRecyclerView.canScrollVertically(-1) + ", " + ((View) eventRecyclerView.getParent()).canScrollVertically(-1) + ": " + event);
+                return false;
+            }
+        });
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         //eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
@@ -432,26 +445,26 @@ public class CalendarMonthFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.v(TAG, "onPause called");
+        Log.d(TAG, "onPause called");
         listener.pause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop called");
+        Log.d(TAG, "onStop called");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.v(TAG, "onDestroyView called");
+        Log.d(TAG, "onDestroyView called");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume called");
+        Log.d(TAG, "onResume called");
         listener.resume();
     }
 
@@ -461,5 +474,16 @@ public class CalendarMonthFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("SimplifiableIfStatement")
+    @Override
+    public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+        if (nestedScrollView != null)
+            return nestedScrollView.canScrollVertically(-1);
+        else if (eventRecyclerView != null)
+            return eventRecyclerView.canScrollVertically(-1);
+        else
+            return false;
     }
 }
