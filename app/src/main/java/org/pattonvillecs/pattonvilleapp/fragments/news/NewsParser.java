@@ -68,7 +68,7 @@ public class NewsParser extends DefaultHandler {
                     item.setTitle(currentValue);
                     break;
                 case "link":
-                    item.setPublicUrl(dataSource.websiteURL + "/?" + currentValue);
+                    item.setPublicUrl(dataSource.websiteURL + "?" + currentValue);
                     item.setPrivateUrl("http://fccms.psdr3.org" + currentValue);
                     break;
                 case "author":
