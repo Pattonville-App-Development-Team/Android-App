@@ -154,9 +154,10 @@ public class NewsArticle implements Parcelable {
 
                 result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
                 result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
+                result = result.replaceAll("font-size.+pt;", "font-size:13px;");
                 result = result + "<br>";
 
-                Log.e("News Parsing", "Got HTML");
+                Log.e("News Parsing", "Got HTML: \n" + result);
                 return result;
 
             } catch (Exception e) {
@@ -169,7 +170,7 @@ public class NewsArticle implements Parcelable {
         protected void onPostExecute(String s) {
 
             Log.e("News Parsing", "Starting WebView load");
-            webView.loadData(s, "text/html", null);
+            webView.loadData("<style>img{display: inline;height: auto;max-width: 100%;}</style>" + s, "text/html", null);
             Log.e("News Parsing", "Loaded Data?");
         }
     }
