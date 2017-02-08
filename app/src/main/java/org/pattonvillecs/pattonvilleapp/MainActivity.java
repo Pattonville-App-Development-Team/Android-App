@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_nutrislice:
-                launchNutrislice();
+                startActivity(new Intent(this, NutrisliceActivity.class));
                 break;
 
             case R.id.nav_peachjar:
