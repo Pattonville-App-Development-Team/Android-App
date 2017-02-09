@@ -216,7 +216,13 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
     private float getDotRadius() {
         if (materialCalendarView != null)
-            return Math.min(materialCalendarView.getWidth(), materialCalendarView.getHeight()) / 150f;
+            return Math.max(
+                    5, //Minimum radius of 5
+                    Math.min(
+                            materialCalendarView.getWidth(),
+                            materialCalendarView.getHeight()
+                    ) / 150f
+            );
         else
             return 10;
     }
