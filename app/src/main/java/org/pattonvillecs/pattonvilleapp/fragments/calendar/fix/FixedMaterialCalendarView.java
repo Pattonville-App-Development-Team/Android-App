@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 
+
 /**
  * Created by Mitchell Skaggs on 10/12/16.
  */
@@ -23,6 +24,18 @@ import java.util.Calendar;
 public class FixedMaterialCalendarView extends MaterialCalendarView {
     private static final int DEFAULT_DAYS_IN_WEEK = 7;
     private static final int DAY_NAMES_ROW = 1;
+    private static final String TAG = "FixedMatCalView";
+    private static final Method getWeekCountBasedOnModeMethod;
+
+    static {
+        try {
+            getWeekCountBasedOnModeMethod = MaterialCalendarView.class.getDeclaredMethod("getWeekCountBasedOnMode");
+
+            getWeekCountBasedOnModeMethod.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodError(e.getLocalizedMessage());
+        }
+    }
 
     public FixedMaterialCalendarView(Context context) {
         super(context);
@@ -65,6 +78,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
+    @Deprecated
     private int getWeekCountBasedOnMode() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Field calendarModeField = MaterialCalendarView.class.getDeclaredField("calendarMode");
         calendarModeField.setAccessible(true);
@@ -109,7 +123,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         final int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
         final int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        Log.i("MCV", "onMeasure called " + specWidthSize + " " + specHeightSize);
+        Log.i(TAG, "onMeasure called " + specWidthSize + " " + specHeightSize);
 
         //We need to disregard padding for a while. This will be added back later
         final int desiredWidth = specWidthSize - getPaddingLeft() - getPaddingRight();
@@ -117,7 +131,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
         final int weekCount;
         try {
-            weekCount = getWeekCountBasedOnMode();
+            weekCount = (int) getWeekCountBasedOnModeMethod.invoke(this);//getWeekCountBasedOnMode();
         } catch (Exception e) {
             throw new Error(e);
         }
