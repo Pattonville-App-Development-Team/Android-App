@@ -1,6 +1,10 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.fix;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Build;
+import android.os.Parcelable;
+import android.support.annotation.Px;
 import android.support.v4.view.BetterViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,23 +30,74 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     private static final int DAY_NAMES_ROW = 1;
     private static final String TAG = "FixedMatCalView";
     private static final Method getWeekCountBasedOnModeMethod;
+    private static final Field tileHeightField, tileWidthField, adapterField;
+
+    @Px
+    private static final int INVALID_TILE_DIMENSION = -10;
+
 
     static {
         try {
             getWeekCountBasedOnModeMethod = MaterialCalendarView.class.getDeclaredMethod("getWeekCountBasedOnMode");
+            tileHeightField = MaterialCalendarView.class.getDeclaredField("tileHeight");
+            tileWidthField = MaterialCalendarView.class.getDeclaredField("tileWidth");
+            adapterField = MaterialCalendarView.class.getDeclaredField("adapter");
 
             getWeekCountBasedOnModeMethod.setAccessible(true);
+            tileHeightField.setAccessible(true);
+            tileWidthField.setAccessible(true);
+            adapterField.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new NoSuchMethodError(e.getLocalizedMessage());
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchFieldError(e.getLocalizedMessage());
         }
     }
 
-    public FixedMaterialCalendarView(Context context) {
-        super(context);
-    }
 
     public FixedMaterialCalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        Log.d(TAG, "Constructor called");
+
+        TypedArray a = context.getTheme()
+                .obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
+        try {
+            final int tileSize = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileSize, INVALID_TILE_DIMENSION);
+            if (tileSize > INVALID_TILE_DIMENSION) {
+                setTileSize(tileSize);
+            }
+
+            final int tileWidth = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileWidth, INVALID_TILE_DIMENSION);
+            if (tileWidth > INVALID_TILE_DIMENSION) {
+                setTileWidth(tileWidth);
+            }
+
+            final int tileHeight = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileHeight, INVALID_TILE_DIMENSION);
+            if (tileHeight > INVALID_TILE_DIMENSION) {
+                setTileHeight(tileHeight);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            a.recycle();
+        }
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                requestLayout();
+            }
+        });
+
+        Log.d(TAG, "Tile height: " + getTileHeight());
+        Log.d(TAG, "Tile width: " + getTileWidth());
+        Log.d(TAG, "Tile size: " + getTileSize());
+    }
+
+    public FixedMaterialCalendarView(Context context) {
+        this(context, null);
     }
 
     /**
@@ -67,6 +122,56 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
                 return size;
             }
         }
+    }
+
+    @Override
+    public void onFinishTemporaryDetach() {
+        super.onFinishTemporaryDetach();
+        Log.d(TAG, "Finished Temp Detached");
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.d(TAG, "Detached");
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.d(TAG, "Attached");
+    }
+
+    @Override
+    public void onStartTemporaryDetach() {
+        super.onStartTemporaryDetach();
+        Log.d(TAG, "Temp Detached");
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Log.d(TAG, "Saving instance state");
+        return super.onSaveInstanceState();
+    }
+
+    /**
+     * This method undoes the undoing of the requested tile height and width. The values should come from the XML attributes of the layout, but instead they are overwritten by the saved state.
+     *
+     * @param state
+     */
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Log.d(TAG, "Restoring instance state");
+
+        SavedState savedState = (SavedState) state;
+
+        int tileWidth = getTileWidth();
+        int tileHeight = getTileHeight();
+
+        super.onRestoreInstanceState(savedState);
+
+        setTileWidth(tileWidth);
+        setTileHeight(tileHeight);
     }
 
     /**
@@ -116,6 +221,32 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     }
 
     @Override
+    public void setTileHeight(int height) {
+        try {
+            tileHeightField.setInt(this, height);
+            Log.d(TAG, "Tile height set to: " + height);
+        } catch (IllegalAccessException e) {
+            throw new Error(e);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !isInLayout())
+            requestLayout();
+    }
+
+    @Override
+    public void setTileWidth(int width) {
+        try {
+            tileWidthField.setInt(this, width);
+            Log.d(TAG, "Tile width set to: " + width);
+        } catch (IllegalAccessException e) {
+            throw new Error(e);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !isInLayout())
+            requestLayout();
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         final int specWidthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -123,7 +254,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         final int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
         final int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        Log.i(TAG, "onMeasure called " + specWidthSize + " " + specHeightSize);
+        Log.d(TAG, "onMeasure called height" + MeasureSpec.toString(heightMeasureSpec) + " width " + MeasureSpec.toString(widthMeasureSpec));
 
         //We need to disregard padding for a while. This will be added back later
         final int desiredWidth = specWidthSize - getPaddingLeft() - getPaddingRight();
@@ -147,6 +278,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         int measureTileHeight = -1;
 
         if (this.getTileWidth() != INVALID_TILE_DIMENSION || this.getTileHeight() != INVALID_TILE_DIMENSION) {
+            Log.d(TAG, "Measuring with valid tile height or width: Height: " + this.getTileHeight() + " Width: " + this.getTileWidth());
             if (this.getTileWidth() > 0) {
                 //We have a tileWidth set, we should use that
                 measureTileWidth = this.getTileWidth();

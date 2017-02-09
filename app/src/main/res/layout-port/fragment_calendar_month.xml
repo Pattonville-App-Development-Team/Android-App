@@ -16,9 +16,12 @@
 
         <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
             android:id="@+id/calendar_calendar"
+            style="PSD.MaterialCalendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mcv_showOtherDates="other_months|decorated_disabled" />
+            app:mcv_selectionColor="@android:color/darker_gray"
+            app:mcv_showOtherDates="other_months|decorated_disabled"
+            app:mcv_tileHeight="40dp" />
 
         <View
             android:layout_width="match_parent"

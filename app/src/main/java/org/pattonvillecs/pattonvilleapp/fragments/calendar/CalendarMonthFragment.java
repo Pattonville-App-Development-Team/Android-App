@@ -2,12 +2,11 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.OrientationHelper;
@@ -256,6 +255,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 
                 Log.d(TAG, "MCV New layout: " + left + " " + top + " " + right + " " + bottom + "; Old layout: " + oldLeft + " " + oldTop + " " + oldRight + " " + oldBottom);
+                Log.d(TAG, "MCV tile height: " + materialCalendarView.getTileHeight());
 
                 if (left != oldLeft
                         || top != oldTop
@@ -270,7 +270,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
             }
         });
 
-        final int dotColor = CalendarDecoratorUtil.getThemeAccentColor(getContext());
+        final int dotColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getActivity().getTheme());
 
         materialCalendarView.addDecorators(
                 //Single decorator
@@ -294,8 +294,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
                     @Override
                     public void decorate(DayViewFacade view) {
-                        StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
-                        view.setSelectionDrawable(stateListDrawable);
+                        //StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
+                        //view.setSelectionDrawable(stateListDrawable);
 
                         view.addSpan(EnhancedDotSpan.createSingle(getDotRadius(), dotColor));
                     }
@@ -321,8 +321,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
                     @Override
                     public void decorate(DayViewFacade view) {
-                        StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
-                        view.setSelectionDrawable(stateListDrawable);
+                        //StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
+                        //view.setSelectionDrawable(stateListDrawable);
 
                         Pair<EnhancedDotSpan, EnhancedDotSpan> pair = EnhancedDotSpan.createPair(getDotRadius(), dotColor, dotColor);
                         view.addSpan(pair.getLeft());
@@ -350,8 +350,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
                     @Override
                     public void decorate(DayViewFacade view) {
-                        StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
-                        view.setSelectionDrawable(stateListDrawable);
+                        //StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
+                        //view.setSelectionDrawable(stateListDrawable);
 
                         Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> triple = EnhancedDotSpan.createTriple(getDotRadius(), dotColor, dotColor, dotColor);
                         view.addSpan(triple.getLeft());
@@ -380,8 +380,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
                     @Override
                     public void decorate(DayViewFacade view) {
-                        StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
-                        view.setSelectionDrawable(stateListDrawable);
+                        //StateListDrawable stateListDrawable = CalendarDecoratorUtil.generateBackground(Color.LTGRAY);
+                        //view.setSelectionDrawable(stateListDrawable);
 
                         Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> triple = EnhancedDotSpan.createTripleWithPlus(getDotRadius(), dotColor, dotColor, dotColor);
                         view.addSpan(triple.getLeft());

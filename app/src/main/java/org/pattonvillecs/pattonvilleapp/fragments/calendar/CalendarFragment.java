@@ -241,7 +241,6 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
