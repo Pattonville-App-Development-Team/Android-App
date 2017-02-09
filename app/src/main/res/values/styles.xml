@@ -24,4 +24,9 @@
 
     <style name="PSD.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="PSD.MaterialCalendarView">
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="colorPrimary">@android:color/darker_gray</item>
+    </style>
+
 </resources>
