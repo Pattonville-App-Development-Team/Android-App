@@ -85,7 +85,6 @@ public class NewsFragment extends Fragment {
             }
         });
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
-        mRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
 
         mRefreshLayout.setRefreshing(true);
         updateList();
