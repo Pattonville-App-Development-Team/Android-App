@@ -54,7 +54,6 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         }
     }
 
-
     public FixedMaterialCalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -122,6 +121,11 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
                 return size;
             }
         }
+    }
+
+    @Override
+    public void dispatchOnDateSelected(CalendarDay day, boolean selected) {
+        super.dispatchOnDateSelected(day, selected);
     }
 
     @Override

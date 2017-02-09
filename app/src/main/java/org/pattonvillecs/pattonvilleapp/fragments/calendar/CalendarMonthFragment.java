@@ -46,7 +46,6 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCale
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,20 +64,9 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayout.OnChildScrollUpCallback {
 
     public static final String TAG = "CalendarMonthFragment";
-    private static final Method onDateClickedMethod;
+    private static final String KEY_DATE_SELECTED = "dateSelected";
 
-    static {
-        Method method = null;
-        try {
-            method = MaterialCalendarView.class.getDeclaredMethod("onDateClicked", CalendarDay.class, boolean.class);
-            method.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        onDateClickedMethod = method;
-    }
-
-    private FixedMaterialCalendarView materialCalendarView;
+    private FixedMaterialCalendarView fixedMaterialCalendarView;
     private RecyclerView eventRecyclerView;
     private CalendarDay dateSelected;
     private EventAdapter eventAdapter;
@@ -108,7 +96,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("dateSelected", dateSelected);
+        outState.putParcelable(KEY_DATE_SELECTED, dateSelected);
     }
 
     @Override
@@ -151,7 +139,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
     private void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        materialCalendarView.invalidateDecorators();
+        fixedMaterialCalendarView.invalidateDecorators();
         setRecyclerViewItems(dateSelected);
     }
 
@@ -189,8 +177,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         switch (item.getItemId()) {
             case R.id.action_goto_today:
                 CalendarDay today = CalendarDay.today();
-                materialCalendarView.setCurrentDate(today);
-                callOnDateClicked(materialCalendarView, today);
+                fixedMaterialCalendarView.setCurrentDate(today);
+                fixedMaterialCalendarView.dispatchOnDateSelected(today, true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -214,12 +202,12 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private float getDotRadius() {
-        if (materialCalendarView != null)
+        if (fixedMaterialCalendarView != null)
             return Math.max(
                     5, //Minimum radius of 5
                     Math.min(
-                            materialCalendarView.getWidth(),
-                            materialCalendarView.getHeight()
+                            fixedMaterialCalendarView.getWidth(),
+                            fixedMaterialCalendarView.getHeight()
                     ) / 150f
             );
         else
@@ -403,8 +391,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         //rootLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
         //rootLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
-        materialCalendarView = (FixedMaterialCalendarView) rootLayout.findViewById(R.id.calendar_calendar);
-        setUpMaterialCalendarView(materialCalendarView);
+        fixedMaterialCalendarView = (FixedMaterialCalendarView) rootLayout.findViewById(R.id.calendar_calendar);
+        setUpMaterialCalendarView(fixedMaterialCalendarView);
 
         eventRecyclerView = (RecyclerView) rootLayout.findViewById(R.id.event_recycler_view);
         eventRecyclerView.setNestedScrollingEnabled(false);
@@ -426,7 +414,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         if (savedInstanceState != null)
-            dateSelected = savedInstanceState.getParcelable("dateSelected");
+            dateSelected = savedInstanceState.getParcelable(KEY_DATE_SELECTED);
 
         int spotlightPadding;
         switch (getResources().getConfiguration().orientation) {
@@ -454,8 +442,8 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         if (dateSelected == null)
             dateSelected = CalendarDay.today();
 
-        materialCalendarView.setCurrentDate(dateSelected);
-        callOnDateClicked(materialCalendarView, dateSelected);
+        fixedMaterialCalendarView.setCurrentDate(dateSelected);
+        fixedMaterialCalendarView.dispatchOnDateSelected(dateSelected, true);
 
         listener.attach(pattonvilleApplication);
     }
@@ -484,14 +472,6 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         super.onResume();
         Log.d(TAG, "onResume called");
         listener.resume();
-    }
-
-    private void callOnDateClicked(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
-        try {
-            onDateClickedMethod.invoke(materialCalendarView, calendarDay, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @SuppressWarnings("SimplifiableIfStatement")
