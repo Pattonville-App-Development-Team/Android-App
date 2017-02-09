@@ -101,7 +101,7 @@ public enum DataSource {
             "RoseAcres",
             Color.parseColor("#0000CD"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
-            Optional.of("http://psdr3.nutrislice.com/menu/rose_acres")),
+            Optional.of("http://psdr3.nutrislice.com/menu/rose-acres")),
     PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood", 8, true, true, false, false, true,
             "http://parkwood.psdr3.org/",
             "3199 Parkwood Lane, Maryland Heights, MO 63043",
