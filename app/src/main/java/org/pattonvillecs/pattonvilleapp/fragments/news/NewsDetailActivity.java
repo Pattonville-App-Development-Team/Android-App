@@ -15,9 +15,6 @@ import android.widget.TextView;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class NewsDetailActivity extends AppCompatActivity {
 
     private TextView mTextView;
@@ -49,7 +46,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.newsDetail_toolbar_title)).setText(newsArticle.getTitle());
 
-        mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
+        mTextView.setText(newsArticle.getFormattedDate());
 
         Log.e("News Parsing", "Starting");
         newsArticle.loadContent(mWebView);
