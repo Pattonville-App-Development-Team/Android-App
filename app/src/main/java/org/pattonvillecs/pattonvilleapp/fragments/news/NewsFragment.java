@@ -214,13 +214,6 @@ public class NewsFragment extends Fragment {
 
                 newsDateText.setText(item.getFormattedDate());
 
-                if (todayDate.equals(articleDate)) {
-
-                    newsDateText.setText("Today");
-
-                } else {
-                    newsDateText.setText(articleDate);
-                }
                 mArticle = item;
             }
         }
