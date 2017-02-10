@@ -25,6 +25,7 @@
 
 
         <LinearLayout
+            android:id="@+id/home_news_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -70,6 +71,7 @@
             android:nestedScrollingEnabled="false" />
 
         <LinearLayout
+            android:id="@+id/home_events_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -114,6 +116,7 @@
 
 
         <LinearLayout
+            android:id="@+id/home_pinned_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

@@ -34,6 +34,22 @@ public final class PreferenceUtils {
     public static boolean getPowerSchoolIntent(Context context) {
         SharedPreferences sharedPrefs = getSharedPreferences(context);
         return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
+
+    }
+
+    public static int getHomeNewsAmount(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getInt(HOME_NEWS_AMOUNT_KEY, 3);
+    }
+
+    public static int getHomeEventsAmount(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getInt(HOME_EVENTS_AMOUNT_KEY, 3);
+    }
+
+    public static int getHomePinnedAmount(Context context) {
+        SharedPreferences sharedPrefs = getSharedPreferences(context);
+        return sharedPrefs.getInt(HOME_PINNED_AMOUNT_KEY, 3);
     }
 
     public static boolean getNutrisliceIntent(Context context) {

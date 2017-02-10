@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
+import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
@@ -95,23 +96,47 @@ public class HomeFragment extends Fragment {
         carouselView.setPageCount(4);
         carouselView.setImageListener(imageListener);
 
-        for (int i = 0; i < 3; i++) {
+
+        int homeNewsAmount = PreferenceUtils.getHomeNewsAmount(getContext());
+        int homeEventsAmount = PreferenceUtils.getHomeEventsAmount(getContext());
+        int homePinnedAmount = PreferenceUtils.getHomePinnedAmount(getContext());
+
+
+        if (homeNewsAmount == 0) {
+
+            (view.findViewById(R.id.home_news_header_layout)).setVisibility(View.GONE);
+
+        }
+
+        if (homeEventsAmount == 0) {
+
+            (view.findViewById(R.id.home_events_header_layout)).setVisibility(View.GONE);
+
+        }
+        if (homePinnedAmount == 0) {
+
+            (view.findViewById(R.id.home_pinned_header_layout)).setVisibility(View.GONE);
+
+        }
+
+
+        for (int i = 0; i < homeNewsAmount; i++) {
             HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("headline", sampleHeadlines[i]);
+            newsListItem.put("headline", sampleHeadlines[i % 3]);
             homeNewsList.add(newsListItem);
         }
 
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < homeEventsAmount; i++) {
             HashMap<String, String> eventListItem = new HashMap<>();
-            eventListItem.put("event", sampleEvents[i]);
+            eventListItem.put("event", sampleEvents[i % 3]);
             homeEventsList.add(eventListItem);
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < homePinnedAmount; i++) {
 
             HashMap<String, String> pinnedListItem = new HashMap<>();
-            pinnedListItem.put("pin", samplePinnedEvents[i]);
+            pinnedListItem.put("pin", samplePinnedEvents[i % 3]);
             homePinnedList.add(pinnedListItem);
 
         }
@@ -126,6 +151,22 @@ public class HomeFragment extends Fragment {
         upcomingSeeMoreArrow = (ImageView) view.findViewById(R.id.home_upcoming_events_see_more_arrow);
         pinnedSeeMoreArrow = (ImageView) view.findViewById(R.id.home_pinned_events_see_more_arrow);
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
+
+
+        ViewGroup.LayoutParams newsParam = newsListView.getLayoutParams();
+        newsParam.height = 130 * homeNewsAmount;
+        newsListView.setLayoutParams(newsParam);
+        newsListView.requestLayout();
+
+        ViewGroup.LayoutParams eventParam = eventListView.getLayoutParams();
+        eventParam.height = 136 * homeEventsAmount;
+        eventListView.setLayoutParams(eventParam);
+        eventListView.requestLayout();
+
+        ViewGroup.LayoutParams pinnedParam = pinnedListView.getLayoutParams();
+        pinnedParam.height = 138 * homePinnedAmount;
+        pinnedListView.setLayoutParams(pinnedParam);
+        pinnedListView.requestLayout();
 
 
         String[] homeNewsListFrom = {"headline"};
