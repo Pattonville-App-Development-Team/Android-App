@@ -11,7 +11,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class NewsArticle implements Parcelable {
 
@@ -24,6 +28,13 @@ public class NewsArticle implements Parcelable {
             return new NewsArticle[size];
         }
     };
+
+
+    private static DateFormat shortDF = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    private static DateFormat longDF = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
+
+    private static String todayDate = shortDF.format(Calendar.getInstance().getTime());
+
     private Date publishDate;
     private String title;
     private String content;
@@ -99,6 +110,18 @@ public class NewsArticle implements Parcelable {
 
     public void loadContent(WebView webView) {
         new NewsArticle.NewsContent(webView).execute(privateUrl);
+    }
+
+    public String getFormattedDate() {
+        String articleDate = shortDF.format(getPublishDate());
+
+        if (todayDate.equals(articleDate)) {
+
+            return "Today, " + articleDate;
+
+        } else {
+            return longDF.format(getPublishDate());
+        }
     }
 
     @Override
