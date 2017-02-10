@@ -18,6 +18,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingU
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
@@ -43,7 +45,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
     private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+    //TODO: Add Directory data
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
+    //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -71,6 +75,15 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setUpCalendarParsing();
+        setUpDirectoryParsing();
+    }
+
+    private void setUpDirectoryParsing() {
+        executeDirectoryDataTasks();
+    }
+
+    private void executeDirectoryDataTasks() {
+        new DirectoryAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void setUpCalendarParsing() {
@@ -130,13 +143,35 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void updateCalendarListeners(CalendarParsingUpdateData data) {
         Log.d(TAG, "Updating calendar listeners");
+
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
             if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
+                Log.d(TAG, "Checking listener " + pauseableListener);
+
                 if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
                     Log.d(TAG, "Updating calendar listener " + pauseableListener);
+
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
+                }
+            } else {
+                Log.d(TAG, "Skipping paused listener");
+            }
+        }
+    }
+
+    private void updateDirectoryListeners(DirectoryParsingUpdateData data) {
+        Log.d(TAG, "Updating directory listeners");
+
+        for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            if (!pauseableListener.isPaused()) {
+                Log.d(TAG, "Checking listener " + pauseableListener);
+
+                if (pauseableListener.getIdentifier() == DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID) {
+                    Log.d(TAG, "Updating directory listener " + pauseableListener);
+
+                    //noinspection unchecked
+                    ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }
             } else {
                 Log.d(TAG, "Skipping paused listener");
@@ -149,6 +184,14 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
      */
     public void updateCalendarListeners() {
         updateCalendarListeners(getCurrentCalendarParsingUpdateData());
+    }
+
+    public void updateDirectoryListeners() {
+        updateDirectoryListeners(getCurrentDirectoryParsingUpdateData());
+    }
+
+    private DirectoryParsingUpdateData getCurrentDirectoryParsingUpdateData() {
+        return new DirectoryParsingUpdateData(); //TODO: Fill in with current data
     }
 
     @Override

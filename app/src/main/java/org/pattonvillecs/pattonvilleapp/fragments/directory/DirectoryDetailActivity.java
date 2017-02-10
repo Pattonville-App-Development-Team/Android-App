@@ -17,6 +17,8 @@ import org.pattonvillecs.pattonvilleapp.R;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
+    //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
+
     private static DataSource school;
     private RecyclerView facultyView;
     private DirectoryAdapter directoryAdapter;
@@ -39,7 +41,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         facultyView.addItemDecoration(dividerItemDecoration);
 
         Intent intent = getIntent();
-        school = (DataSource) intent.getSerializableExtra("School");
+        school = (DataSource) intent.getSerializableExtra("School"); //TODO: Make constant field
 
         setTitle(school.shortName + " Directory");
 
