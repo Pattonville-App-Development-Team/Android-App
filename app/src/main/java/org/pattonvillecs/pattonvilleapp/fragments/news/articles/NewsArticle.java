@@ -30,7 +30,6 @@ public class NewsArticle implements Parcelable {
         }
     };
 
-
     private static DateFormat shortDF = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
     private static DateFormat longDF = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
 
