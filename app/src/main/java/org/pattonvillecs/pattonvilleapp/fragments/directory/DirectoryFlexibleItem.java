@@ -28,9 +28,9 @@ public class DirectoryFlexibleItem extends AbstractFlexibleItem<DirectoryViewHol
 
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, DirectoryViewHolder holder, int position, List payloads) {
-        holder.nameText.setText(facultyMember.getName());
+        holder.nameText.setText(facultyMember.getFullName());
 
-        holder.departmentText.setText(facultyMember.getDepartment());
+        holder.longDesText.setText(facultyMember.getDepartment());
 
         holder.emailButton.setOnClickListener(new View.OnClickListener() {
             @Override

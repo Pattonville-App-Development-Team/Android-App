@@ -6,17 +6,27 @@ package org.pattonvillecs.pattonvilleapp;
 
 public class Faculty {
 
-    private String mName;
+    private String mFirstName, mLastName, mFullName;
     private String mDepartment;
     private String mEmail;
     private String mExtensionNumber;
 
-    public String getName() {
-        return mName;
+    //list of phone numbers and extension, location
+
+    public String getFirstName() {
+        return mFirstName;
     }
 
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setFirstName(String mFirstName) {
+        this.mFirstName = mFirstName;
+    }
+
+    public String getLastName() {
+        return mLastName;
+    }
+
+    public void setLastName(String mLastName) {
+        this.mLastName = mLastName;
     }
 
     public String getDepartment() {
@@ -43,9 +53,17 @@ public class Faculty {
         this.mExtensionNumber = "x" + extension;
     }
 
+    public String getFullName() {
+        return mFullName;
+    }
+
+    public void setFullName(String fName, String lName) {
+        mFullName = String.format("%s %s", fName, lName);
+    }
+
     //dummy data for now
     public Faculty setFaculty() {
-        setName("First Name Last Name...");
+        setFullName(getFirstName(), getLastName());
         setDepartment("Department...");
         setEmail("Email");
         return this;
