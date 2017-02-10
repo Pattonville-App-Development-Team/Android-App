@@ -61,7 +61,7 @@ public class NewsParser extends DefaultHandler {
         if (item != null) {
             switch (qName.toLowerCase()) {
                 case "item":
-                    item.setSourceColor(dataSource.calendarColor);
+                    item.setDataSource(dataSource);
                     items.add(item);
                     break;
                 case "title":

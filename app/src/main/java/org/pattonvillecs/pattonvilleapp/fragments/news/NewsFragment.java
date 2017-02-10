@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -116,16 +117,16 @@ public class NewsFragment extends Fragment {
 
         final Set<DataSource> selectedSchools = PreferenceUtils.getSelectedSchoolsSet(getContext());
 
-        for (final Object school : selectedSchools.toArray()) {
+        for (final DataSource school : selectedSchools) {
 
-            final String url = "http://fccms.psdr3.org/" + ((DataSource) school).newsName + "/news/?plugin=xml&leaves";
+            final String url = school.newsURL;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
 
                             Log.d("NewsFragment", "Response Receivied: " + (System.currentTimeMillis() - time));
-                            NewsParser parser = new NewsParser(response, (DataSource) school);
+                            NewsParser parser = new NewsParser(response, school);
                             parser.getXml();
                             newsArticles.addAll(parser.getItems());
                             updateUI();
@@ -189,9 +190,8 @@ public class NewsFragment extends Fragment {
             TextView schoolIDText;
             TextView newsDateText;
 
-            DateFormat df = new SimpleDateFormat("MM/dd/yy");
+            DateFormat df = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
             String todayDate = df.format(Calendar.getInstance().getTime());
-
 
             NewsArticleViewHolder(View view) {
                 super(view);
@@ -216,52 +216,9 @@ public class NewsFragment extends Fragment {
 
             void bind(NewsArticle item) {
                 titleView.setText(item.getTitle());
-                switch (item.getSourceColor()) {
-
-                    case -16745933:
-                        schoolIDText.setText(R.string.DistrictInitial);
-                        break;
-
-                    case -16744320:
-                        schoolIDText.setText(R.string.HighSchoolInitial);
-                        break;
-
-                    case -65536:
-                        schoolIDText.setText(R.string.HeightsInitial);
-                        break;
-
-                    case -29696:
-                        schoolIDText.setText(R.string.HolmanInitial);
-                        break;
-
-                    case -4419697:
-                        schoolIDText.setText(R.string.ParkwoodInitial);
-                        break;
-
-                    case -11861886:
-                        schoolIDText.setText(R.string.DrummondInitial);
-                        break;
-
-                    case -1146130:
-                        schoolIDText.setText(R.string.BridgewayInitial);
-                        break;
-
-                    case -10496:
-                        schoolIDText.setText(R.string.RemmingtonInitial);
-                        break;
-
-                    case -8355840:
-                        schoolIDText.setText(R.string.WillowBrookInitial);
-                        break;
-
-                    case -16777011:
-                        schoolIDText.setText(R.string.RoseAcresInitial);
-                        break;
-
-
-                }
-                sourceView.setColorFilter(item.getSourceColor());
-                //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getSourceColor());
+                schoolIDText.setText(item.getDataSource().initialsName);
+                sourceView.setColorFilter(item.getDataSource().calendarColor);
+                //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getDataSource());
 
                 String articleDate = (new SimpleDateFormat("MM/dd/yy", Locale.US)).format(item.getPublishDate());
 
@@ -281,7 +238,7 @@ public class NewsFragment extends Fragment {
         private Drawable mDivider;
 
         public SimpleDividerItemDecoration(Context context) {
-            mDivider = context.getResources().getDrawable(R.drawable.news_recycler_divider);
+            mDivider = ResourcesCompat.getDrawable(context.getResources(), R.drawable.news_recycler_divider, context.getTheme());
         }
 
         @Override

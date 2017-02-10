@@ -10,6 +10,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public class NewsArticle implements Parcelable {
     private String title;
     private String content;
     private String publicUrl, privateUrl;
-    private int sourceColor;
+    private DataSource dataSource;
 
     public NewsArticle() {
 
@@ -65,12 +66,12 @@ public class NewsArticle implements Parcelable {
         this.publicUrl = url;
     }
 
-    public int getSourceColor() {
-        return sourceColor;
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
-    public void setSourceColor(int sourceColor) {
-        this.sourceColor = sourceColor;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public Date getPublishDate() {
@@ -121,7 +122,7 @@ public class NewsArticle implements Parcelable {
 
         public NewsContent(WebView webView) {
 
-            Log.e("News Parsing", "Created NewsContent Aysnc");
+            Log.e("News Parsing", "Created NewsContent Async");
             this.webView = webView;
         }
 
