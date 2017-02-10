@@ -14,7 +14,6 @@ import com.google.common.collect.HashMultimap;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
@@ -24,7 +23,9 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
     private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+    private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -62,6 +64,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
         calendarData = new ConcurrentHashMap<>();
+        runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
 
@@ -128,11 +131,16 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private void updateCalendarListeners(CalendarParsingUpdateData data) {
         Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (!pauseableListener.isPaused())
-                if (pauseableListener.getIdentifier() == CalendarMonthFragment.CALENDAR_LISTENER_ID) {
+            if (!pauseableListener.isPaused()) {
+                Log.d(TAG, "Updating listener " + pauseableListener);
+                if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
+                    Log.d(TAG, "Updating calendar listener " + pauseableListener);
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }
+            } else {
+                Log.d(TAG, "Skipping paused listener");
+            }
         }
     }
 
@@ -162,7 +170,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener paused!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
                 break;
@@ -175,7 +183,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarMonthFragment.CALENDAR_LISTENER_ID:
+            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
                 Log.i(TAG, "CalendarMonthFragment listener resumed!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
                 break;
@@ -195,10 +203,18 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
-        return new CalendarParsingUpdateData(calendarData);
+        return new CalendarParsingUpdateData(calendarData, runningCalendarAsyncTasks);
     }
 
     public ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendarData() {
         return calendarData;
+    }
+
+    public Set<RetrieveCalendarDataAsyncTask> getRunningCalendarAsyncTasks() {
+        return runningCalendarAsyncTasks;
+    }
+
+    public void refreshCalendarData() {
+        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
     }
 }

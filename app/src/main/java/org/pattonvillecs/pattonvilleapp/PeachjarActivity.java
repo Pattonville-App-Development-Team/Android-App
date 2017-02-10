@@ -55,10 +55,10 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
                     }
                 }).collect(Collectors.<DataSource>toList());
 
-        List<HashMap<String, String>> homeNewsList = new ArrayList<HashMap<String, String>>();
-        for (int i = 0; i < 8; i++) {
+        List<HashMap<String, String>> homeNewsList = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
 
-            HashMap<String, String> newsListItem = new HashMap<String, String>();
+            HashMap<String, String> newsListItem = new HashMap<>();
             newsListItem.put("image", Integer.toString(DirectoryFragment.images[schools.get(i).id]));
             newsListItem.put("headline", schools.get(i).name);
             homeNewsList.add(newsListItem);

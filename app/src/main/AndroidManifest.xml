@@ -75,6 +75,9 @@
         <activity
             android:name=".PowerschoolActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".NutrisliceActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

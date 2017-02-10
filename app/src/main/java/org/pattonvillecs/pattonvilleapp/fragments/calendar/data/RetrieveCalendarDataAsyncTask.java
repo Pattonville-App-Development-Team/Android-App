@@ -49,6 +49,8 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     protected void onPreExecute() {
         super.onPreExecute();
         this.kryo = pattonvilleApplication.borrowKryo();
+        pattonvilleApplication.getRunningCalendarAsyncTasks().add(this);
+        pattonvilleApplication.updateCalendarListeners();
     }
 
     @Override
@@ -171,13 +173,18 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         releaseKryo();
         if (result != null) {
             pattonvilleApplication.getCalendarData().put(dataSource, result);
-            pattonvilleApplication.updateCalendarListeners();
         }
+        Log.i(TAG, "Removing from size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
+        pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
+        Log.i(TAG, "Now size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
+        pattonvilleApplication.updateCalendarListeners();
     }
 
     @Override
-    protected void onCancelled(HashMultimap<SerializableCalendarDay, VEvent> serializableCalendarDayVEventHashMultimap) {
+    protected void onCancelled(HashMultimap<SerializableCalendarDay, VEvent> result) {
         releaseKryo();
+        pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
+        pattonvilleApplication.updateCalendarListeners();
     }
 
     private void releaseKryo() {

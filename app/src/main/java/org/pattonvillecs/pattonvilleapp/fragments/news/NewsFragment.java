@@ -84,6 +84,7 @@ public class NewsFragment extends Fragment {
                 updateList();
             }
         });
+        mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 
         mRefreshLayout.setRefreshing(true);
         updateList();

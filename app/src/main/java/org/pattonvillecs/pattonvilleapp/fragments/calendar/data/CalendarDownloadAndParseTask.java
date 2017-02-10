@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -123,9 +122,9 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     protected void onPreExecute() {
         super.onPreExecute();
         Log.d(TAG, "OnPreExecute called");
-        calendarFragment.showProgressBar();
-        calendarFragment.getProgressBar().setIndeterminate(false);
-        calendarFragment.getProgressBar().setMax(100);
+        //calendarFragment.showProgressBar();
+        //calendarFragment.getProgressBar().setIndeterminate(false);
+        //calendarFragment.getProgressBar().setMax(100);
     }
 
     @Override
@@ -133,10 +132,10 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
         super.onProgressUpdate(values);
         Log.d(TAG, "OnProgressUpdate called: " + (float) (100 * values[0]) + "%");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            calendarFragment.getProgressBar().setProgress((int) (100 * values[0]), true);
-        else
-            calendarFragment.getProgressBar().setProgress((int) (100 * values[0]));
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        //    calendarFragment.getProgressBar().setProgress((int) (100 * values[0]), true);
+        //else
+        //    calendarFragment.getProgressBar().setProgress((int) (100 * values[0]));
 
     }
 
@@ -144,8 +143,8 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     protected void onPostExecute(CalendarData calendarData) {
         super.onPostExecute(calendarData);
         Log.d(TAG, "OnPostExecute called");
-        calendarFragment.setCalendarData(calendarData);
-        calendarFragment.hideProgressBar();
+        //calendarFragment.setCalendarData(calendarData);
+        //calendarFragment.hideProgressBar();
         PattonvilleApplication.get(calendarFragment.getActivity()).releaseKryo(this.kryo);
     }
 
@@ -153,7 +152,7 @@ public class CalendarDownloadAndParseTask extends AsyncTask<Set<DataSource>, Dou
     protected void onCancelled(CalendarData calendarData) {
         super.onCancelled(calendarData);
         Log.d(TAG, "OnCancelled called");
-        calendarFragment.hideProgressBar();
+        //calendarFragment.hideProgressBar();
         PattonvilleApplication.get(calendarFragment.getActivity()).releaseKryo(this.kryo);
     }
 

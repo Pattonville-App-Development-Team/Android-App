@@ -66,11 +66,13 @@ public abstract class PauseableListener<E> {
 
     public final void pause() {
         checkAttachedToListenable();
+        this.paused = true;
         listenable.pause(this);
     }
 
     public final void resume() {
         checkAttachedToListenable();
+        this.paused = false;
         listenable.resume(this);
     }
 

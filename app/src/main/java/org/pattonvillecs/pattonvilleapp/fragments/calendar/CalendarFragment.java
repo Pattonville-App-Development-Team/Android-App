@@ -1,41 +1,44 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.MainActivity;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
-    @Deprecated
-    private static final String KEY_CURRENT_CALENDAR_DATA = "CURRENT_CALENDAR_DATA";
+    private static final String TAG = "CalendarFragment";
     private ViewPager viewPager;
-    @Deprecated
-    private Set<OnCalendarDataUpdatedListener> listeners = new LinkedHashSet<>();
-    private CalendarData calendarData;
-    @Deprecated
-    private AsyncTask<Set<DataSource>, Double, CalendarData> currentCalendarDownloadAndParseTask;
-    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private PattonvilleApplication pattonvilleApplication;
+    private PauseableListener<CalendarParsingUpdateData> listener;
+    private TabLayout tabLayout;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -51,39 +54,131 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
-    public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return swipeRefreshLayout;
     }
 
-    public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setRefreshing(true);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onRefresh();
+                        }
+                    }, 500);
+                    return true;
+                }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    public ProgressBar getProgressBar() {
-        return progressBar;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu_main, menu);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_calendar);
-    }
 
-    public synchronized void setCalendarData(CalendarData calendarData) {
-        this.calendarData = calendarData;
-        updateAllListeners(this.calendarData);
+        tabLayout = ((MainActivity) getActivity()).getTabLayout();
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<CalendarParsingUpdateData>(true) {
+            @Override
+            public int getIdentifier() {
+                return CALENDAR_LISTENER_ID;
+            }
+
+            @Override
+            public void onReceiveData(CalendarParsingUpdateData data) {
+                super.onReceiveData(data);
+                Log.d(TAG, "Received new data!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+
+            private void checkRefresh(CalendarParsingUpdateData data) {
+                boolean refresh = data.getRunningCalendarAsyncTasks().size() > 0;
+                if (refresh && !swipeRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Starting refreshing");
+                    swipeRefreshLayout.setRefreshing(true);
+                } else if (!refresh && swipeRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Ending refreshing");
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void onResume(CalendarParsingUpdateData data) {
+                super.onResume(data);
+                Log.d(TAG, "Received data after resume!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+
+            @Override
+            public void onPause(CalendarParsingUpdateData data) {
+                super.onPause(data);
+                Log.d(TAG, "Received data before pause!");
+                Log.d(TAG, "Size: " + data.getRunningCalendarAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+        };
+        pattonvilleApplication.registerPauseableListener(listener);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (currentCalendarDownloadAndParseTask != null)
-            currentCalendarDownloadAndParseTask.cancel(true);
+
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
+
+        tabLayout.setVisibility(View.GONE);
+        tabLayout.setupWithViewPager(null);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        swipeRefreshLayout.setOnRefreshListener(null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        listener.attach(pattonvilleApplication);
     }
 
     @Override
@@ -133,56 +228,89 @@ public class CalendarFragment extends Fragment {
                 return 3;
             }
         });
+        viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs_calendar);
-        tabs.setupWithViewPager(viewPager);
+        /*
+        if (tabLayout == null) { //Fallback?
+            tabLayout = (TabLayout) view.findViewById(R.id.tabs_calendar);
+            Log.w(TAG, "Falling back to different tabs.");
+        }
+        tabLayout.setupWithViewPager(viewPager);
+        */
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progressbar_calendar);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         if (savedInstanceState != null) {
-            viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
-        } else {
-            //noinspection unchecked
-            //currentCalendarDownloadAndParseTask = new CalendarDownloadAndParseTask(this, PattonvilleApplication.get(getActivity()).getRequestQueue()).execute(PreferenceUtils.getSelectedSchoolsSet(getContext()));
+            if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
+                viewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_TAB));
         }
 
         return view;
     }
 
+    public void setSwipeRefreshEnabledDisabled(boolean enabled) {
+        if (swipeRefreshLayout != null) {
+            Log.i(TAG, "Set swipe state to: " + enabled);
+            swipeRefreshLayout.setEnabled(enabled);
+        }
+    }
+
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            this.calendarData = savedInstanceState.getParcelable(KEY_CURRENT_CALENDAR_DATA);
-            updateAllListeners(calendarData);
-        }
     }
 
     @Override
     public synchronized void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
-        outState.putParcelable(KEY_CURRENT_CALENDAR_DATA, calendarData);
     }
 
-    @Deprecated
-    public void addOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToAdd) {
-        listeners.add(listenerToAdd);
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pattonvilleApplication.refreshCalendarData();
+            }
+        }, 500);
     }
 
-    @Deprecated
-    public void removeOnCalendarDataUpdatedListener(OnCalendarDataUpdatedListener listenerToRemove) {
-        listeners.remove(listenerToRemove);
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause called");
+        listener.pause();
     }
 
-    @Deprecated
-    private void updateAllListeners(CalendarData calendarData) {
-        for (OnCalendarDataUpdatedListener listener : listeners)
-            listener.updateCalendarData(calendarData);
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop called");
     }
 
-    @Deprecated
-    public interface OnCalendarDataUpdatedListener {
-        void updateCalendarData(CalendarData calendarData);
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume called");
+        listener.resume();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (viewPager != null && swipeRefreshLayout != null)
+            swipeRefreshLayout.setOnChildScrollUpCallback((SwipeRefreshLayout.OnChildScrollUpCallback) ((FragmentPagerAdapter) viewPager.getAdapter()).getItem(position));
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        setSwipeRefreshEnabledDisabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 }
