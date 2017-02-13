@@ -120,6 +120,12 @@ public class HomeFragment extends Fragment {
         }
 
 
+        if (homeNewsAmount == 0 && homeEventsAmount == 0 && homePinnedAmount == 0) {
+
+            (view.findViewById(R.id.home_no_items_shown_textview)).setVisibility(View.VISIBLE);
+        }
+
+
         for (int i = 0; i < homeNewsAmount; i++) {
             HashMap<String, String> newsListItem = new HashMap<>();
             newsListItem.put("headline", sampleHeadlines[i % 3]);

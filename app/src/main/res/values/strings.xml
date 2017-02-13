@@ -94,5 +94,6 @@
     <string name="calendar_fragment_action_refresh">Refresh</string>
     <string name="calendar_fragment_action_today_title_condensed">Today</string>
     <string name="nav_drawer_title_moodle">Moodle</string>
+    <string name="zero_home_items_selected_textview">No News Articles or Events set to show up. Go into settings and change your Home preferences to see items here.</string>
 
 </resources>
