@@ -10,8 +10,13 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class NewsArticle implements Parcelable {
 
@@ -24,11 +29,17 @@ public class NewsArticle implements Parcelable {
             return new NewsArticle[size];
         }
     };
+
+    private static DateFormat shortDF = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+    private static DateFormat longDF = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
+
+    private static String todayDate = shortDF.format(Calendar.getInstance().getTime());
+
     private Date publishDate;
     private String title;
     private String content;
     private String publicUrl, privateUrl;
-    private int sourceColor;
+    private DataSource dataSource;
 
     public NewsArticle() {
 
@@ -65,12 +76,12 @@ public class NewsArticle implements Parcelable {
         this.publicUrl = url;
     }
 
-    public int getSourceColor() {
-        return sourceColor;
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
-    public void setSourceColor(int sourceColor) {
-        this.sourceColor = sourceColor;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public Date getPublishDate() {
@@ -101,6 +112,18 @@ public class NewsArticle implements Parcelable {
         new NewsArticle.NewsContent(webView).execute(privateUrl);
     }
 
+    public String getFormattedDate() {
+        String articleDate = shortDF.format(getPublishDate());
+
+        if (todayDate.equals(articleDate)) {
+
+            return "Today, " + articleDate;
+
+        } else {
+            return longDF.format(getPublishDate());
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -121,7 +144,7 @@ public class NewsArticle implements Parcelable {
 
         public NewsContent(WebView webView) {
 
-            Log.e("News Parsing", "Created NewsContent Aysnc");
+            Log.e("News Parsing", "Created NewsContent Async");
             this.webView = webView;
         }
 

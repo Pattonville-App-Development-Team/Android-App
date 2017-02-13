@@ -8,14 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
@@ -33,9 +31,12 @@ public class NewsDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mWebView = (WebView) findViewById(R.id.newsDetail_webView);
+        mWebView = (WebView) findViewById(R.id.news_detail_webview);
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
-        mWebView.setHorizontalScrollBarEnabled(false);
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setDisplayZoomControls(false);
 
         mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
 
@@ -45,7 +46,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.newsDetail_toolbar_title)).setText(newsArticle.getTitle());
 
-        mTextView.setText((new SimpleDateFormat("h:mm a',' MM/dd/yy", Locale.US)).format(newsArticle.getPublishDate()));
+        mTextView.setText(newsArticle.getFormattedDate());
 
         Log.e("News Parsing", "Starting");
         newsArticle.loadContent(mWebView);
