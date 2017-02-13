@@ -26,15 +26,19 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+
+import static android.content.ContentValues.TAG;
 
 public class NewsFragment extends Fragment {
 
@@ -43,6 +47,8 @@ public class NewsFragment extends Fragment {
     private NewsRecyclerViewAdapter mAdapter;
     private ArrayList<NewsArticle> newsArticles;
     private long time;
+    private PauseableListener<NewsParsingUpdateData> listener;
+    private PattonvilleApplication pattonvilleApplication;
 
     public NewsFragment() {
     }
@@ -58,9 +64,65 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        listener.attach(pattonvilleApplication);
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        listener = new PauseableListener<NewsParsingUpdateData>(true) {
+            @Override
+            public int getIdentifier() {
+                return NewsParsingUpdateData.NEWS_LISTENER_ID;
+            }
+
+            @Override
+            public void onReceiveData(NewsParsingUpdateData data) {
+                super.onReceiveData(data);
+                Log.d(TAG, "Received new data!");
+                Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+
+            private void checkRefresh(NewsParsingUpdateData data) {
+                boolean refresh = data.getRunningNewsAsyncTasks().size() > 0;
+                if (refresh && !mRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Starting refreshing");
+                    mRefreshLayout.setRefreshing(true);
+                } else if (!refresh && mRefreshLayout.isRefreshing()) {
+                    Log.d(TAG, "Ending refreshing");
+                    mRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void onResume(NewsParsingUpdateData data) {
+                super.onResume(data);
+                Log.d(TAG, "Received data after resume!");
+                Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+
+            @Override
+            public void onPause(NewsParsingUpdateData data) {
+                super.onPause(data);
+                Log.d(TAG, "Received data before pause!");
+                Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
+
+                checkRefresh(data);
+            }
+        };
+        pattonvilleApplication.registerPauseableListener(listener);
     }
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -85,6 +147,34 @@ public class NewsFragment extends Fragment {
         updateList();
 
         return root;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        listener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(listener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause called");
+        listener.pause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume called");
+        listener.resume();
     }
 
     private void updateUI() {
@@ -119,7 +209,7 @@ public class NewsFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
 
-                            Log.d("NewsFragment", "Response Receivied: " + (System.currentTimeMillis() - time));
+                            Log.d("NewsFragment", "Response Received: " + (System.currentTimeMillis() - time));
                             NewsParser parser = new NewsParser(response, school);
                             parser.getXml();
                             newsArticles.addAll(parser.getItems());
