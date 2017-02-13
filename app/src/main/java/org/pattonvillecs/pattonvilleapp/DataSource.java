@@ -21,7 +21,8 @@ public enum DataSource {
             Optional.<String>empty(),
             Optional.<String>empty(),
             "http://drummond.psdr3.org/ical/Learning%20Center.ics",
-            "District",
+            "http://fccms.psdr3.org/District/news/?plugin=xml&leaves",
+            "PSD",
             Color.parseColor("#007a33"),
             Optional.<String>empty(),
             Optional.<String>empty()),
@@ -32,8 +33,9 @@ public enum DataSource {
             Optional.of("(314) 213-8351"),
             Optional.of("(314) 213-8696"),
             "http://drummond.psdr3.org/ical/High%20School.ics",
-            "HighSchool",
-            Color.parseColor("#008080"),
+            "http://fccms.psdr3.org/HighSchool/news/?plugin=xml&leaves",
+            "HS",
+            Color.parseColor("#02d4c4"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94969"),
             Optional.of("http://psdr3.nutrislice.com/menu/pattonville-high")),
     HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights", 2, true, true, false, true, false,
@@ -43,8 +45,9 @@ public enum DataSource {
             Optional.of("(314) 213-8333"),
             Optional.of("(314) 213-8633"),
             "http://drummond.psdr3.org/ical/Heights.ics",
-            "Heights",
-            Color.parseColor("#FF0000"),
+            "http://fccms.psdr3.org/Heights/news/?plugin=xml&leaves",
+            "HT",
+            Color.parseColor("#ddd739"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94968"),
             Optional.of("http://psdr3.nutrislice.com/menu/pattonville-heights")),
     HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman", 3, true, true, false, true, false,
@@ -54,8 +57,9 @@ public enum DataSource {
             Optional.of("(314) 213-8332"),
             Optional.of("(314) 213-8632"),
             "http://drummond.psdr3.org/ical/Holman.ics",
-            "Holman",
-            Color.parseColor("#FF8C00"),
+            "http://fccms.psdr3.org/Holman/news/?plugin=xml&leaves",
+            "HO",
+            Color.parseColor("#ff8d00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94975"),
             Optional.of("http://psdr3.nutrislice.com/menu/holman")),
     REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington", 4, true, true, false, true, true,
@@ -65,8 +69,9 @@ public enum DataSource {
             Optional.of("(314) 213-8116"),
             Optional.of("(314) 213-8616"),
             "http://drummond.psdr3.org/ical/Remington.ics",
-            "Remington",
-            Color.parseColor("#FFD700"),
+            "http://fccms.psdr3.org/Remington/news/?plugin=xml&leaves",
+            "RT",
+            Color.parseColor("#e50b00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94971"),
             Optional.of("http://psdr3.nutrislice.com/menu/remington-traditional")),
     BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway", 5, true, true, false, false, true,
@@ -76,8 +81,9 @@ public enum DataSource {
             Optional.of("(314) 213-8112"),
             Optional.of("(314) 213-8612"),
             "http://drummond.psdr3.org/ical/Bridgeway.ics",
-            "Bridgeway",
-            Color.parseColor("#EE82EE"),
+            "http://fccms.psdr3.org/Bridgeway/news/?plugin=xml&leaves",
+            "BW",
+            Color.parseColor("#724338"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94979"),
             Optional.of("http://psdr3.nutrislice.com/menu/bridgeway")),
     DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond", 6, true, true, false, false, true,
@@ -87,8 +93,9 @@ public enum DataSource {
             Optional.of("(314) 213-8519"),
             Optional.of("(314) 213-8619"),
             "http://drummond.psdr3.org/ical/Drummond.ics",
-            "Drummond",
-            Color.parseColor("#4B0082"),
+            "http://fccms.psdr3.org/Drummond/news/?plugin=xml&leaves",
+            "DR",
+            Color.parseColor("#73c300"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94976"),
             Optional.of("http://psdr3.nutrislice.com/menu/drummond")),
     ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres", 7, true, true, false, false, true,
@@ -98,8 +105,9 @@ public enum DataSource {
             Optional.of("(314) 213-8117"),
             Optional.of("(314) 213-8617"),
             "http://drummond.psdr3.org/ical/Rose%20Acres.ics",
-            "RoseAcres",
-            Color.parseColor("#0000CD"),
+            "http://fccms.psdr3.org/RoseAcres/news/?plugin=xml&leaves",
+            "RA",
+            Color.parseColor("#f6258e"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
             Optional.of("http://psdr3.nutrislice.com/menu/rose-acres")),
     PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood", 8, true, true, false, false, true,
@@ -109,8 +117,9 @@ public enum DataSource {
             Optional.of("(314) 213-8115"),
             Optional.of("(314) 213-8615"),
             "http://drummond.psdr3.org/ical/Parkwood.ics",
-            "Parkwood",
-            Color.parseColor("#BC8F8F"),
+            "http://fccms.psdr3.org/Parkwood/news/?plugin=xml&leaves",
+            "PW",
+            Color.parseColor("#a300ff"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94967"),
             Optional.of("http://psdr3.nutrislice.com/menu/parkwood")),
     WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook", 9, true, true, false, false, true,
@@ -120,8 +129,9 @@ public enum DataSource {
             Optional.of("(314) 213-8118"),
             Optional.of("(314) 213-8618"),
             "http://drummond.psdr3.org/ical/Willow%20Brook.ics",
-            "WillowBrook",
-            Color.parseColor("#808000"),
+            "http://fccms.psdr3.org/WillowBrook/news/?plugin=xml&leaves",
+            "WB",
+            Color.parseColor("#000178"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
             Optional.of("http://psdr3.nutrislice.com/menu/willow-brook"));
 
@@ -223,7 +233,7 @@ public enum DataSource {
                 }
             })));
 
-    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsName;
+    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsURL, initialsName;
     public final int id, calendarColor;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink;
@@ -231,7 +241,7 @@ public enum DataSource {
     DataSource(String name, String shortName, int id, boolean hasNews, boolean isDisableable,
                boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool,
                String websiteLink, String address, String mainNumber, Optional<String> attendanceNumber,
-               Optional<String> faxNumber, String calendarLink, String newsName, int calendarColor,
+               Optional<String> faxNumber, String calendarLink, String newsURL, String initialsName, int calendarColor,
                Optional<String> peachjarLink, Optional<String> nutrisliceLink) {
         this.name = name;
         this.shortName = shortName;
@@ -246,10 +256,11 @@ public enum DataSource {
         this.mainNumber = mainNumber;
         this.attendanceNumber = attendanceNumber;
         this.faxNumber = faxNumber;
+        this.initialsName = initialsName;
         this.peachjarLink = peachjarLink;
         this.calendarURL = calendarLink;
         this.calendarColor = calendarColor;
-        this.newsName = newsName;
+        this.newsURL = newsURL;
         this.nutrisliceLink = nutrisliceLink;
     }
 }

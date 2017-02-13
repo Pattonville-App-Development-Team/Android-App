@@ -49,6 +49,7 @@
 
     <string name="package_name_powerschool">com.powerschool.portal</string>
     <string name="package_name_nutrislice">com.nutrislice.schoollunch</string>
+
     <string name="pin_content_description">Pin</string>
     <string name="title_activity_notifications">Notifications</string>
     <string name="home_news_header_text">RECENT NEWS</string>
@@ -65,19 +66,11 @@
     <string name="see_more">See More</string>
     <string name="school_color_circle">School color circle</string>
     <string name="app_intro">Pattonville App Intro</string>
+
     <string name="preferences_schools_summary">Select schools from which you wish to receive information</string>
     <string name="preferences_schools_title">Select Schools</string>
+
     <string name="test_date">Test Date: 01/02/2017</string>
-    <string name="HeightsInitial">HT</string>
-    <string name="HighSchoolInitial">HS</string>
-    <string name="DistrictInitial">PSD</string>
-    <string name="ParkwoodInitial">PW</string>
-    <string name="DrummondInitial">DR</string>
-    <string name="BridgewayInitial">BW</string>
-    <string name="RemmingtonInitial">RE</string>
-    <string name="WillowBrookInitial">WB</string>
-    <string name="RoseAcresInitial">RA</string>
-    <string name="HolmanInitial">HO</string>
 
     <string name="nav_drawer_title_home">Home</string>
     <string name="nav_drawer_title_news">News</string>
@@ -91,8 +84,8 @@
     <string name="nav_drawer_title_notifications">Notifications</string>
     <string name="nav_drawer_title_settings">Settings</string>
     <string name="nav_drawer_title_feedback">Feedback</string>
-    <string name="calendar_fragment_action_refresh">Refresh</string>
-    <string name="calendar_fragment_action_today_title_condensed">Today</string>
     <string name="nav_drawer_title_moodle">Moodle</string>
 
+    <string name="calendar_fragment_action_refresh">Refresh</string>
+    <string name="calendar_fragment_action_today_title_condensed">Today</string>
 </resources>
