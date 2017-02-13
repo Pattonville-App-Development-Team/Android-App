@@ -38,7 +38,6 @@ import java.util.Set;
 
 public class NewsFragment extends Fragment {
 
-    private static int x = 0;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
     private NewsRecyclerViewAdapter mAdapter;
