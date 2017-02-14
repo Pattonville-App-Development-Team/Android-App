@@ -120,11 +120,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
                 newSelectedDataSources.removeAll(newsData.keySet()); //Remove DataSources that are already present
 
-                executeCalendarDataTasks(newSelectedDataSources);
+                executeNewsDataTasks(newSelectedDataSources);
             }
         });
 
-        //Initial download of calendar
+        //Initial download of news
         executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
@@ -295,5 +295,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public Map<DataSource, List<NewsArticle>> getNewsData() {
         return newsData;
+    }
+
+    public void refreshNewsData() {
+        executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
     }
 }

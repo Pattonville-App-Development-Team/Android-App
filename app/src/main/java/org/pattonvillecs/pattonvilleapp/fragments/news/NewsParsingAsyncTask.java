@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by skaggsm on 2/13/17.
+ * Created by Mitchell Skaggs on 2/13/17.
  */
 
 public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<NewsArticle>> {
@@ -41,7 +41,7 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
         if (params.length != 1)
             throw new IllegalArgumentException("Requires a single DataSource");
         dataSource = params[0];
-
+        Log.i(TAG, "Starting news loading for " + dataSource);
 
         RequestFuture<String> requestFuture = RequestFuture.newFuture();
         StringRequest request = new StringRequest(dataSource.newsURL, requestFuture, requestFuture);
