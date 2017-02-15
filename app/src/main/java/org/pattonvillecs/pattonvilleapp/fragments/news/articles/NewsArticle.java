@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news.articles;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -177,7 +178,11 @@ public class NewsArticle implements Parcelable {
 
                 result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
                 result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
-                result = result.replaceAll("font-size.+pt;", "font-size:13px;");
+
+                int fontScale = (int) (14 * Resources.getSystem().getConfiguration().fontScale);
+                Log.e("Parser", "Font Size: " + fontScale);
+
+                result = result.replaceAll("font-size.+pt;", "font-size:" + fontScale + "px;");
                 result = result + "<br>";
 
                 Log.e("News Parsing", "Got HTML: \n" + result);
