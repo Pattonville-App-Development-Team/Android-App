@@ -30,14 +30,10 @@ import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 public class NewsFragment extends Fragment {
@@ -50,7 +46,6 @@ public class NewsFragment extends Fragment {
     private long time;
 
     public NewsFragment() {
-        // Required empty public constructor
     }
 
     public static NewsFragment newInstance() {
@@ -190,9 +185,6 @@ public class NewsFragment extends Fragment {
             TextView schoolIDText;
             TextView newsDateText;
 
-            DateFormat df = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
-            String todayDate = df.format(Calendar.getInstance().getTime());
-
             NewsArticleViewHolder(View view) {
                 super(view);
 
@@ -220,15 +212,8 @@ public class NewsFragment extends Fragment {
                 sourceView.setColorFilter(item.getDataSource().calendarColor);
                 //Log.e("News Item Title + Color", item.getTitle().substring(0,5) + " " + item.getDataSource());
 
-                String articleDate = (new SimpleDateFormat("MM/dd/yy", Locale.US)).format(item.getPublishDate());
+                newsDateText.setText(item.getFormattedDate());
 
-                if (todayDate.equals(articleDate)) {
-
-                    newsDateText.setText("Today");
-
-                } else {
-                    newsDateText.setText(articleDate);
-                }
                 mArticle = item;
             }
         }
