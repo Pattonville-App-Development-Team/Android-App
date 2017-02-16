@@ -17,6 +17,7 @@
             android:layout_height="200dp"
             app:fillColor="@color/colorAccent"
             app:pageColor="#00000000"
+            app:pageTransformInterval="3000"
             app:radius="6dp"
             app:slideInterval="3000"
             app:snap="true"
@@ -25,6 +26,7 @@
 
 
         <LinearLayout
+            android:id="@+id/home_news_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -70,6 +72,7 @@
             android:nestedScrollingEnabled="false" />
 
         <LinearLayout
+            android:id="@+id/home_events_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -114,6 +117,7 @@
 
 
         <LinearLayout
+            android:id="@+id/home_pinned_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -158,6 +162,24 @@
             android:layout_height="204dp"
             android:nestedScrollingEnabled="false" />
 
+        <TextView
+            android:id="@+id/home_no_items_shown_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:paddingBottom="8dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="8dp"
+            android:text="@string/zero_home_items_selected_textview"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
     </LinearLayout>
+
 
 </android.support.v4.widget.NestedScrollView>
