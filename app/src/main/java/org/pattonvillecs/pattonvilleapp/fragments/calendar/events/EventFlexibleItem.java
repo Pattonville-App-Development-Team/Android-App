@@ -30,12 +30,17 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EventFlexibleItem that = (EventFlexibleItem) o;
+
+        return pair != null ? pair.equals(that.pair) : that.pair == null;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return pair != null ? pair.hashCode() : 0;
     }
 
     @Override
@@ -63,8 +68,7 @@ public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
             holder.bottomText.setVisibility(View.VISIBLE);
             holder.bottomText.setText(location.getValue());
         } else {
-            holder.bottomText.setVisibility(View.GONE);
-            holder.bottomText.setText(R.string.no_location);
+            holder.bottomText.setVisibility(View.INVISIBLE);
         }
 
         holder.schoolColorImageView.setColorFilter(pair.getLeft().calendarColor);

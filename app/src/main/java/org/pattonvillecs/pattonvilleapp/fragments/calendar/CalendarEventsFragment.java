@@ -216,7 +216,6 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        eventAdapter.clear();
         List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
                 .flatMap(new Function<Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
@@ -249,7 +248,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         else
             noItemsTextView.setVisibility(View.VISIBLE);
 
-        eventAdapter.addItems(eventAdapter.getItemCount(), items);
+        eventAdapter.updateDataSet(items, true);
     }
 
     @Override

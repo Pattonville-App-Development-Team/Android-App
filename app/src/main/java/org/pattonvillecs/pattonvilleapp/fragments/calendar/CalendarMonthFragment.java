@@ -197,8 +197,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private void setRecyclerViewItems(CalendarDay date) {
-        eventAdapter.clear();
-        eventAdapter.addItems(0, getItemsForDay(date));
+        eventAdapter.updateDataSet(getItemsForDay(date), true);
     }
 
     private float getDotRadius() {
