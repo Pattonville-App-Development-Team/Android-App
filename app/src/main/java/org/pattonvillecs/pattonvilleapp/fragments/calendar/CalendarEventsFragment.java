@@ -175,6 +175,8 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
         eventAdapter = new EventAdapter();
+        eventAdapter.setDisplayHeadersAtStartUp(true);
+        eventAdapter.setStickyHeaders(true);
         eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         recyclerView.setAdapter(eventAdapter);

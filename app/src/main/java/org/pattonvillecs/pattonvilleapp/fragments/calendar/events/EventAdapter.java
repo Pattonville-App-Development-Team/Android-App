@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.items.IHeader;
 
 /**
  * Created by Mitchell Skaggs on 1/4/17.
@@ -36,5 +38,10 @@ public class EventAdapter extends FlexibleAdapter<EventFlexibleItem> {
             return DateFormat.getDateFormat(this.getRecyclerView().getContext()).format(item.pair.getValue().getStartDate().getDate());
         else
             return "";
+    }
+
+    @Override
+    public boolean hasSameHeader(@NonNull EventFlexibleItem item, @NonNull IHeader header) {
+        return super.hasSameHeader(item, header);
     }
 }

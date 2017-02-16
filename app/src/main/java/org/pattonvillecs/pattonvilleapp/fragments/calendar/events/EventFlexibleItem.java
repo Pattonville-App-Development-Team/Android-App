@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
@@ -13,18 +15,22 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 
 /**
  * Created by Mitchell Skaggs on 1/4/17.
  */
-public class EventFlexibleItem extends AbstractFlexibleItem<EventViewHolder> {
+public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, EventHeader> {
 
+    private static final ConcurrentMap<CalendarDay, EventHeader> test = new ConcurrentHashMap<>();
     public final Pair<DataSource, VEvent> pair;
 
     public EventFlexibleItem(Pair<DataSource, VEvent> pair) {
+        super(new EventHeader(CalendarDay.from(pair.getValue().getStartDate().getDate())));
         this.pair = pair;
     }
 
