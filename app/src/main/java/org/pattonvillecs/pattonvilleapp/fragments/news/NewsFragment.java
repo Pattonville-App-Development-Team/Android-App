@@ -8,8 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -62,6 +66,7 @@ public class NewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<NewsParsingUpdateData>(true) {
@@ -199,6 +204,31 @@ public class NewsFragment extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume called");
         listener.resume();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_news_menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.news_menu_refresh:
+                pattonvilleApplication.refreshNewsData();
+
+                Toast.makeText(getContext(), "Resfreshing", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.news_menu_search:
+                break;
+        }
+
+        return true;
     }
 }
 
