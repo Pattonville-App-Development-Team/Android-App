@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.R;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -30,9 +29,9 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_directory_detail);
 
         directoryAdapter = new DirectoryAdapter();
-        for (int i = 0; i < 10; i++) {
+        /*for (int i = 0; i < 10; i++) {
             directoryAdapter.addItem(new DirectoryFlexibleItem(new Faculty().setFaculty()));
-        }
+        }*/
 
         facultyView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
         facultyView.setAdapter(directoryAdapter);

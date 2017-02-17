@@ -28,14 +28,13 @@ public class DirectoryFlexibleItem extends AbstractFlexibleItem<DirectoryViewHol
 
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, DirectoryViewHolder holder, int position, List payloads) {
-        holder.nameText.setText(facultyMember.getFullName());
+        holder.nameText.setText(facultyMember.getFirstName());
 
-        holder.longDesText.setText(facultyMember.getDepartment());
+        holder.longDesText.setText(facultyMember.getLongDesc());
 
         holder.emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                facultyMember.setEmail("exampleemail@psdr3.org");
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{facultyMember.getEmail()});

@@ -1,10 +1,18 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +20,7 @@ import java.util.List;
  */
 
 public class DirectoryAsyncTask extends AsyncTask<Void, Double, List<Faculty>> {
+    private static final String TAG = DirectoryAsyncTask.class.getSimpleName();
     private final PattonvilleApplication pattonvilleApplication;
 
     public DirectoryAsyncTask(PattonvilleApplication pattonvilleApplication) {
@@ -26,14 +35,27 @@ public class DirectoryAsyncTask extends AsyncTask<Void, Double, List<Faculty>> {
 
     @Override
     protected List<Faculty> doInBackground(Void... params) { // Run on different thread
+        List<Faculty> faculties = new ArrayList<>();
 
         //TODO: Load csv file
+        AssetManager man = pattonvilleApplication.getResources().getAssets();
+        try {
+            InputStream ims = man.open("Student_Directory.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ims));
+            Log.i(TAG, reader.toString());
+            String directoryLine = reader.readLine();
+            while ((directoryLine = reader.readLine()) != null) {
+                String[] person = directoryLine.split("\\s*,\\s*", -1);
+                Log.i(TAG, Arrays.toString(person) + person.length);
+                faculties.add(new Faculty(person));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        //Read file in here
-        //i.e. publishProgress(currentLine / (double) totalLines);
-
-        return null;
+        return faculties;
     }
+
 
     @Override
     protected void onProgressUpdate(Double... values) { // Run on UI thread
