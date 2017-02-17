@@ -179,7 +179,7 @@ public class NewsArticle implements Parcelable {
                 result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
                 result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
 
-                int fontScale = (int) (14 * Resources.getSystem().getConfiguration().fontScale);
+                int fontScale = (int) (15 * Resources.getSystem().getConfiguration().fontScale);
                 Log.e("Parser", "Font Size: " + fontScale);
 
                 result = result.replaceAll("font-size.+pt;", "font-size:" + fontScale + "px;");
