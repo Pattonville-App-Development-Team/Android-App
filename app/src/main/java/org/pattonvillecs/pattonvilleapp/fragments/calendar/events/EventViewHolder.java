@@ -14,9 +14,10 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * Created by Mitchell Skaggs on 1/4/17.
  */
 public class EventViewHolder extends FlexibleViewHolder {
-    private static final String TAG = "EventViewHolder";
+    private static final String TAG = EventViewHolder.class.getSimpleName();
     final TextView topText, bottomText, shortSchoolName;
     final ImageView schoolColorImageView;
+    final View view;
 
     public EventViewHolder(View view, FlexibleAdapter adapter) {
         this(view, adapter, false);
@@ -24,6 +25,7 @@ public class EventViewHolder extends FlexibleViewHolder {
 
     public EventViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
         super(view, adapter, stickyHeader);
+        this.view = view;
         topText = (TextView) view.findViewById(R.id.text_top);
         bottomText = (TextView) view.findViewById(R.id.text_bottom);
         schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);

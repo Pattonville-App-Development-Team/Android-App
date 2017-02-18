@@ -1,5 +1,13 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +18,11 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Summary;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
@@ -24,14 +30,31 @@ import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 /**
  * Created by Mitchell Skaggs on 1/4/17.
  */
-public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, EventHeader> {
+public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, EventHeader> implements FlexibleHasCalendarDay<EventViewHolder>, Parcelable {
+    public static final Creator<EventFlexibleItem> CREATOR = new Creator<EventFlexibleItem>() {
+        @Override
+        public EventFlexibleItem createFromParcel(Parcel in) {
+            return new EventFlexibleItem(in);
+        }
 
-    private static final ConcurrentMap<CalendarDay, EventHeader> test = new ConcurrentHashMap<>();
-    public final Pair<DataSource, VEvent> pair;
+        @Override
+        public EventFlexibleItem[] newArray(int size) {
+            return new EventFlexibleItem[size];
+        }
+    };
 
-    public EventFlexibleItem(Pair<DataSource, VEvent> pair) {
-        super(new EventHeader(CalendarDay.from(pair.getValue().getStartDate().getDate())));
-        this.pair = pair;
+    public final DataSource dataSource;
+    public final VEvent vEvent;
+
+    protected EventFlexibleItem(Parcel in) {
+        this((DataSource) in.readSerializable(), (VEvent) in.readSerializable());
+    }
+
+    public EventFlexibleItem(DataSource dataSource, VEvent vEvent) {
+        //super(new EventHeader(CalendarDay.from(pair.getValue().getStartDate().getDate())));
+        super(null);
+        this.dataSource = dataSource;
+        this.vEvent = vEvent;
     }
 
     @Override
@@ -41,12 +64,16 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, 
 
         EventFlexibleItem that = (EventFlexibleItem) o;
 
-        return pair != null ? pair.equals(that.pair) : that.pair == null;
+        if (dataSource != that.dataSource) return false;
+        return vEvent != null ? vEvent.equals(that.vEvent) : that.vEvent == null;
+
     }
 
     @Override
     public int hashCode() {
-        return pair != null ? pair.hashCode() : 0;
+        int result = dataSource != null ? dataSource.hashCode() : 0;
+        result = 31 * result + (vEvent != null ? vEvent.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -60,10 +87,9 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, 
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, int position, List payloads) {
-        VEvent calendarEvent = pair.getRight();
-        Summary summary = calendarEvent.getSummary();
-        Location location = calendarEvent.getLocation();
+    public void bindViewHolder(FlexibleAdapter adapter, EventViewHolder holder, final int position, List payloads) {
+        Summary summary = vEvent.getSummary();
+        Location location = vEvent.getLocation();
 
         if (summary != null)
             holder.topText.setText(summary.getValue());
@@ -77,8 +103,59 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, 
             holder.bottomText.setVisibility(View.INVISIBLE);
         }
 
-        holder.schoolColorImageView.setColorFilter(pair.getLeft().calendarColor);
+        holder.schoolColorImageView.setColorFilter(dataSource.calendarColor);
 
-        holder.shortSchoolName.setText(pair.getLeft().shortName);
+        holder.shortSchoolName.setText(dataSource.shortName);
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity activity = getActivity(v);
+                if (activity != null) {
+
+                    Intent intent = new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", EventFlexibleItem.this);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        View schoolColorCircle = v.findViewById(R.id.school_color_circle);
+                        View textTop = v.findViewById(R.id.text_top);
+                        View textBottom = v.findViewById(R.id.text_bottom);
+
+                        activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,
+                                android.util.Pair.create(textTop, activity.getResources().getString(R.string.text_top_transition_name)),
+                                android.util.Pair.create(textBottom, activity.getResources().getString(R.string.text_bottom_transition_name)),
+                                android.util.Pair.create(schoolColorCircle, activity.getResources().getString(R.string.school_color_circle_transition_name))
+                        ).toBundle());
+                    } else {
+                        activity.startActivity(intent);
+                    }
+                }
+            }
+
+            private Activity getActivity(View v) {
+                Context context = v.getContext();
+                while (context instanceof ContextWrapper) {
+                    if (context instanceof Activity) {
+                        return (Activity) context;
+                    }
+                    context = ((ContextWrapper) context).getBaseContext();
+                }
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public CalendarDay getCalendarDay() {
+        return CalendarDay.from(vEvent.getStartDate().getDate());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(dataSource);
+        dest.writeSerializable(vEvent);
     }
 }

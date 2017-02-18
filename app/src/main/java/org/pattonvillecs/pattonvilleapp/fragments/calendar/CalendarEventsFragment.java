@@ -22,8 +22,8 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.google.common.collect.HashMultimap;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -33,19 +33,23 @@ import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventHeader;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.fastscroller.FastScroller;
+import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.utils.Utils;
 
@@ -129,7 +133,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         Log.i(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
-            Date eventDate = eventAdapter.getItem(i).pair.getValue().getStartDate().getDate();
+            Date eventDate = eventAdapter.getItem(i).getCalendarDay().getDate();
             if (!eventDate.after(today))
                 mostRecentEventPosition = i;
             else {
@@ -167,23 +171,23 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_calendar_events, container, false);
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
-        eventAdapter = new EventAdapter();
-        eventAdapter.setDisplayHeadersAtStartUp(true);
-        eventAdapter.setStickyHeaders(true);
-        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
-
+        FlexibleAdapter.enableLogs(true);
+        eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
-
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        //recyclerView.addItemDecoration(dividerItemDecoration);
+        eventAdapter.setDisplayHeadersAtStartUp(true);
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                eventAdapter.setStickyHeaders(true);
+            }
+        });
 
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
         fastScroller.setOnTouchListener(new View.OnTouchListener() {
@@ -218,7 +222,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
+        List<FlexibleHasCalendarDay> items = Stream.of(calendarData.entrySet())
                 .flatMap(new Function<Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
                     public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> dataSourceHashMultimapEntry) {
@@ -240,10 +244,26 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
                 .map(new Function<Pair<DataSource, VEvent>, EventFlexibleItem>() {
                     @Override
                     public EventFlexibleItem apply(Pair<DataSource, VEvent> dataSourceVEventPair) {
-                        return new EventFlexibleItem(dataSourceVEventPair);
+                        return new EventFlexibleItem(dataSourceVEventPair.getKey(), dataSourceVEventPair.getValue());
                     }
                 })
-                .collect(Collectors.<EventFlexibleItem>toList());
+                .collect(Collectors.<FlexibleHasCalendarDay>toList());
+
+        Map<CalendarDay, EventHeader> headers = new HashMap<>();
+        for (FlexibleHasCalendarDay flexibleHasCalendarDay : items) {
+            if (flexibleHasCalendarDay instanceof EventFlexibleItem) {
+                EventFlexibleItem eventFlexibleItem = (EventFlexibleItem) flexibleHasCalendarDay;
+
+                CalendarDay calendarDay = eventFlexibleItem.getCalendarDay();
+
+                if (!headers.containsKey(calendarDay)) {
+                    Log.i(TAG, "Making header for " + calendarDay);
+                    headers.put(calendarDay, new EventHeader(calendarDay));
+                }
+
+                eventFlexibleItem.setHeader(headers.get(calendarDay));
+            }
+        }
 
         if (items.size() > 0)
             noItemsTextView.setVisibility(View.GONE);

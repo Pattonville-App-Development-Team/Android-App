@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -19,7 +21,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * Created by skaggsm on 2/16/17.
  */
 
-public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewHolder> {
+public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewHolder> implements FlexibleHasCalendarDay<EventHeader.EventHeaderViewHolder> {
     @NonNull
     private final CalendarDay calendarDay;
 
@@ -29,6 +31,7 @@ public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewH
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, EventHeaderViewHolder holder, int position, List payloads) {
+        holder.headerText.setText(SimpleDateFormat.getDateInstance().format(calendarDay.getDate()));
     }
 
     @Override
@@ -57,13 +60,23 @@ public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewH
         return calendarDay.hashCode();
     }
 
+    @NonNull
+    @Override
+    public CalendarDay getCalendarDay() {
+        return calendarDay;
+    }
+
     static class EventHeaderViewHolder extends FlexibleViewHolder {
+        private final TextView headerText;
+
         public EventHeaderViewHolder(View view, FlexibleAdapter adapter) {
-            super(view, adapter);
+            this(view, adapter, false);
         }
 
         public EventHeaderViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
             super(view, adapter, stickyHeader);
+
+            headerText = (TextView) view.findViewById(R.id.calendar_event_header_text);
         }
     }
 }

@@ -8,7 +8,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
@@ -88,7 +87,7 @@ public class CalendarData implements Parcelable, Serializable {
         for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendars.entrySet()) {
             if (entry.getValue().containsKey(day))
                 for (VEvent vEvent : entry.getValue().get(day)) {
-                    events.add(new EventFlexibleItem(new ImmutablePair<>(entry.getKey(), vEvent)));
+                    events.add(new EventFlexibleItem(entry.getKey(), vEvent));
                 }
         }
         return events;

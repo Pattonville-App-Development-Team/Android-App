@@ -31,7 +31,6 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -40,8 +39,8 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
@@ -185,12 +184,12 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
-    private List<EventFlexibleItem> getItemsForDay(CalendarDay calendarDay) {
-        List<EventFlexibleItem> events = new ArrayList<>();
+    private List<FlexibleHasCalendarDay> getItemsForDay(CalendarDay calendarDay) {
+        List<FlexibleHasCalendarDay> events = new ArrayList<>();
         for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet()) {
             if (entry.getValue().containsKey(SerializableCalendarDay.of(calendarDay)))
                 for (VEvent vEvent : entry.getValue().get(SerializableCalendarDay.of(calendarDay))) {
-                    events.add(new EventFlexibleItem(new ImmutablePair<>(entry.getKey(), vEvent)));
+                    events.add(new EventFlexibleItem(entry.getKey(), vEvent));
                 }
         }
         return events;
@@ -395,7 +394,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
         eventRecyclerView = (RecyclerView) rootLayout.findViewById(R.id.event_recycler_view);
         eventRecyclerView.setNestedScrollingEnabled(false);
-        eventAdapter = new EventAdapter();
+        eventAdapter = new EventAdapter(null);
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
@@ -407,10 +406,6 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                 return false;
             }
         });
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        //eventRecyclerView.addItemDecoration(dividerItemDecoration);
-
-        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
 
         if (savedInstanceState != null)
             dateSelected = savedInstanceState.getParcelable(KEY_DATE_SELECTED);

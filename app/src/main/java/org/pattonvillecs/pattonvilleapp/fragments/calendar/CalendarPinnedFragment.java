@@ -59,7 +59,7 @@ public class CalendarPinnedFragment extends Fragment implements SwipeRefreshLayo
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
-        eventAdapter = new EventAdapter();
+        eventAdapter = new EventAdapter(null);
 
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
