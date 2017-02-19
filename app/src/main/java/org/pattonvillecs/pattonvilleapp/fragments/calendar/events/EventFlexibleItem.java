@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -26,11 +29,12 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
+import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
  * Created by Mitchell Skaggs on 1/4/17.
  */
-public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, EventHeader> implements FlexibleHasCalendarDay<EventViewHolder>, Parcelable {
+public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem.EventViewHolder, EventHeader> implements FlexibleHasCalendarDay<EventFlexibleItem.EventViewHolder>, Parcelable {
     public static final Creator<EventFlexibleItem> CREATOR = new Creator<EventFlexibleItem>() {
         @Override
         public EventFlexibleItem createFromParcel(Parcel in) {
@@ -120,9 +124,9 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, 
                         View textBottom = v.findViewById(R.id.text_bottom);
 
                         activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,
-                                android.util.Pair.create(textTop, activity.getResources().getString(R.string.text_top_transition_name)),
-                                android.util.Pair.create(textBottom, activity.getResources().getString(R.string.text_bottom_transition_name)),
-                                android.util.Pair.create(schoolColorCircle, activity.getResources().getString(R.string.school_color_circle_transition_name))
+                                Pair.create(textTop, activity.getResources().getString(R.string.text_top_transition_name)),
+                                Pair.create(textBottom, activity.getResources().getString(R.string.text_bottom_transition_name)),
+                                Pair.create(schoolColorCircle, activity.getResources().getString(R.string.school_color_circle_transition_name))
                         ).toBundle());
                     } else {
                         activity.startActivity(intent);
@@ -157,5 +161,27 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventViewHolder, 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(dataSource);
         dest.writeSerializable(vEvent);
+    }
+
+    /**
+     * Created by Mitchell Skaggs on 1/4/17.
+     */
+    public static class EventViewHolder extends FlexibleViewHolder {
+        final TextView topText, bottomText, shortSchoolName;
+        final ImageView schoolColorImageView;
+        final View view;
+
+        public EventViewHolder(View view, FlexibleAdapter adapter) {
+            this(view, adapter, false);
+        }
+
+        public EventViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
+            super(view, adapter, stickyHeader);
+            this.view = view;
+            topText = (TextView) view.findViewById(R.id.text_top);
+            bottomText = (TextView) view.findViewById(R.id.text_bottom);
+            schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
+            shortSchoolName = (TextView) view.findViewById(R.id.school_short_name);
+        }
     }
 }
