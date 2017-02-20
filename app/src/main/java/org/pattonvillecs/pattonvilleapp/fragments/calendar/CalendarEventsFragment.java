@@ -3,9 +3,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -59,7 +57,7 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarP
  * Use the {@link CalendarEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayout.OnChildScrollUpCallback {
+public class CalendarEventsFragment extends Fragment {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -68,7 +66,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
     private PauseableListener<CalendarParsingUpdateData> listener;
     private TextView noItemsTextView;
     private FastScroller fastScroller;
-    private CalendarFragment calendarFragment;
+    private boolean firstInflationAfterCreation;
 
     public CalendarEventsFragment() {
         // Required empty public constructor
@@ -94,7 +92,6 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        calendarFragment = (CalendarFragment) getParentFragment();
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
@@ -130,6 +127,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         int mostRecentEventPosition = 0;
         Date today = new Date();
         Log.i(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
+        Log.i(TAG, "Found " + eventAdapter.getItemCount() + " items");
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
             Date eventDate = eventAdapter.getItem(i).getCalendarDay().getDate();
@@ -143,7 +141,6 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
 
         recyclerView.scrollToPosition(mostRecentEventPosition);
     }
-
 
     @Override
     public void onDestroy() {
@@ -176,7 +173,6 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
-        FlexibleAdapter.enableLogs(true);
         eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
@@ -191,10 +187,28 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
         eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED));
 
+        //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
+        eventAdapter.addListener(new FlexibleAdapter.OnUpdateListener() {
+            boolean firstRun = true;
+
+            @Override
+            public void onUpdateEmptyView(int size) {
+                if (firstRun && size > 0 && firstInflationAfterCreation) {
+                    firstRun = false;
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            goToCurrentDay();
+                        }
+                    });
+                }
+                Log.i(TAG, "Updated with size: " + size);
+            }
+        });
+
         noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
 
-        if (savedInstanceState != null)
-            goToCurrentDay();
+        firstInflationAfterCreation = savedInstanceState == null;
 
         return layout;
     }
@@ -236,7 +250,7 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
                 CalendarDay calendarDay = eventFlexibleItem.getCalendarDay();
 
                 if (!headers.containsKey(calendarDay)) {
-                    Log.i(TAG, "Making header for " + calendarDay);
+                    Log.v(TAG, "Making header for " + calendarDay);
                     headers.put(calendarDay, new EventHeader(calendarDay));
                 }
 
@@ -255,27 +269,21 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume called!");
         listener.resume();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(TAG, "onStart called!");
         listener.attach(pattonvilleApplication);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.i(TAG, "onPause called!");
         listener.pause();
-    }
-
-    @SuppressWarnings("SimplifiableIfStatement")
-    @Override
-    public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-        if (recyclerView != null)
-            return recyclerView.canScrollVertically(-1);
-        else
-            return false;
     }
 }
