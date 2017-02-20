@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -33,10 +32,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         mWebView = (WebView) findViewById(R.id.news_detail_webview);
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setBuiltInZoomControls(true);
-        webSettings.setSupportZoom(true);
-        webSettings.setDisplayZoomControls(false);
+        mWebView.setHorizontalScrollBarEnabled(false);
 
         mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
 
