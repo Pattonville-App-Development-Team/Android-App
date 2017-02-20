@@ -30,6 +30,7 @@ import java.util.Date;
  * @since 1.0
  */
 
+@Deprecated
 public class CalendarEvent implements Parcelable {
     /**
      * Helper for parcelable serialization

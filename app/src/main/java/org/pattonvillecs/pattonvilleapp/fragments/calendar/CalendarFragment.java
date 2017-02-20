@@ -30,7 +30,7 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarP
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener {
+public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
     private static final String TAG = "CalendarFragment";
@@ -228,19 +228,11 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return 3;
             }
         });
-        viewPager.addOnPageChangeListener(this);
-
-        /*
-        if (tabLayout == null) { //Fallback?
-            tabLayout = (TabLayout) view.findViewById(R.id.tabs_calendar);
-            Log.w(TAG, "Falling back to different tabs.");
-        }
-        tabLayout.setupWithViewPager(viewPager);
-        */
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setEnabled(false);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_CURRENT_TAB))
@@ -248,13 +240,6 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         return view;
-    }
-
-    public void setSwipeRefreshEnabledDisabled(boolean enabled) {
-        if (swipeRefreshLayout != null) {
-            Log.i(TAG, "Set swipe state to: " + enabled);
-            swipeRefreshLayout.setEnabled(enabled);
-        }
     }
 
     @Override
@@ -296,21 +281,5 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onResume();
         Log.d(TAG, "onResume called");
         listener.resume();
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        if (viewPager != null && swipeRefreshLayout != null)
-            swipeRefreshLayout.setOnChildScrollUpCallback((SwipeRefreshLayout.OnChildScrollUpCallback) ((FragmentPagerAdapter) viewPager.getAdapter()).getItem(position));
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        setSwipeRefreshEnabledDisabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 }
