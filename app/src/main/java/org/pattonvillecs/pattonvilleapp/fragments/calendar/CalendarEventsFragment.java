@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -190,26 +189,6 @@ public class CalendarEventsFragment extends Fragment implements SwipeRefreshLayo
         });
 
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
-        fastScroller.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "Touched fastScroller with:" + event);
-                if (calendarFragment != null)
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            calendarFragment.setSwipeRefreshEnabledDisabled(true); //The fast scroll action has ended
-                            break;
-                        case MotionEvent.ACTION_DOWN: //The fast scroller errantly sends these events, not reliable
-                            break;
-                        case MotionEvent.ACTION_MOVE: //This means that the fast scroller is *definitely* moving
-                        default: //Probably ought to just be safe and allow scrolling instead of easy refresh
-                            calendarFragment.setSwipeRefreshEnabledDisabled(false);
-                            break;
-                    }
-                return false;
-            }
-        });
         eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED));
 
         noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
