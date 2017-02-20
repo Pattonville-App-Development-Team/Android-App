@@ -117,7 +117,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                 Activity activity = getActivity(v);
                 if (activity != null) {
 
-                    Intent intent = new Intent(activity, CalendarEventDetailsActivity.class).putExtra("calendarEvent", EventFlexibleItem.this);
+                    Intent intent = new Intent(activity, CalendarEventDetailsActivity.class).putExtra(CalendarEventDetailsActivity.CALENDAR_EVENT_KEY, EventFlexibleItem.this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         View schoolColorCircle = v.findViewById(R.id.school_color_circle);
                         View textTop = v.findViewById(R.id.text_top);
