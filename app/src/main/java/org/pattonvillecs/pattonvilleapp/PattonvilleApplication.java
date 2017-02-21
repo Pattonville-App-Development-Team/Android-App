@@ -45,6 +45,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
     private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+    private ConcurrentMap<DataSource, List<Faculty>> directoryData;
     //TODO: Add Directory data
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
     //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
@@ -68,6 +69,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
         calendarData = new ConcurrentHashMap<>();
+        directoryData = new ConcurrentHashMap<>();
         runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
@@ -259,5 +261,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public void refreshCalendarData() {
         executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
+        return directoryData;
     }
 }
