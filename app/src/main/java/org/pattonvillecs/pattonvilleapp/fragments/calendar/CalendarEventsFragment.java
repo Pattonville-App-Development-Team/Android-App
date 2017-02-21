@@ -33,7 +33,6 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventHeader;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
@@ -61,7 +60,7 @@ public class CalendarEventsFragment extends Fragment {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
-    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
     private TextView noItemsTextView;
@@ -213,15 +212,15 @@ public class CalendarEventsFragment extends Fragment {
         return layout;
     }
 
-    public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
+    public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
         List<FlexibleHasCalendarDay> items = Stream.of(calendarData.entrySet())
-                .flatMap(new Function<Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
+                .flatMap(new Function<Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
-                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> dataSourceHashMultimapEntry) {
-                        return Stream.of(dataSourceHashMultimapEntry.getValue().entries()).map(new Function<Map.Entry<SerializableCalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
+                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> dataSourceHashMultimapEntry) {
+                        return Stream.of(dataSourceHashMultimapEntry.getValue().entries()).map(new Function<Map.Entry<CalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
                             @Override
-                            public Pair<DataSource, VEvent> apply(Map.Entry<SerializableCalendarDay, VEvent> calendarDayVEventEntry) {
+                            public Pair<DataSource, VEvent> apply(Map.Entry<CalendarDay, VEvent> calendarDayVEventEntry) {
                                 return new ImmutablePair<>(dataSourceHashMultimapEntry.getKey(), calendarDayVEventEntry.getValue());
                             }
                         });

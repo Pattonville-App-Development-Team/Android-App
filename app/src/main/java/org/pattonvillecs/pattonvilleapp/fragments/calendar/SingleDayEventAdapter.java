@@ -13,6 +13,7 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.google.common.collect.HashMultimap;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Location;
@@ -23,7 +24,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarData;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,10 +44,10 @@ public class SingleDayEventAdapter extends BaseAdapter {
         this.calendarEvents = new ArrayList<>();
     }
 
-    public void setCurrentCalendarDay(SerializableCalendarDay newCalendarDay, CalendarData calendarData) {
+    public void setCurrentCalendarDay(CalendarDay newCalendarDay, CalendarData calendarData) {
         Log.i(TAG, "Setting current calendar day " + newCalendarDay);
         calendarEvents.clear();
-        for (final Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
+        for (final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.getCalendars().entrySet()) {
             final Collection<VEvent> events = entry.getValue().get(newCalendarDay);
             if (events != null)
                 calendarEvents.addAll(
