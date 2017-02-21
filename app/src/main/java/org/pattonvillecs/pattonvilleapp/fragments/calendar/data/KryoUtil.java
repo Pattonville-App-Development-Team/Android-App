@@ -52,7 +52,6 @@ import net.fortuna.ical4j.validate.component.VEventReplyValidator;
 import net.fortuna.ical4j.validate.component.VEventRequestValidator;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -89,17 +88,6 @@ public final class KryoUtil {
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
-        kryo.register(SerializableCalendarDay.class, new Serializer<SerializableCalendarDay>() {
-            @Override
-            public void write(Kryo kryo, Output output, SerializableCalendarDay object) {
-                kryo.writeObject(output, object.getCalendarDay());
-            }
-
-            @Override
-            public SerializableCalendarDay read(Kryo kryo, Input input, Class<SerializableCalendarDay> type) {
-                return SerializableCalendarDay.of(kryo.readObject(input, CalendarDay.class));
-            }
-        });
         kryo.register(CalendarDay.class, new Serializer<CalendarDay>() {
             @Override
             public void write(Kryo kryo, Output output, CalendarDay object) {
