@@ -50,6 +50,8 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
     private SearchView mSearchView;
 
+    private List<NewsArticle> mNewsArticles;
+
     public NewsFragment() {
     }
 
@@ -131,6 +133,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                         .collect(Collectors.<NewsArticle>toList());
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
+                mNewsArticles = newNewsArticles;
                 mAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
             }
 
@@ -244,10 +247,10 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public boolean onQueryTextChange(String newText) {
         if (mAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
-            //mAdapter.setSearchText(newText);
+            mAdapter.setSearchText(newText);
             // Fill and Filter mItems with your custom list and automatically
             // animate the changes. Watch out! The original list must be a copy.
-            //mAdapter.filterItems(mAdapter.mItems, 200L);
+            mAdapter.filterItems(mNewsArticles, 100L);
         }
         // Disable SwipeRefresh if search is active!!
         mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
