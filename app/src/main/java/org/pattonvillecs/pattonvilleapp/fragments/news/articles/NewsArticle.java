@@ -31,8 +31,9 @@ import java.util.Locale;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFilterable;
 
-public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable {
+public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable, IFilterable {
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public NewsArticle createFromParcel(Parcel in) {
@@ -62,7 +63,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         title = "Some Title";
         publicUrl = "www.psdr3.org";
         privateUrl = "fccms.psdr3.org";
-
+        content = "";
     }
 
     public NewsArticle(Parcel parcel) {
@@ -205,6 +206,15 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
         parcel.writeStringArray(strings);
         parcel.writeLong(publishDate.getTime());
+    }
+
+    @Override
+    public boolean filter(String constraint) {
+        return title.toLowerCase().contains(constraint.toLowerCase()) ||
+                dataSource.name.toLowerCase().contains(constraint.toLowerCase()) ||
+                dataSource.shortName.toLowerCase().contains(constraint.toLowerCase()) ||
+                dataSource.initialsName.toLowerCase().contains(constraint.toLowerCase()) ||
+                getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
     }
 
     public static class NewsContentAsyncTask extends AsyncTask<String, Void, String> {
