@@ -4,11 +4,9 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -31,7 +28,6 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -40,10 +36,9 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventDetailsOnItemClickListener;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.util.ArrayList;
@@ -61,20 +56,19 @@ import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
  * Use the {@link CalendarMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayout.OnChildScrollUpCallback {
+public class CalendarMonthFragment extends Fragment {
 
     public static final String TAG = "CalendarMonthFragment";
-    private static final String KEY_DATE_SELECTED = "dateSelected";
+    private static final String KEY_DATE_SELECTED = "currentDateSelected";
 
     private FixedMaterialCalendarView fixedMaterialCalendarView;
     private RecyclerView eventRecyclerView;
-    private CalendarDay dateSelected;
+    private CalendarDay currentDateSelected;
     private EventAdapter eventAdapter;
-    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
     private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
     private PauseableListener<CalendarParsingUpdateData> listener;
-    private CalendarFragment calendarFragment;
 
 
     public CalendarMonthFragment() {
@@ -87,7 +81,6 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
      *
      * @return A new instance of fragment CalendarMonthFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CalendarMonthFragment newInstance() {
         Log.i(TAG, "New instance created...");
         return new CalendarMonthFragment();
@@ -96,7 +89,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(KEY_DATE_SELECTED, dateSelected);
+        outState.putParcelable(KEY_DATE_SELECTED, currentDateSelected);
     }
 
     @Override
@@ -104,7 +97,6 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        calendarFragment = (CalendarFragment) getParentFragment();
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<CalendarParsingUpdateData>(true) {
             @Override
@@ -117,7 +109,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
 
-                setCalendarData(data.getCalendarData());
+                updateCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -125,7 +117,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
 
-                setCalendarData(data.getCalendarData());
+                updateCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -137,10 +129,10 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         pattonvilleApplication.registerPauseableListener(listener);
     }
 
-    private void setCalendarData(ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData) {
+    private void updateCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
         fixedMaterialCalendarView.invalidateDecorators();
-        setRecyclerViewItems(dateSelected);
+        setRecyclerViewItems(currentDateSelected);
     }
 
     @Override
@@ -176,29 +168,31 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_today:
-                CalendarDay today = CalendarDay.today();
-                fixedMaterialCalendarView.setCurrentDate(today);
-                fixedMaterialCalendarView.dispatchOnDateSelected(today, true);
+                setDisplayedDayToDay(CalendarDay.today());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private List<EventFlexibleItem> getItemsForDay(CalendarDay calendarDay) {
-        List<EventFlexibleItem> events = new ArrayList<>();
-        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet()) {
-            if (entry.getValue().containsKey(SerializableCalendarDay.of(calendarDay)))
-                for (VEvent vEvent : entry.getValue().get(SerializableCalendarDay.of(calendarDay))) {
-                    events.add(new EventFlexibleItem(new ImmutablePair<>(entry.getKey(), vEvent)));
+    private void setDisplayedDayToDay(CalendarDay calendarDay) {
+        fixedMaterialCalendarView.setCurrentDate(calendarDay);
+        //fixedMaterialCalendarView.dispatchOnDateSelected(calendarDay, true);
+    }
+
+    private List<FlexibleHasCalendarDay> getItemsForDay(CalendarDay calendarDay) {
+        List<FlexibleHasCalendarDay> events = new ArrayList<>();
+        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet()) {
+            if (entry.getValue().containsKey(calendarDay))
+                for (VEvent vEvent : entry.getValue().get(calendarDay)) {
+                    events.add(new EventFlexibleItem(entry.getKey(), vEvent));
                 }
         }
         return events;
     }
 
     private void setRecyclerViewItems(CalendarDay date) {
-        eventAdapter.clear();
-        eventAdapter.addItems(0, getItemsForDay(date));
+        eventAdapter.updateDataSet(getItemsForDay(date), true);
     }
 
     private float getDotRadius() {
@@ -214,18 +208,18 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
             return 10;
     }
 
-    private void setUpMaterialCalendarView(final FixedMaterialCalendarView materialCalendarView) {
+    private void setUpMaterialCalendarView() {
         Log.d(TAG, "Starting MCV setup");
 
-        materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
-        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+        //fixedMaterialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+        fixedMaterialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                dateSelected = date;
+                currentDateSelected = date;
                 setRecyclerViewItems(date);
             }
         });
-        materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+        fixedMaterialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
                 if (nestedScrollView != null) {
@@ -238,21 +232,21 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                 }
             }
         });
-        materialCalendarView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        fixedMaterialCalendarView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 
                 Log.d(TAG, "MCV New layout: " + left + " " + top + " " + right + " " + bottom + "; Old layout: " + oldLeft + " " + oldTop + " " + oldRight + " " + oldBottom);
-                Log.d(TAG, "MCV tile height: " + materialCalendarView.getTileHeight());
+                Log.d(TAG, "MCV tile height: " + fixedMaterialCalendarView.getTileHeight());
 
                 if (left != oldLeft
                         || top != oldTop
                         || right != oldRight
                         || bottom != oldBottom)
-                    materialCalendarView.post(new Runnable() {
+                    fixedMaterialCalendarView.post(new Runnable() {
                         @Override
                         public void run() {
-                            materialCalendarView.invalidateDecorators();
+                            fixedMaterialCalendarView.invalidateDecorators();
                         }
                     });
             }
@@ -260,7 +254,7 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
 
         final int dotColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getActivity().getTheme());
 
-        materialCalendarView.addDecorators(
+        fixedMaterialCalendarView.addDecorators(
                 //Single decorator
                 new DayViewDecorator() {
 
@@ -269,9 +263,9 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                         if (calendarData == null)
                             return false;
 
-                        SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
+                        CalendarDay serializableCalendarDay = day;
                         int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
+                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
                             if (entry.getValue().containsKey(serializableCalendarDay)) {
                                 numPresent += entry.getValue().get(serializableCalendarDay).size();
                                 if (numPresent > 1)
@@ -296,9 +290,9 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                         if (calendarData == null)
                             return false;
 
-                        SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
+                        CalendarDay serializableCalendarDay = day;
                         int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
+                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
                             if (entry.getValue().containsKey(serializableCalendarDay)) {
                                 numPresent += entry.getValue().get(serializableCalendarDay).size();
                                 if (numPresent > 2)
@@ -325,9 +319,9 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                         if (calendarData == null)
                             return false;
 
-                        SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
+                        CalendarDay serializableCalendarDay = day;
                         int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
+                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
                             if (entry.getValue().containsKey(serializableCalendarDay)) {
                                 numPresent += entry.getValue().get(serializableCalendarDay).size();
                                 if (numPresent > 3)
@@ -355,9 +349,9 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
                         if (calendarData == null)
                             return false;
 
-                        SerializableCalendarDay serializableCalendarDay = SerializableCalendarDay.of(day);
+                        CalendarDay serializableCalendarDay = day;
                         int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> entry : calendarData.entrySet())
+                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
                             if (entry.getValue().containsKey(serializableCalendarDay)) {
                                 numPresent += entry.getValue().get(serializableCalendarDay).size();
                                 if (numPresent > 3)
@@ -392,29 +386,19 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         //rootLayout.getLayoutTransition().setDuration(LayoutTransition.CHANGING, 200);
 
         fixedMaterialCalendarView = (FixedMaterialCalendarView) rootLayout.findViewById(R.id.calendar_calendar);
-        setUpMaterialCalendarView(fixedMaterialCalendarView);
+        setUpMaterialCalendarView();
 
         eventRecyclerView = (RecyclerView) rootLayout.findViewById(R.id.event_recycler_view);
         eventRecyclerView.setNestedScrollingEnabled(false);
-        eventAdapter = new EventAdapter();
+        eventAdapter = new EventAdapter(null);
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
 
-        eventRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "Touch, canScroll=" + eventRecyclerView.canScrollVertically(-1) + ", " + ((View) eventRecyclerView.getParent()).canScrollVertically(-1) + ": " + event);
-                return false;
-            }
-        });
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        //eventRecyclerView.addItemDecoration(dividerItemDecoration);
-
-        eventAdapter.addListener(new EventDetailsOnItemClickListener(eventAdapter, getActivity()));
-
         if (savedInstanceState != null)
-            dateSelected = savedInstanceState.getParcelable(KEY_DATE_SELECTED);
+            currentDateSelected = savedInstanceState.getParcelable(KEY_DATE_SELECTED);
+        else
+            currentDateSelected = CalendarDay.today();
 
         int spotlightPadding;
         switch (getResources().getConfiguration().orientation) {
@@ -439,11 +423,13 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onStart() {
         super.onStart();
-        if (dateSelected == null)
-            dateSelected = CalendarDay.today();
 
-        fixedMaterialCalendarView.setCurrentDate(dateSelected);
-        fixedMaterialCalendarView.dispatchOnDateSelected(dateSelected, true);
+        fixedMaterialCalendarView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setDisplayedDayToDay(currentDateSelected);
+            }
+        }, 1000);
 
         listener.attach(pattonvilleApplication);
     }
@@ -472,16 +458,5 @@ public class CalendarMonthFragment extends Fragment implements SwipeRefreshLayou
         super.onResume();
         Log.d(TAG, "onResume called");
         listener.resume();
-    }
-
-    @SuppressWarnings("SimplifiableIfStatement")
-    @Override
-    public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-        if (nestedScrollView != null)
-            return nestedScrollView.canScrollVertically(-1);
-        else if (eventRecyclerView != null)
-            return eventRecyclerView.canScrollVertically(-1);
-        else
-            return false;
     }
 }

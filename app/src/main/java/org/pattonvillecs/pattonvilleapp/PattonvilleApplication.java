@@ -11,15 +11,18 @@ import com.android.volley.toolbox.Volley;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.google.common.collect.HashMultimap;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingAsyncTask;
+import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
@@ -44,11 +47,15 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
-    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+
+    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData;
     private ConcurrentMap<DataSource, List<Faculty>> directoryData;
     //TODO: Add Directory data
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
     //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
+
+    private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
+    private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
@@ -68,15 +75,19 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         pauseableListeners = new LinkedList<>();
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
+
         calendarData = new ConcurrentHashMap<>();
         directoryData = new ConcurrentHashMap<>();
         runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
-        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
+        newsData = new ConcurrentHashMap<>();
+        runningNewsAsyncTasks = Collections.synchronizedSet(new HashSet<NewsParsingAsyncTask>());
 
+        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setUpCalendarParsing();
+        setUpNewsParsing();
         setUpDirectoryParsing();
     }
 
@@ -108,6 +119,34 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
         //Initial download of calendar
         executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    private void setUpNewsParsing() {
+        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
+            @Override
+            public void keyChanged(SharedPreferences sharedPreferences, String key) {
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+
+                for (DataSource dataSource : newsData.keySet()) {
+                    if (!newSelectedDataSources.contains(dataSource)) {
+                        newsData.remove(dataSource);
+                    }
+                }
+
+                newSelectedDataSources.removeAll(newsData.keySet()); //Remove DataSources that are already present
+
+                executeNewsDataTasks(newSelectedDataSources);
+            }
+        });
+
+        //Initial download of news
+        executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    private void executeNewsDataTasks(Set<DataSource> dataSources) {
+        for (DataSource dataSource : dataSources) {
+            new NewsParsingAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+        }
     }
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources) {
@@ -216,8 +255,12 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
             case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "CalendarMonthFragment listener paused!");
+                Log.i(TAG, "Calendar update listener paused!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
+                break;
+            case NewsParsingUpdateData.NEWS_LISTENER_ID:
+                Log.i(TAG, "News update listener paused!");
+                ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
                 break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
@@ -229,8 +272,12 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
             case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "CalendarMonthFragment listener resumed!");
+                Log.i(TAG, "Calendar update listener resumed!");
                 ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
+                break;
+            case NewsParsingUpdateData.NEWS_LISTENER_ID:
+                Log.i(TAG, "News update listener resumed!");
+                ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
                 break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
@@ -251,7 +298,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         return new CalendarParsingUpdateData(calendarData, runningCalendarAsyncTasks);
     }
 
-    public ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendarData() {
+    public ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> getCalendarData() {
         return calendarData;
     }
 
@@ -261,6 +308,42 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public void refreshCalendarData() {
         executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
+        return runningNewsAsyncTasks;
+    }
+
+    public void updateNewsListeners() {
+        updateNewsListeners(getCurrentNewsParsingUpdateData());
+    }
+
+    private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
+        Log.d(TAG, "Updating news listeners");
+        for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            if (!pauseableListener.isPaused()) {
+                Log.d(TAG, "Updating listener " + pauseableListener);
+                if (pauseableListener.getIdentifier() == NewsParsingUpdateData.NEWS_LISTENER_ID) {
+                    Log.d(TAG, "Updating news listener " + pauseableListener);
+                    //noinspection unchecked
+                    ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onReceiveData(newsParsingUpdateData);
+                }
+            } else {
+                Log.d(TAG, "Skipping paused listener");
+            }
+        }
+    }
+
+    private NewsParsingUpdateData getCurrentNewsParsingUpdateData() {
+        return new NewsParsingUpdateData(newsData, runningNewsAsyncTasks);
+    }
+
+    public Map<DataSource, List<NewsArticle>> getNewsData() {
+        return newsData;
+    }
+
+    public void refreshNewsData() {
+        executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
     public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
