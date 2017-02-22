@@ -11,13 +11,13 @@ import com.android.volley.toolbox.Volley;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.google.common.collect.HashMultimap;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.SerializableCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
@@ -46,7 +46,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
 
-    private ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> calendarData;
+    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData;
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
 
     private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
@@ -253,7 +253,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         return new CalendarParsingUpdateData(calendarData, runningCalendarAsyncTasks);
     }
 
-    public ConcurrentMap<DataSource, HashMultimap<SerializableCalendarDay, VEvent>> getCalendarData() {
+    public ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> getCalendarData() {
         return calendarData;
     }
 

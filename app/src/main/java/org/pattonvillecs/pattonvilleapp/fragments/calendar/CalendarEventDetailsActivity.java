@@ -10,12 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class CalendarEventDetailsActivity extends AppCompatActivity {
+
+    public static final String CALENDAR_EVENT_KEY = "calendar_event";
+    public static final String PATTONVILLE_COORDINATES = "38.733249,-90.420162";
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -36,34 +40,17 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final CalendarEvent calendarEvent = getIntent().getParcelableExtra("calendarEvent");
-        if (calendarEvent == null)
+        final EventFlexibleItem event = getIntent().getParcelableExtra(CALENDAR_EVENT_KEY);
+        if (event == null)
             throw new Error("Event required!");
 
-        //CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        //collapsingToolbarLayout.setTitle(calendarEvent.getEventName());
-
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar snackbar = Snackbar.make(view, "Added to your calendar", Snackbar.LENGTH_LONG);
-                snackbar.getView().setBackgroundColor(Color.DKGRAY);
-                snackbar.setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(CalendarEventDetailsActivity.this, "Sorry, the undo feature is not supported at this time. Please delete the event manually.", Toast.LENGTH_SHORT).show();
-                    }
-                }).show();
-            }
-        });
-        */
-
         TextView timeDateTextView = (TextView) findViewById(R.id.time_and_date);
-        DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-        DateFormat timeFormatter = SimpleDateFormat.getTimeInstance();
-        timeDateTextView.setText(dateFormatter.format(calendarEvent.getDateAndTime()) + "\n" + timeFormatter.format(calendarEvent.getDateAndTime()));
+
+        //DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
+        //DateFormat timeFormatter = SimpleDateFormat.getTimeInstance();
+        DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
+
+        timeDateTextView.setText(dateTimeFormatter.format(event.vEvent.getStartDate().getDate()));
         timeDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,15 +58,13 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         });
 
         TextView locationTextView = (TextView) findViewById(R.id.location);
-        if (!calendarEvent.getEventLocation().isEmpty()) {
-            locationTextView.setText(calendarEvent.getEventLocation());
+        if (event.vEvent.getLocation() != null) {
+            final String location = event.vEvent.getLocation().getValue();
+            locationTextView.setText(location);
             locationTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:38.733249,-90.420162?q=" + Uri.encode(calendarEvent.getEventLocation()));
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(mapIntent);
+                    startMapsActivityForPattonvilleLocation(location);
                 }
             });
         } else {
@@ -87,20 +72,25 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
             locationTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:38.733249,-90.420162?q=" + "Pattonville High School");
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(mapIntent);
+                    startMapsActivityForPattonvilleLocation("Pattonville High School");
                 }
             });
         }
 
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
-        extraInfoTextView.setText(calendarEvent.getEventName() + "\n\n" + calendarEvent.getEventDetails());
+        if (event.vEvent.getSummary() != null)
+            extraInfoTextView.setText(event.vEvent.getSummary().getValue());
 
         ImageView schoolColorCircle = (ImageView) findViewById(R.id.school_color_circle);
-        schoolColorCircle.setColorFilter(calendarEvent.getDataSource().calendarColor);
+        schoolColorCircle.setColorFilter(event.dataSource.calendarColor);
 
         //SpotlightHelper.showSpotlight(this, fab, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
+    }
+
+    private void startMapsActivityForPattonvilleLocation(String location) {
+        Uri gmmIntentUri = Uri.parse("geo:" + PATTONVILLE_COORDINATES + "?q=" + Uri.encode(location));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }
