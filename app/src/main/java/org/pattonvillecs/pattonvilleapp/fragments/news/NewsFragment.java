@@ -1,15 +1,25 @@
 package org.pattonvillecs.pattonvilleapp.fragments.news;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -28,7 +38,7 @@ import java.util.Map;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private static final String TAG = NewsFragment.class.getSimpleName();
 
@@ -37,6 +47,10 @@ public class NewsFragment extends Fragment {
     private NewsRecyclerViewAdapter mAdapter;
     private PauseableListener<NewsParsingUpdateData> listener;
     private PattonvilleApplication pattonvilleApplication;
+
+    private SearchView mSearchView;
+
+    private List<NewsArticle> mNewsArticles;
 
     public NewsFragment() {
     }
@@ -62,6 +76,7 @@ public class NewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         listener = new PauseableListener<NewsParsingUpdateData>(true) {
@@ -118,6 +133,7 @@ public class NewsFragment extends Fragment {
                         .collect(Collectors.<NewsArticle>toList());
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
+                mNewsArticles = newNewsArticles;
                 mAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
             }
 
@@ -199,6 +215,85 @@ public class NewsFragment extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume called");
         listener.resume();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_news_menu_main, menu);
+        initSearchView(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.news_menu_refresh:
+                pattonvilleApplication.refreshNewsData();
+
+                Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.news_menu_search:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (mAdapter.hasNewSearchText(newText)) {
+            Log.d(TAG, "onQueryTextChange newText: " + newText);
+            mAdapter.setSearchText(newText);
+            // Fill and Filter mItems with your custom list and automatically
+            // animate the changes. Watch out! The original list must be a copy.
+            mAdapter.filterItems(mNewsArticles, 100L);
+        }
+        // Disable SwipeRefresh if search is active!!
+        mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.v(TAG, "onQueryTextSubmit called!");
+        return onQueryTextChange(query);
+    }
+
+    private void initSearchView(final Menu menu) {
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.news_menu_search);
+        if (searchItem != null) {
+
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(false);
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(true);
+                    return true;
+                }
+            });
+
+            mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            mSearchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
+            mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+            mSearchView.setQueryHint(getString(R.string.action_search));
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            mSearchView.setOnQueryTextListener(this);
+        }
     }
 }
 
