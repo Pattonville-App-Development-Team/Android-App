@@ -47,6 +47,7 @@ import java.util.concurrent.ConcurrentMap;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.common.TopSnappedSmoothScroller;
 import eu.davidea.flexibleadapter.utils.Utils;
 
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
@@ -123,22 +124,27 @@ public class CalendarEventsFragment extends Fragment {
     }
 
     private void goToCurrentDay() {
-        int mostRecentEventPosition = 0;
+        int lastBeforeToday = -1;
         Date today = new Date();
-        Log.i(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
+        Log.i(TAG, "Today is: " + SimpleDateFormat.getDateTimeInstance().format(today));
         Log.i(TAG, "Found " + eventAdapter.getItemCount() + " items");
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
             Date eventDate = eventAdapter.getItem(i).getCalendarDay().getDate();
-            if (!eventDate.after(today))
-                mostRecentEventPosition = i;
-            else {
-                mostRecentEventPosition = i;
+
+            if (!eventDate.before(today)) {
+                lastBeforeToday = i - 1;
                 break;
             }
         }
 
-        recyclerView.scrollToPosition(mostRecentEventPosition);
+        final int finalLastBeforeToday = lastBeforeToday;
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.smoothScrollToPosition(finalLastBeforeToday);
+            }
+        });
     }
 
     @Override
@@ -174,7 +180,9 @@ public class CalendarEventsFragment extends Fragment {
 
         eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
+        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 25;
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 100;
         eventAdapter.setDisplayHeadersAtStartUp(true);
         recyclerView.post(new Runnable() {
             @Override
@@ -184,7 +192,7 @@ public class CalendarEventsFragment extends Fragment {
         });
 
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
-        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED));
+        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED)); // Default red to show an error
 
         //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
         eventAdapter.addListener(new FlexibleAdapter.OnUpdateListener() {

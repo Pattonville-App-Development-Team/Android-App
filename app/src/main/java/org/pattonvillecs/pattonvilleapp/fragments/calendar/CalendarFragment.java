@@ -23,6 +23,9 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
 
 /**
@@ -30,7 +33,7 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarP
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class CalendarFragment extends Fragment {
 
     private static final String KEY_CURRENT_TAB = "CURRENT_TAB";
     private static final String TAG = "CalendarFragment";
@@ -52,10 +55,6 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
      */
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
-    }
-
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
-        return swipeRefreshLayout;
     }
 
     @Override
@@ -80,11 +79,13 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.i(TAG, "onAttach called");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.i(TAG, "onDetach called");
     }
 
     @Override
@@ -96,16 +97,16 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, "onActivityCreated called");
         getActivity().setTitle(R.string.title_fragment_calendar);
 
         tabLayout = ((MainActivity) getActivity()).getTabLayout();
-        tabLayout.setVisibility(View.VISIBLE);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate called");
         setHasOptionsMenu(true);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
@@ -159,79 +160,71 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "onDestroy called");
 
         listener.unattach();
         pattonvilleApplication.unregisterPauseableListener(listener);
-
-        tabLayout.setVisibility(View.GONE);
-        tabLayout.setupWithViewPager(null);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        swipeRefreshLayout.setOnRefreshListener(null);
+        Log.i(TAG, "onDestroyView called");
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(TAG, "onStart called");
 
         listener.attach(pattonvilleApplication);
+
+        tabLayout.setVisibility(View.VISIBLE);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView called");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         viewPager = (ViewPager) view.findViewById(R.id.pager_calendar);
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            List<Fragment> fragments = Arrays.asList(
+                    CalendarMonthFragment.newInstance(),
+                    CalendarEventsFragment.newInstance(),
+                    CalendarPinnedFragment.newInstance()
+            );
+
             @Override
             public Fragment getItem(int position) {
-                Fragment fragment = null;
-                switch (position) {
-                    case 0:
-                        fragment = CalendarMonthFragment.newInstance();
-                        break;
-                    case 1:
-                        fragment = CalendarEventsFragment.newInstance();
-                        break;
-                    case 2:
-                        fragment = CalendarPinnedFragment.newInstance();
-                        break;
-                }
-                return fragment;
+                return fragments.get(position);
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
-                String title = "Broken!";
                 switch (position) {
                     case 0:
-                        title = "Month";
-                        break;
+                        return "Month";
                     case 1:
-                        title = "Events";
-                        break;
+                        return "Events";
                     case 2:
-                        title = "Pinned";
-                        break;
+                        return "Pinned";
+                    default:
+                        return "Broken!";
                 }
-                return title;
             }
 
             @Override
             public int getCount() {
-                return 3;
+                return fragments.size();
             }
         });
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_calendar);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
-        swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setEnabled(false);
 
         if (savedInstanceState != null) {
@@ -253,7 +246,6 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
         outState.putInt(KEY_CURRENT_TAB, viewPager.getCurrentItem());
     }
 
-    @Override
     public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -274,6 +266,9 @@ public class CalendarFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop called");
+
+        tabLayout.setVisibility(View.GONE);
+        tabLayout.setupWithViewPager(null);
     }
 
     @Override
