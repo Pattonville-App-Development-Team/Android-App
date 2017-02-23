@@ -31,14 +31,13 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventHeader;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -222,7 +221,7 @@ public class CalendarEventsFragment extends Fragment {
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        List<FlexibleHasCalendarDay> items = Stream.of(calendarData.entrySet())
+        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
                 .flatMap(new Function<Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
                     public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> dataSourceHashMultimapEntry) {
@@ -247,30 +246,14 @@ public class CalendarEventsFragment extends Fragment {
                         return new EventFlexibleItem(dataSourceVEventPair.getKey(), dataSourceVEventPair.getValue());
                     }
                 })
-                .collect(Collectors.<FlexibleHasCalendarDay>toList());
-
-        Map<CalendarDay, EventHeader> headers = new HashMap<>();
-        for (FlexibleHasCalendarDay flexibleHasCalendarDay : items) {
-            if (flexibleHasCalendarDay instanceof EventFlexibleItem) {
-                EventFlexibleItem eventFlexibleItem = (EventFlexibleItem) flexibleHasCalendarDay;
-
-                CalendarDay calendarDay = eventFlexibleItem.getCalendarDay();
-
-                if (!headers.containsKey(calendarDay)) {
-                    Log.v(TAG, "Making header for " + calendarDay);
-                    headers.put(calendarDay, new EventHeader(calendarDay));
-                }
-
-                eventFlexibleItem.setHeader(headers.get(calendarDay));
-            }
-        }
+                .collect(Collectors.<EventFlexibleItem>toList());
 
         if (items.size() > 0)
             noItemsTextView.setVisibility(View.GONE);
         else
             noItemsTextView.setVisibility(View.VISIBLE);
 
-        eventAdapter.updateDataSet(items, true);
+        eventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
     }
 
     @Override
