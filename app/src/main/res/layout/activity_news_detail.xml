@@ -7,7 +7,8 @@
 
     <include layout="@layout/app_bar_news_detail" />
 
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/news_detail_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foreground="?android:windowContentOverlay"
@@ -33,5 +34,5 @@
                 android:scrollbars="none" />
 
         </android.support.v4.widget.NestedScrollView>
-    </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

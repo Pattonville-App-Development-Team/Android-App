@@ -3,13 +3,16 @@ package org.pattonvillecs.pattonvilleapp.fragments.news;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +30,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private TextView mTextView;
     private WebView mWebView;
+    private SwipeRefreshLayout mRefreshLayout;
 
     private NewsArticle newsArticle;
 
@@ -39,9 +43,20 @@ public class NewsDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.news_detail_refresh_layout);
+        mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
+        mRefreshLayout.setRefreshing(true);
+
         mWebView = (WebView) findViewById(R.id.news_detail_webview);
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
         mWebView.setHorizontalScrollBarEnabled(false);
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                mRefreshLayout.setRefreshing(false);
+                mRefreshLayout.setEnabled(false);
+            }
+        });
 
         mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
 
@@ -66,6 +81,10 @@ public class NewsDetailActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(getApplicationContext(), "Unable to load content", Toast.LENGTH_SHORT).show();
+                mRefreshLayout.setRefreshing(false);
+                mRefreshLayout.setEnabled(false);
             }
         });
 
