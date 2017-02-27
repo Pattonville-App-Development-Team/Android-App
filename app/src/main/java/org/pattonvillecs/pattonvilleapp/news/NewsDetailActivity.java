@@ -28,7 +28,6 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
 
-    private TextView mTextView;
     private WebView mWebView;
     private SwipeRefreshLayout mRefreshLayout;
 
@@ -41,7 +40,9 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.news_detail_refresh_layout);
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
@@ -58,15 +59,12 @@ public class NewsDetailActivity extends AppCompatActivity {
             }
         });
 
-        mTextView = (TextView) findViewById(R.id.newsDetail_toolbar_date);
-
         newsArticle = getIntent().getParcelableExtra("NewsArticle");
 
         setTitle("News");
 
         ((TextView) findViewById(R.id.newsDetail_toolbar_title)).setText(newsArticle.getTitle());
-
-        mTextView.setText(newsArticle.getFormattedDate());
+        ((TextView) findViewById(R.id.newsDetail_toolbar_date)).setText(newsArticle.getFormattedDate());
 
         RequestQueue queue = PattonvilleApplication.get(this).getRequestQueue();
 
