@@ -38,6 +38,11 @@ import java.util.Map;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
+/**
+ * Fragment used within MainActivity to display the News tab
+ *
+ * @author Nathan Skelton
+ */
 public class NewsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private static final String TAG = NewsFragment.class.getSimpleName();
@@ -52,6 +57,11 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public NewsFragment() {
     }
 
+    /**
+     * Method that provides a new instance of NewsFragment
+     *
+     * @return A new NewsFragment
+     */
     public static NewsFragment newInstance() {
         return new NewsFragment();
     }
@@ -76,6 +86,8 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         setHasOptionsMenu(true);
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
+
+        // Sets up listener for data changes and updates
         listener = new PauseableListener<NewsParsingUpdateData>(true) {
             @Override
             public int getIdentifier() {
@@ -153,6 +165,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
+        // Get the news data, and sort as necessary
         List<NewsArticle> newNewsArticles = Stream.of(pattonvilleApplication.getNewsData())
                 .flatMap(new Function<Map.Entry<DataSource, List<NewsArticle>>, Stream<NewsArticle>>() {
                     @Override
@@ -168,10 +181,12 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 })
                 .collect(Collectors.<NewsArticle>toList());
 
+        mAdapter = new NewsRecyclerViewAdapter(newNewsArticles);
+
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        mAdapter = new NewsRecyclerViewAdapter(newNewsArticles);
         recyclerView.setAdapter(mAdapter);
+        // Adds item divider between elements
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
@@ -181,6 +196,8 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 pattonvilleApplication.refreshNewsData();
             }
         });
+
+        // Defines the colors used for the refresh icon
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 
         return root;
@@ -199,12 +216,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         super.onPause();
         Log.d(TAG, "onPause called");
         listener.pause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop called");
     }
 
     @Override
@@ -230,14 +241,14 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 pattonvilleApplication.refreshNewsData();
 
                 Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
-
-                break;
-
-            case R.id.news_menu_search:
                 break;
         }
-
         return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
     @Override
@@ -245,21 +256,19 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         if (mAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
             mAdapter.setSearchText(newText);
-            // Fill and Filter mItems with your custom list and automatically
-            // animate the changes. Watch out! The original list must be a copy.
             mAdapter.filterItems(mNewsArticles, 100L);
         }
-        // Disable SwipeRefresh if search is active!!
         mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
         return true;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.v(TAG, "onQueryTextSubmit called!");
-        return onQueryTextChange(query);
-    }
-
+    /**
+     * Method to setup the search functionality of the list
+     * <p>
+     * Refer to the Flexible Adapter documentation, as this is a near replica implementation
+     *
+     * @param menu Menu object of current options menu
+     */
     private void initSearchView(final Menu menu) {
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
