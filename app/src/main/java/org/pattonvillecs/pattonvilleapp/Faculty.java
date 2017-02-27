@@ -6,8 +6,9 @@ package org.pattonvillecs.pattonvilleapp;
 
 public class Faculty {
 
-    private String mFirstName, mLastName, mLongDesc, mEmail, mLocation, mOffice1,
+    private String mFirstName, mLastName, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
+    private int mRank;
 
     //list of phone numbers and extension, location
 
@@ -17,20 +18,21 @@ public class Faculty {
                 facultyMember[8], facultyMember[9], facultyMember[10]);
     }
 
-    public Faculty(String mFirstName, String mLastName, String mLongDesc, String mEmail,
-                   String mLocation, String mOffice1, String mExtension1, String mOffice2,
+    public Faculty(String mFirstName, String mLastName, String mLongDesc, String mLocation,
+                   String mEmail, String mOffice1, String mExtension1, String mOffice2,
                    String mExtension2, String mOffice3, String mExtension3) {
         this.mFirstName = mFirstName;
         this.mLastName = mLastName;
         this.mLongDesc = mLongDesc;
-        this.mEmail = mEmail;
         this.mLocation = mLocation;
+        this.mEmail = mEmail;
         this.mOffice1 = mOffice1;
         this.mExtension1 = mExtension1;
         this.mOffice2 = mOffice2;
         this.mExtension2 = mExtension2;
         this.mOffice3 = mOffice3;
         this.mExtension3 = mExtension3;
+        mRank = getRank();
     }
 
     public String getFirstName() {
@@ -75,6 +77,10 @@ public class Faculty {
 
     public String getExtension3() {
         return mExtension3;
+    }
+
+    private int getRank() {
+        return 0;
     }
 }
 
