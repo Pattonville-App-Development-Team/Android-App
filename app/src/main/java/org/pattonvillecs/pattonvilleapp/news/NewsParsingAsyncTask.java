@@ -16,10 +16,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Created by Mitchell Skaggs on 2/13/17.
- */
-
 public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<NewsArticle>> {
     private static final String TAG = NewsParsingAsyncTask.class.getSimpleName();
     private final PattonvilleApplication pattonvilleApplication;
