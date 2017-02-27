@@ -7,32 +7,37 @@
 
     <include layout="@layout/app_bar_news_detail" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/news_detail_refresh_layout"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foreground="?android:windowContentOverlay"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/news_detail_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            tools:showIn="@layout/activity_calendar_event_details">
+            android:layout_height="match_parent">
 
-            <WebView
-                android:id="@+id/news_detail_webview"
+            <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="6dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"
-                android:isScrollContainer="false"
-                android:scrollbars="none" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                tools:showIn="@layout/activity_calendar_event_details">
 
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+                <WebView
+                    android:id="@+id/news_detail_webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="8dp"
+                    android:isScrollContainer="false"
+                    android:scrollbars="none" />
+
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>
