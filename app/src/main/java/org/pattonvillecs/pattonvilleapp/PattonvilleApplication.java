@@ -49,10 +49,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private KryoPool kryoPool;
 
     private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData;
-    private ConcurrentMap<DataSource, List<Faculty>> directoryData;
-    //TODO: Add Directory data
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
     //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
+
+    private ConcurrentMap<DataSource, List<Faculty>> directoryData;
+    private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
 
     private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
     private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
@@ -232,7 +233,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private DirectoryParsingUpdateData getCurrentDirectoryParsingUpdateData() {
-        return new DirectoryParsingUpdateData(); //TODO: Fill in with current data
+        return new DirectoryParsingUpdateData(directoryData);
     }
 
     @Override
@@ -348,5 +349,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
         return directoryData;
+    }
+
+    public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
+        this.directoryData = directoryData;
     }
 }
