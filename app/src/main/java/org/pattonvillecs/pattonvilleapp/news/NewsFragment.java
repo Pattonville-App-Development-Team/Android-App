@@ -42,13 +42,10 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
     private static final String TAG = NewsFragment.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
     private NewsRecyclerViewAdapter mAdapter;
     private PauseableListener<NewsParsingUpdateData> listener;
     private PattonvilleApplication pattonvilleApplication;
-
-    private SearchView mSearchView;
 
     private List<NewsArticle> mNewsArticles;
 
@@ -171,11 +168,11 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 })
                 .collect(Collectors.<NewsArticle>toList());
 
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         mAdapter = new NewsRecyclerViewAdapter(newNewsArticles);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -287,12 +284,12 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 }
             });
 
-            mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            mSearchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
-            mSearchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
-            mSearchView.setQueryHint(getString(R.string.action_search));
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            mSearchView.setOnQueryTextListener(this);
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
+            searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+            searchView.setQueryHint(getString(R.string.action_search));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            searchView.setOnQueryTextListener(this);
         }
     }
 }
