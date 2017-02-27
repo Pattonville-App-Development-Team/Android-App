@@ -61,7 +61,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         privateUrl = "fccms.psdr3.org";
     }
 
-    public NewsArticle(Parcel parcel) {
+    private NewsArticle(Parcel parcel) {
 
         String[] strings = parcel.createStringArray();
         title = strings[0];
@@ -224,9 +224,6 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
                 getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
     }
 
-    /**
-     * Created by Mitchell Skaggs on 2/14/17.
-     */
     public static class NewsArticleViewHolder extends RecyclerView.ViewHolder {
 
         private TextView titleView;
