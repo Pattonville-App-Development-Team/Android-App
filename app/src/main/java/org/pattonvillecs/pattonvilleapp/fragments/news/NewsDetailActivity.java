@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -15,12 +16,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 
 public class NewsDetailActivity extends AppCompatActivity {
+
+    private static final String TAG = NewsDetailActivity.class.getSimpleName();
 
     private TextView mTextView;
     private WebView mWebView;
@@ -50,7 +53,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         mTextView.setText(newsArticle.getFormattedDate());
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        RequestQueue queue = PattonvilleApplication.get(this).getRequestQueue();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, newsArticle.getPrivateUrl(),
                 new Response.Listener<String>() {
@@ -63,10 +66,17 @@ public class NewsDetailActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
             }
         });
-        queue.add(stringRequest);
+
+        if (queue.getCache().get(stringRequest.getCacheKey()) != null
+                && queue.getCache().get(stringRequest.getCacheKey()).data != null) {
+            Log.e(TAG, "Using Cache");
+            mWebView.loadData("<style>img{display: inline;height: auto;max-width: 100%;}</style>" +
+                    NewsArticle.formatContent(new String(queue.getCache().get(stringRequest.getCacheKey()).data)), "text/html", null);
+        } else {
+            queue.add(stringRequest);
+        }
     }
 
     @Override
