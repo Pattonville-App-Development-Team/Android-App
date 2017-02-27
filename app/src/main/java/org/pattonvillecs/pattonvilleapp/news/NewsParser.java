@@ -21,11 +21,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class NewsParser extends DefaultHandler {
 
-    NewsArticle item = null;
-    String currentValue = "";
-    ArrayList<NewsArticle> items = new ArrayList<>();
-    String responseData;
-    DataSource dataSource;
+    private NewsArticle item = null;
+    private String currentValue = "", responseData;
+    private ArrayList<NewsArticle> items = new ArrayList<>();
+    private DataSource dataSource;
 
     public NewsParser(String responseData, DataSource dataSource) {
         this.responseData = responseData;
@@ -92,7 +91,7 @@ public class NewsParser extends DefaultHandler {
     // handler to parse the document
     // this calls startElement(), endElement() and character() methods
     // accordingly
-    public void getXml() {
+    void getXml() {
         try {
             // obtain and configure a SAX based parser
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
