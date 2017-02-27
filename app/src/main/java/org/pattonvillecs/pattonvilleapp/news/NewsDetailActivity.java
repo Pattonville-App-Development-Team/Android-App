@@ -33,7 +33,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
 
-    private static final String CONTENTFORMATINGSTRING =
+    private static final String CONTENT_FORMATTING_STRING =
             "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
 
     private WebView mWebView;
@@ -91,7 +91,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                     public void onResponse(String response) {
 
                         // When content found, load
-                        mWebView.loadData(CONTENTFORMATINGSTRING +
+                        mWebView.loadData(CONTENT_FORMATTING_STRING +
                                 NewsArticle.formatContent(response), "text/html", null);
                     }
                 }, new Response.ErrorListener() {
@@ -110,7 +110,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         if (queue.getCache().get(stringRequest.getCacheKey()) != null
                 && queue.getCache().get(stringRequest.getCacheKey()).data != null) {
             Log.e(TAG, "Using Cache");
-            mWebView.loadData(CONTENTFORMATINGSTRING + NewsArticle.formatContent(
+            mWebView.loadData(CONTENT_FORMATTING_STRING + NewsArticle.formatContent(
                     new String(queue.getCache().get(stringRequest.getCacheKey()).data)), "text/html", null);
         } else {
             queue.add(stringRequest);
