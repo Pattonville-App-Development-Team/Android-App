@@ -2,7 +2,6 @@ package org.pattonvillecs.pattonvilleapp.fragments.news.articles;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
@@ -53,7 +50,6 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     private Date publishDate;
     private String title;
-    private String content;
     private String publicUrl, privateUrl;
     private DataSource dataSource;
 
@@ -63,17 +59,41 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         title = "Some Title";
         publicUrl = "www.psdr3.org";
         privateUrl = "fccms.psdr3.org";
-        content = "";
     }
 
     public NewsArticle(Parcel parcel) {
 
         String[] strings = parcel.createStringArray();
         title = strings[0];
-        content = strings[1];
-        publicUrl = strings[2];
-        privateUrl = strings[3];
+        publicUrl = strings[1];
+        privateUrl = strings[2];
         publishDate = new Date(parcel.readLong());
+    }
+
+    public static String formatContent(String html) {
+
+        Document resultD = Jsoup.parse(html);
+
+        resultD.outputSettings().charset("ASCII");
+        resultD.outputSettings().escapeMode(Entities.EscapeMode.extended);
+        resultD.outputSettings().prettyPrint(false);
+
+        String result = resultD//.getElementsByTag("article").last()
+                .getElementsByTag("table").last()
+                //.getElementsByTag("tbody").first()
+                .getElementsByTag("tr").get(1)
+                .getElementsByTag("td").get(1)
+                .html();
+
+        result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
+        result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
+
+        int fontScale = (int) (15 * Resources.getSystem().getConfiguration().fontScale);
+
+        result = result.replaceAll("font-size:\\d+pt;", "font-size:" + fontScale + "px;");
+        result = result + "<br>";
+
+        return result;
     }
 
     @Override
@@ -141,19 +161,6 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         this.title = title;
     }
 
-    public String getContent() {
-        return "";
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void loadContent(WebView webView) {
-        new NewsContentAsyncTask(webView).execute(privateUrl);
-    }
-
-
     @Override
     public int getLayoutRes() {
         return R.layout.home_news_listview_item;
@@ -202,7 +209,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        String[] strings = new String[]{title, content, publicUrl, privateUrl};
+        String[] strings = new String[]{title, publicUrl, privateUrl};
 
         parcel.writeStringArray(strings);
         parcel.writeLong(publishDate.getTime());
@@ -215,66 +222,6 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
                 dataSource.shortName.toLowerCase().contains(constraint.toLowerCase()) ||
                 dataSource.initialsName.toLowerCase().contains(constraint.toLowerCase()) ||
                 getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
-    }
-
-    public static class NewsContentAsyncTask extends AsyncTask<String, Void, String> {
-
-        private final WebView webView;
-
-        public NewsContentAsyncTask(WebView webView) {
-            this.webView = webView;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                Connection resultC = Jsoup.connect(strings[0]);
-                Log.i("News Parsing", "JSoup Connected");
-
-
-                Document resultD = resultC.get();
-
-                resultD.outputSettings().charset("ASCII");
-                resultD.outputSettings().escapeMode(Entities.EscapeMode.extended);
-                resultD.outputSettings().prettyPrint(false);
-
-                Log.i("News Parsing", "Got Document");
-
-                String result = resultD//.getElementsByTag("article").last()
-                        .getElementsByTag("table").last()
-                        //.getElementsByTag("tbody").first()
-                        .getElementsByTag("tr").get(1)
-                        .getElementsByTag("td").get(1)
-                        .html();
-
-                Log.i("News Parsing", "HTML Result:\n" + result);
-
-                result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
-                result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
-
-                int fontScale = (int) (15 * Resources.getSystem().getConfiguration().fontScale);
-                Log.e("Parser", "Font Size: " + fontScale);
-
-                result = result.replaceAll("font-size:\\d+pt;", "font-size:" + fontScale + "px;");
-                result = result + "<br>";
-
-                Log.i("News Parsing", "Got HTML: \n" + result);
-                return result;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-            Log.i("News Parsing", "Starting WebView load");
-            webView.loadData("<style>img{display: inline;height: auto;max-width: 100%;}</style>" + s, "text/html", null);
-            Log.i("News Parsing", "Loaded Data?");
-        }
-
     }
 
     /**
