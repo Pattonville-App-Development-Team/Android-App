@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news;
+package org.pattonvillecs.pattonvilleapp.news;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,7 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 
 public class NewsDetailActivity extends AppCompatActivity {
 

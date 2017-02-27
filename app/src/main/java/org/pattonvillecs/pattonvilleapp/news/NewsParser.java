@@ -1,7 +1,7 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news;
+package org.pattonvillecs.pattonvilleapp.news;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

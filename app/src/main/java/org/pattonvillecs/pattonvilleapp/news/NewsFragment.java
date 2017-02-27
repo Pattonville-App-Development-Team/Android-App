@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news;
+package org.pattonvillecs.pattonvilleapp.news;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -28,9 +28,9 @@ import com.annimon.stream.function.Function;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
 import java.util.Comparator;
 import java.util.List;

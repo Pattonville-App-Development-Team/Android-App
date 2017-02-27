@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news.articles;
+package org.pattonvillecs.pattonvilleapp.news.articles;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -17,7 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsDetailActivity;
+import org.pattonvillecs.pattonvilleapp.news.NewsDetailActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

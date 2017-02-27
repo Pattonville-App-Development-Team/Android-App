@@ -3,7 +3,7 @@
     android:id="@+id/news_refreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment">
+    tools:context="org.pattonvillecs.pattonvilleapp.news.NewsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/news_recyclerView"

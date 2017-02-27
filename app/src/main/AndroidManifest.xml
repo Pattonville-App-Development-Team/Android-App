@@ -52,7 +52,7 @@
                 android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
         </activity>
         <activity
-            android:name=".fragments.news.NewsDetailActivity"
+            android:name=".news.NewsDetailActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
         <activity
