@@ -23,7 +23,7 @@ import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment;
+import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
