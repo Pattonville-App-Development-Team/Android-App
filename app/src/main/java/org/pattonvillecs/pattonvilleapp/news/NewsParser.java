@@ -106,11 +106,6 @@ public class NewsParser extends DefaultHandler {
         }
     }
 
-    // parse the XML specified in the given path and uses supplied
-    // handler to parse the document
-    // this calls startElement(), endElement() and character() methods
-    // accordingly
-
     /**
      * Method which handles using the combination of methods in parsing the news xml given
      */

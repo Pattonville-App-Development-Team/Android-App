@@ -30,8 +30,19 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 
+/**
+ * Data object to handle the contents of an article. Implements IFilterable for Flexible Adapter
+ * sorting, implements Parcelable to make objects passable between activities, notably between
+ * NewsFragment and NewsDetailActivity. Any changes what is parsed for a NewsArticle must be
+ * reflected within the Parcelable methods as well as most likely an update for filter().
+ *
+ * @author Nathan Skelton
+ * @author Mitchell Skaggs
+ * @author Jeremiah Simmons
+ */
 public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable, IFilterable {
 
+    //Required CREATOR for the Parcelable implementation
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public NewsArticle createFromParcel(Parcel in) {
             return new NewsArticle(in);
@@ -42,8 +53,12 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         }
     };
 
+    // Date formatting strings
+    // If you wish to change the style of date display within list elements and the DetailActivity,
+    // change these date codes
     private final static DateFormat shortDF = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
     private final static DateFormat longDF = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
+
     private static final String TAG = NewsArticle.class.getSimpleName();
 
     private static String todayDate = shortDF.format(Calendar.getInstance().getTime());
@@ -55,8 +70,9 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     public NewsArticle() {
 
+        // Default content for an article. When parsed, it should be corrected
         publishDate = new Date(1484357778);
-        title = "Some Title";
+        title = "Title";
         publicUrl = "www.psdr3.org";
         privateUrl = "fccms.psdr3.org";
     }
@@ -70,6 +86,14 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         publishDate = new Date(parcel.readLong());
     }
 
+    /**
+     * Method to handle the formatting of the news article's body. In here Jsoup is used to remove
+     * the web article header, as well as regex overrides for "-Read-More-" and "-End-" tags, and an
+     * override to adjust text size per the users currently set text size.
+     *
+     * @param html Unformatted HTML String, usually straight from the parser or Volley's cache
+     * @return Formatted String, ready to be placed within NewsDetailActivity's WebView, or other
+     */
     public static String formatContent(String html) {
 
         Document resultD = Jsoup.parse(html);
@@ -78,38 +102,40 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         resultD.outputSettings().escapeMode(Entities.EscapeMode.extended);
         resultD.outputSettings().prettyPrint(false);
 
-        String result = resultD//.getElementsByTag("article").last()
-                .getElementsByTag("table").last()
-                //.getElementsByTag("tbody").first()
+        // Select only the content, removing the web header
+        String result = resultD.getElementsByTag("table").last()
                 .getElementsByTag("tr").get(1)
                 .getElementsByTag("td").get(1)
                 .html();
 
+        // Removing the -End- and -Read-More- tags created by fccms.psdr3.org
         result = result.replaceFirst("<div.+-End-.+<\\/div>", "");
         result = result.replaceFirst("<div.+-Read-More-.+<\\/div>", "");
 
+        // Overriding the text size. Hard coded "15" can be changed as the scalar quantity.
         int fontScale = (int) (15 * Resources.getSystem().getConfiguration().fontScale);
-
         result = result.replaceAll("font-size:\\d+pt;", "font-size:" + fontScale + "px;");
-        result = result + "<br>";
+
+        // Add an extra line to the HTML to make the content pad well at the bottom of the WebView
+        result = result.concat("<br>");
 
         return result;
     }
 
+    /**
+     * Overridden equals method to handle object comparison. Because all news articles have a unique
+     * url, this simply uses a url comparison to determine equality
+     *
+     * @param o Other object to be compared
+     * @return boolean which returns true if objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         NewsArticle that = (NewsArticle) o;
-
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (publicUrl != null ? !publicUrl.equals(that.publicUrl) : that.publicUrl != null)
-            return false;
-        if (privateUrl != null ? !privateUrl.equals(that.privateUrl) : that.privateUrl != null)
-            return false;
-        return dataSource == that.dataSource;
-
+        return privateUrl.equals(that.privateUrl);
     }
 
     @Override
@@ -166,6 +192,11 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         return R.layout.home_news_listview_item;
     }
 
+    /**
+     * Method which provides the formatted date String according to today's date.
+     *
+     * @return String like "Tuesday, February 28, 2017" is given
+     */
     public String getFormattedDate() {
         String articleDate = shortDF.format(getPublishDate());
 
@@ -183,6 +214,11 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         return new NewsArticleViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
+    /**
+     * Overridden method from AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder>
+     * If the item is modified, this method must reflect that change.
+     * Secondly, the onClickListener for a NewsArticle element is set here
+     */
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, NewsArticleViewHolder holder, int position, List payloads) {
         holder.titleView.setText(getTitle());
@@ -215,6 +251,14 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         parcel.writeLong(publishDate.getTime());
     }
 
+    /**
+     * This method returns a boolean to determine if this news article contains the current search.
+     * When a search is executed, filler(String) is used to check if that specific NewsArticle
+     * applies to the current search key.
+     *
+     * @param constraint Current search keyword/phrase
+     * @return boolean which informs whether the article should be within the search
+     */
     @Override
     public boolean filter(String constraint) {
         return title.toLowerCase().contains(constraint.toLowerCase()) ||
@@ -224,6 +268,9 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
                 getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
     }
 
+    /**
+     * Class to handle the list item's views. Changes within the list item must be reflected here.
+     */
     public static class NewsArticleViewHolder extends RecyclerView.ViewHolder {
 
         private TextView titleView;
