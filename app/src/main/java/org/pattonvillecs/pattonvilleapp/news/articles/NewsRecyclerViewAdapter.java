@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news.articles;
+package org.pattonvillecs.pattonvilleapp.news.articles;
 
 import android.support.annotation.Nullable;
 

@@ -18,11 +18,11 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
