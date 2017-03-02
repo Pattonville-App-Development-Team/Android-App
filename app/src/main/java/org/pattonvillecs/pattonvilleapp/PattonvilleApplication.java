@@ -276,8 +276,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
         Log.d(TAG, "Updating news listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            Log.d(TAG, "Checking listener " + pauseableListener);
             if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
+                Log.d(TAG, "Check passed for listener " + pauseableListener);
                 if (pauseableListener.getIdentifier() == NewsParsingUpdateData.NEWS_LISTENER_ID) {
                     Log.d(TAG, "Updating news listener " + pauseableListener);
                     //noinspection unchecked

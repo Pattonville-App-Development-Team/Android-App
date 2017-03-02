@@ -97,8 +97,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         homeListener.attach(pattonvilleApplication);
-        pattonvilleApplication.unregisterPauseableListener(homeListener);
     }
 
     @Override
@@ -177,6 +177,7 @@ public class HomeFragment extends Fragment {
             }
         };
         pattonvilleApplication.registerPauseableListener(homeListener);
+        Log.d(TAG, "Registered home listener");
     }
 
     @Override
@@ -186,12 +187,20 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        homeListener.unattach();
+        pattonvilleApplication.unregisterPauseableListener(homeListener);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         mAdapter = new NewsRecyclerViewAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
