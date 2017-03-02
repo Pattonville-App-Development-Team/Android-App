@@ -27,9 +27,7 @@ public class PattonvilleAppIntro extends AppIntro2 {
 
         addSlide(AppIntro2Fragment.newInstance("Welcome", "", R.drawable.psd_logo, color));
 
-        addSlide(AppIntroPreferenceFragment.newInstance("Preferences", "Select chools that you wish to receive information from. To change this at a later date, go to Settings", color));
-
-        addSlide(AppIntro2Fragment.newInstance("", "Tap the check mark to enter the app...", R.drawable.psd_logo, color));
+        addSlide(AppIntroPreferenceFragment.newInstance("School Selection", "Select schools that you wish to receive information from. To change this at a later date, go to Settings", color));
 
         showSkipButton(false);
         showStatusBar(false);
