@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,7 @@ import java.util.Map;
  * Created by skaggsm on 2/10/17.
  */
 
-public class DirectoryAsyncTask extends AsyncTask<DataSource, Void, Map<DataSource, List<Faculty>>> {
+public class DirectoryAsyncTask extends AsyncTask<Void, Void, Map<DataSource, List<Faculty>>> {
     private static final String TAG = DirectoryAsyncTask.class.getSimpleName();
     private final PattonvilleApplication pattonvilleApplication;
     private DataSource dataSource;
@@ -38,7 +40,7 @@ public class DirectoryAsyncTask extends AsyncTask<DataSource, Void, Map<DataSour
     }
 
     @Override
-    protected Map<DataSource, List<Faculty>> doInBackground(DataSource... params) { // Run on different thread
+    protected Map<DataSource, List<Faculty>> doInBackground(Void... params) { // Run on different thread
 
 
         Map<DataSource, List<Faculty>> faculties = new HashMap<>();
@@ -52,13 +54,13 @@ public class DirectoryAsyncTask extends AsyncTask<DataSource, Void, Map<DataSour
             String directoryLine = reader.readLine();
             while ((directoryLine = reader.readLine()) != null) {
                 String[] person = directoryLine.split("\\s*,\\s*", -1);
+                Faculty facultyMember = new Faculty(person);
                 Log.i(TAG, Arrays.toString(person) + person.length);
-                DataSource data = getDataSourceFromString(person[3]);
+                DataSource data = facultyMember.getDirectoryKey();
                 if (!faculties.containsKey(data)) {
                     faculties.put(data, new ArrayList<Faculty>());
                 }
-
-                faculties.get(data).add(new Faculty(person));
+                faculties.get(data).add(facultyMember);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,55 +69,37 @@ public class DirectoryAsyncTask extends AsyncTask<DataSource, Void, Map<DataSour
         return faculties;
     }
 
-    private DataSource getDataSourceFromString(String location) {
-        DataSource data = null;
-        switch (location.trim().toUpperCase()) {
-            case "BRIDGEWAY ELEMENTARY":
-                data = DataSource.BRIDGEWAY_ELEMENTARY;
-                break;
-            case "ROBERT DRUMMOND ELEMENTARY":
-                data = DataSource.DRUMMOND_ELEMENTARY;
-                break;
-            case "HOLMAN MIDDLE SCHOOL":
-                data = DataSource.HOLMAN_MIDDLE_SCHOOL;
-                break;
-            case "PATTONVILLE HEIGHTS":
-                data = DataSource.HEIGHTS_MIDDLE_SCHOOL;
-                break;
-            case "PARKWOOD ELEMENTARY":
-                data = DataSource.PARKWOOD_ELEMENTARY;
-                break;
-            case "ROSE ACRES ELEMENTARY":
-                data = DataSource.ROSE_ACRES_ELEMENTARY;
-                break;
-            case "REMINGTON TRADITIONAL":
-                data = DataSource.REMINGTON_TRADITIONAL_SCHOOL;
-                break;
-            case "PATTONVILLE HIGH SCHOOL":
-            case "POSITIVE SCHOOL":
-                data = DataSource.HIGH_SCHOOL;
-                break;
-            case "WILLOW BROOK ELEMENTARY":
-                data = DataSource.WILLOW_BROOK_ELEMENTARY;
-                break;
-            case "LEARNING CENTER":
-            default:
-                data = DataSource.DISTRICT;
-        }
-        return data;
-    }
-
     @Override
     protected void onPostExecute(Map<DataSource, List<Faculty>> result) { // Run on UI thread
         super.onPostExecute(result);
 
         if (result != null) {
+            for (DataSource key : result.keySet()) {
+                Collections.sort(result.get(key), new Comparator<Faculty>() {
+                    @Override
+                    public int compare(Faculty o1, Faculty o2) {
+                        if (o1.getRank() == o2.getRank()) {
+                            if (o1.getLongDesc().equals(o2.getLongDesc())) {
+                                if (o1.getLastName().equals(o2.getLastName())) {
+                                    return o1.getFirstName().compareTo(o2.getFirstName());
+                                } else {
+                                    return o1.getLastName().compareTo(o2.getLastName());
+                                }
+                            } else {
+                                return o1.getLongDesc().compareTo(o2.getLongDesc());
+                            }
+                        } else {
+                            return o1.getRank() - o2.getRank();
+                        }
+                    }
+                });
+            }
             pattonvilleApplication.getDirectoryData().putAll(result);
         }
 
         pattonvilleApplication.updateDirectoryListeners();
 
-        //TODO: Save the loaded data to the PattonvilleApplication instance, call update method, remove from list of running DirectoryAsyncTasks
+        //TODO: Remove from list of running DirectoryAsyncTasks
     }
 
     @Override
