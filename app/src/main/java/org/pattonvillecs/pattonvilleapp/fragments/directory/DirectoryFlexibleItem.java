@@ -40,6 +40,10 @@ public class DirectoryFlexibleItem extends AbstractFlexibleItem<DirectoryViewHol
 
         holder.longDesText.setText(WordUtils.capitalizeFully(facultyMember.getLongDesc()));
 
+        if (!facultyMember.getExtension1().isEmpty()) {
+            holder.extensionText.setText("Ext: " + facultyMember.getExtension1());
+        }
+
         holder.emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
