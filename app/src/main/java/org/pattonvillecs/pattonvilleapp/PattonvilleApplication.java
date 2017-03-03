@@ -25,6 +25,9 @@ import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
@@ -185,14 +188,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void updateCalendarListeners(CalendarParsingUpdateData data) {
         Log.d(TAG, "Updating calendar listeners");
-
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
             if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Checking listener " + pauseableListener);
-
+                Log.d(TAG, "Updating listener " + pauseableListener);
                 if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
                     Log.d(TAG, "Updating calendar listener " + pauseableListener);
-
                     //noinspection unchecked
                     ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
                 }

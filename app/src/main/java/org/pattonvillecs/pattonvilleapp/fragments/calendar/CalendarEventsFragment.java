@@ -31,14 +31,13 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventHeader;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +46,7 @@ import java.util.concurrent.ConcurrentMap;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.common.TopSnappedSmoothScroller;
 import eu.davidea.flexibleadapter.utils.Utils;
 
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
@@ -123,22 +123,27 @@ public class CalendarEventsFragment extends Fragment {
     }
 
     private void goToCurrentDay() {
-        int mostRecentEventPosition = 0;
+        int lastBeforeToday = -1;
         Date today = new Date();
-        Log.i(TAG, "Today is: " + SimpleDateFormat.getDateInstance().format(today));
+        Log.i(TAG, "Today is: " + SimpleDateFormat.getDateTimeInstance().format(today));
         Log.i(TAG, "Found " + eventAdapter.getItemCount() + " items");
 
         for (int i = 0; i < eventAdapter.getItemCount(); i++) {
             Date eventDate = eventAdapter.getItem(i).getCalendarDay().getDate();
-            if (!eventDate.after(today))
-                mostRecentEventPosition = i;
-            else {
-                mostRecentEventPosition = i;
+
+            if (!eventDate.before(today)) {
+                lastBeforeToday = i - 1;
                 break;
             }
         }
 
-        recyclerView.scrollToPosition(mostRecentEventPosition);
+        final int finalLastBeforeToday = lastBeforeToday;
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.smoothScrollToPosition(finalLastBeforeToday);
+            }
+        });
     }
 
     @Override
@@ -174,7 +179,9 @@ public class CalendarEventsFragment extends Fragment {
 
         eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
+        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 25;
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 100;
         eventAdapter.setDisplayHeadersAtStartUp(true);
         recyclerView.post(new Runnable() {
             @Override
@@ -184,7 +191,7 @@ public class CalendarEventsFragment extends Fragment {
         });
 
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
-        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED));
+        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED)); // Default red to show an error
 
         //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
         eventAdapter.addListener(new FlexibleAdapter.OnUpdateListener() {
@@ -214,7 +221,7 @@ public class CalendarEventsFragment extends Fragment {
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        List<FlexibleHasCalendarDay> items = Stream.of(calendarData.entrySet())
+        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
                 .flatMap(new Function<Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
                     @Override
                     public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> dataSourceHashMultimapEntry) {
@@ -239,30 +246,14 @@ public class CalendarEventsFragment extends Fragment {
                         return new EventFlexibleItem(dataSourceVEventPair.getKey(), dataSourceVEventPair.getValue());
                     }
                 })
-                .collect(Collectors.<FlexibleHasCalendarDay>toList());
-
-        Map<CalendarDay, EventHeader> headers = new HashMap<>();
-        for (FlexibleHasCalendarDay flexibleHasCalendarDay : items) {
-            if (flexibleHasCalendarDay instanceof EventFlexibleItem) {
-                EventFlexibleItem eventFlexibleItem = (EventFlexibleItem) flexibleHasCalendarDay;
-
-                CalendarDay calendarDay = eventFlexibleItem.getCalendarDay();
-
-                if (!headers.containsKey(calendarDay)) {
-                    Log.v(TAG, "Making header for " + calendarDay);
-                    headers.put(calendarDay, new EventHeader(calendarDay));
-                }
-
-                eventFlexibleItem.setHeader(headers.get(calendarDay));
-            }
-        }
+                .collect(Collectors.<EventFlexibleItem>toList());
 
         if (items.size() > 0)
             noItemsTextView.setVisibility(View.GONE);
         else
             noItemsTextView.setVisibility(View.VISIBLE);
 
-        eventAdapter.updateDataSet(items, true);
+        eventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
     }
 
     @Override
