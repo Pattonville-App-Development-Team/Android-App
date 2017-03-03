@@ -12,14 +12,27 @@ import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.Faculty;
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 public class DirectoryDetailActivity extends AppCompatActivity {
+    //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
+    private static final String TAG = "DirectoryDetailActivity";
     private static DataSource school;
     private RecyclerView facultyView;
     private DirectoryAdapter directoryAdapter;
+    private ConcurrentMap<DataSource, List<Faculty>> directoryData = new ConcurrentHashMap<>();
+    private PattonvilleApplication pattonvilleApplication;
+    private PauseableListener<CalendarParsingUpdateData> listener;
+    private List<Faculty> faculties;
     //Intent
 
     @Override
@@ -27,10 +40,20 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
 
+        pattonvilleApplication = PattonvilleApplication.get(this);
+
+        Intent intent = getIntent();
+        school = (DataSource) intent.getSerializableExtra("School");
+        setTitle(school.shortName + " Directory");
+        //TODO: Make constant field
+        faculties = pattonvilleApplication.getDirectoryData().get(school);
+
         directoryAdapter = new DirectoryAdapter();
-        for (int i = 0; i < 10; i++) {
-            directoryAdapter.addItem(new DirectoryFlexibleItem(new Faculty().setFaculty()));
+
+        for (Faculty faculty : faculties) {
+            directoryAdapter.addItem(new DirectoryFlexibleItem(this, faculty));
         }
+        directoryAdapter.notifyDataSetChanged();
 
         facultyView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
         facultyView.setAdapter(directoryAdapter);
@@ -38,10 +61,8 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
 
-        Intent intent = getIntent();
-        school = (DataSource) intent.getSerializableExtra("School");
 
-        setTitle(school.shortName + " Directory");
+
 
 
         //Inflate the layout the textViews for this Activity
@@ -79,5 +100,9 @@ public class DirectoryDetailActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
+    }
+
+    public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
+        this.directoryData = directoryData;
     }
 }
