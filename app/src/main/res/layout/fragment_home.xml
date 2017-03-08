@@ -72,7 +72,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--- <ListView
+        <TextView
+            android:id="@+id/home_news_loading_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/homeLoadingNewsText"
+            android:textColor="#000000"
+            android:textSize="32sp" />
+
+        <!-- <ListView
             android:id="@+id/home_news_listview"
             android:layout_width="match_parent"
             android:layout_height="192dp"
@@ -119,12 +128,29 @@
         </LinearLayout>
 
 
-        <ListView
+        <!---<ListView
             android:id="@+id/home_upcoming_events_listview"
             android:layout_width="match_parent"
             android:layout_height="204dp"
             android:nestedScrollingEnabled="false" />
 
+        -->
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_calendar_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/home_calendar_loading_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/homeLoadingEventsText"
+            android:textColor="#000000"
+            android:textSize="32sp" />
 
         <LinearLayout
             android:id="@+id/home_pinned_header_layout"
