@@ -165,23 +165,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
-        // Get the news data, and sort as necessary
-        List<NewsArticle> newNewsArticles = Stream.of(pattonvilleApplication.getNewsData())
-                .flatMap(new Function<Map.Entry<DataSource, List<NewsArticle>>, Stream<NewsArticle>>() {
-                    @Override
-                    public Stream<NewsArticle> apply(Map.Entry<DataSource, List<NewsArticle>> dataSourceListEntry) {
-                        return Stream.of(dataSourceListEntry.getValue());
-                    }
-                })
-                .sorted(new Comparator<NewsArticle>() {
-                    @Override
-                    public int compare(NewsArticle o1, NewsArticle o2) {
-                        return -o1.getPublishDate().compareTo(o2.getPublishDate());
-                    }
-                })
-                .collect(Collectors.<NewsArticle>toList());
-
-        mAdapter = new NewsRecyclerViewAdapter(newNewsArticles);
+        mAdapter = new NewsRecyclerViewAdapter(null);
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -196,8 +180,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 pattonvilleApplication.refreshNewsData();
             }
         });
-
-        // Defines the colors used for the refresh icon
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 
         return root;

@@ -38,23 +38,22 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:padding="16dp"
         android:background="?android:selectableItemBackground"
+        android:padding="16dp"
         app:srcCompat="@drawable/email" />
 
     <TextView
         android:id="@+id/directory_facultyExtension_textView"
-        android:text="x8000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="14sp"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_toLeftOf="@+id/directory_facultyEmail_imageButton"
         android:layout_toStartOf="@+id/directory_facultyEmail_imageButton"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp" />
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="14sp"/>
 
 </RelativeLayout>
 
