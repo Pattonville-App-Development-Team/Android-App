@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntro2Fragment;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
@@ -25,9 +24,9 @@ public class PattonvilleAppIntro extends AppIntro2 {
         else
             color = getResources().getColor(R.color.colorPrimary);
 
-        addSlide(AppIntro2Fragment.newInstance("Welcome", "", R.drawable.psd_logo, color));
-
-        addSlide(AppIntroPreferenceFragment.newInstance("School Selection", "Select schools that you wish to receive information from. To change this at a later date, go to Settings", color));
+        addSlide(AppIntroPreferenceFragment.newInstance("School Selection",
+                "Select schools that you wish to receive information from. " +
+                        "To change this at a later date, go to Settings", color));
 
         showSkipButton(false);
         showStatusBar(false);
