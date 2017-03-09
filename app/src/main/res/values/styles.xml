@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
     </style>
 
     <style name="PSD.NoActionBar">
@@ -27,6 +28,10 @@
     <style name="PSD.MaterialCalendarView">
         <item name="colorAccent">@android:color/darker_gray</item>
         <item name="colorPrimary">@android:color/darker_gray</item>
+    </style>
+
+    <style name="CursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
 
 </resources>
