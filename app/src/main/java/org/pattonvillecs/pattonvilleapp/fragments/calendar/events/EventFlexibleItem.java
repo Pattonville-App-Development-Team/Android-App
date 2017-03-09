@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.common.base.Stopwatch;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
@@ -36,6 +38,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsA
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned.PinnedEventsContract;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
@@ -120,7 +123,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
     private static Cursor requeryByUid(Context context, String uid) {
         return context.getContentResolver().query(
                 PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
-                null,
+                new String[]{PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID},
                 PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID + "=?",
                 new String[]{uid},
                 null);
@@ -157,11 +160,6 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, final EventViewHolder holder, final int position, List payloads) {
-        if (holder.cursor != null && !holder.cursor.isClosed()) {
-            holder.cursor.close();
-            holder.cursor = null;
-            //Make is so.
-        }
         Summary summary = vEvent.getSummary();
         Location location = vEvent.getLocation();
         final String uid = vEvent.getUid().getValue();
@@ -207,19 +205,32 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         });
         holder.sparkButton.setEventListener(new SparkEventListener() {
             @Override
-            public void onEvent(ImageView button, boolean buttonState) {
+            public void onEvent(final ImageView button, final boolean buttonState) {
                 Log.i(TAG, "State: " + buttonState + " UID: " + uid);
-                Log.v(TAG, "Full table is now: \n" + cursorToString(holder.view.getContext().getContentResolver().query(PinnedEventsContract.PinnedEventsTable.CONTENT_URI, null, null, null, null)));
+                //Expensive, not needed unless debugging
+                //Log.v(TAG, "Full table is now: \n" + cursorToString(holder.view.getContext().getContentResolver().query(PinnedEventsContract.PinnedEventsTable.CONTENT_URI, null, null, null, null)));
+                final Context context = button.getContext();
 
-                if (buttonState) {
-                    deleteEntriesWithUid(button.getContext(), uid);
-                    insertEntry(button.getContext(), uid);
-                } else {
-                    deleteEntriesWithUid(button.getContext(), uid);
-                }
+                Log.v(TAG, uid + " executing state " + buttonState);
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.v(TAG, uid + " execution begin on thread " + Thread.currentThread().getName());
+                        Stopwatch stopwatch = Stopwatch.createStarted();
+                        if (buttonState) {
+                            deleteEntriesWithUid(context, uid);
+                            insertEntry(context, uid);
+                        } else {
+                            deleteEntriesWithUid(context, uid);
+                        }
+                        Log.v(TAG, uid + " execution finished on thread " + Thread.currentThread().getName() + " in " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+                    }
+                });
+                Log.v(TAG, uid + " finished executing state " + buttonState);
             }
         });
-        ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+
+        ContentObserver contentObserver = new ContentObserver(new Handler(Looper.myLooper())) {
             @Override
             public void onChange(boolean selfChange) {
                 onChange(selfChange, null);
@@ -227,16 +238,22 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
             @Override
             public void onChange(boolean selfChange, Uri uri) {
+                Log.i(TAG, "On thread " + Thread.currentThread().getName());
                 if (holder.cursor != null) // Only needed for the first check
                     holder.cursor.close(); // The old view is closed, not needed anymore
                 holder.cursor = requeryByUid(holder.view.getContext(), uid); // Get a new look at the dataset
                 holder.cursor.registerContentObserver(this); // Attach this anonymous class to it so we keep getting updates
 
-                Log.v(TAG, "Count of " + uid + ": " + holder.cursor.getCount());
-                if (holder.cursor.getCount() > 0)
-                    holder.sparkButton.setChecked(true);
-                else
-                    holder.sparkButton.setChecked(false);
+                final int count = holder.cursor.getCount();
+                Log.v(TAG, "Count of " + uid + ": " + count);
+
+                holder.sparkButton.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (count > 0 != holder.sparkButton.isChecked())
+                            holder.sparkButton.setChecked(!holder.sparkButton.isChecked());
+                    }
+                });
             }
         };
         contentObserver.onChange(false); // Fire the first "event" to kick-start the requerying process. After this, the ContentObserver is automatically reregistered and cursors are closed/created
