@@ -90,4 +90,6 @@
     <string name="calendar_fragment_action_refresh">Refresh</string>
     <string name="calendar_fragment_action_today_title_condensed">Today</string>
     <string name="action_search">Search…</string>
+    <string name="no_data_loaded_yet_message">No data loaded, please wait...</string>
+    <string name="no_pinned_events_provided_message">No events pinned yet...</string>
 </resources>
