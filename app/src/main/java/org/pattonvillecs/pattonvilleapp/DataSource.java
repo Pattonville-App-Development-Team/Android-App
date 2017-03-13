@@ -25,7 +25,8 @@ public enum DataSource {
             "PSD",
             Color.parseColor("#007a33"),
             Optional.<String>empty(),
-            Optional.<String>empty()),
+            Optional.<String>empty(),
+            "/topic/District"),
     HIGH_SCHOOL("Pattonville High School", "High School", 1, true, true, true, false, false,
             "http://phs.psdr3.org/",
             "2497 Creve Coeur Mill Road, Maryland Heights, MO 63043",
@@ -37,7 +38,8 @@ public enum DataSource {
             "HS",
             Color.parseColor("#02d4c4"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94969"),
-            Optional.of("http://psdr3.nutrislice.com/menu/pattonville-high")),
+            Optional.of("http://psdr3.nutrislice.com/menu/pattonville-high"),
+            "/topic/Pattonville-High-School"),
     HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights", 2, true, true, false, true, false,
             "http://ht.psdr3.org/",
             "195 Fee Fee Road, Maryland Heights, MO 63043 ",
@@ -49,7 +51,8 @@ public enum DataSource {
             "HT",
             Color.parseColor("#ddd739"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94968"),
-            Optional.of("http://psdr3.nutrislice.com/menu/pattonville-heights")),
+            Optional.of("http://psdr3.nutrislice.com/menu/pattonville-heights"),
+            "/topic/Heights-Middle-School"),
     HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman", 3, true, true, false, true, false,
             "http://ho.psdr3.org/",
             "11055 St. Charles Rock Road, St. Ann, MO 63074",
@@ -61,7 +64,8 @@ public enum DataSource {
             "HO",
             Color.parseColor("#ff8d00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94975"),
-            Optional.of("http://psdr3.nutrislice.com/menu/holman")),
+            Optional.of("http://psdr3.nutrislice.com/menu/holman"),
+            "/topic/Holman-Middle-School"),
     REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington", 4, true, true, false, true, true,
             "http://remington.psdr3.org/",
             "102 Fee Fee Rd, Maryland Heights, MO 63043",
@@ -73,7 +77,8 @@ public enum DataSource {
             "RT",
             Color.parseColor("#e50b00"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94971"),
-            Optional.of("http://psdr3.nutrislice.com/menu/remington-traditional")),
+            Optional.of("http://psdr3.nutrislice.com/menu/remington-traditional"),
+            "/topic/Remington-Traditional"),
     BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway", 5, true, true, false, false, true,
             "http://bridgeway.psdr3.org/",
             "11635 Oakbury Court, Bridgeton, MO 63044",
@@ -85,7 +90,8 @@ public enum DataSource {
             "BW",
             Color.parseColor("#724338"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94979"),
-            Optional.of("http://psdr3.nutrislice.com/menu/bridgeway")),
+            Optional.of("http://psdr3.nutrislice.com/menu/bridgeway"),
+            "/topic/Bridgeway-Elementary"),
     DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond", 6, true, true, false, false, true,
             "http://drummond.psdr3.org/",
             "3721 St. Bridget Lane, St Ann, MO 63074",
@@ -97,7 +103,8 @@ public enum DataSource {
             "DR",
             Color.parseColor("#73c300"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94976"),
-            Optional.of("http://psdr3.nutrislice.com/menu/drummond")),
+            Optional.of("http://psdr3.nutrislice.com/menu/drummond"),
+            "/topic/Drummond-Elementary"),
     ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres", 7, true, true, false, false, true,
             "http://roseacres.psdr3.org/",
             "2905 Rose Acres Lane, Maryland Heights, MO 63043",
@@ -109,7 +116,8 @@ public enum DataSource {
             "RA",
             Color.parseColor("#f6258e"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
-            Optional.of("http://psdr3.nutrislice.com/menu/rose-acres")),
+            Optional.of("http://psdr3.nutrislice.com/menu/rose-acres"),
+            "/topic/Rose-Acres-Elementary"),
     PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood", 8, true, true, false, false, true,
             "http://parkwood.psdr3.org/",
             "3199 Parkwood Lane, Maryland Heights, MO 63043",
@@ -121,7 +129,8 @@ public enum DataSource {
             "PW",
             Color.parseColor("#a300ff"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94967"),
-            Optional.of("http://psdr3.nutrislice.com/menu/parkwood")),
+            Optional.of("http://psdr3.nutrislice.com/menu/parkwood"),
+            "/topic/Parkwood-Elementary"),
     WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook", 9, true, true, false, false, true,
             "http://willowbrook.psdr3.org/",
             "11022 Schuetz Road, Creve Coeur, MO 63146",
@@ -133,7 +142,8 @@ public enum DataSource {
             "WB",
             Color.parseColor("#000178"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
-            Optional.of("http://psdr3.nutrislice.com/menu/willow-brook"));
+            Optional.of("http://psdr3.nutrislice.com/menu/willow-brook"),
+            "/topic/Willow-Brook-Elementary");
 
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 
@@ -233,7 +243,7 @@ public enum DataSource {
                 }
             })));
 
-    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsURL, initialsName;
+    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsURL, initialsName, topicName;
     public final int id, calendarColor;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink;
@@ -242,7 +252,7 @@ public enum DataSource {
                boolean isHighSchool, boolean isMiddleSchool, boolean isElementarySchool,
                String websiteLink, String address, String mainNumber, Optional<String> attendanceNumber,
                Optional<String> faxNumber, String calendarLink, String newsURL, String initialsName, int calendarColor,
-               Optional<String> peachjarLink, Optional<String> nutrisliceLink) {
+               Optional<String> peachjarLink, Optional<String> nutrisliceLink, String topicName) {
         this.name = name;
         this.shortName = shortName;
         this.id = id;
@@ -262,5 +272,6 @@ public enum DataSource {
         this.calendarColor = calendarColor;
         this.newsURL = newsURL;
         this.nutrisliceLink = nutrisliceLink;
+        this.topicName = topicName;
     }
 }
