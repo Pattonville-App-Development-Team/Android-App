@@ -41,14 +41,11 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingU
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
-
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
-
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
