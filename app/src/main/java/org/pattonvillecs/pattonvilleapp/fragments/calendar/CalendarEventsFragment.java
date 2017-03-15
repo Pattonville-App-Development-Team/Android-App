@@ -15,16 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
 import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
@@ -36,10 +31,8 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -120,6 +113,7 @@ public class CalendarEventsFragment extends Fragment {
                 Log.i(TAG, "Received data before pause!");
             }
         };
+        pattonvilleApplication.registerPauseableListener(listener);
     }
 
     private void goToCurrentDay() {
@@ -212,7 +206,7 @@ public class CalendarEventsFragment extends Fragment {
             }
         });
 
-        noItemsTextView = (TextView) layout.findViewById(R.id.no_items_textview);
+        noItemsTextView = (TextView) layout.findViewById(R.id.no_events_textview);
 
         firstInflationAfterCreation = savedInstanceState == null;
 
@@ -221,32 +215,7 @@ public class CalendarEventsFragment extends Fragment {
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
         this.calendarData = calendarData;
-        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
-                .flatMap(new Function<Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
-                    @Override
-                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> dataSourceHashMultimapEntry) {
-                        return Stream.of(dataSourceHashMultimapEntry.getValue().entries()).map(new Function<Map.Entry<CalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
-                            @Override
-                            public Pair<DataSource, VEvent> apply(Map.Entry<CalendarDay, VEvent> calendarDayVEventEntry) {
-                                return new ImmutablePair<>(dataSourceHashMultimapEntry.getKey(), calendarDayVEventEntry.getValue());
-                            }
-                        });
-                    }
-                })
-                .sorted(new Comparator<Pair<DataSource, VEvent>>() {
-                    @Override
-                    public int compare(Pair<DataSource, VEvent> o1, Pair<DataSource, VEvent> o2) {
-                        //This is Google Calendar style scrolling: future events to the bottom
-                        return o1.getValue().getStartDate().getDate().compareTo(o2.getValue().getStartDate().getDate());
-                    }
-                })
-                .map(new Function<Pair<DataSource, VEvent>, EventFlexibleItem>() {
-                    @Override
-                    public EventFlexibleItem apply(Pair<DataSource, VEvent> dataSourceVEventPair) {
-                        return new EventFlexibleItem(dataSourceVEventPair.getKey(), dataSourceVEventPair.getValue());
-                    }
-                })
-                .collect(Collectors.<EventFlexibleItem>toList());
+        List<EventFlexibleItem> items = CalendarParsingUpdateData.getAllEvents(calendarData);
 
         if (items.size() > 0)
             noItemsTextView.setVisibility(View.GONE);

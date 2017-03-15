@@ -47,6 +47,9 @@ import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
+import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
+
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
