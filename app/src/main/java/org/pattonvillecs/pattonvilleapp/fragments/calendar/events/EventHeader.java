@@ -18,7 +18,7 @@ import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
- * Created by skaggsm on 2/16/17.
+ * Created by Mitchell Skaggs on 2/16/17.
  */
 
 public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewHolder> implements FlexibleHasCalendarDay<EventHeader.EventHeaderViewHolder> {

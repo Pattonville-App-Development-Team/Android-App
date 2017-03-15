@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.news;
+package org.pattonvillecs.pattonvilleapp.news;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,16 +9,12 @@ import com.android.volley.toolbox.StringRequest;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-/**
- * Created by Mitchell Skaggs on 2/13/17.
- */
 
 public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<NewsArticle>> {
     private static final String TAG = NewsParsingAsyncTask.class.getSimpleName();

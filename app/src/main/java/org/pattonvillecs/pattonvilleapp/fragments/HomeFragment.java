@@ -37,6 +37,7 @@ import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
+
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
@@ -46,6 +47,9 @@ import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+
+import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;

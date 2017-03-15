@@ -18,11 +18,13 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.news.NewsParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
@@ -48,6 +50,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData;
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
+    //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
+
+    private ConcurrentMap<DataSource, List<Faculty>> directoryData;
+    private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
 
     private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
     private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
@@ -72,6 +78,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
 
         calendarData = new ConcurrentHashMap<>();
+        directoryData = new ConcurrentHashMap<>();
         runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
         newsData = new ConcurrentHashMap<>();
@@ -82,6 +89,15 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
         setUpCalendarParsing();
         setUpNewsParsing();
+        setUpDirectoryParsing();
+    }
+
+    private void setUpDirectoryParsing() {
+        executeDirectoryDataTasks();
+    }
+
+    private void executeDirectoryDataTasks() {
+        new DirectoryAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void setUpCalendarParsing() {
@@ -183,11 +199,38 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         }
     }
 
+    private void updateDirectoryListeners(DirectoryParsingUpdateData data) {
+        Log.d(TAG, "Updating directory listeners");
+
+        for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            if (!pauseableListener.isPaused()) {
+                Log.d(TAG, "Checking listener " + pauseableListener);
+
+                if (pauseableListener.getIdentifier() == DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID) {
+                    Log.d(TAG, "Updating directory listener " + pauseableListener);
+
+                    //noinspection unchecked
+                    ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onReceiveData(data);
+                }
+            } else {
+                Log.d(TAG, "Skipping paused listener");
+            }
+        }
+    }
+
     /**
      * Calls {@link PattonvilleApplication#updateCalendarListeners(CalendarParsingUpdateData)} with {@link PattonvilleApplication#getCurrentCalendarParsingUpdateData()} as the argument
      */
     public void updateCalendarListeners() {
         updateCalendarListeners(getCurrentCalendarParsingUpdateData());
+    }
+
+    public void updateDirectoryListeners() {
+        updateDirectoryListeners(getCurrentDirectoryParsingUpdateData());
+    }
+
+    private DirectoryParsingUpdateData getCurrentDirectoryParsingUpdateData() {
+        return new DirectoryParsingUpdateData(directoryData);
     }
 
     @Override
@@ -300,5 +343,13 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public void refreshNewsData() {
         executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    }
+
+    public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
+        return directoryData;
+    }
+
+    public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
+        this.directoryData = directoryData;
     }
 }
