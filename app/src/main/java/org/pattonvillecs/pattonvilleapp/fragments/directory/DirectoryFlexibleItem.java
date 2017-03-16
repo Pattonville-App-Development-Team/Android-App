@@ -3,11 +3,10 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
+import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.apache.commons.lang.WordUtils;
 import org.pattonvillecs.pattonvilleapp.Faculty;
@@ -40,24 +39,36 @@ public class DirectoryFlexibleItem extends AbstractFlexibleItem<DirectoryViewHol
 
         holder.longDesText.setText(WordUtils.capitalizeFully(facultyMember.getLongDesc()));
 
-        if (!facultyMember.getExtension1().isEmpty()) {
-            holder.extensionText.setText("Ext: " + facultyMember.getExtension1());
+        //fix this to check for other extensions being empty as well so it finds the first not empty extension
+        if (facultyMember.getExtension1().isEmpty()) {
+            holder.extensionButton.setVisibility(View.INVISIBLE);
+        } else {
+            holder.extensionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String extension = facultyMember.getExtension1();
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                    //currently not working with pause
+                    phoneIntent.setData(Uri.parse("tel:3142138010;" + PhoneNumberUtils.PAUSE + facultyMember.getExtension1()));
+                    adapter.getRecyclerView().getContext().startActivity(phoneIntent);
+                }
+            });
         }
 
-        holder.emailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, facultyMember.getEmail());
-                if (facultyMember.getEmail().isEmpty()) {
-                    Toast.makeText(context, "No email available", Toast.LENGTH_SHORT).show();
-                } else {
+
+        if (facultyMember.getEmail().isEmpty()) {
+            holder.emailButton.setVisibility(View.INVISIBLE);
+        } else {
+            holder.emailButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                     emailIntent.setData(Uri.parse("mailto:"));
                     emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{facultyMember.getEmail()});
                     adapter.getRecyclerView().getContext().startActivity(emailIntent);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
