@@ -18,8 +18,8 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class DirectoryViewHolder extends FlexibleViewHolder {
     private static final String TAG = "DirectoryViewHolder";
     final RecyclerView facultyView;
-    final TextView nameText, longDesText, extensionText;
-    final ImageButton emailButton;
+    final TextView nameText, longDesText;
+    final ImageButton emailButton, extensionButton;
 
     public DirectoryViewHolder(View view, FlexibleAdapter adapter) {
         this(view, adapter, false);
@@ -29,8 +29,8 @@ public class DirectoryViewHolder extends FlexibleViewHolder {
         super(view, adapter, stickyHeader);
         nameText = (TextView) view.findViewById(R.id.directory_facultyName_textView);
         longDesText = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
-        extensionText = (TextView) view.findViewById(R.id.directory_facultyExtension_textView);
         emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
+        extensionButton = (ImageButton) view.findViewById(R.id.directory_facultyExtension_imageButton);
         facultyView = (RecyclerView) view.findViewById(R.id.directory_detail_recyclerView);
     }
 
