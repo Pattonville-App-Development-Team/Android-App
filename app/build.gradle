@@ -97,7 +97,7 @@ dependencies {
     //Pin button
     compile 'com.github.varunest:sparkbutton:1.0.4'
 
-    //News content parsing is in Jsoup jar
+    //News content parsing is in jsoup jar
     compile 'org.jsoup:jsoup:1.10.2'
 
     testCompile 'junit:junit:4.12'

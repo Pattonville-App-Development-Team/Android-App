@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
-    <string name="title_fragment_home">Pattonville Schools</string>
+    <string name="title_fragment_home">Home</string>
     <string name="title_fragment_news">News</string>
     <string name="title_fragment_calendar">Calendar</string>
     <string name="title_fragment_directory">Directory</string>
@@ -89,5 +89,13 @@
 
     <string name="calendar_fragment_action_refresh">Refresh</string>
     <string name="calendar_fragment_action_today_title_condensed">Today</string>
+
     <string name="action_search">Search</string>
+    <string name="homeLoadingNewsText">Loading News Data…</string>
+    <string name="homeLoadingEventsText">Loading Calendar Data…</string>
+    <string name="home_news_article_source">News Article Source</string>
+
+    <string name="no_data_loaded_yet_message">No data loaded, please wait...</string>
+    <string name="no_pinned_events_provided_message">No events pinned yet...</string>
+
 </resources>
