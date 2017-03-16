@@ -90,6 +90,11 @@
         <activity
             android:name=".NutrisliceActivity"
             android:parentActivityName=".MainActivity" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon" />
+
     </application>
 
 </manifest>

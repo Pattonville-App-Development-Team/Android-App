@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.google.common.collect.HashMultimap;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.model.component.VEvent;
@@ -87,6 +88,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
+        setupFirebaseTopics();
         setUpCalendarParsing();
         setUpNewsParsing();
         setUpDirectoryParsing();
@@ -94,6 +96,22 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void setUpDirectoryParsing() {
         executeDirectoryDataTasks();
+    }
+
+    private void setupFirebaseTopics() {
+        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
+            @Override
+            public void keyChanged(SharedPreferences sharedPreferences, String key) {
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+
+                for (DataSource dataSource : DataSource.ALL) {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(dataSource.topicName);
+                }
+                for (DataSource dataSource : newSelectedDataSources) {
+                    FirebaseMessaging.getInstance().subscribeToTopic(dataSource.topicName);
+                }
+            }
+        });
     }
 
     private void executeDirectoryDataTasks() {
@@ -319,8 +337,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
         Log.d(TAG, "Updating news listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            Log.d(TAG, "Checking listener " + pauseableListener);
             if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
+                Log.d(TAG, "Check passed for listener " + pauseableListener);
                 if (pauseableListener.getIdentifier() == NewsParsingUpdateData.NEWS_LISTENER_ID) {
                     Log.d(TAG, "Updating news listener " + pauseableListener);
                     //noinspection unchecked
