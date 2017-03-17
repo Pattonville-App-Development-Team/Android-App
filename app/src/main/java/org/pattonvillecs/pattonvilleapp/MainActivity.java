@@ -179,9 +179,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
                 //startActivity(new Intent(this, FeedbackActivity.class));
                 break;
-
-            case R.id.nav_notifications:
-                startActivity(new Intent(this, NotificationsActivity.class));
         }
 
         if (fragment != null) {
