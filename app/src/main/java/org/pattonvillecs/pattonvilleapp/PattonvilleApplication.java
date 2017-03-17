@@ -104,11 +104,21 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
                 Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
 
+                FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
                 for (DataSource dataSource : DataSource.ALL) {
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(dataSource.topicName);
+                    firebaseMessaging.unsubscribeFromTopic(dataSource.topicName);
                 }
+                firebaseMessaging.unsubscribeFromTopic("All-Middle-Schools");
+                firebaseMessaging.unsubscribeFromTopic("All-Elementary-Schools");
+
                 for (DataSource dataSource : newSelectedDataSources) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(dataSource.topicName);
+                    firebaseMessaging.subscribeToTopic(dataSource.topicName);
+                    if (dataSource.isElementarySchool) {
+                        firebaseMessaging.subscribeToTopic("All-Elementary-Schools");
+                    } else if (dataSource.isMiddleSchool) {
+                        firebaseMessaging.subscribeToTopic("All-Middle-Schools");
+                    }
                 }
             }
         });
