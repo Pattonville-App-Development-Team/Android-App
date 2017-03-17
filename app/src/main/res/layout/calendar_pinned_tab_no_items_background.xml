@@ -1,8 +1,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/no_events_textview"
+    android:id="@+id/no_pinned_items_textview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="24dp"
-    android:text="@string/no_data_loaded_yet_message"
+    android:text="@string/no_pinned_events_provided_message"
     android:textAlignment="center"
     android:visibility="visible" />

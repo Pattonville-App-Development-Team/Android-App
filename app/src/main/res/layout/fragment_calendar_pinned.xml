@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment">
 
-    <include layout="@layout/calendar_event_tab_no_items_background" />
+    <include layout="@layout/calendar_pinned_tab_no_items_background" />
 
     <include
         layout="@layout/calendar_event_recyclerview"

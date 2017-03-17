@@ -11,6 +11,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/PSD">
+        <provider
+            android:name=".fragments.calendar.pinned.PinnedEventsContentProvider"
+            android:authorities="org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -85,6 +90,11 @@
         <activity
             android:name=".NutrisliceActivity"
             android:parentActivityName=".MainActivity" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon" />
+
     </application>
 
 </manifest>
