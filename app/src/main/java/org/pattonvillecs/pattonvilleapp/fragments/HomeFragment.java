@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment {
     public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
 
     CarouselView carouselView;
-    //ListView eventListView;
     ListView pinnedListView;
     TextView newsSeeMoreTextView;
     TextView upcomingSeeMoreTextView;
@@ -93,6 +92,8 @@ public class HomeFragment extends Fragment {
     ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
     TextView homeNewsLoadingTextView;
     TextView homeCalendarLoadingTextView;
+
+    int[] preferenceValues = new int[3];
 
     ImageListener imageListener = new ImageListener() {
         @Override
@@ -160,7 +161,6 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
 
                 setNewsArticles(data);
-
             }
 
             @Override
@@ -187,8 +187,8 @@ public class HomeFragment extends Fragment {
                         })
                         .collect((Collectors.<NewsArticle>toList()));
 
-                if (newNewsArticles.size() > 4) {
-                    newNewsArticles = newNewsArticles.subList(0, 3);
+                if (newNewsArticles.size() > preferenceValues[0]) {
+                    newNewsArticles = newNewsArticles.subList(0, preferenceValues[0]);
                 }
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
@@ -265,15 +265,11 @@ public class HomeFragment extends Fragment {
                 })
                 .collect(Collectors.<EventFlexibleItem>toList());
 
-        if (items.size() > 4) {
-            items = items.subList(0, 3);
+        if (items.size() > preferenceValues[1]) {
+            items = items.subList(0, preferenceValues[1]);
         }
 
         mHomeCalendarAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
-
-
-        homeCalendarLoadingTextView.setVisibility(View.GONE);
-        Log.e(TAG, "Removed Calendar Loading ");
 
     }
 
@@ -281,6 +277,11 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_home);
+
+        preferenceValues[0] = PreferenceUtils.getHomeNewsAmount(getContext());
+        preferenceValues[1] = PreferenceUtils.getHomeEventsAmount(getContext());
+        preferenceValues[2] = PreferenceUtils.getHomePinnedAmount(getContext());
+
     }
 
     @Override
@@ -301,7 +302,6 @@ public class HomeFragment extends Fragment {
         mHomeNewsRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
         mHomeCalendarRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_recyclerView);
         homeNewsLoadingTextView = (TextView) view.findViewById(R.id.home_news_loading_textview);
-        homeCalendarLoadingTextView = (TextView) view.findViewById(R.id.home_calendar_loading_textview);
         mHomeNewsRecyclerView.setNestedScrollingEnabled(false);
         mHomeCalendarRecyclerView.setNestedScrollingEnabled(false);
         mHomeNewsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -336,7 +336,6 @@ public class HomeFragment extends Fragment {
             (view.findViewById(R.id.home_no_items_shown_textview)).setVisibility(View.VISIBLE);
         }
 
-
         for (int i = 0; i < homeEventsAmount; i++) {
             HashMap<String, String> eventListItem = new HashMap<>();
             eventListItem.put("event", sampleEvents[i % 3]);
@@ -350,7 +349,6 @@ public class HomeFragment extends Fragment {
             homePinnedList.add(pinnedListItem);
         }
 
-        //eventListView = (ListView) view.findViewById(R.id.home_upcoming_events_listview);
         pinnedListView = (ListView) view.findViewById(R.id.home_pinned_events_listview);
         newsSeeMoreTextView = (TextView) view.findViewById(R.id.recent_news_see_more_textview);
         upcomingSeeMoreTextView = (TextView) view.findViewById(R.id.home_upcoming_events_see_more_textview);
@@ -360,11 +358,6 @@ public class HomeFragment extends Fragment {
         pinnedSeeMoreArrow = (ImageView) view.findViewById(R.id.home_pinned_events_see_more_arrow);
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
-       /* ViewGroup.LayoutParams eventParam = eventListView.getLayoutParams();
-        eventParam.height = 136 * homeEventsAmount;
-        eventListView.setLayoutParams(eventParam);
-        eventListView.requestLayout();
-        */
 
         ViewGroup.LayoutParams pinnedParam = pinnedListView.getLayoutParams();
         pinnedParam.height = 136 * homePinnedAmount;
