@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.intro;
+package org.pattonvillecs.pattonvilleapp.intro;
 
 import android.os.Build;
 import android.os.Bundle;
