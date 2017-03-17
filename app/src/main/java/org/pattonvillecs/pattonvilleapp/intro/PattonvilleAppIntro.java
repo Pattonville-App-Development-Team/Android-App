@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.intro;
+package org.pattonvillecs.pattonvilleapp.intro;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntro2Fragment;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
@@ -25,13 +24,9 @@ public class PattonvilleAppIntro extends AppIntro2 {
         else
             color = getResources().getColor(R.color.colorPrimary);
 
-        addSlide(AppIntro2Fragment.newInstance("Welcome!", "", R.drawable.psd_logo, color));
-
-        addSlide(AppIntro2Fragment.newInstance("The Spotlight", "The Spotlight explains features of the app when you first encounter them.", R.drawable.appintro_spotlight_image, color));
-
-        addSlide(AppIntroPreferenceFragment.newInstance("Preferences", "Check schools that you wish to receive news, calendar events, and other information from. To change this at a later date, navigate to the app settings.", color));
-
-        addSlide(AppIntro2Fragment.newInstance("", "Tap the check mark to enter the app...", R.drawable.psd_logo, color));
+        addSlide(AppIntroPreferenceFragment.newInstance("School Selection",
+                "Click the preference to select schools that you wish to receive information from.\n\n" +
+                        "To change your selection at a later date, go to Settings.", color));
 
         showSkipButton(false);
         showStatusBar(false);

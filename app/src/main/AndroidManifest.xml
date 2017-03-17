@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".fragments.intro.PattonvilleAppIntro"
+            android:name=".intro.PattonvilleAppIntro"
             android:label="@string/app_intro"
             android:theme="@style/PSD.PreferenceFixTheme.NoActionBar" />
         <activity
