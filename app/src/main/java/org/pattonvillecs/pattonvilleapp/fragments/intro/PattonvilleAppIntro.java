@@ -25,8 +25,8 @@ public class PattonvilleAppIntro extends AppIntro2 {
             color = getResources().getColor(R.color.colorPrimary);
 
         addSlide(AppIntroPreferenceFragment.newInstance("School Selection",
-                "Select schools that you wish to receive information from. " +
-                        "To change this at a later date, go to Settings", color));
+                "Click the preference to select schools that you wish to receive information from.\n\n" +
+                        "To change your selection at a later date, go to Settings.", color));
 
         showSkipButton(false);
         showStatusBar(false);
