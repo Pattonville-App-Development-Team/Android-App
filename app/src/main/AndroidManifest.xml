@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".fragments.intro.PattonvilleAppIntro"
+            android:name=".intro.PattonvilleAppIntro"
             android:label="@string/app_intro"
             android:theme="@style/PSD.PreferenceFixTheme.NoActionBar" />
         <activity
@@ -62,9 +62,6 @@
             android:theme="@style/PSD.NoActionBar" />
         <activity
             android:name=".FeedbackActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".NotificationsActivity"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".fragments.directory.DirectoryDetailActivity"
@@ -90,6 +87,11 @@
         <activity
             android:name=".NutrisliceActivity"
             android:parentActivityName=".MainActivity" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon" />
+
     </application>
 
 </manifest>

@@ -27,6 +27,9 @@
         android:title="Links">
         <menu>
             <item
+                android:id="@+id/nav_activities"
+                android:title="@string/nav_drawer_title_activities" />
+            <item
                 android:id="@+id/nav_psd"
                 android:title="@string/nav_drawer_title_district_website" />
             <item
@@ -36,14 +39,13 @@
                 android:id="@+id/nav_nutrislice"
                 android:title="@string/nav_drawer_title_nutrislice" />
             <item
-                android:id="@+id/nav_powerschool"
-                android:title="@string/nav_drawer_title_powerschool" />
-            <item
                 android:id="@+id/nav_peachjar"
                 android:title="@string/nav_drawer_title_peachjar" />
             <item
-                android:id="@+id/nav_activities"
-                android:title="@string/nav_drawer_title_activities" />
+                android:id="@+id/nav_powerschool"
+                android:title="@string/nav_drawer_title_powerschool" />
+
+
         </menu>
     </item>
 
@@ -51,17 +53,14 @@
         android:id="@+id/menu_bottom"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_notifications"
-            android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="@string/nav_drawer_title_notifications" />
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback_black_24dp"
+            android:title="@string/nav_drawer_title_feedback" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/nav_drawer_title_settings" />
-        <item
-            android:id="@+id/nav_feedback"
-            android:icon="@drawable/ic_feedback_black_24dp"
-            android:title="@string/nav_drawer_title_feedback" />
+
     </group>
 
 </menu>

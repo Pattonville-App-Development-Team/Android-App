@@ -12,6 +12,11 @@ import com.annimon.stream.Stream;
 import com.annimon.stream.function.Consumer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
+import com.google.common.collect.HashMultimap;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import net.fortuna.ical4j.model.component.VEvent;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
@@ -93,6 +98,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
+        setupFirebaseTopics();
         setUpCalendarParsing();
         setUpNewsParsing();
         setUpDirectoryParsing();
@@ -100,6 +106,32 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     private void setUpDirectoryParsing() {
         executeDirectoryDataTasks();
+    }
+
+    private void setupFirebaseTopics() {
+        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
+            @Override
+            public void keyChanged(SharedPreferences sharedPreferences, String key) {
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+
+                FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+                for (DataSource dataSource : DataSource.ALL) {
+                    firebaseMessaging.unsubscribeFromTopic(dataSource.topicName);
+                }
+                firebaseMessaging.unsubscribeFromTopic("All-Middle-Schools");
+                firebaseMessaging.unsubscribeFromTopic("All-Elementary-Schools");
+
+                for (DataSource dataSource : newSelectedDataSources) {
+                    firebaseMessaging.subscribeToTopic(dataSource.topicName);
+                    if (dataSource.isElementarySchool) {
+                        firebaseMessaging.subscribeToTopic("All-Elementary-Schools");
+                    } else if (dataSource.isMiddleSchool) {
+                        firebaseMessaging.subscribeToTopic("All-Middle-Schools");
+                    }
+                }
+            }
+        });
     }
 
     private void executeDirectoryDataTasks() {
@@ -336,8 +368,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
         Log.d(TAG, "Updating news listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
+            Log.d(TAG, "Checking listener " + pauseableListener);
             if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
+                Log.d(TAG, "Check passed for listener " + pauseableListener);
                 if (pauseableListener.getIdentifier() == NewsParsingUpdateData.NEWS_LISTENER_ID) {
                     Log.d(TAG, "Updating news listener " + pauseableListener);
                     //noinspection unchecked
