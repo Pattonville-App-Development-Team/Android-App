@@ -8,16 +8,17 @@ import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Consumer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.google.common.collect.HashMultimap;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-
-import net.fortuna.ical4j.model.component.VEvent;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
@@ -29,12 +30,14 @@ import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChanged
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -48,7 +51,8 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
 
-    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData;
+    private TreeSet<EventFlexibleItem> calendarEvents;
+    private Set<DataSource> loadedCalendarDataSources;
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
     //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
 
@@ -77,7 +81,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
 
-        calendarData = new ConcurrentHashMap<>();
+        calendarEvents = new TreeSet<>();
+        loadedCalendarDataSources = EnumSet.noneOf(DataSource.class);
+
         directoryData = new ConcurrentHashMap<>();
         runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
@@ -106,13 +112,24 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
                 Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
 
-                for (DataSource dataSource : calendarData.keySet()) {
+                for (final DataSource dataSource : loadedCalendarDataSources) {
                     if (!newSelectedDataSources.contains(dataSource)) {
-                        calendarData.remove(dataSource);
+                        Stream.of(calendarEvents).forEach(new Consumer<EventFlexibleItem>() {
+                            @Override
+                            public void accept(EventFlexibleItem eventFlexibleItem) {
+                                eventFlexibleItem.dataSources.remove(dataSource);
+                            }
+                        });
+                        Iterators.removeIf(calendarEvents.iterator(), new Predicate<EventFlexibleItem>() {
+                            @Override
+                            public boolean apply(EventFlexibleItem input) {
+                                return input.dataSources.isEmpty();
+                            }
+                        });
                     }
                 }
 
-                newSelectedDataSources.removeAll(calendarData.keySet()); //Remove DataSources that are already present
+                newSelectedDataSources.removeAll(loadedCalendarDataSources); //Remove DataSources that are already present
 
                 executeCalendarDataTasks(newSelectedDataSources);
             }
@@ -293,11 +310,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
-        return new CalendarParsingUpdateData(calendarData, runningCalendarAsyncTasks);
+        return new CalendarParsingUpdateData(calendarEvents, runningCalendarAsyncTasks);
     }
 
-    public ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> getCalendarData() {
-        return calendarData;
+    public TreeSet<EventFlexibleItem> getCalendarEvents() {
+        return calendarEvents;
     }
 
     public Set<RetrieveCalendarDataAsyncTask> getRunningCalendarAsyncTasks() {

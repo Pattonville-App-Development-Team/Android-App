@@ -263,4 +263,9 @@ public enum DataSource {
         this.newsURL = newsURL;
         this.nutrisliceLink = nutrisliceLink;
     }
+
+    @Override
+    public String toString() {
+        return this.shortName;
+    }
 }

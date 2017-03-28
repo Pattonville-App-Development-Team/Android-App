@@ -4,6 +4,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,12 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.common.collect.HashMultimap;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
-import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.DtStart;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
@@ -32,9 +32,7 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.TreeSet;
 
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -53,7 +51,7 @@ public class CalendarEventsFragment extends Fragment {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
-    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
     private TextView noItemsTextView;
@@ -187,6 +185,9 @@ public class CalendarEventsFragment extends Fragment {
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
         eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED)); // Default red to show an error
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
         eventAdapter.addListener(new FlexibleAdapter.OnUpdateListener() {
             boolean firstRun = true;
@@ -213,16 +214,27 @@ public class CalendarEventsFragment extends Fragment {
         return layout;
     }
 
-    public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
+    public void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
         this.calendarData = calendarData;
-        List<EventFlexibleItem> items = CalendarParsingUpdateData.getAllEvents(calendarData);
 
-        if (items.size() > 0)
+        if (calendarData.size() > 0)
             noItemsTextView.setVisibility(View.GONE);
         else
             noItemsTextView.setVisibility(View.VISIBLE);
 
-        eventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
+        ArrayList<FlexibleHasCalendarDay> data = new ArrayList<FlexibleHasCalendarDay>(calendarData);
+        Log.i(TAG, "Received data: " + data);
+
+        Multiset<DtStart> dates = HashMultiset.create();
+        for (EventFlexibleItem event : calendarData) {
+            dates.add(event.vEvent.getStartDate());
+        }
+        for (Multiset.Entry<DtStart> entry : dates.entrySet()) {
+            if (entry.getCount() > 1)
+                Log.e(TAG, "Multiple dates on " + SimpleDateFormat.getDateInstance().format(entry.getElement().getDate()));
+        }
+
+        eventAdapter.updateDataSet(data, true);
     }
 
     @Override
