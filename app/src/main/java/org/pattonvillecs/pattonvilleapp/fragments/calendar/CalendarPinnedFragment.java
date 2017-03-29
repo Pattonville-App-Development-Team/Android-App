@@ -17,17 +17,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
-import com.annimon.stream.function.Predicate;
-import com.google.common.collect.HashMultimap;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
-import net.fortuna.ical4j.model.component.VEvent;
-
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
@@ -41,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
+import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
@@ -65,7 +58,7 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     private Loader<Cursor> cursorLoader;
 
     private Optional<Set<String>> pinnedUIDs = Optional.empty();
-    private Optional<ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>>> calendarData = Optional.empty();
+    private Optional<TreeSet<EventFlexibleItem>> calendarData = Optional.empty();
 
     public CalendarPinnedFragment() {
         // Required empty public constructor
@@ -125,7 +118,7 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
         cursorLoader = getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
     }
 
-    private void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
+    private void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
         this.calendarData = Optional.ofNullable(calendarData);
         updatePinnedContent();
     }
@@ -162,19 +155,14 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
 
         final Set<String> uids = pinnedUIDs.orElse(new HashSet<String>());
 
-        List<EventFlexibleItem> items = calendarData.map(new Function<ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>>, List<EventFlexibleItem>>() {
-            @Override
-            public List<EventFlexibleItem> apply(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
-                return CalendarParsingUpdateData.getAllEvents(calendarData);
-            }
-        }).orElse(new ArrayList<EventFlexibleItem>());
+        List<EventFlexibleItem> items = new ArrayList<>(calendarData.orElse(new TreeSet<EventFlexibleItem>()));
 
-        items = Stream.of(items).filter(new Predicate<EventFlexibleItem>() {
+        Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
             @Override
-            public boolean test(EventFlexibleItem value) {
-                return uids.contains(value.vEvent.getUid().getValue());
+            public boolean apply(EventFlexibleItem input) {
+                return uids.contains(input.vEvent.getUid().getValue());
             }
-        }).collect(Collectors.<EventFlexibleItem>toList());
+        });
 
         eventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
     }

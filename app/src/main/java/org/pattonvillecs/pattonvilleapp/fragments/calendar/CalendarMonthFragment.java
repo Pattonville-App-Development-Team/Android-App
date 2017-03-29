@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -26,11 +25,8 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
-import net.fortuna.ical4j.model.component.VEvent;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
@@ -43,9 +39,7 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
@@ -65,7 +59,7 @@ public class CalendarMonthFragment extends Fragment {
     private RecyclerView eventRecyclerView;
     private CalendarDay currentDateSelected;
     private EventAdapter eventAdapter;
-    private ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    private TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     private PattonvilleApplication pattonvilleApplication;
     private NestedScrollView nestedScrollView;
     private PauseableListener<CalendarParsingUpdateData> listener;
@@ -129,7 +123,7 @@ public class CalendarMonthFragment extends Fragment {
         pattonvilleApplication.registerPauseableListener(listener);
     }
 
-    private void updateCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
+    private void updateCalendarData(TreeSet<EventFlexibleItem> calendarData) {
         this.calendarData = calendarData;
         fixedMaterialCalendarView.invalidateDecorators();
         setRecyclerViewItems(currentDateSelected);
@@ -180,13 +174,12 @@ public class CalendarMonthFragment extends Fragment {
         //fixedMaterialCalendarView.dispatchOnDateSelected(calendarDay, true);
     }
 
-    private List<FlexibleHasCalendarDay> getItemsForDay(CalendarDay calendarDay) {
+    private List<FlexibleHasCalendarDay> getItemsForDay(@NonNull CalendarDay calendarDay) {
         List<FlexibleHasCalendarDay> events = new ArrayList<>();
-        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet()) {
-            if (entry.getValue().containsKey(calendarDay))
-                for (VEvent vEvent : entry.getValue().get(calendarDay)) {
-                    events.add(new EventFlexibleItem(entry.getKey(), vEvent));
-                }
+        for (EventFlexibleItem item : calendarData) {
+            if (calendarDay.equals(item.getCalendarDay())) {
+                events.add(item);
+            }
         }
         return events;
     }
@@ -206,6 +199,24 @@ public class CalendarMonthFragment extends Fragment {
             );
         else
             return 10;
+    }
+
+    private boolean containsEventsOnDate(CalendarDay calendarDay, int toFind, boolean useGreaterThan) {
+        int numPresent = 0;
+        for (EventFlexibleItem item : calendarData)
+            if (calendarDay.isAfter(item.getCalendarDay()))
+                continue;
+            else if (calendarDay.equals(item.getCalendarDay())) {
+                numPresent += item.dataSources.size();
+                if (numPresent > toFind)
+                    return useGreaterThan;
+            } else if (calendarDay.isBefore(item.getCalendarDay())) {
+                break;
+            }
+        if (useGreaterThan)
+            return numPresent > toFind;
+        else
+            return numPresent == toFind;
     }
 
     private void setUpMaterialCalendarView() {
@@ -260,18 +271,8 @@ public class CalendarMonthFragment extends Fragment {
 
                     @Override
                     public boolean shouldDecorate(final CalendarDay day) {
-                        if (calendarData == null)
-                            return false;
+                        return calendarData != null && containsEventsOnDate(day, 1, false);
 
-                        CalendarDay serializableCalendarDay = day;
-                        int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
-                            if (entry.getValue().containsKey(serializableCalendarDay)) {
-                                numPresent += entry.getValue().get(serializableCalendarDay).size();
-                                if (numPresent > 1)
-                                    return false;
-                            }
-                        return numPresent == 1;
                     }
 
                     @Override
@@ -287,18 +288,8 @@ public class CalendarMonthFragment extends Fragment {
 
                     @Override
                     public boolean shouldDecorate(final CalendarDay day) {
-                        if (calendarData == null)
-                            return false;
+                        return calendarData != null && containsEventsOnDate(day, 2, false);
 
-                        CalendarDay serializableCalendarDay = day;
-                        int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
-                            if (entry.getValue().containsKey(serializableCalendarDay)) {
-                                numPresent += entry.getValue().get(serializableCalendarDay).size();
-                                if (numPresent > 2)
-                                    return false;
-                            }
-                        return numPresent == 2;
                     }
 
                     @Override
@@ -316,18 +307,8 @@ public class CalendarMonthFragment extends Fragment {
 
                     @Override
                     public boolean shouldDecorate(final CalendarDay day) {
-                        if (calendarData == null)
-                            return false;
+                        return calendarData != null && containsEventsOnDate(day, 3, false);
 
-                        CalendarDay serializableCalendarDay = day;
-                        int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
-                            if (entry.getValue().containsKey(serializableCalendarDay)) {
-                                numPresent += entry.getValue().get(serializableCalendarDay).size();
-                                if (numPresent > 3)
-                                    return false;
-                            }
-                        return numPresent == 3;
                     }
 
                     @Override
@@ -346,18 +327,8 @@ public class CalendarMonthFragment extends Fragment {
 
                     @Override
                     public boolean shouldDecorate(final CalendarDay day) {
-                        if (calendarData == null)
-                            return false;
+                        return calendarData != null && containsEventsOnDate(day, 3, true);
 
-                        CalendarDay serializableCalendarDay = day;
-                        int numPresent = 0;
-                        for (Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> entry : calendarData.entrySet())
-                            if (entry.getValue().containsKey(serializableCalendarDay)) {
-                                numPresent += entry.getValue().get(serializableCalendarDay).size();
-                                if (numPresent > 3)
-                                    return true;
-                            }
-                        return numPresent > 3;
                     }
 
                     @Override

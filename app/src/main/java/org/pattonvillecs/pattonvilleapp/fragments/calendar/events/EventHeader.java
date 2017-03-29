@@ -66,6 +66,11 @@ public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewH
         return calendarDay;
     }
 
+    @Override
+    public int compareTo(FlexibleHasCalendarDay<?> o) {
+        return EventFlexibleItem.compare(this.getCalendarDay(), o.getCalendarDay());
+    }
+
     static class EventHeaderViewHolder extends FlexibleViewHolder {
         private final TextView headerText;
 

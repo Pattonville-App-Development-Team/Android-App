@@ -14,16 +14,14 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Predicate;
+import com.annimon.stream.function.Supplier;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.google.common.collect.HashMultimap;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -31,6 +29,7 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +37,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeoutException;
  * Created by Mitchell Skaggs on 1/25/2017.
  */
 
-public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, HashMultimap<CalendarDay, VEvent>> {
+public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, List<VEvent>> {
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
     private PattonvilleApplication pattonvilleApplication;
@@ -62,9 +63,9 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
-    public static HashMultimap<CalendarDay, VEvent> parseFile(String iCalFile) {
+    public static List<VEvent> parseFile(String iCalFile) {
         Log.d(TAG, "Initial");
-        HashMultimap<CalendarDay, VEvent> map = HashMultimap.create();//HashMultimap.multiValueMap(new HashMap<SerializableCalendarDay, HashSet<VEvent>>(), new SetFactories.HashSetVEventFactory());
+        List<VEvent> vEvents = new ArrayList<>();
         StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
@@ -79,9 +80,9 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         }
         stopWatch.stop();
         Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
-        Log.d(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
+        //Log.d(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
         if (calendar != null) {
-            Set<VEvent> vEventSet = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
+            vEvents = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
                 @Override
                 public boolean test(CalendarComponent value) {
                     return value instanceof VEvent;
@@ -91,15 +92,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 public VEvent apply(CalendarComponent value) {
                     return (VEvent) value;
                 }
-            }).collect(Collectors.<VEvent>toSet());
-            Log.d(TAG, "Set built");
-            for (VEvent vEvent : vEventSet) {
-                Date vEventDate = vEvent.getStartDate().getDate();
-                map.put(CalendarDay.from(vEventDate), vEvent);
-            }
-            Log.d(TAG, "Map built");
+            }).collect(Collectors.toCollection(new Supplier<List<VEvent>>() {
+                @Override
+                public List<VEvent> get() {
+                    return new ArrayList<>();
+                }
+            }));
         }
-        return map;
+        return vEvents;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     @Override
-    protected HashMultimap<CalendarDay, VEvent> doInBackground(DataSource... params) {
+    protected List<VEvent> doInBackground(DataSource... params) {
         this.dataSource = params[0];
 
         Log.i(TAG, "Getting calendar for " + dataSource.shortName);
@@ -130,14 +130,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
-            HashMultimap<CalendarDay, VEvent> calendarData = null;
+            List<VEvent> calendarData = null;
 
             Input input = null;
             try {
                 input = new Input(new FileInputStream(calendarDataCache));
 
                 //noinspection unchecked
-                calendarData = this.kryo.readObject(input, HashMultimap.class);
+                calendarData = this.kryo.readObject(input, ArrayList.class);
                 isCacheCorrupt = false;
             } catch (FileNotFoundException e) {
                 Log.wtf(TAG, "This should never happen. The file should already be checked to exist before opening.");
@@ -194,7 +194,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 //Apply fix for iCal format
                 String processedResult = fixICalStrings(result);
 
-                HashMultimap<CalendarDay, VEvent> calendarData = parseFile(processedResult);
+                List<VEvent> calendarData = parseFile(processedResult);
 
                 Output output = null;
                 try {
@@ -226,10 +226,28 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     @Override
-    protected void onPostExecute(HashMultimap<CalendarDay, VEvent> result) {
+    protected void onPostExecute(List<VEvent> result) {
         releaseKryo();
         if (result != null) {
-            pattonvilleApplication.getCalendarData().put(dataSource, result);
+            TreeSet<EventFlexibleItem> events = pattonvilleApplication.getCalendarEvents();
+            TreeSet<EventFlexibleItem> newEvents = new TreeSet<>();
+
+            vEventLoop:
+            for (VEvent vEvent : result) {
+                for (EventFlexibleItem event : events) {
+                    if (event.vEvent.getUid().equals(vEvent.getUid())) {
+                        if (!vEvent.getStartDate().getDate().equals(event.vEvent.getStartDate().getDate()))
+                            Log.e(TAG, "Dates not equal for " + vEvent + " and " + event.vEvent);
+                        event.dataSources.add(dataSource);
+                        Log.i(TAG, "Merged event from " + dataSource + " to " + event.dataSources + ": \"" + vEvent.getSummary().getValue() + "\"");
+                        continue vEventLoop; //Continue to the next vEvent, after finding a match.
+                    }
+                }
+                Log.i(TAG, "New event from " + dataSource + ": \"" + vEvent.getSummary().getValue() + "\"");
+                newEvents.add(new EventFlexibleItem(dataSource, vEvent)); //Reached if no match was found
+            }
+            Log.i(TAG, "Num. events|new events from " + dataSource + ": " + result.size() + "|" + newEvents.size());
+            events.addAll(newEvents);
         }
         Log.i(TAG, "Removing from size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
         pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
@@ -238,7 +256,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     @Override
-    protected void onCancelled(HashMultimap<CalendarDay, VEvent> result) {
+    protected void onCancelled(List<VEvent> result) {
         releaseKryo();
         pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
         pattonvilleApplication.updateCalendarListeners();
