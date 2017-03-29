@@ -21,6 +21,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.Faculty;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;

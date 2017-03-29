@@ -11,21 +11,21 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
  * Created by gadsonk on 1/20/17.
  */
 
-public class DirectoryAdapter extends FlexibleAdapter<DirectoryFlexibleItem> {
+public class DirectoryAdapter extends FlexibleAdapter<Faculty> {
 
     public DirectoryAdapter() {
-        this(new ArrayList<DirectoryFlexibleItem>());
+        this(new ArrayList<Faculty>());
     }
 
-    public DirectoryAdapter(@Nullable List<DirectoryFlexibleItem> items) {
+    public DirectoryAdapter(@Nullable List<Faculty> items) {
         this(items, null);
     }
 
-    public DirectoryAdapter(@Nullable List<DirectoryFlexibleItem> items, @Nullable Object listeners) {
+    public DirectoryAdapter(@Nullable List<Faculty> items, @Nullable Object listeners) {
         this(items, listeners, false);
     }
 
-    public DirectoryAdapter(@Nullable List<DirectoryFlexibleItem> items, @Nullable Object listeners, boolean stableIds) {
+    public DirectoryAdapter(@Nullable List<Faculty> items, @Nullable Object listeners, boolean stableIds) {
         super(items, listeners, stableIds);
     }
 }

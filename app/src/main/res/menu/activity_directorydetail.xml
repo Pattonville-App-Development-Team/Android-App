@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <menu
-        />
+    <item
+        android:id="@+id/directory_detail_menu_search"
+        android:animateLayoutChanges="true"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="collapseActionView|always"/>
 </menu>

@@ -1,10 +1,34 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.fragments.directory;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.lang.WordUtils;
+import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.R;
+
+import java.util.List;
+
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFilterable;
+import eu.davidea.viewholders.FlexibleViewHolder;
+
+import static eu.davidea.flexibleadapter.helpers.ActionModeHelper.TAG;
 
 /**
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty {
+public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable {
 
     private String mFirstName, mLastName, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
@@ -149,6 +173,81 @@ public class Faculty {
             mRank = 6;
         } else {
             mRank = 7;
+        }
+    }
+
+    @Override
+    public boolean filter(String constraint) {
+
+        return mLastName.contains(constraint);
+    }
+
+    @Override
+    public void bindViewHolder(final FlexibleAdapter adapter, DirectoryViewHolder holder, int position, List payloads) {
+        holder.nameText.setText(WordUtils.capitalizeFully(String.format("%s %s",
+                getFirstName(), getLastName())));
+
+        holder.longDesText.setText(WordUtils.capitalizeFully(getLongDesc()));
+
+
+        holder.emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, getEmail());
+                if (getEmail().isEmpty()) {
+                    Toast.makeText(adapter.getRecyclerView().getContext(), "No email available", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                    emailIntent.setData(Uri.parse("mailto:"));
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getEmail()});
+                    adapter.getRecyclerView().getContext().startActivity(emailIntent);
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public int getLayoutRes() {
+        return R.layout.list_faculty_item;
+    }
+
+    @Override
+    public DirectoryViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
+        return new DirectoryViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    }
+
+    public class DirectoryViewHolder extends FlexibleViewHolder {
+        private static final String TAG = "DirectoryViewHolder";
+        final RecyclerView facultyView;
+        final TextView nameText, longDesText;
+        final ImageButton emailButton;
+
+        public DirectoryViewHolder(View view, FlexibleAdapter adapter) {
+            this(view, adapter, false);
+        }
+
+        public DirectoryViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {
+            super(view, adapter, stickyHeader);
+            nameText = (TextView) view.findViewById(R.id.directory_facultyName_textView);
+            longDesText = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
+            emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
+            facultyView = (RecyclerView) view.findViewById(R.id.directory_detail_recyclerView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            super.onClick(view);
+            Log.i(TAG, "Clicked view: " + view);
         }
     }
 }
