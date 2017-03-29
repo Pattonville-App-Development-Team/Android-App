@@ -13,7 +13,7 @@ import android.widget.NumberPicker;
 
 public class NumberPickerPreference extends DialogPreference {
 
-    public static final int MAX_VALUE = 10;
+    public static final int MAX_VALUE = 6;
     public static final int MIN_VALUE = 0;
     // enable or disable the 'circular behavior'
     public static final boolean WRAP_SELECTOR_WHEEL = true;

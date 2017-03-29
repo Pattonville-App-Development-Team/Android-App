@@ -1,9 +1,8 @@
 package org.pattonvillecs.pattonvilleapp;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -28,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragment {
 
         private NumberPickerPreference mNewsPreference;
         private NumberPickerPreference mUpcomingEventsPreference;
@@ -38,33 +37,36 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.main_preferences);
-            PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
 
             mNewsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_newsamount));
             mNewsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_newsamount), 3) + " News Articles");
+            mNewsPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    mNewsPreference.setSummary(newValue + " News Articles");
+                    return true;
+                }
+            });
 
             mUpcomingEventsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_eventsamount));
             mUpcomingEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_eventsamount), 3) + " Upcoming Events");
+            mUpcomingEventsPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    mUpcomingEventsPreference.setSummary(newValue + " Upcoming Events");
+                    return true;
+                }
+            });
 
             mPinnedEventsPreference = (NumberPickerPreference) findPreference(getString(R.string.key_home_pinnedamount));
             mPinnedEventsPreference.setSummary(PreferenceUtils.getSharedPreferences(getActivity().getApplicationContext()).getInt(getString(R.string.key_home_pinnedamount), 3) + " Pinned Events");
-
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-            switch (key) {
-                case PreferenceUtils.HOME_NEWS_AMOUNT_KEY:
-                    mNewsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_newsamount), 3) + " News Articles");
-                    break;
-                case PreferenceUtils.HOME_EVENTS_AMOUNT_KEY:
-                    mUpcomingEventsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_eventsamount), 3) + " Upcoming Events");
-                    break;
-                case PreferenceUtils.HOME_PINNED_AMOUNT_KEY:
-                    mPinnedEventsPreference.setSummary(sharedPreferences.getInt(getString(R.string.key_home_pinnedamount), 3) + " Pinned Events");
-                    break;
-            }
+            mPinnedEventsPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    mPinnedEventsPreference.setSummary(newValue + " Pinned Events");
+                    return true;
+                }
+            });
         }
     }
 }

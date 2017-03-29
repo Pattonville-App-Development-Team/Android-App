@@ -25,7 +25,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.intro.PattonvilleAppIntro;
+import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 
 import java.io.File;
@@ -179,9 +179,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
                 //startActivity(new Intent(this, FeedbackActivity.class));
                 break;
-
-            case R.id.nav_notifications:
-                startActivity(new Intent(this, NotificationsActivity.class));
         }
 
         if (fragment != null) {
