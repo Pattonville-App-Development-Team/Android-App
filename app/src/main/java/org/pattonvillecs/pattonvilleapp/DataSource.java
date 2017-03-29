@@ -274,4 +274,9 @@ public enum DataSource {
         this.nutrisliceLink = nutrisliceLink;
         this.topicName = topicName;
     }
+
+    @Override
+    public String toString() {
+        return this.shortName;
+    }
 }

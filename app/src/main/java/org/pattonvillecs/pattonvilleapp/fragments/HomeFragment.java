@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
 
-                setCalendarData(data.getCalendarData());
+                //setCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -224,7 +224,7 @@ public class HomeFragment extends Fragment {
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
 
-                setCalendarData(data.getCalendarData());
+                //setCalendarData(data.getCalendarData());
             }
 
             @Override

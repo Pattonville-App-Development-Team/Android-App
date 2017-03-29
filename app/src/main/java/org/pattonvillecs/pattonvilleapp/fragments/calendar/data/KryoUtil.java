@@ -73,18 +73,6 @@ public final class KryoUtil {
     }
 
     public static Kryo registerKryoClasses(Kryo kryo) {
-        kryo.register(CalendarData.class, new Serializer<CalendarData>() {
-            @Override
-            public void write(Kryo kryo, Output output, CalendarData object) {
-                kryo.writeObject(output, object.getCalendars());
-            }
-
-            @Override
-            public CalendarData read(Kryo kryo, Input input, Class<CalendarData> type) {
-                //noinspection unchecked
-                return new CalendarData(kryo.readObject(input, EnumMap.class));
-            }
-        });
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
