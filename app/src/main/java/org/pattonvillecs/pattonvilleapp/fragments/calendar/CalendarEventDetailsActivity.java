@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -81,8 +80,8 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         if (event.vEvent.getSummary() != null)
             extraInfoTextView.setText(event.vEvent.getSummary().getValue());
 
-        ImageView schoolColorCircle = (ImageView) findViewById(R.id.school_color_circle);
-        schoolColorCircle.setColorFilter(event.dataSource.calendarColor);
+        //ImageView schoolColorCircle = (ImageView) findViewById(R.id.school_color_circle);
+        //schoolColorCircle.setColorFilter(event.dataSources.calendarColor);
 
         //SpotlightHelper.showSpotlight(this, fab, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
     }

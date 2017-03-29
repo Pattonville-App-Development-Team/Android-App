@@ -1,96 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="0dp"
-    android:layout_marginEnd="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginTop="0dp"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    android:descendantFocusability="beforeDescendants"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
-    app:cardMaxElevation="4dp"
-    app:cardUseCompatPadding="true">
+    android:clipToPadding="false">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <com.varunest.sparkbutton.SparkButton
+        android:id="@+id/pinned_button"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:sparkbutton_activeImage="@drawable/pin_active"
+        app:sparkbutton_animationSpeed="2"
+        app:sparkbutton_iconSize="36dp"
+        app:sparkbutton_inActiveImage="@drawable/pin_inactive"
+        app:sparkbutton_primaryColor="@color/colorPrimary"
+        app:sparkbutton_secondaryColor="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/text_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/pinned_button"
+        android:layout_toStartOf="@id/pinned_button"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:transitionName="@string/text_top_transition_name"
+        tools:text="Event Name" />
 
-        <ImageView
-            android:id="@+id/school_color_circle"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/event_color_circle"
-            android:tint="@color/colorPrimary"
-            android:transitionName="@string/school_color_circle_transition_name"
-            tools:ignore="ContentDescription" />
+    <TextView
+        android:id="@+id/text_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/text_top"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/pinned_button"
+        android:layout_toStartOf="@id/pinned_button"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:transitionName="@string/text_bottom_transition_name"
+        android:visibility="gone"
+        tools:text="Date - Time"
+        tools:visibility="visible" />
 
-        <com.varunest.sparkbutton.SparkButton
-            android:id="@+id/pinned_button"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            android:layout_toLeftOf="@id/school_color_circle"
-            android:layout_toStartOf="@id/school_color_circle"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            app:sparkbutton_activeImage="@drawable/pin_active"
-            app:sparkbutton_animationSpeed="2"
-            app:sparkbutton_iconSize="36dp"
-            app:sparkbutton_inActiveImage="@drawable/pin_inactive"
-            app:sparkbutton_primaryColor="@color/colorPrimary"
-            app:sparkbutton_secondaryColor="@color/colorPrimaryDark" />
-
-        <TextView
-            android:id="@+id/text_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="8dp"
-            android:layout_toLeftOf="@id/pinned_button"
-            android:layout_toStartOf="@id/pinned_button"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:transitionName="@string/text_top_transition_name" />
-
-        <TextView
-            android:id="@+id/text_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/text_top"
-            android:layout_margin="8dp"
-            android:layout_toLeftOf="@id/pinned_button"
-            android:layout_toStartOf="@id/pinned_button"
-            android:textAppearance="?attr/textAppearanceListItemSmall"
-            android:transitionName="@string/text_bottom_transition_name"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/school_short_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/pinned_button"
-            android:layout_margin="4dp" />
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+    <TextView
+        android:id="@+id/school_short_names"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/text_bottom"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        tools:text="District, High School, Remington, Heights" />
+</RelativeLayout>

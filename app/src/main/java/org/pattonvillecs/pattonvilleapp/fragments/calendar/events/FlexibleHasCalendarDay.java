@@ -10,6 +10,6 @@ import eu.davidea.flexibleadapter.items.IFlexible;
  * Created by Mitchell Skaggs on 2/16/17.
  */
 
-public interface FlexibleHasCalendarDay<VH extends RecyclerView.ViewHolder> extends IFlexible<VH> {
+public interface FlexibleHasCalendarDay<VH extends RecyclerView.ViewHolder> extends IFlexible<VH>, Comparable<FlexibleHasCalendarDay<?>> {
     CalendarDay getCalendarDay();
 }

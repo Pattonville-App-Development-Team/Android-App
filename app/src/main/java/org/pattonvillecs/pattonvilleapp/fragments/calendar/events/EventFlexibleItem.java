@@ -1,35 +1,39 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar.events;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.annimon.stream.Collector;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.BiConsumer;
+import com.annimon.stream.function.Function;
+import com.annimon.stream.function.Supplier;
 import com.google.common.base.Stopwatch;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -37,7 +41,11 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned.PinnedEventsContract;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -61,18 +69,25 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
     };
     private static final String TAG = EventFlexibleItem.class.getSimpleName();
 
-    public final DataSource dataSource;
+    public final Set<DataSource> dataSources;
     public final VEvent vEvent;
+    private final CalendarDay calendarStartDay;
 
     protected EventFlexibleItem(Parcel in) {
-        this((DataSource) in.readSerializable(), (VEvent) in.readSerializable());
+        //noinspection unchecked
+        this((EnumSet<DataSource>) in.readSerializable(), (VEvent) in.readSerializable());
     }
 
     public EventFlexibleItem(DataSource dataSource, VEvent vEvent) {
+        this(EnumSet.of(dataSource), vEvent);
+    }
+
+    public EventFlexibleItem(Set<DataSource> dataSource, VEvent vEvent) {
         //super(new EventHeader(CalendarDay.from(pair.getValue().getStartDate().getDate())));
         super(null);
-        this.dataSource = dataSource;
+        this.dataSources = dataSource;
         this.vEvent = vEvent;
+        this.calendarStartDay = CalendarDay.from(vEvent.getStartDate().getDate());
     }
 
     private static Activity getActivity(View v) {
@@ -129,6 +144,15 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                 null);
     }
 
+    public static int compare(CalendarDay o1, CalendarDay o2) {
+        if (o1.isAfter(o2))
+            return 1;
+        else if (o2.isAfter(o1))
+            return -1;
+        else
+            return 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,16 +160,13 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
         EventFlexibleItem that = (EventFlexibleItem) o;
 
-        if (dataSource != that.dataSource) return false;
         return vEvent != null ? vEvent.equals(that.vEvent) : that.vEvent == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = dataSource != null ? dataSource.hashCode() : 0;
-        result = 31 * result + (vEvent != null ? vEvent.hashCode() : 0);
-        return result;
+        return vEvent != null ? vEvent.hashCode() : 0;
     }
 
     @Override
@@ -161,7 +182,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, final EventViewHolder holder, final int position, List payloads) {
         Summary summary = vEvent.getSummary();
-        Location location = vEvent.getLocation();
+        DtStart startDate = vEvent.getStartDate();
         final String uid = vEvent.getUid().getValue();
 
         if (summary != null)
@@ -169,16 +190,52 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         else
             holder.topText.setText(R.string.no_summary);
 
-        if (location != null) {
+        if (startDate != null) {
             holder.bottomText.setVisibility(View.VISIBLE);
-            holder.bottomText.setText(location.getValue());
+            holder.bottomText.setText(SimpleDateFormat.getDateTimeInstance().format(startDate.getDate()));
         } else {
             holder.bottomText.setVisibility(View.INVISIBLE);
         }
 
-        holder.schoolColorImageView.setColorFilter(dataSource.calendarColor);
+        holder.shortSchoolName.setText(Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
+            @Override
+            public SpannableString apply(DataSource dataSource) {
+                SpannableString spannableString = new SpannableString("⬤ " + dataSource.shortName);
+                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return spannableString;
+            }
+        }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
+            @Override
+            public Supplier<SpannableStringBuilder> supplier() {
+                return new Supplier<SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder get() {
+                        return new SpannableStringBuilder();
+                    }
+                };
+            }
 
-        holder.shortSchoolName.setText(dataSource.shortName);
+            @Override
+            public BiConsumer<SpannableStringBuilder, SpannableString> accumulator() {
+                return new BiConsumer<SpannableStringBuilder, SpannableString>() {
+                    @Override
+                    public void accept(SpannableStringBuilder value1, SpannableString value2) {
+                        value1.append(value2).append(", ");
+                    }
+                };
+            }
+
+            @Override
+            public Function<SpannableStringBuilder, SpannableStringBuilder> finisher() {
+                return new Function<SpannableStringBuilder, SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder apply(SpannableStringBuilder spannableStringBuilder) {
+                        return spannableStringBuilder.delete(spannableStringBuilder.length() - 2, spannableStringBuilder.length());
+                    }
+                };
+            }
+        }));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +244,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                 if (activity != null) {
 
                     Intent intent = new Intent(activity, CalendarEventDetailsActivity.class).putExtra(CalendarEventDetailsActivity.CALENDAR_EVENT_KEY, EventFlexibleItem.this);
+                    /*
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         View schoolColorCircle = v.findViewById(R.id.school_color_circle);
                         View textTop = v.findViewById(R.id.text_top);
@@ -197,9 +255,10 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                                 Pair.create(textBottom, activity.getResources().getString(R.string.text_bottom_transition_name)),
                                 Pair.create(schoolColorCircle, activity.getResources().getString(R.string.school_color_circle_transition_name))
                         ).toBundle());
-                    } else {
-                        activity.startActivity(intent);
-                    }
+                    } else
+                    {*/
+                    activity.startActivity(intent);
+                    //}
                 }
             }
         });
@@ -229,8 +288,8 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                 Log.v(TAG, uid + " finished executing state " + buttonState);
             }
         });
-
-        ContentObserver contentObserver = new ContentObserver(new Handler(Looper.myLooper())) {
+/*
+        ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
             @Override
             public void onChange(boolean selfChange) {
                 onChange(selfChange, null);
@@ -257,11 +316,20 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             }
         };
         contentObserver.onChange(false); // Fire the first "event" to kick-start the requerying process. After this, the ContentObserver is automatically reregistered and cursors are closed/created
+        */
     }
 
     @Override
     public CalendarDay getCalendarDay() {
-        return CalendarDay.from(vEvent.getStartDate().getDate());
+        return calendarStartDay;
+    }
+
+    @Override
+    public String toString() {
+        return "EventFlexibleItem{" +
+                "dataSources=" + dataSources +
+                ", vEvent=\"" + vEvent.getSummary().getValue() +
+                "\"}";
     }
 
     @Override
@@ -271,8 +339,21 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(dataSource);
+        dest.writeSerializable((Serializable) dataSources);
         dest.writeSerializable(vEvent);
+    }
+
+    @Override
+    public int compareTo(@NonNull FlexibleHasCalendarDay<?> o) {
+        if (o instanceof EventFlexibleItem) {
+            EventFlexibleItem other = (EventFlexibleItem) o;
+            int result = this.vEvent.getStartDate().getDate().compareTo(other.vEvent.getStartDate().getDate());
+            if (result != 0)
+                return result;
+            else
+                return this.vEvent.getUid().getValue().compareTo(this.vEvent.getUid().getValue());
+        } else
+            return compare(this.getCalendarDay(), o.getCalendarDay());
     }
 
     /**
@@ -295,7 +376,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             topText = (TextView) view.findViewById(R.id.text_top);
             bottomText = (TextView) view.findViewById(R.id.text_bottom);
             schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
-            shortSchoolName = (TextView) view.findViewById(R.id.school_short_name);
+            shortSchoolName = (TextView) view.findViewById(R.id.school_short_names);
             sparkButton = (SparkButton) view.findViewById(R.id.pinned_button);
         }
     }
