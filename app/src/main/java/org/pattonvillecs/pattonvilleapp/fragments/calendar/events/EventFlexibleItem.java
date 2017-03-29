@@ -160,7 +160,9 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
         EventFlexibleItem that = (EventFlexibleItem) o;
 
-        return vEvent != null ? vEvent.equals(that.vEvent) : that.vEvent == null;
+        return !(vEvent == null || that.vEvent == null)
+                && !(vEvent.getUid() == null || that.vEvent.getUid() == null)
+                && vEvent.getUid().getValue().equals(that.vEvent.getUid().getValue());
 
     }
 
