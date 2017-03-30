@@ -353,7 +353,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             if (result != 0)
                 return result;
             else
-                return this.vEvent.getUid().getValue().compareTo(this.vEvent.getUid().getValue());
+                return this.vEvent.getUid().getValue().compareTo(other.vEvent.getUid().getValue());
         } else
             return compare(this.getCalendarDay(), o.getCalendarDay());
     }
