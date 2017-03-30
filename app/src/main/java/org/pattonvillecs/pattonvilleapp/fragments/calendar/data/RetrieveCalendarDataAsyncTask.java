@@ -37,6 +37,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -63,10 +65,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
     }
 
-    public static List<VEvent> parseFile(String iCalFile) {
+    public static ArrayList<VEvent> parseFile(String iCalFile) {
         Log.d(TAG, "Initial");
-        List<VEvent> vEvents = new ArrayList<>();
-        StringReader stringReader = new StringReader(fixICalStrings(iCalFile));
+        ArrayList<VEvent> vEvents = new ArrayList<>();
+        StringReader stringReader = new StringReader(iCalFile);
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
         Log.d(TAG, "Readers done");
@@ -92,9 +94,9 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 public VEvent apply(CalendarComponent value) {
                     return (VEvent) value;
                 }
-            }).collect(Collectors.toCollection(new Supplier<List<VEvent>>() {
+            }).collect(Collectors.toCollection(new Supplier<ArrayList<VEvent>>() {
                 @Override
-                public List<VEvent> get() {
+                public ArrayList<VEvent> get() {
                     return new ArrayList<>();
                 }
             }));
@@ -130,14 +132,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
-            List<VEvent> calendarData = null;
+            ArrayList<VEvent> cachedCalendarData = null;
 
             Input input = null;
             try {
                 input = new Input(new FileInputStream(calendarDataCache));
 
                 //noinspection unchecked
-                calendarData = this.kryo.readObject(input, ArrayList.class);
+                cachedCalendarData = this.kryo.readObject(input, ArrayList.class);
                 isCacheCorrupt = false;
             } catch (FileNotFoundException e) {
                 Log.wtf(TAG, "This should never happen. The file should already be checked to exist before opening.");
@@ -154,10 +156,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             }
 
             if (!isCacheCorrupt) {
-                assert calendarData != null;
+                assert cachedCalendarData != null;
 
-                Log.i(TAG, "Got calendar for " + dataSource.shortName);
-                return calendarData;
+                Log.i(TAG, "Got cached calendar for " + dataSource.shortName + " of size " + cachedCalendarData.size());
+                return cachedCalendarData;
             }
         }
 
@@ -194,13 +196,13 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 //Apply fix for iCal format
                 String processedResult = fixICalStrings(result);
 
-                List<VEvent> calendarData = parseFile(processedResult);
+                ArrayList<VEvent> downloadedCalendarData = parseFile(processedResult);
 
                 Output output = null;
                 try {
                     output = new Output(new FileOutputStream(calendarDataCache));
 
-                    this.kryo.writeObject(output, calendarData);
+                    this.kryo.writeObject(output, downloadedCalendarData);
 
                     if (!calendarDataCache.setLastModified(System.currentTimeMillis()))
                         Log.e(TAG, "Failed to set last modified time!");
@@ -213,8 +215,8 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                     }
                 }
 
-                Log.i(TAG, "Got calendar for " + dataSource.shortName);
-                return calendarData;
+                Log.i(TAG, "Got downloaded calendar for " + dataSource.shortName + " of size " + downloadedCalendarData.size());
+                return downloadedCalendarData;
             }
         }
 
@@ -229,29 +231,56 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     protected void onPostExecute(List<VEvent> result) {
         releaseKryo();
         if (result != null) {
-            TreeSet<EventFlexibleItem> events = pattonvilleApplication.getCalendarEvents();
+            TreeSet<EventFlexibleItem> existingEvents = pattonvilleApplication.getCalendarEvents();
             TreeSet<EventFlexibleItem> newEvents = new TreeSet<>();
+            DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
 
-            vEventLoop:
-            for (VEvent vEvent : result) {
-                for (EventFlexibleItem event : events) {
-                    if (event.vEvent.getUid().equals(vEvent.getUid())) {
-                        if (!vEvent.getStartDate().getDate().equals(event.vEvent.getStartDate().getDate()))
-                            Log.e(TAG, "Dates not equal for " + vEvent + " and " + event.vEvent);
-                        event.dataSources.add(dataSource);
-                        Log.i(TAG, "Merged event from " + dataSource + " to " + event.dataSources + ": \"" + vEvent.getSummary().getValue() + "\"");
-                        continue vEventLoop; //Continue to the next vEvent, after finding a match.
+            /*
+            for (EventFlexibleItem existingEvent : existingEvents) {
+                String date = dateFormat.format(existingEvent.vEvent.getStartDate().getDate());
+                if (date.contains("Jan 2, 2017"))
+                    Log.i(TAG, "EXISTING event (\"" + existingEvent.vEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + existingEvent.vEvent.getUid().getValue() + " and DataSources " + existingEvent.dataSources);
+            }
+            for (VEvent newVEvent : result) {
+                String date = dateFormat.format(newVEvent.getStartDate().getDate());
+                if (date.contains("Jan 2, 2017"))
+                    Log.i(TAG, "NEW event (\"" + newVEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + newVEvent.getUid().getValue());
+            }
+            */
+
+            newVEventLoop:
+            for (VEvent newVEvent : result) {
+                for (EventFlexibleItem existingEvent : existingEvents) {
+                    if (newVEvent.getUid().getValue().equals(existingEvent.vEvent.getUid().getValue())) {
+
+                        if (!newVEvent.getStartDate().getDate().equals(existingEvent.vEvent.getStartDate().getDate()))
+                            Log.e(TAG, "Dates not equal for " + newVEvent + " and " + existingEvent.vEvent);
+
+                        existingEvent.dataSources.add(dataSource);
+
+                        Log.v(TAG, "Merged event from " + dataSource + " to " + existingEvent.dataSources + ": \"" + newVEvent.getSummary().getValue() + "\"on " + dateFormat.format(newVEvent.getStartDate().getDate()) + " " + newVEvent.getUid().getValue());
+
+                        continue newVEventLoop; //Continue to the next vEvent, after finding a match.
                     }
                 }
-                Log.i(TAG, "New event from " + dataSource + ": \"" + vEvent.getSummary().getValue() + "\"");
-                newEvents.add(new EventFlexibleItem(dataSource, vEvent)); //Reached if no match was found
+                Log.v(TAG, "New event from " + dataSource + ": \"" + newVEvent.getSummary().getValue() + "\" on " + dateFormat.format(newVEvent.getStartDate().getDate()) + " " + newVEvent.getUid().getValue());
+                newEvents.add(new EventFlexibleItem(dataSource, newVEvent)); //Reached if no match was found
             }
+
             Log.i(TAG, "Num. events|new events from " + dataSource + ": " + result.size() + "|" + newEvents.size());
-            events.addAll(newEvents);
+            for (EventFlexibleItem newEventItem : newEvents) {
+                boolean changed = existingEvents.add(newEventItem);
+                if (!changed) {
+                    String date = dateFormat.format(newEventItem.vEvent.getStartDate().getDate());
+                    Log.e(TAG, "DUPLICATED event (\"" + newEventItem.vEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + newEventItem.vEvent.getUid().getValue());
+                }
+            }
+
             pattonvilleApplication.getLoadedCalendarDataSources().add(this.dataSource);
         }
         Log.i(TAG, "Removing from size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
         pattonvilleApplication.getRunningCalendarAsyncTasks().remove(this);
+
         Log.i(TAG, "Now size: " + pattonvilleApplication.getRunningCalendarAsyncTasks().size());
         pattonvilleApplication.updateCalendarListeners();
     }
