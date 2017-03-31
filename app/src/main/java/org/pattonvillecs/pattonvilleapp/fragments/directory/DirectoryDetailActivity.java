@@ -42,6 +42,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
     private PauseableListener<CalendarParsingUpdateData> listener;
     private List<Faculty> faculties;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +70,8 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
 
+        /*ImageView schoolImage = (ImageView) facultyView.findViewById(R.id.directory_school_image);
+        schoolImage.setImageResource(R.drawable.psd_logo);*/
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);

@@ -1,10 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/vpi__background_holo_light"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/vpi__background_holo_light"
+                android:orientation="vertical">
 
 
     <TextView
@@ -27,11 +25,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/directory_detail_schoolName"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
-        android:contentDescription="@string/directory_school_image"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@color/colorPrimary" />
+        android:contentDescription="@string/directory_school_image"/>
 
     <TextView
         android:id="@+id/directory_address_textView"

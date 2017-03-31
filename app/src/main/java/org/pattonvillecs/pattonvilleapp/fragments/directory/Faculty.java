@@ -179,7 +179,9 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     @Override
     public boolean filter(String constraint) {
 
-        return mLastName.contains(constraint);
+        return mLastName.toLowerCase().contains(constraint.toLowerCase()) ||
+                mFirstName.toLowerCase().contains(constraint.toLowerCase()) ||
+                mLongDesc.toLowerCase().contains(constraint.toLowerCase());
     }
 
     @Override
