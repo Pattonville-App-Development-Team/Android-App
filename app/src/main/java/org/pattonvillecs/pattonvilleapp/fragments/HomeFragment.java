@@ -124,6 +124,11 @@ public class HomeFragment extends Fragment {
         super.onResume();
         homeListener.resume();
         calendarListener.resume();
+
+        if (preferenceValues[0] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[1] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[2] != PreferenceUtils.getHomePinnedAmount(getContext())) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+
     }
 
     @Override
@@ -234,6 +239,9 @@ public class HomeFragment extends Fragment {
             }
         };
         pattonvilleApplication.registerPauseableListener(calendarListener);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+
     }
 
     public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
@@ -272,6 +280,7 @@ public class HomeFragment extends Fragment {
         mHomeCalendarAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
 
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
