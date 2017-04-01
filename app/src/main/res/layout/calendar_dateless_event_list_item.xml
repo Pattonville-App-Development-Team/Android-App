@@ -10,11 +10,10 @@
 
     <com.varunest.sparkbutton.SparkButton
         android:id="@+id/pinned_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:sparkbutton_activeImage="@drawable/pin_active"

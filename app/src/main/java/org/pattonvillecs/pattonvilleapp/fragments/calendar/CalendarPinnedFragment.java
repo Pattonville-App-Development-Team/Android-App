@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.annimon.stream.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
@@ -33,6 +33,7 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -57,8 +58,8 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     private PauseableListener<CalendarParsingUpdateData> listener;
     private Loader<Cursor> cursorLoader;
 
-    private Optional<Set<String>> pinnedUIDs = Optional.empty();
-    private Optional<TreeSet<EventFlexibleItem>> calendarData = Optional.empty();
+    private Set<String> pinnedUIDs = new HashSet<>();
+    private NavigableSet<EventFlexibleItem> calendarData = new TreeSet<>();
 
     public CalendarPinnedFragment() {
         // Required empty public constructor
@@ -119,7 +120,8 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
-        this.calendarData = Optional.ofNullable(calendarData);
+        this.calendarData.clear();
+        this.calendarData.addAll(calendarData);
         updatePinnedContent();
     }
 
@@ -136,8 +138,8 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
 
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        //recyclerView.addItemDecoration(dividerItemDecoration);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         noItemsTextView = (TextView) layout.findViewById(R.id.no_pinned_items_textview);
 
@@ -145,22 +147,20 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void updatePinnedContent() {
-        if ((!pinnedUIDs.isPresent() || pinnedUIDs.get().size() == 0) || // If pinned events are empty or gone
-                (!calendarData.isPresent() || calendarData.get().size() == 0)) // OR if calendar events are empty or gone
+        if ((pinnedUIDs.size() == 0) || // If pinned events are empty or gone
+                (calendarData.size() == 0)) // OR if calendar events are empty or gone
         {
             noItemsTextView.setVisibility(View.VISIBLE);
         } else
             //There is definitely stuff to display now
             noItemsTextView.setVisibility(View.GONE);
 
-        final Set<String> uids = pinnedUIDs.orElse(new HashSet<String>());
-
-        List<EventFlexibleItem> items = new ArrayList<>(calendarData.orElse(new TreeSet<EventFlexibleItem>()));
+        List<EventFlexibleItem> items = new ArrayList<>(calendarData);
 
         Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
             @Override
             public boolean apply(EventFlexibleItem input) {
-                return uids.contains(input.vEvent.getUid().getValue());
+                return !pinnedUIDs.contains(input.vEvent.getUid().getValue());
             }
         });
 
@@ -217,7 +217,8 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void setPinnedData(Set<String> uids) {
-        pinnedUIDs = Optional.ofNullable(uids);
+        pinnedUIDs.clear();
+        pinnedUIDs.addAll(uids);
         updatePinnedContent();
     }
 
