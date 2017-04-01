@@ -1,7 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.Faculty;
 
 import java.util.List;
 import java.util.Map;

@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 
 import java.io.BufferedReader;

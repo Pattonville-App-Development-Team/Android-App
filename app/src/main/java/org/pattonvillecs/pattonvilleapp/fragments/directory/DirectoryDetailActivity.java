@@ -1,17 +1,26 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
-import org.pattonvillecs.pattonvilleapp.Faculty;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
@@ -23,7 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
-public class DirectoryDetailActivity extends AppCompatActivity {
+public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
     private static final String TAG = "DirectoryDetailActivity";
     private static DataSource school;
@@ -33,12 +42,13 @@ public class DirectoryDetailActivity extends AppCompatActivity {
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
     private List<Faculty> faculties;
-    //Intent
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
+
 
         pattonvilleApplication = PattonvilleApplication.get(this);
 
@@ -51,7 +61,7 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         directoryAdapter = new DirectoryAdapter();
 
         for (Faculty faculty : faculties) {
-            directoryAdapter.addItem(new DirectoryFlexibleItem(this, faculty));
+            directoryAdapter.addItem(faculty);
         }
         directoryAdapter.notifyDataSetChanged();
 
@@ -61,9 +71,40 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
 
-
-
-
+        ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
+        switch (school) {
+            /*case HIGH_SCHOOL:
+                schoolImage.setImageResource(R.drawable.phs_building);
+                break;
+            case HEIGHTS_MIDDLE_SCHOOL:
+                schoolImage.setImageResource(R.drawable.ht_building);
+                break;
+            case HOLMAN_MIDDLE_SCHOOL:
+                schoolImage.setImageResource(R.drawable.ho_building);
+                break;
+            case REMINGTON_TRADITIONAL_SCHOOL:
+                schoolImage.setImageResource(R.drawable.rt_building);
+                break;
+            case BRIDGEWAY_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.bw_building);
+                break;
+            case DRUMMOND_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.dr_building);
+                break;
+            case PARKWOOD_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.pw_building);
+                break;
+            case ROSE_ACRES_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.ra_building);
+                break;
+            case WILLOW_BROOK_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.wb_building);
+                break;*/
+            case DISTRICT:
+            default:
+                schoolImage.setImageResource(R.drawable.psd_logo);
+                break;
+        }
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
@@ -102,7 +143,76 @@ public class DirectoryDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_directorydetail, menu);
+        initSearchView(menu);
+
+        return true;
+    }
+
     public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
         this.directoryData = directoryData;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (directoryAdapter.hasNewSearchText(newText)) {
+            Log.d(TAG, "onQueryTextChange newText: " + newText);
+            directoryAdapter.setSearchText(newText);
+            directoryAdapter.filterItems(faculties, 100L);
+        }
+        return true;
+    }
+
+    /**
+     * Method to setup the search functionality of the list
+     * <p>
+     * Refer to the Flexible Adapter documentation, as this is a near replica implementation
+     *
+     * @param menu Menu object of current options menu
+     */
+    private void initSearchView(final Menu menu) {
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.directory_detail_menu_search);
+        if (searchItem != null) {
+
+            /*
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(false);
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(true);
+                    return true;
+                }
+
+            });
+            */
+
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
+            searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+            searchView.setQueryHint(getString(R.string.action_search));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+            searchView.setOnQueryTextListener(this);
+        }
     }
 }
