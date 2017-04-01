@@ -155,22 +155,22 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         if (mLongDesc.contains("PRINCIPAL")) {
             if (mLongDesc.contains("ASSOCIATE PRINCIPAL")) {
                 mRank = 1;
-            }
-            if (mLongDesc.contains("ASSITANT PRINCIPAL")) {
+            } else if (mLongDesc.contains("ASSISTANT PRINCIPAL")) {
                 mRank = 2;
+            } else {
+                mRank = 0;
             }
-            mRank = 0;
         } else if (org.apache.commons.lang3.StringUtils.containsIgnoreCase(mLongDesc, "TEA") ||
                 mLongDesc.contains("TCHR")) {
             mRank = 3;
         } else if (mLongDesc.contains("SECRETARY")) {
             if (mLongDesc.contains("EXECUTIVE SECRETARY 1")) {
                 mRank = 4;
-            }
-            if (mLongDesc.contains("EXECUTIVE SECRETARY 2")) {
+            } else if (mLongDesc.contains("EXECUTIVE SECRETARY 2")) {
                 mRank = 5;
+            } else {
+                mRank = 6;
             }
-            mRank = 6;
         } else {
             mRank = 7;
         }

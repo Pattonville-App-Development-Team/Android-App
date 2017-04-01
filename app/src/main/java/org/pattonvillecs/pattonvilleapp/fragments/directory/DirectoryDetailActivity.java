@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -70,8 +71,40 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
 
-        /*ImageView schoolImage = (ImageView) facultyView.findViewById(R.id.directory_school_image);
-        schoolImage.setImageResource(R.drawable.psd_logo);*/
+        ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
+        switch (school) {
+            case HIGH_SCHOOL:
+                schoolImage.setImageResource(R.drawable.phs_building);
+                break;
+            case HEIGHTS_MIDDLE_SCHOOL:
+                schoolImage.setImageResource(R.drawable.ht_building);
+                break;
+            case HOLMAN_MIDDLE_SCHOOL:
+                schoolImage.setImageResource(R.drawable.ho_building);
+                break;
+            case REMINGTON_TRADITIONAL_SCHOOL:
+                schoolImage.setImageResource(R.drawable.rt_building);
+                break;
+            case BRIDGEWAY_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.bw_building);
+                break;
+            case DRUMMOND_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.dr_building);
+                break;
+            case PARKWOOD_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.pw_building);
+                break;
+            case ROSE_ACRES_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.ra_building);
+                break;
+            case WILLOW_BROOK_ELEMENTARY:
+                schoolImage.setImageResource(R.drawable.wb_building);
+                break;
+            case DISTRICT:
+            default:
+                schoolImage.setImageResource(R.drawable.psd_logo);
+                break;
+        }
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
