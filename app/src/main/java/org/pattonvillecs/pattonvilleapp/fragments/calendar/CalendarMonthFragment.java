@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -365,6 +366,9 @@ public class CalendarMonthFragment extends Fragment {
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         eventRecyclerView.getLayoutManager().setAutoMeasureEnabled(true);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        eventRecyclerView.addItemDecoration(dividerItemDecoration);
 
         if (savedInstanceState != null)
             currentDateSelected = savedInstanceState.getParcelable(KEY_DATE_SELECTED);

@@ -12,13 +12,9 @@ import com.annimon.stream.Stream;
 import com.annimon.stream.function.Consumer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.google.common.collect.HashMultimap;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-
-import net.fortuna.ical4j.model.component.VEvent;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
@@ -400,5 +396,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
         this.directoryData = directoryData;
+    }
+
+    public Set<DataSource> getLoadedCalendarDataSources() {
+        return loadedCalendarDataSources;
     }
 }

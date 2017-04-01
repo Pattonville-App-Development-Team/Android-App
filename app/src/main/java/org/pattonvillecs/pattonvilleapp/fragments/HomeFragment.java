@@ -22,15 +22,10 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
-import com.google.common.collect.HashMultimap;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
-import net.fortuna.ical4j.model.component.VEvent;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
@@ -50,10 +45,10 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
@@ -89,7 +84,7 @@ public class HomeFragment extends Fragment {
     List<NewsArticle> mNewsArticles;
     PauseableListener<CalendarParsingUpdateData> calendarListener;
     EventAdapter mHomeCalendarAdapter;
-    ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData = new ConcurrentHashMap<>();
+    TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     TextView homeNewsLoadingTextView;
     TextView homeCalendarLoadingTextView;
 
@@ -124,6 +119,11 @@ public class HomeFragment extends Fragment {
         super.onResume();
         homeListener.resume();
         calendarListener.resume();
+
+        if (preferenceValues[0] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[1] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[2] != PreferenceUtils.getHomePinnedAmount(getContext())) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+
     }
 
     @Override
@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
 
-                //setCalendarData(data.getCalendarData());
+                setCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -224,7 +224,7 @@ public class HomeFragment extends Fragment {
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
 
-                //setCalendarData(data.getCalendarData());
+                setCalendarData(data.getCalendarData());
             }
 
             @Override
@@ -234,44 +234,30 @@ public class HomeFragment extends Fragment {
             }
         };
         pattonvilleApplication.registerPauseableListener(calendarListener);
+
+        pattonvilleApplication = PattonvilleApplication.get(getActivity());
+
     }
 
-    public void setCalendarData(ConcurrentMap<DataSource, HashMultimap<CalendarDay, VEvent>> calendarData) {
+    public void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
         this.calendarData = calendarData;
-        List<EventFlexibleItem> items = Stream.of(calendarData.entrySet())
-                .flatMap(new Function<Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>>, Stream<Pair<DataSource, VEvent>>>() {
-                    @Override
-                    public Stream<Pair<DataSource, VEvent>> apply(final Map.Entry<DataSource, HashMultimap<CalendarDay, VEvent>> dataSourceHashMultimapEntry) {
-                        return Stream.of(dataSourceHashMultimapEntry.getValue().entries()).map(new Function<Map.Entry<CalendarDay, VEvent>, Pair<DataSource, VEvent>>() {
-                            @Override
-                            public Pair<DataSource, VEvent> apply(Map.Entry<CalendarDay, VEvent> calendarDayVEventEntry) {
-                                return new ImmutablePair<>(dataSourceHashMultimapEntry.getKey(), calendarDayVEventEntry.getValue());
-                            }
-                        });
-                    }
-                })
-                .sorted(new Comparator<Pair<DataSource, VEvent>>() {
-                    @Override
-                    public int compare(Pair<DataSource, VEvent> o1, Pair<DataSource, VEvent> o2) {
-                        //This is Google Calendar style scrolling: future events to the bottom
-                        return o1.getValue().getStartDate().getDate().compareTo(o2.getValue().getStartDate().getDate());
-                    }
-                })
-                .map(new Function<Pair<DataSource, VEvent>, EventFlexibleItem>() {
-                    @Override
-                    public EventFlexibleItem apply(Pair<DataSource, VEvent> dataSourceVEventPair) {
-                        return new EventFlexibleItem(dataSourceVEventPair.getKey(), dataSourceVEventPair.getValue());
-                    }
-                })
-                .collect(Collectors.<EventFlexibleItem>toList());
+        List<EventFlexibleItem> itemsToAdd = new ArrayList<>();
 
-        if (items.size() > preferenceValues[1]) {
-            items = items.subList(0, preferenceValues[1]);
+        final int numCalendarItems = preferenceValues[1];
+        Iterator<EventFlexibleItem> calendarDataIterator = this.calendarData.iterator();
+        CalendarDay today = CalendarDay.today();
+
+        while (calendarDataIterator.hasNext() && itemsToAdd.size() < numCalendarItems) {
+            EventFlexibleItem currentItem = calendarDataIterator.next();
+            if (!currentItem.getCalendarDay().isBefore(today)) {
+                itemsToAdd.add(currentItem);
+            }
         }
 
-        mHomeCalendarAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
+        mHomeCalendarAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(itemsToAdd), true);
 
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

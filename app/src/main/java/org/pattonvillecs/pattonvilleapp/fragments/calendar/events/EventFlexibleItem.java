@@ -5,8 +5,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -160,7 +164,9 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
         EventFlexibleItem that = (EventFlexibleItem) o;
 
-        return vEvent != null ? vEvent.equals(that.vEvent) : that.vEvent == null;
+        return !(vEvent == null || that.vEvent == null)
+                && !(vEvent.getUid() == null || that.vEvent.getUid() == null)
+                && vEvent.getUid().getValue().equals(that.vEvent.getUid().getValue());
 
     }
 
@@ -288,7 +294,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
                 Log.v(TAG, uid + " finished executing state " + buttonState);
             }
         });
-/*
+
         ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
             @Override
             public void onChange(boolean selfChange) {
@@ -316,7 +322,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             }
         };
         contentObserver.onChange(false); // Fire the first "event" to kick-start the requerying process. After this, the ContentObserver is automatically reregistered and cursors are closed/created
-        */
+
     }
 
     @Override
@@ -351,7 +357,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             if (result != 0)
                 return result;
             else
-                return this.vEvent.getUid().getValue().compareTo(this.vEvent.getUid().getValue());
+                return this.vEvent.getUid().getValue().compareTo(other.vEvent.getUid().getValue());
         } else
             return compare(this.getCalendarDay(), o.getCalendarDay());
     }
