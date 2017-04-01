@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.lang.WordUtils;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -21,8 +20,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import static eu.davidea.flexibleadapter.helpers.ActionModeHelper.TAG;
 
 /**
  * Created by gadsonk on 12/7/16.
@@ -192,20 +189,19 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         holder.longDesText.setText(WordUtils.capitalizeFully(getLongDesc()));
 
 
-        holder.emailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, getEmail());
-                if (getEmail().isEmpty()) {
-                    Toast.makeText(adapter.getRecyclerView().getContext(), "No email available", Toast.LENGTH_SHORT).show();
-                } else {
+        if (getEmail().isEmpty()) {
+            holder.emailButton.setVisibility(View.INVISIBLE);
+        } else {
+            holder.emailButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                     emailIntent.setData(Uri.parse("mailto:"));
                     emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getEmail()});
                     adapter.getRecyclerView().getContext().startActivity(emailIntent);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
