@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -188,6 +189,20 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
 
         holder.longDesText.setText(WordUtils.capitalizeFully(getLongDesc()));
 
+        if (getExtension1().isEmpty()) {
+            holder.extensionButton.setVisibility(View.INVISIBLE);
+        } else {
+            holder.extensionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String extension = getExtension1();
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                    //currently not working with pause
+                    phoneIntent.setData(Uri.parse("tel:3142138010;" + PhoneNumberUtils.PAUSE + getExtension1()));
+                    adapter.getRecyclerView().getContext().startActivity(phoneIntent);
+                }
+            });
+        }
 
         if (getEmail().isEmpty()) {
             holder.emailButton.setVisibility(View.INVISIBLE);
@@ -228,7 +243,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         private static final String TAG = "DirectoryViewHolder";
         final RecyclerView facultyView;
         final TextView nameText, longDesText;
-        final ImageButton emailButton;
+        final ImageButton emailButton, extensionButton;
 
         public DirectoryViewHolder(View view, FlexibleAdapter adapter) {
             this(view, adapter, false);
@@ -239,6 +254,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
             nameText = (TextView) view.findViewById(R.id.directory_facultyName_textView);
             longDesText = (TextView) view.findViewById(R.id.directory_facultyDepartment_textView);
             emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
+            extensionButton = (ImageButton) view.findViewById(R.id.directory_facultyExtension_imageButton);
             facultyView = (RecyclerView) view.findViewById(R.id.directory_detail_recyclerView);
         }
 
