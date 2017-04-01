@@ -73,7 +73,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
         ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
         switch (school) {
-            case HIGH_SCHOOL:
+            /*case HIGH_SCHOOL:
                 schoolImage.setImageResource(R.drawable.phs_building);
                 break;
             case HEIGHTS_MIDDLE_SCHOOL:
@@ -99,7 +99,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 break;
             case WILLOW_BROOK_ELEMENTARY:
                 schoolImage.setImageResource(R.drawable.wb_building);
-                break;
+                break;*/
             case DISTRICT:
             default:
                 schoolImage.setImageResource(R.drawable.psd_logo);
