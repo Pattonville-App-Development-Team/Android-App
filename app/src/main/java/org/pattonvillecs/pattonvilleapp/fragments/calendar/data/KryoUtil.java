@@ -27,6 +27,7 @@ import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Description;
@@ -76,6 +77,18 @@ public final class KryoUtil {
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
+        kryo.register(TzId.class, new Serializer<TzId>() {
+            @Override
+            public void write(Kryo kryo, Output output, TzId object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public TzId read(Kryo kryo, Input input, Class type) {
+                return new TzId(kryo.readObject(input, String.class));
+            }
+        });
+
         kryo.register(CalendarDay.class, new Serializer<CalendarDay>() {
             @Override
             public void write(Kryo kryo, Output output, CalendarDay object) {
