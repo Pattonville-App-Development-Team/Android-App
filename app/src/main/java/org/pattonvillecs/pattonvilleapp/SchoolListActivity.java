@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,21 +20,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PeachjarActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+/**
+ * Created by gadsonk on 2/8/17.
+ */
 
+public class SchoolListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private List<DataSource> schools;
     private ListView mListView;
+
+    private boolean peachjar;
+
+    public static Intent newInstance(Context context, boolean peachjar) {
+
+        Intent intent = new Intent(context, SchoolListActivity.class);
+        intent.putExtra("peachjar", peachjar);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_school_list);
-        setTitle("Peachjar Links");
+        setTitle("Nutrislice Links");
+
+        peachjar = getIntent().getBooleanExtra("peachjar", false);
 
         mListView = (ListView) findViewById(R.id.school_list_view);
 
-        schools = Stream.of(DataSource.PEACHJAR)
+        schools = Stream.of(DataSource.SCHOOLS)
                 .sortBy(new Function<DataSource, String>() {
                     @Override
                     public String apply(DataSource dataSource) {
@@ -58,7 +73,7 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
         List<HashMap<String, String>> homeNewsList = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
 
-            HashMap<String, String> newsListItem = new HashMap<>();
+            HashMap<String, String> newsListItem = new HashMap<String, String>();
             newsListItem.put("image", Integer.toString(DirectoryFragment.images[schools.get(i).id]));
             newsListItem.put("headline", schools.get(i).name);
             homeNewsList.add(newsListItem);
@@ -76,6 +91,11 @@ public class PeachjarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).peachjarLink.get())));
+        if (peachjar) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).peachjarLink.get())));
+        } else {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(schools.get(position).nutrisliceLink.get())));
+        }
     }
 }
+
