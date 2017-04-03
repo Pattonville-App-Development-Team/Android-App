@@ -49,18 +49,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="News">
-
-        <CheckBoxPreference
-            android:defaultValue="0"
-            android:key="@string/key_news_notifications"
-            android:summary="Recieve notifications for newly published articles"
-            android:title="News Notifications" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Calendar"></PreferenceCategory>
-
-    <PreferenceCategory android:title="Directory"></PreferenceCategory>
-
 </PreferenceScreen>
