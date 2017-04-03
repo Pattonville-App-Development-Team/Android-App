@@ -6,6 +6,6 @@
         android:icon="@drawable/calendar_today"
         android:title="@string/calendar_fragment_action_today_title"
         android:titleCondensed="@string/calendar_fragment_action_today_title_condensed"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>
