@@ -123,7 +123,6 @@ public class HomeFragment extends Fragment {
         if (preferenceValues[0] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[1] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[2] != PreferenceUtils.getHomePinnedAmount(getContext())) {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
-
     }
 
     @Override
@@ -150,8 +149,6 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
 
                 setNewsArticles(data);
-
-
             }
 
             @Override
@@ -202,7 +199,6 @@ public class HomeFragment extends Fragment {
         };
         pattonvilleApplication.registerPauseableListener(homeListener);
         Log.d(TAG, "Registered home listener");
-
 
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
         calendarListener = new PauseableListener<CalendarParsingUpdateData>(true) {
@@ -297,6 +293,7 @@ public class HomeFragment extends Fragment {
         mHomeNewsRecyclerView.setAdapter(mHomeNewsAdapter);
         mHomeCalendarRecyclerView.setAdapter(mHomeCalendarAdapter);
         mHomeNewsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        mHomeCalendarRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         List<HashMap<String, String>> homeEventsList = new ArrayList<>();
         List<HashMap<String, String>> homePinnedList = new ArrayList<>();
