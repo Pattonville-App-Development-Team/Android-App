@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_peachjar:
-                startActivity(new Intent(this, PeachjarActivity.class));
+                startActivity(SchoolListActivity.newInstance(this, true));
                 break;
 
             case R.id.nav_settings:
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         } else {
-            startActivity(new Intent(this, NutrisliceActivity.class));
+            startActivity(SchoolListActivity.newInstance(this, false));
         }
     }
 
