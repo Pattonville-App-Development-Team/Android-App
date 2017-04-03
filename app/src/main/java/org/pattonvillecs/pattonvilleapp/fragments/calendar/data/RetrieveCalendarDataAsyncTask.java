@@ -46,6 +46,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static java.text.DateFormat.FULL;
+
 /**
  * Created by Mitchell Skaggs on 1/25/2017.
  */
@@ -62,7 +64,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     public static String fixICalStrings(@NonNull String iCalString) {
-        return iCalString.replace("FREQ=;", "FREQ=YEARLY;");
+        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace(";VALUE=DATE-TIME:", ";TZID=CDT:");
     }
 
     public static ArrayList<VEvent> parseFile(String iCalFile) {
@@ -78,7 +80,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             calendar = calendarBuilder.build(stringReader);
         } catch (IOException | ParserException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to parse calendar!!!", e);
         }
         stopWatch.stop();
         Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
@@ -101,6 +103,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 }
             }));
         }
+
         return vEvents;
     }
 
@@ -235,18 +238,16 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             TreeSet<EventFlexibleItem> newEvents = new TreeSet<>();
             DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
 
-            /*
-            for (EventFlexibleItem existingEvent : existingEvents) {
-                String date = dateFormat.format(existingEvent.vEvent.getStartDate().getDate());
-                if (date.contains("Jan 2, 2017"))
-                    Log.i(TAG, "EXISTING event (\"" + existingEvent.vEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + existingEvent.vEvent.getUid().getValue() + " and DataSources " + existingEvent.dataSources);
-            }
+            DateFormat fullDateFormat = SimpleDateFormat.getDateTimeInstance(FULL, FULL);
             for (VEvent newVEvent : result) {
-                String date = dateFormat.format(newVEvent.getStartDate().getDate());
-                if (date.contains("Jan 2, 2017"))
-                    Log.i(TAG, "NEW event (\"" + newVEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + newVEvent.getUid().getValue());
+                //String date = dateFormat.format(newVEvent.getStartDate().getDate());
+                //if (date.contains("Jan 2, 2017"))
+                //Log.i(TAG, "NEW event (\"" + newVEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + newVEvent.getUid().getValue());
+                if (newVEvent.getUid().getValue().equals("0A3EA383-000F6C72")) {
+                    String date = fullDateFormat.format(newVEvent.getStartDate().getDate());
+                    Log.i(TAG, "onPostExecute: BSAAC with date \"" + date + "\" TZ: " + newVEvent.getStartDate().getTimeZone());
+                }
             }
-            */
 
             newVEventLoop:
             for (VEvent newVEvent : result) {
