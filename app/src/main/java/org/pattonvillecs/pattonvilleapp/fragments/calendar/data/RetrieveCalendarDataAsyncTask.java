@@ -46,8 +46,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static java.text.DateFormat.FULL;
-
 /**
  * Created by Mitchell Skaggs on 1/25/2017.
  */
@@ -237,17 +235,6 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             TreeSet<EventFlexibleItem> existingEvents = pattonvilleApplication.getCalendarEvents();
             TreeSet<EventFlexibleItem> newEvents = new TreeSet<>();
             DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-
-            DateFormat fullDateFormat = SimpleDateFormat.getDateTimeInstance(FULL, FULL);
-            for (VEvent newVEvent : result) {
-                //String date = dateFormat.format(newVEvent.getStartDate().getDate());
-                //if (date.contains("Jan 2, 2017"))
-                //Log.i(TAG, "NEW event (\"" + newVEvent.getSummary().getValue() + "\") on " + date + " for " + dataSource + " has UID " + newVEvent.getUid().getValue());
-                if (newVEvent.getUid().getValue().equals("0A3EA383-000F6C72")) {
-                    String date = fullDateFormat.format(newVEvent.getStartDate().getDate());
-                    Log.i(TAG, "onPostExecute: BSAAC with date \"" + date + "\" TZ: " + newVEvent.getStartDate().getTimeZone());
-                }
-            }
 
             newVEventLoop:
             for (VEvent newVEvent : result) {
