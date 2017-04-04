@@ -194,7 +194,7 @@ public class HomeFragment extends Fragment {
 
 
                 homeNewsLoadingTextView.setVisibility(View.GONE);
-                Log.e(TAG, "Removed Loading Text");
+                Log.v(TAG, "Removed Loading Text");
             }
         };
         pattonvilleApplication.registerPauseableListener(homeListener);
