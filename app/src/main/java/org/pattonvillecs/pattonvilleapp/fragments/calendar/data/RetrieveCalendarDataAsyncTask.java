@@ -62,10 +62,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     public static String fixICalStrings(@NonNull String iCalString) {
-        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace(";VALUE=DATE-TIME:", ";TZID=CDT:");
+        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace(";VALUE=DATE-TIME:", ";TZID=CST:");
     }
 
-    public static ArrayList<VEvent> parseFile(String iCalFile) {
+    public static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
         Log.d(TAG, "Initial");
         ArrayList<VEvent> vEvents = new ArrayList<>();
         StringReader stringReader = new StringReader(iCalFile);
@@ -76,9 +76,10 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         stopWatch.start();
         try {
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+
             calendar = calendarBuilder.build(stringReader);
         } catch (IOException | ParserException e) {
-            Log.e(TAG, "Failed to parse calendar!!!", e);
+            Log.e(TAG, "Failed to parse calendar for " + dataSource + "!!!", e);
         }
         stopWatch.stop();
         Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
@@ -194,10 +195,12 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             if (downloadSucceeded) {
                 assert result != null;
 
+                Log.d(TAG, "Starting iCal fix for " + dataSource);
                 //Apply fix for iCal format
                 String processedResult = fixICalStrings(result);
+                Log.d(TAG, "Finished iCal fix for " + dataSource);
 
-                ArrayList<VEvent> downloadedCalendarData = parseFile(processedResult);
+                ArrayList<VEvent> downloadedCalendarData = parseFile(processedResult, dataSource);
 
                 Output output = null;
                 try {
