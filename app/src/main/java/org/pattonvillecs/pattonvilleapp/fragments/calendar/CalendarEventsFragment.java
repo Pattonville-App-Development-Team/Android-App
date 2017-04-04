@@ -133,7 +133,7 @@ public class CalendarEventsFragment extends Fragment {
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                recyclerView.smoothScrollToPosition(finalLastBeforeToday);
+                recyclerView.scrollToPosition(finalLastBeforeToday);
             }
         });
     }
@@ -171,7 +171,7 @@ public class CalendarEventsFragment extends Fragment {
 
         eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
-        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 25;
+        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 15;
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
         TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 100;
         eventAdapter.setDisplayHeadersAtStartUp(true);

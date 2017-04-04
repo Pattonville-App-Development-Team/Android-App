@@ -22,11 +22,16 @@ import net.fortuna.ical4j.model.PropertyFactoryImpl;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.fortuna.ical4j.model.component.Daylight;
+import net.fortuna.ical4j.model.component.Standard;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Description;
@@ -76,6 +81,63 @@ public final class KryoUtil {
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
+        kryo.register(TzId.class, new Serializer<TzId>() {
+            @Override
+            public void write(Kryo kryo, Output output, TzId object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public TzId read(Kryo kryo, Input input, Class type) {
+                return new TzId(kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(TimeZone.class, new Serializer<TimeZone>() {
+            @Override
+            public void write(Kryo kryo, Output output, TimeZone object) {
+                kryo.writeObject(output, object.getVTimeZone());
+            }
+
+            @Override
+            public TimeZone read(Kryo kryo, Input input, Class<TimeZone> type) {
+                return new TimeZone(kryo.readObject(input, VTimeZone.class));
+            }
+        });
+        kryo.register(Daylight.class, new Serializer<Daylight>() {
+            @Override
+            public void write(Kryo kryo, Output output, Daylight object) {
+                kryo.writeObject(output, object.getProperties());
+            }
+
+            @Override
+            public Daylight read(Kryo kryo, Input input, Class<Daylight> type) {
+                return new Daylight(kryo.readObject(input, PropertyList.class));
+            }
+        });
+        kryo.register(Standard.class, new Serializer<Standard>() {
+            @Override
+            public void write(Kryo kryo, Output output, Standard object) {
+                kryo.writeObject(output, object.getProperties());
+            }
+
+            @Override
+            public Standard read(Kryo kryo, Input input, Class<Standard> type) {
+                return new Standard(kryo.readObject(input, PropertyList.class));
+            }
+        });
+        kryo.register(VTimeZone.class, new Serializer<VTimeZone>() {
+            @Override
+            public void write(Kryo kryo, Output output, VTimeZone object) {
+                kryo.writeObject(output, object.getProperties());
+                kryo.writeObject(output, object.getObservances());
+            }
+
+            @Override
+            public VTimeZone read(Kryo kryo, Input input, Class<VTimeZone> type) {
+                //noinspection unchecked
+                return new VTimeZone(kryo.readObject(input, PropertyList.class), kryo.readObject(input, ComponentList.class));
+            }
+        });
         kryo.register(CalendarDay.class, new Serializer<CalendarDay>() {
             @Override
             public void write(Kryo kryo, Output output, CalendarDay object) {

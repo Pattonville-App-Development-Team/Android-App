@@ -6,6 +6,6 @@
         android:icon="@drawable/refresh"
         android:orderInCategory="100"
         android:title="@string/calendar_fragment_action_refresh"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 </menu>
