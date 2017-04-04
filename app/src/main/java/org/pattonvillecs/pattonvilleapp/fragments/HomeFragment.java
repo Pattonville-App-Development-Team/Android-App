@@ -56,14 +56,10 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
-    public static String[] sampleHeadlines = {"Example Headline 1",
-            "Example Headline 2", "Example Headline 3"};
-
     public static int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2,
-            R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1,
-            R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
-            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3,
-            R.drawable.test_news_4};
+            R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1, R.drawable.test_news_2,
+            R.drawable.test_news_3, R.drawable.test_news_4,R.drawable.test_news_1, R.drawable.test_news_2,
+            R.drawable.test_news_3, R.drawable.test_news_4};
 
     public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
 

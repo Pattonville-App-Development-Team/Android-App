@@ -14,6 +14,8 @@
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:sparkbutton_activeImage="@drawable/pin_active"
@@ -29,11 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="2dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="4dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
@@ -48,12 +50,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/text_top"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="2dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="4dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
         android:layout_toLeftOf="@id/pinned_button"
         android:layout_toStartOf="@id/pinned_button"
         android:textAppearance="?attr/textAppearanceListItemSmall"
@@ -61,6 +62,19 @@
         android:visibility="gone"
         tools:text="Date - Time"
         tools:visibility="visible" />
+
+
+    <View
+        android:id="@+id/date_locations_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/text_bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/colorPrimaryTransparent" />
 
     <TextView
         android:id="@+id/school_short_names"
@@ -71,9 +85,9 @@
         android:layout_below="@id/text_bottom"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="4dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="20dp"
         tools:text="District, High School, Remington, Heights" />
+
 </RelativeLayout>

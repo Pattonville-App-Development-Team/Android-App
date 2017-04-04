@@ -63,6 +63,7 @@
                 android:paddingStart="4dp"
                 android:src="@drawable/ic_arrow_forward_white_18dp" />
 
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
