@@ -74,7 +74,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     PauseableListener<CalendarParsingUpdateData> calendarListener;
     EventAdapter mHomeCalendarAdapter;
     TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
-    SwipeRefreshLayout mHomeRefreshLayout;
     int[] preferenceValues = new int[3];
 
     ImageListener imageListener = new ImageListener() {
@@ -179,9 +178,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mNewsArticles = newNewsArticles;
                 mHomeNewsAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
 
-
-                homeNewsLoadingTextView.setVisibility(View.GONE);
-                Log.v(TAG, "Removed Loading Text");
             }
         };
         pattonvilleApplication.registerPauseableListener(homeListener);
