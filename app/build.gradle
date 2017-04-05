@@ -101,6 +101,9 @@ dependencies {
     //News content parsing is in jsoup jar
     compile 'org.jsoup:jsoup:1.10.2'
 
+    //Fuzzy string contains
+    compile 'me.xdrop:fuzzywuzzy:1.1.7'
+
     testCompile 'junit:junit:4.12'
 }
 
