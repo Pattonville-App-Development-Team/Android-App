@@ -75,26 +75,16 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                         float value = (Math.abs(verticalOffset) * 2) / (float) appBarLayout.getTotalScrollRange();
 
-                        if (value > 1) {
-
-                            detailsRelativeLayout.setAlpha(0);
-                        } else {
-                            detailsRelativeLayout.setAlpha(1.0f - value);
-                        }
+                        if (value > 1) detailsRelativeLayout.setAlpha(0);
+                        else detailsRelativeLayout.setAlpha(1.0f - value);
                     }
                 });
 
-        directoryAdapter = new DirectoryAdapter();
-
-        for (Faculty faculty : faculties) {
-            directoryAdapter.addItem(faculty);
-        }
-        directoryAdapter.notifyDataSetChanged();
+        directoryAdapter = new DirectoryAdapter(faculties);
 
         facultyView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
-        facultyView.setNestedScrollingEnabled(false);
         facultyView.setAdapter(directoryAdapter);
-        facultyView.setLayoutManager(new SmoothScrollLinearLayoutManager(this, OrientationHelper.VERTICAL, false));
+        facultyView.setLayoutManager(new SmoothScrollLinearLayoutManager(this));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
 
