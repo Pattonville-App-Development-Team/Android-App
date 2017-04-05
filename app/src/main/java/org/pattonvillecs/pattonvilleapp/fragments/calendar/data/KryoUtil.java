@@ -23,6 +23,7 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.UtcOffset;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.Daylight;
@@ -30,11 +31,13 @@ import net.fortuna.ical4j.model.component.Standard;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.component.XComponent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.LastModified;
@@ -46,6 +49,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.XProperty;
 import net.fortuna.ical4j.validate.EmptyValidator;
 import net.fortuna.ical4j.validate.component.VEventAddValidator;
 import net.fortuna.ical4j.validate.component.VEventCancelValidator;
@@ -81,6 +85,17 @@ public final class KryoUtil {
         kryo.register(EnumMap.class, new EnumMapSerializer());
         kryo.register(DataSource.class);
         kryo.register(HashMultimap.class, new HashMultimapSerializer());
+        kryo.register(UtcOffset.class, new Serializer<UtcOffset>() {
+            @Override
+            public void write(Kryo kryo, Output output, UtcOffset object) {
+                kryo.writeObject(output, object.getOffset());
+            }
+
+            @Override
+            public UtcOffset read(Kryo kryo, Input input, Class<UtcOffset> type) {
+                return new UtcOffset(kryo.readObject(input, Long.class));
+            }
+        });
         kryo.register(TzId.class, new Serializer<TzId>() {
             @Override
             public void write(Kryo kryo, Output output, TzId object) {
@@ -88,7 +103,7 @@ public final class KryoUtil {
             }
 
             @Override
-            public TzId read(Kryo kryo, Input input, Class type) {
+            public TzId read(Kryo kryo, Input input, Class<TzId> type) {
                 return new TzId(kryo.readObject(input, String.class));
             }
         });
@@ -123,6 +138,31 @@ public final class KryoUtil {
             @Override
             public Standard read(Kryo kryo, Input input, Class<Standard> type) {
                 return new Standard(kryo.readObject(input, PropertyList.class));
+            }
+        });
+        kryo.register(XProperty.class, new Serializer<XProperty>() {
+            @Override
+            public void write(Kryo kryo, Output output, XProperty object) {
+                kryo.writeObject(output, object.getName());
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public XProperty read(Kryo kryo, Input input, Class<XProperty> type) {
+                return new XProperty(kryo.readObject(input, String.class), kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(XComponent.class, new Serializer<XComponent>() {
+            @Override
+            public void write(Kryo kryo, Output output, XComponent object) {
+                kryo.writeObject(output, object.getName());
+                kryo.writeObject(output, object.getProperties());
+            }
+
+            @Override
+            public XComponent read(Kryo kryo, Input input, Class<XComponent> type) {
+                return new XComponent(kryo.readObject(input, String.class), kryo.readObject(input, PropertyList.class));
             }
         });
         kryo.register(VTimeZone.class, new Serializer<VTimeZone>() {
@@ -242,11 +282,39 @@ public final class KryoUtil {
             public void write(Kryo kryo, Output output, DtStart object) {
                 kryo.writeObject(output, object.getParameters());
                 kryo.writeObject(output, object.getDate());
+                kryo.writeObjectOrNull(output, object.getTimeZone(), TimeZone.class);
             }
 
             @Override
             public DtStart read(Kryo kryo, Input input, Class<DtStart> type) {
-                return new DtStart(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
+                DtStart dtStart = new DtStart(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
+                TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
+                if (timeZone != null && !dtStart.isUtc())
+                    try {
+                        dtStart.setTimeZone(timeZone);
+                    } catch (UnsupportedOperationException ignored) {
+                    }
+                return dtStart;
+            }
+        });
+        kryo.register(DtEnd.class, new Serializer<DtEnd>() {
+            @Override
+            public void write(Kryo kryo, Output output, DtEnd object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getDate());
+                kryo.writeObjectOrNull(output, object.getTimeZone(), TimeZone.class);
+            }
+
+            @Override
+            public DtEnd read(Kryo kryo, Input input, Class<DtEnd> type) {
+                DtEnd dtEnd = new DtEnd(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
+                TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
+                if (timeZone != null && !dtEnd.isUtc())
+                    try {
+                        dtEnd.setTimeZone(timeZone);
+                    } catch (UnsupportedOperationException ignored) {
+                    }
+                return dtEnd;
             }
         });
         kryo.register(Duration.class, new Serializer<Duration>() {
