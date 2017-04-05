@@ -402,4 +402,8 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     public Set<DataSource> getLoadedCalendarDataSources() {
         return loadedCalendarDataSources;
     }
+
+    public Set<DirectoryAsyncTask> getRunningDirectoryAsyncTasks() {
+        return runningDirectoryAsyncTasks;
+    }
 }
