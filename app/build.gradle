@@ -14,6 +14,7 @@ android {
             useSupportLibrary true
         }
         multiDexEnabled true
+        //multiDexKeepFile file('multidex-config.txt')
     }
     buildTypes {
         release {
