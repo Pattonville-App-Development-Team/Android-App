@@ -206,7 +206,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         holder.shortSchoolName.setText(Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
             @Override
             public SpannableString apply(DataSource dataSource) {
-                SpannableString spannableString = new SpannableString("⬤\u00A0" + dataSource.shortName);
+                SpannableString spannableString = new SpannableString(("⬤ " + dataSource.shortName).replace(' ', '\u00A0'));
 
                 spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
