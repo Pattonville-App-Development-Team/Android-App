@@ -56,7 +56,6 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     private TreeSet<EventFlexibleItem> calendarEvents;
     private Set<DataSource> loadedCalendarDataSources;
     private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
-    //TODO Add running DirectoryAsyncTask set (Must be synchronized using Collections.synchronizedSet()!)
 
     private ConcurrentMap<DataSource, List<Faculty>> directoryData;
     private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
@@ -85,9 +84,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
         calendarEvents = new TreeSet<>();
         loadedCalendarDataSources = EnumSet.noneOf(DataSource.class);
+        runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
         directoryData = new ConcurrentHashMap<>();
-        runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
+        runningDirectoryAsyncTasks = Collections.synchronizedSet(new HashSet<DirectoryAsyncTask>());
 
         newsData = new ConcurrentHashMap<>();
         runningNewsAsyncTasks = Collections.synchronizedSet(new HashSet<NewsParsingAsyncTask>());
