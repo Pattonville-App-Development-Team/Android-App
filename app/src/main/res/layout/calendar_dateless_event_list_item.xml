@@ -14,6 +14,9 @@
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:sparkbutton_activeImage="@drawable/pin_active"
@@ -23,57 +26,48 @@
         app:sparkbutton_primaryColor="@color/colorPrimary"
         app:sparkbutton_secondaryColor="@color/colorPrimaryDark" />
 
-    <TextView
-        android:id="@+id/text_top"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_toLeftOf="@id/pinned_button"
-        android:layout_toStartOf="@id/pinned_button"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:transitionName="@string/text_top_transition_name"
-        tools:text="Event Name" />
+        android:layout_alignParentTop="true"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="60dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="60dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/text_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/text_top"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_toLeftOf="@id/pinned_button"
-        android:layout_toStartOf="@id/pinned_button"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:transitionName="@string/text_bottom_transition_name"
-        android:visibility="gone"
-        tools:text="Date - Time"
-        tools:visibility="visible" />
+        <TextView
+            android:id="@+id/text_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:transitionName="@string/text_top_transition_name"
+            tools:text="Event Name" />
 
-    <TextView
-        android:id="@+id/school_short_names"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/text_bottom"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        tools:text="District, High School, Remington, Heights" />
+        <TextView
+            android:id="@+id/text_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:transitionName="@string/text_bottom_transition_name"
+            tools:text="Date - Time" />
+
+        <TextView
+            android:id="@+id/school_short_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="District, High School, Remington, Heights" />
+
+    </LinearLayout>
+
 </RelativeLayout>
