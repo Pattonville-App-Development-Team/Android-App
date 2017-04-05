@@ -290,7 +290,10 @@ public final class KryoUtil {
                 DtStart dtStart = new DtStart(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
                 TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
                 if (timeZone != null && !dtStart.isUtc())
-                    dtStart.setTimeZone(timeZone);
+                    try {
+                        dtStart.setTimeZone(timeZone);
+                    } catch (UnsupportedOperationException ignored) {
+                    }
                 return dtStart;
             }
         });
@@ -307,7 +310,10 @@ public final class KryoUtil {
                 DtEnd dtEnd = new DtEnd(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
                 TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
                 if (timeZone != null && !dtEnd.isUtc())
-                    dtEnd.setTimeZone(timeZone);
+                    try {
+                        dtEnd.setTimeZone(timeZone);
+                    } catch (UnsupportedOperationException ignored) {
+                    }
                 return dtEnd;
             }
         });
