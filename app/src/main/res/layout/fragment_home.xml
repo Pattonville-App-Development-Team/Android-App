@@ -63,21 +63,15 @@
                 android:paddingStart="4dp"
                 android:src="@drawable/ic_arrow_forward_white_18dp" />
 
+
         </LinearLayout>
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_news_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/home_news_loading_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/homeLoadingNewsText"
-            android:textColor="#000000"
-            android:textSize="32sp" />
 
         <LinearLayout
             android:id="@+id/home_events_header_layout"

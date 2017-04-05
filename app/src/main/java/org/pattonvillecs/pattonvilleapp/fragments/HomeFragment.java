@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,42 +51,29 @@ import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
-    public static String[] sampleHeadlines = {"Example Headline 1",
-            "Example Headline 2", "Example Headline 3"};
-
     public static int[] sampleImages = {R.drawable.test_news_1, R.drawable.test_news_2,
-            R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1,
-            R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
-            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3,
-            R.drawable.test_news_4};
+            R.drawable.test_news_3, R.drawable.test_news_4, R.drawable.test_news_1, R.drawable.test_news_2,
+            R.drawable.test_news_3, R.drawable.test_news_4,R.drawable.test_news_1, R.drawable.test_news_2,
+            R.drawable.test_news_3, R.drawable.test_news_4};
 
     public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
 
     CarouselView carouselView;
     ListView pinnedListView;
-    TextView newsSeeMoreTextView;
-    TextView upcomingSeeMoreTextView;
-    TextView pinnedSeeMoreTextView;
-    ImageView newsSeeMoreArrow;
-    ImageView upcomingSeeMoreArrow;
-    ImageView pinnedSeeMoreArrow;
+    TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
+    ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
     NavigationView mNavigationView;
-    String[] sampleEvents = {"Example Event 1", "Example Event 2", "Example Event 3"};
-    RecyclerView mHomeNewsRecyclerView;
-    RecyclerView mHomeCalendarRecyclerView;
+    RecyclerView mHomeNewsRecyclerView, mHomeCalendarRecyclerView;
     NewsRecyclerViewAdapter mHomeNewsAdapter;
     PattonvilleApplication pattonvilleApplication;
     List<NewsArticle> mNewsArticles;
     PauseableListener<CalendarParsingUpdateData> calendarListener;
     EventAdapter mHomeCalendarAdapter;
     TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
-    TextView homeNewsLoadingTextView;
-    TextView homeCalendarLoadingTextView;
-
     int[] preferenceValues = new int[3];
 
     ImageListener imageListener = new ImageListener() {
@@ -192,9 +178,6 @@ public class HomeFragment extends Fragment {
                 mNewsArticles = newNewsArticles;
                 mHomeNewsAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
 
-
-                homeNewsLoadingTextView.setVisibility(View.GONE);
-                Log.v(TAG, "Removed Loading Text");
             }
         };
         pattonvilleApplication.registerPauseableListener(homeListener);
@@ -283,7 +266,6 @@ public class HomeFragment extends Fragment {
 
         mHomeNewsRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
         mHomeCalendarRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_recyclerView);
-        homeNewsLoadingTextView = (TextView) view.findViewById(R.id.home_news_loading_textview);
         mHomeNewsRecyclerView.setNestedScrollingEnabled(false);
         mHomeCalendarRecyclerView.setNestedScrollingEnabled(false);
         mHomeNewsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -295,7 +277,6 @@ public class HomeFragment extends Fragment {
         mHomeNewsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         mHomeCalendarRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
-        List<HashMap<String, String>> homeEventsList = new ArrayList<>();
         List<HashMap<String, String>> homePinnedList = new ArrayList<>();
 
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
@@ -319,12 +300,6 @@ public class HomeFragment extends Fragment {
             (view.findViewById(R.id.home_no_items_shown_textview)).setVisibility(View.VISIBLE);
         }
 
-        for (int i = 0; i < homeEventsAmount; i++) {
-            HashMap<String, String> eventListItem = new HashMap<>();
-            eventListItem.put("event", sampleEvents[i % 3]);
-            homeEventsList.add(eventListItem);
-        }
-
         for (int i = 0; i < homePinnedAmount; i++) {
 
             HashMap<String, String> pinnedListItem = new HashMap<>();
@@ -341,93 +316,26 @@ public class HomeFragment extends Fragment {
         pinnedSeeMoreArrow = (ImageView) view.findViewById(R.id.home_pinned_events_see_more_arrow);
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
-
         ViewGroup.LayoutParams pinnedParam = pinnedListView.getLayoutParams();
         pinnedParam.height = 136 * homePinnedAmount;
         pinnedListView.setLayoutParams(pinnedParam);
         pinnedListView.requestLayout();
 
-
-        String[] homeEventListFrom = {"event"};
         String[] homePinnedListFrom = {"pin"};
 
-        int[] homeEventListTo = {R.id.home_upcoming_events_listview_textview};
         int[] homePinnedEventTo = {R.id.home_pinned_events_listview_textview};
 
-        SimpleAdapter eventListSimpleAdapter = new SimpleAdapter(view.getContext(), homeEventsList, R.layout.home_upcoming_events_listview_item, homeEventListFrom, homeEventListTo);
         SimpleAdapter pinnedListSimpleAdapter = new SimpleAdapter(view.getContext(), homePinnedList, R.layout.home_pinned_events_listview_item, homePinnedListFrom, homePinnedEventTo);
 
-        //eventListView.setAdapter(eventListSimpleAdapter);
         pinnedListView.setAdapter(pinnedListSimpleAdapter);
 
 
-        newsSeeMoreTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, NewsFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-
-            }
-
-
-        });
-        upcomingSeeMoreTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, CalendarFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-            }
-        });
-        pinnedSeeMoreTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, CalendarPinnedFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-            }
-        });
-
-        newsSeeMoreArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, NewsFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-
-
-            }
-        });
-        upcomingSeeMoreArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, CalendarFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-            }
-        });
-        pinnedSeeMoreArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_default, CalendarPinnedFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-            }
-        });
+        newsSeeMoreTextView.setOnClickListener(this);
+        upcomingSeeMoreTextView.setOnClickListener(this);
+        pinnedSeeMoreTextView.setOnClickListener(this);
+        newsSeeMoreArrow.setOnClickListener(this);
+        upcomingSeeMoreArrow.setOnClickListener(this);
+        pinnedSeeMoreArrow.setOnClickListener(this);
 
         return view;
     }
@@ -438,7 +346,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -447,6 +354,38 @@ public class HomeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        Fragment seeMoreFragment = null;
+
+        switch (v.getId()) {
+            case R.id.recent_news_see_more_textview:
+                seeMoreFragment = new NewsFragment();
+                break;
+            case R.id.home_recent_news_see_more_arrow:
+                seeMoreFragment = new NewsFragment();
+                break;
+            case R.id.home_upcoming_events_see_more_textview:
+                seeMoreFragment = new CalendarFragment();
+                break;
+            case R.id.home_upcoming_events_see_more_arrow:
+                seeMoreFragment = new CalendarFragment();
+                break;
+            case R.id.home_pinned_events_see_more_textview:
+                seeMoreFragment = new CalendarPinnedFragment();
+                break;
+            case R.id.home_pinned_events_see_more_arrow:
+                seeMoreFragment = new CalendarPinnedFragment();
+                break;
+
+        }
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_default, seeMoreFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
     }
 
     public interface OnFragmentInteractionListener {
