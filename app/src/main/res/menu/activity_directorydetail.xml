@@ -14,5 +14,5 @@
         android:id="@+id/directory_detail_menu_link"
         android:icon="@drawable/ic_link_white_24dp"
         android:title="Link"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>
