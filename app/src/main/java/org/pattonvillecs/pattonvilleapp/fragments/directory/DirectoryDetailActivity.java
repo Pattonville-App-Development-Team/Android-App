@@ -72,6 +72,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         directoryAdapter.notifyDataSetChanged();
 
         facultyView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
+        facultyView.setNestedScrollingEnabled(false);
         facultyView.setAdapter(directoryAdapter);
         facultyView.setLayoutManager(new SmoothScrollLinearLayoutManager(this, OrientationHelper.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
