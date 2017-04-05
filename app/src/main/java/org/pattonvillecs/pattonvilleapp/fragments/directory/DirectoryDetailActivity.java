@@ -11,11 +11,11 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +49,12 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        // Avoid null pointer warning with null check
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         pattonvilleApplication = PattonvilleApplication.get(this);
 
@@ -106,10 +112,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 break;
         }
 
-        //Inflate the layout the textViews for this Activity
-        TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
-        schoolName.setText(school.name);
-
         TextView schoolAddress = (TextView) findViewById(R.id.directory_address_textView);
         schoolAddress.setText(school.address);
 
@@ -127,20 +129,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
             schoolFax.setText(school.faxNumber.get());
         else
             schoolFax.setText(R.string.directory_info_unavaiable);
-
-        TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
-        if (school == DataSource.DISTRICT) {
-            websiteView.setText("District Website");
-        } else {
-            websiteView.setText("School Website");
-        }
-
-        websiteView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
-                startActivity(browserIntent);
-            }
-        });
     }
 
     @Override
@@ -154,6 +142,24 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
     public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
         this.directoryData = directoryData;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.directory_detail_menu_link:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
+                startActivity(browserIntent);
+                break;
+
+            case android.R.id.home:
+
+                finish();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -184,13 +190,12 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         MenuItem searchItem = menu.findItem(R.id.directory_detail_menu_search);
         if (searchItem != null) {
 
-            /*
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
 
-                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    MenuItem listTypeItem = menu.findItem(R.id.directory_detail_menu_link);
                     if (listTypeItem != null)
                         listTypeItem.setVisible(false);
                     return true;
@@ -198,14 +203,13 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    MenuItem listTypeItem = menu.findItem(R.id.directory_detail_menu_link);
                     if (listTypeItem != null)
                         listTypeItem.setVisible(true);
                     return true;
                 }
 
             });
-            */
 
             SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);

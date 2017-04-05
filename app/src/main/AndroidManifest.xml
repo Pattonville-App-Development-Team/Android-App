@@ -62,7 +62,8 @@
             android:theme="@style/PSD.NoActionBar" />
         <activity
             android:name=".fragments.directory.DirectoryDetailActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/PSD.NoActionBar" />
 
         <service android:name=".FBNotificationsService">
             <intent-filter>

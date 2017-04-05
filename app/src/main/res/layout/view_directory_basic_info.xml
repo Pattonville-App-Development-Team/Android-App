@@ -1,22 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/vpi__background_holo_light"
                 android:orientation="vertical">
-
-
-    <TextView
-        android:id="@+id/directory_detail_schoolName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:text="@string/directory_detail_school_name"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/directory_school_image"
@@ -24,7 +9,6 @@
         android:layout_height="135dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/directory_detail_schoolName"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
@@ -34,7 +18,6 @@
         android:id="@+id/directory_address_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/directory_detail_schoolName"
         android:layout_toEndOf="@id/directory_school_image"
         android:layout_toRightOf="@id/directory_school_image"
         android:paddingEnd="14dp"

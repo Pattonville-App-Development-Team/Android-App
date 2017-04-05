@@ -9,4 +9,10 @@
         android:title="@string/action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="collapseActionView|always"/>
+
+    <item
+        android:id="@+id/directory_detail_menu_link"
+        android:icon="@drawable/ic_link_white_24dp"
+        android:title="Link"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
-    <include layout="@layout/view_directory_basic_info" />
+    <include layout="@layout/app_bar_directory_detail" />
 
-    <View
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider"/>
+        android:layout_height="match_parent"
+        android:foreground="?android:windowContentOverlay"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/directory_website_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="normal|bold"
-        style="?android:listSeparatorTextViewStyle"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/directory_detail_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/directory_detail_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
-
-</LinearLayout>
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
