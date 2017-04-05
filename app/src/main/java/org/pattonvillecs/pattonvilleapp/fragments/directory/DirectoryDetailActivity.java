@@ -216,6 +216,8 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
 
+                    ((AppBarLayout) findViewById(R.id.directory_detail_app_bar_layout)).setExpanded(false);
+
                     MenuItem listTypeItem = menu.findItem(R.id.directory_detail_menu_link);
                     if (listTypeItem != null)
                         listTypeItem.setVisible(false);
