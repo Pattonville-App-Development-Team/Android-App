@@ -61,9 +61,6 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
         <activity
-            android:name=".FeedbackActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".fragments.directory.DirectoryDetailActivity"
             android:parentActivityName=".MainActivity" />
 
@@ -78,9 +75,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".PeachjarActivity"
-            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".PowerschoolActivity"
             android:parentActivityName=".MainActivity" />
