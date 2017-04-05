@@ -277,7 +277,7 @@ public final class KryoUtil {
             }
         });
         kryo.register(ParameterFactoryImpl.class);
-        kryo.register(DtStart.class, new Serializer<DtStart>() {
+        kryo.register(DtStart.class/*, new Serializer<DtStart>() {
             @Override
             public void write(Kryo kryo, Output output, DtStart object) {
                 kryo.writeObject(output, object.getParameters());
@@ -296,8 +296,8 @@ public final class KryoUtil {
                     }
                 return dtStart;
             }
-        });
-        kryo.register(DtEnd.class, new Serializer<DtEnd>() {
+        }*/);
+        kryo.register(DtEnd.class/*, new Serializer<DtEnd>() {
             @Override
             public void write(Kryo kryo, Output output, DtEnd object) {
                 kryo.writeObject(output, object.getParameters());
@@ -316,7 +316,7 @@ public final class KryoUtil {
                     }
                 return dtEnd;
             }
-        });
+        }*/);
         kryo.register(Duration.class, new Serializer<Duration>() {
             @Override
             public void write(Kryo kryo, Output output, Duration object) {
