@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -63,6 +65,24 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         setTitle(school.shortName + " Directory");
         //TODO: Make constant field
         faculties = pattonvilleApplication.getDirectoryData().get(school);
+
+        final RelativeLayout detailsRelativeLayout = (RelativeLayout)
+                findViewById(R.id.directory_detail_details_layout);
+        ((AppBarLayout) findViewById(R.id.directory_detail_app_bar_layout))
+                .addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                        float value = (Math.abs(verticalOffset) * 2) / (float) appBarLayout.getTotalScrollRange();
+
+                        if (value > 1) {
+
+                            detailsRelativeLayout.setAlpha(0);
+                        } else {
+                            detailsRelativeLayout.setAlpha(1.0f - value);
+                        }
+                    }
+                });
 
         directoryAdapter = new DirectoryAdapter();
 
