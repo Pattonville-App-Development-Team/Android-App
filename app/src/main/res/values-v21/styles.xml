@@ -6,6 +6,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
 
+        <!-- Set cursor to white -->
+        <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
+
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
         <!-- specify shared element transitions -->
