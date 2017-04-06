@@ -59,19 +59,18 @@ import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
-import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment.PINNED_EVENTS_LOADER_ID;
-
 public class HomeFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-
+    private static final int PINNED_PREFERENCE_VALUES_INDEX = 2;
+    private static final int EVENTS_PREFERENCE_VALUES_INDEX = 1;
+    private static final int NEWS_PREFERENCE_VALUES_INDEX = 0;
+    private static final int PINNED_EVENTS_LOADER_ID = 2;
     public static int[] sampleImages = {
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
-
     public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
-
     private CarouselView carouselView;
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
     private ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
@@ -85,7 +84,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private EventAdapter mHomeCalendarPinnedAdapter;
     private TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     private int[] preferenceValues = new int[3];
-
     private ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
@@ -123,7 +121,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         homeListener.resume();
         calendarListener.resume();
 
-        if (preferenceValues[0] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[1] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[2] != PreferenceUtils.getHomePinnedAmount(getContext())) {
+        //TODO fix this terrible hack. There needs to be a method to recalculate each news section individually
+        if (preferenceValues[NEWS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[EVENTS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomePinnedAmount(getContext())) {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
@@ -186,11 +185,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
                                 return -o1.getPublishDate().compareTo(o2.getPublishDate());
                             }
                         })
+                        .limit(preferenceValues[NEWS_PREFERENCE_VALUES_INDEX])
                         .collect((Collectors.<NewsArticle>toList()));
-
-                if (newNewsArticles.size() > preferenceValues[0]) {
-                    newNewsArticles = newNewsArticles.subList(0, preferenceValues[0]);
-                }
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
                 mNewsArticles = newNewsArticles;
@@ -231,16 +227,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             }
         };
         pattonvilleApplication.registerPauseableListener(calendarListener);
-
-        pattonvilleApplication = PattonvilleApplication.get(getActivity());
-
     }
 
     public void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
         this.calendarData = calendarData;
         List<EventFlexibleItem> itemsToAdd = new ArrayList<>();
 
-        final int numCalendarItems = preferenceValues[1];
+        final int numCalendarItems = preferenceValues[EVENTS_PREFERENCE_VALUES_INDEX];
         Iterator<EventFlexibleItem> calendarDataIterator = this.calendarData.iterator();
         CalendarDay today = CalendarDay.today();
 
@@ -261,9 +254,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_fragment_home);
 
-        preferenceValues[0] = PreferenceUtils.getHomeNewsAmount(getContext());
-        preferenceValues[1] = PreferenceUtils.getHomeEventsAmount(getContext());
-        preferenceValues[2] = PreferenceUtils.getHomePinnedAmount(getContext());
+        preferenceValues[NEWS_PREFERENCE_VALUES_INDEX] = PreferenceUtils.getHomeNewsAmount(getContext());
+        preferenceValues[EVENTS_PREFERENCE_VALUES_INDEX] = PreferenceUtils.getHomeEventsAmount(getContext());
+        preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] = PreferenceUtils.getHomePinnedAmount(getContext());
 
     }
 
@@ -398,9 +391,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.i(TAG, "onCreateLoader: Creating loader with id " + id);
         switch (id) {
             case PINNED_EVENTS_LOADER_ID:
-                return new CursorLoader(this.getContext(), PinnedEventsContract.PinnedEventsTable.CONTENT_URI, null, null, null, null);
+                return new CursorLoader(getContext(), PinnedEventsContract.PinnedEventsTable.CONTENT_URI, null, null, null, null);
             default:
                 throw new IllegalArgumentException("Unsupported ID!");
         }
@@ -424,23 +418,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     }
 
     private void updatePinnedContent() {
-        if ((pinnedUIDs.size() == 0) || // If pinned events are empty or gone
-                (calendarData.size() == 0)) // OR if calendar events are empty or gone
-        {
-            Log.i(TAG, "updatePinnedContent: No pinned events or calendar events loaded");
-        } else {
-            //There is definitely stuff to display now
-            List<EventFlexibleItem> items = new ArrayList<>(calendarData);
+        if (pinnedUIDs.size() == 0)
+            homePinnedHeader.setVisibility(View.GONE);
+        else if (preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] != 0)
+            homePinnedHeader.setVisibility(View.VISIBLE);
+        //There is definitely stuff to display now
+        List<EventFlexibleItem> items = new ArrayList<>(calendarData);
 
-            Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
-                @Override
-                public boolean apply(EventFlexibleItem input) {
-                    return !pinnedUIDs.contains(input.vEvent.getUid().getValue());
-                }
-            });
+        Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
+            @Override
+            public boolean apply(EventFlexibleItem input) {
+                return !pinnedUIDs.contains(input.vEvent.getUid().getValue());
+            }
+        });
 
-            mHomeCalendarPinnedAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
-        }
+        mHomeCalendarPinnedAdapter.updateDataSet(
+                new ArrayList<FlexibleHasCalendarDay>(items)
+                        .subList(0, Math.min(items.size(), preferenceValues[PINNED_PREFERENCE_VALUES_INDEX])),
+                true);
     }
 
     @Override
