@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <com.synnapps.carouselview.CarouselView
@@ -63,21 +64,15 @@
                 android:paddingStart="4dp"
                 android:src="@drawable/ic_arrow_forward_white_18dp" />
 
+
         </LinearLayout>
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_news_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/home_news_loading_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/homeLoadingNewsText"
-            android:textColor="#000000"
-            android:textSize="32sp" />
 
         <LinearLayout
             android:id="@+id/home_events_header_layout"
@@ -119,7 +114,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_calendar_recyclerView"
+            android:id="@+id/home_calendar_event_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -164,11 +159,10 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/home_pinned_events_listview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_calendar_pinned_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="204dp"
-            android:nestedScrollingEnabled="false" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/home_no_items_shown_textview"

@@ -35,26 +35,24 @@ public class DirectoryAsyncTask extends AsyncTask<Void, Void, Map<DataSource, Li
     @Override
     protected void onPreExecute() { // Run on UI thread
         super.onPreExecute();
-        //TODO Add to list of running DirectoryAsyncTasks
+        this.pattonvilleApplication.getRunningDirectoryAsyncTasks().add(this);
     }
 
     @Override
     protected Map<DataSource, List<Faculty>> doInBackground(Void... params) { // Run on different thread
-
-
         Map<DataSource, List<Faculty>> faculties = new HashMap<>();
-
-        //TODO: Load csv file
         AssetManager man = pattonvilleApplication.getResources().getAssets();
+
         try {
             InputStream ims = man.open("Student_Directory.csv");
             BufferedReader reader = new BufferedReader(new InputStreamReader(ims));
-            Log.i(TAG, reader.toString());
-            String directoryLine = reader.readLine();
+            Log.d(TAG, reader.toString());
+            String directoryLine;
+            reader.readLine();
             while ((directoryLine = reader.readLine()) != null) {
                 String[] person = directoryLine.split("\\s*,\\s*", -1);
                 Faculty facultyMember = new Faculty(person);
-                Log.i(TAG, Arrays.toString(person) + person.length);
+                Log.v(TAG, "Current line: " + Arrays.toString(person) + person.length);
                 DataSource data = facultyMember.getDirectoryKey();
                 if (!faculties.containsKey(data)) {
                     faculties.put(data, new ArrayList<Faculty>());
@@ -62,7 +60,7 @@ public class DirectoryAsyncTask extends AsyncTask<Void, Void, Map<DataSource, Li
                 faculties.get(data).add(facultyMember);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error loading directory!", e);
         }
 
         return faculties;
@@ -96,9 +94,8 @@ public class DirectoryAsyncTask extends AsyncTask<Void, Void, Map<DataSource, Li
             pattonvilleApplication.getDirectoryData().putAll(result);
         }
 
-        pattonvilleApplication.updateDirectoryListeners();
-
-        //TODO: Remove from list of running DirectoryAsyncTasks
+        this.pattonvilleApplication.getRunningDirectoryAsyncTasks().remove(this);
+        this.pattonvilleApplication.updateDirectoryListeners();
     }
 
     @Override

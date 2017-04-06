@@ -1,12 +1,17 @@
 package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
-
-import net.fortuna.ical4j.model.property.DtStart;
 
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
@@ -37,7 +38,6 @@ import java.util.TreeSet;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.common.TopSnappedSmoothScroller;
 import eu.davidea.flexibleadapter.utils.Utils;
 
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
@@ -47,7 +47,7 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarP
  * Use the {@link CalendarEventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarEventsFragment extends Fragment {
+public class CalendarEventsFragment extends Fragment implements SearchView.OnQueryTextListener {
     private static final String TAG = "CalendarEventsFragment";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -160,6 +160,48 @@ public class CalendarEventsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu);
+        inflater.inflate(R.menu.search_icon_menu, menu);
+        initSearchView(menu);
+    }
+
+    /**
+     * Method to setup the search functionality of the list
+     * <p>
+     * Refer to the Flexible Adapter documentation, as this is a near replica implementation
+     *
+     * @param menu Menu object of current options menu
+     */
+    private void initSearchView(final Menu menu) {
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        if (searchItem != null) {
+
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(false);
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
+                    if (listTypeItem != null)
+                        listTypeItem.setVisible(true);
+                    return true;
+                }
+            });
+
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
+            searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+            searchView.setQueryHint(getString(R.string.action_search));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            searchView.setOnQueryTextListener(this);
+        }
     }
 
     @Override
@@ -171,9 +213,9 @@ public class CalendarEventsFragment extends Fragment {
 
         eventAdapter = new EventAdapter(null);
         recyclerView.setAdapter(eventAdapter);
-        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 15;
+        //TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 15;
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
-        TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 100;
+        //TopSnappedSmoothScroller.MILLISECONDS_PER_INCH = 100;
         eventAdapter.setDisplayHeadersAtStartUp(true);
         recyclerView.post(new Runnable() {
             @Override
@@ -225,15 +267,6 @@ public class CalendarEventsFragment extends Fragment {
         ArrayList<FlexibleHasCalendarDay> data = new ArrayList<FlexibleHasCalendarDay>(calendarData);
         Log.i(TAG, "Received data: " + data);
 
-        Multiset<DtStart> dates = HashMultiset.create();
-        for (EventFlexibleItem event : calendarData) {
-            dates.add(event.vEvent.getStartDate());
-        }
-        for (Multiset.Entry<DtStart> entry : dates.entrySet()) {
-            if (entry.getCount() > 1)
-                Log.e(TAG, "Multiple dates on " + SimpleDateFormat.getDateInstance().format(entry.getElement().getDate()));
-        }
-
         eventAdapter.updateDataSet(data, true);
     }
 
@@ -256,5 +289,20 @@ public class CalendarEventsFragment extends Fragment {
         super.onPause();
         Log.i(TAG, "onPause called!");
         listener.pause();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (eventAdapter.hasNewSearchText(newText)) {
+            Log.d(TAG, "onQueryTextChange newText: " + newText);
+            eventAdapter.setSearchText(newText);
+            eventAdapter.filterItems(new ArrayList<FlexibleHasCalendarDay>(calendarData), 100L);
+        }
+        return true;
     }
 }

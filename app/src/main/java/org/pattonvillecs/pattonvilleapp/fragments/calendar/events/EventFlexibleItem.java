@@ -54,12 +54,14 @@ import java.util.concurrent.TimeUnit;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
+import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 /**
  * Created by Mitchell Skaggs on 1/4/17.
  */
-public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem.EventViewHolder, EventHeader> implements FlexibleHasCalendarDay<EventFlexibleItem.EventViewHolder>, Parcelable {
+public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem.EventViewHolder, EventHeader> implements FlexibleHasCalendarDay<EventFlexibleItem.EventViewHolder>, Parcelable, IFilterable {
     public static final Creator<EventFlexibleItem> CREATOR = new Creator<EventFlexibleItem>() {
         @Override
         public EventFlexibleItem createFromParcel(Parcel in) {
@@ -206,9 +208,14 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         holder.shortSchoolName.setText(Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
             @Override
             public SpannableString apply(DataSource dataSource) {
-                SpannableString spannableString = new SpannableString("⬤ " + dataSource.shortName);
-                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableString spannableString = new SpannableString(("⬤ " + dataSource.shortName).replace(' ', '\u00A0'));
+
+                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                 return spannableString;
             }
         }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
@@ -362,12 +369,19 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             return compare(this.getCalendarDay(), o.getCalendarDay());
     }
 
+    @Override
+    public boolean filter(String constraint) {
+        constraint = constraint.toLowerCase();
+        int summaryRatio = FuzzySearch.partialRatio(constraint, vEvent.getSummary().getValue().toLowerCase());
+        int dataSourceRatio = FuzzySearch.partialRatio(constraint, dataSources.toString().toLowerCase());
+        return summaryRatio > 80 || dataSourceRatio > 80;
+    }
+
     /**
      * Created by Mitchell Skaggs on 1/4/17.
      */
     public static class EventViewHolder extends FlexibleViewHolder {
         private final TextView topText, bottomText, shortSchoolName;
-        private final ImageView schoolColorImageView;
         private final View view;
         private final SparkButton sparkButton;
         private Cursor cursor;
@@ -381,7 +395,6 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             this.view = view;
             topText = (TextView) view.findViewById(R.id.text_top);
             bottomText = (TextView) view.findViewById(R.id.text_bottom);
-            schoolColorImageView = (ImageView) view.findViewById(R.id.school_color_circle);
             shortSchoolName = (TextView) view.findViewById(R.id.school_short_names);
             sparkButton = (SparkButton) view.findViewById(R.id.pinned_button);
         }

@@ -29,6 +29,7 @@ import java.util.Locale;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 /**
  * Data object to handle the contents of an article. Implements IFilterable for Flexible Adapter
@@ -261,11 +262,13 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
      */
     @Override
     public boolean filter(String constraint) {
-        return title.toLowerCase().contains(constraint.toLowerCase()) ||
-                dataSource.name.toLowerCase().contains(constraint.toLowerCase()) ||
-                dataSource.shortName.toLowerCase().contains(constraint.toLowerCase()) ||
-                dataSource.initialsName.toLowerCase().contains(constraint.toLowerCase()) ||
-                getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
+        constraint = constraint.toLowerCase();
+
+        int titleRatio = FuzzySearch.partialRatio(constraint, title.toLowerCase());
+        int dataSourceRatio = FuzzySearch.partialRatio(constraint, dataSource.name.toLowerCase());
+        int dateRatio = FuzzySearch.partialRatio(constraint, getFormattedDate().toLowerCase());
+
+        return titleRatio > 80 || dataSourceRatio > 80 || dateRatio > 80; //title.toLowerCase().contains(constraint.toLowerCase()) || dataSource.name.toLowerCase().contains(constraint.toLowerCase()) || dataSource.shortName.toLowerCase().contains(constraint.toLowerCase()) || dataSource.initialsName.toLowerCase().contains(constraint.toLowerCase()) || getFormattedDate().toLowerCase().contains(constraint.toLowerCase());
     }
 
     /**

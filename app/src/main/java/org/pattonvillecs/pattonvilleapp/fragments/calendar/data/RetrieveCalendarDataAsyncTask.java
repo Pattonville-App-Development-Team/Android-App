@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.io.Output;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ComponentFactoryImpl;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -62,7 +63,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     public static String fixICalStrings(@NonNull String iCalString) {
-        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace(";VALUE=DATE-TIME:", ";TZID=CST:");
+        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:").replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
     }
 
     public static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
@@ -73,18 +74,25 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         Calendar calendar = null;
         Log.d(TAG, "Readers done");
         StopWatch stopWatch = new StopWatch();
+
         stopWatch.start();
         try {
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-
-            calendar = calendarBuilder.build(stringReader);
+            synchronized (ComponentFactoryImpl.getInstance()) { //Needed because the static instance is accessed from multiple threads inside the build method
+                calendar = calendarBuilder.build(stringReader);
+            }
         } catch (IOException | ParserException e) {
             Log.e(TAG, "Failed to parse calendar for " + dataSource + "!!!", e);
         }
         stopWatch.stop();
+
         Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
         //Log.d(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
         if (calendar != null) {
+            Log.i(TAG, "VTIMEZONEs of " + dataSource + ": " + calendar.getComponents(CalendarComponent.VTIMEZONE));
+            //VTimeZone vTimeZone = (VTimeZone) calendar.getComponent(CalendarComponent.VTIMEZONE);
+            //final TimeZone timeZone = new TimeZone(vTimeZone);
+            //Log.i(TAG, "parseFile: " + vTimeZone);
             vEvents = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
                 @Override
                 public boolean test(CalendarComponent value) {
