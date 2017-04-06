@@ -48,7 +48,7 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarP
  */
 public class CalendarPinnedFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final int PINNED_EVENTS_LOADER_ID = 1;
+    private static final int PINNED_EVENTS_LOADER_ID = 1;
     private static final String TAG = CalendarPinnedFragment.class.getSimpleName();
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
