@@ -1,7 +1,5 @@
 package org.pattonvillecs.pattonvilleapp.preferences;
 
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
