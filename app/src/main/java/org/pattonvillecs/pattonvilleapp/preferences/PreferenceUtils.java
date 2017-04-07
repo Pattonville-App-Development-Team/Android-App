@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import com.annimon.stream.Stream;
 import com.annimon.stream.function.BiConsumer;
 import com.annimon.stream.function.Function;
 import com.annimon.stream.function.Supplier;
+
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
 import java.util.EnumSet;
 import java.util.HashSet;

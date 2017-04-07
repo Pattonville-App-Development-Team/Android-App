@@ -32,7 +32,6 @@ import com.synnapps.carouselview.ImageListener;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
-import org.pattonvillecs.pattonvilleapp.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
@@ -46,6 +45,7 @@ import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
