@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+    private int currentFragmentId;
+    private NavigationView mNavigationView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
 
-        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
             mNavigationView.setCheckedItem(R.id.nav_home);
@@ -116,9 +118,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (currentFragmentId > 0) {
+            switch (currentFragmentId) {
+                case R.id.nav_news:
+                case R.id.nav_calendar:
+                case R.id.nav_directory:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_default, HomeFragment.newInstance())
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commit();
+                    break;
+            }
         } else {
             super.onBackPressed();
         }
@@ -129,22 +141,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
 
         Fragment fragment = null;
+        int itemId = item.getItemId();
+        currentFragmentId = -1;
 
-        switch (item.getItemId()) {
+        switch (itemId) {
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
+                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_news:
                 fragment = NewsFragment.newInstance();
+                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_calendar:
                 fragment = CalendarFragment.newInstance();
+                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_directory:
                 fragment = DirectoryFragment.newInstance();
+                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_nutrislice:
