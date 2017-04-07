@@ -27,6 +27,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragmen
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
+import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 
 import java.io.File;
 
