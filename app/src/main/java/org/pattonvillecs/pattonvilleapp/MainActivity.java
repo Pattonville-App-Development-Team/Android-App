@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case R.id.nav_news:
                 case R.id.nav_calendar:
                 case R.id.nav_directory:
+                    mNavigationView.getMenu().getItem(0).setChecked(true);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_default, HomeFragment.newInstance())
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
