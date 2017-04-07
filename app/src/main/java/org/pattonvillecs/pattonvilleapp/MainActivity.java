@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout;
     private TabLayout tabLayout;
     private Toolbar toolbar;
-    private int currentFragmentId;
     private NavigationView mNavigationView;
 
     @Override
@@ -122,20 +120,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (currentFragmentId > 0) {
-            switch (currentFragmentId) {
-                case R.id.nav_news:
-                case R.id.nav_calendar:
-                case R.id.nav_directory:
-                    mNavigationView.getMenu().getItem(0).setChecked(true);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_default, HomeFragment.newInstance())
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .commit();
-                    break;
-            }
         } else {
-            super.onBackPressed();
+            boolean shouldExit = getSupportFragmentManager().findFragmentById(R.id.content_default) instanceof HomeFragment;
+            if (!shouldExit) {
+                mNavigationView.getMenu().getItem(0).setChecked(true);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_default, HomeFragment.newInstance())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -145,27 +140,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Fragment fragment = null;
         int itemId = item.getItemId();
-        currentFragmentId = -1;
 
         switch (itemId) {
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
-                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_news:
                 fragment = NewsFragment.newInstance();
-                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_calendar:
                 fragment = CalendarFragment.newInstance();
-                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_directory:
                 fragment = DirectoryFragment.newInstance();
-                currentFragmentId = itemId;
                 break;
 
             case R.id.nav_nutrislice:
@@ -203,8 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            final FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_default, fragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
