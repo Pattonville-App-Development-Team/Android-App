@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.firebase;
 
 import android.util.Log;
 

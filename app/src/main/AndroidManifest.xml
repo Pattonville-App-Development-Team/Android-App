@@ -64,12 +64,12 @@
             android:name=".fragments.directory.DirectoryDetailActivity"
             android:parentActivityName=".MainActivity" />
 
-        <service android:name=".FBNotificationsService">
+        <service android:name=".firebase.FBNotificationsService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".FBInstanceIDService">
+        <service android:name=".firebase.FBInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
