@@ -139,9 +139,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
 
         Fragment fragment = null;
-        int itemId = item.getItemId();
 
-        switch (itemId) {
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
                 break;
