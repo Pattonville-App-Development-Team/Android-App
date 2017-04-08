@@ -86,4 +86,29 @@
         android:text="@string/location_placeholder"
         android:transitionName="@string/text_bottom_transition_name" />
 
+    <ImageView
+        android:id="@+id/school_icon"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/map_marker_icon"
+        android:alpha=".54"
+        android:padding="16dp"
+        android:tint="@android:color/black"
+        app:srcCompat="@drawable/school"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/datasources"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location"
+        android:layout_toEndOf="@id/school_icon"
+        android:layout_toRightOf="@id/school_icon"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:padding="16dp"
+        android:text="@string/location_placeholder" />
+
 </RelativeLayout>
