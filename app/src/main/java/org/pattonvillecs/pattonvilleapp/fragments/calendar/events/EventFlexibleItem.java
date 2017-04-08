@@ -205,50 +205,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             holder.bottomText.setVisibility(View.INVISIBLE);
         }
 
-        holder.shortSchoolName.setText(Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
-            @Override
-            public SpannableString apply(DataSource dataSource) {
-                SpannableString spannableString = new SpannableString(("⬤ " + dataSource.shortName).replace(' ', '\u00A0'));
-
-                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                return spannableString;
-            }
-        }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
-            @Override
-            public Supplier<SpannableStringBuilder> supplier() {
-                return new Supplier<SpannableStringBuilder>() {
-                    @Override
-                    public SpannableStringBuilder get() {
-                        return new SpannableStringBuilder();
-                    }
-                };
-            }
-
-            @Override
-            public BiConsumer<SpannableStringBuilder, SpannableString> accumulator() {
-                return new BiConsumer<SpannableStringBuilder, SpannableString>() {
-                    @Override
-                    public void accept(SpannableStringBuilder value1, SpannableString value2) {
-                        value1.append(value2).append(", ");
-                    }
-                };
-            }
-
-            @Override
-            public Function<SpannableStringBuilder, SpannableStringBuilder> finisher() {
-                return new Function<SpannableStringBuilder, SpannableStringBuilder>() {
-                    @Override
-                    public SpannableStringBuilder apply(SpannableStringBuilder spannableStringBuilder) {
-                        return spannableStringBuilder.delete(spannableStringBuilder.length() - 2, spannableStringBuilder.length());
-                    }
-                };
-            }
-        }));
+        holder.shortSchoolName.setText(getDataSourcesSpannableStringBuilder());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,6 +287,53 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         };
         contentObserver.onChange(false); // Fire the first "event" to kick-start the requerying process. After this, the ContentObserver is automatically reregistered and cursors are closed/created
 
+    }
+
+    public SpannableStringBuilder getDataSourcesSpannableStringBuilder() {
+        return Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
+            @Override
+            public SpannableString apply(DataSource dataSource) {
+                SpannableString spannableString = new SpannableString(("⬤ " + dataSource.shortName).replace(' ', '\u00A0'));
+
+                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                return spannableString;
+            }
+        }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
+            @Override
+            public Supplier<SpannableStringBuilder> supplier() {
+                return new Supplier<SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder get() {
+                        return new SpannableStringBuilder();
+                    }
+                };
+            }
+
+            @Override
+            public BiConsumer<SpannableStringBuilder, SpannableString> accumulator() {
+                return new BiConsumer<SpannableStringBuilder, SpannableString>() {
+                    @Override
+                    public void accept(SpannableStringBuilder value1, SpannableString value2) {
+                        value1.append(value2).append(", ");
+                    }
+                };
+            }
+
+            @Override
+            public Function<SpannableStringBuilder, SpannableStringBuilder> finisher() {
+                return new Function<SpannableStringBuilder, SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder apply(SpannableStringBuilder spannableStringBuilder) {
+                        return spannableStringBuilder.delete(spannableStringBuilder.length() - 2, spannableStringBuilder.length());
+                    }
+                };
+            }
+        });
     }
 
     @Override
