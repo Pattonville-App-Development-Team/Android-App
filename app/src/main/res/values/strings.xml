@@ -95,8 +95,8 @@
     <string name="homeLoadingEventsText">Loading Calendar Data…</string>
     <string name="home_news_article_source">News Article Source</string>
 
-    <string name="no_data_loaded_yet_message">No data loaded, please wait...</string>
-    <string name="no_pinned_events_provided_message">No events pinned yet...</string>
+    <string name="no_data_loaded_yet_message">No data loaded, please wait…</string>
+    <string name="no_pinned_events_provided_message">No events pinned yet…</string>
     <string name="add_to_your_calendar_title">Add To Your Calendar</string>
     <string name="add_to_your_calendar_title_condensed">Add Event</string>
 
