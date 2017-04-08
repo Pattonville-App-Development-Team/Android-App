@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import com.annimon.stream.Optional;
+import com.annimon.stream.function.Function;
+
+import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.Location;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -104,17 +108,22 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         DateFormat timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
         //DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
         Date startDate = event.vEvent.getStartDate().getDate();
-        Date endDate = event.vEvent.getEndDate(true).getDate();
-        String dateString = dateFormatter.format(startDate);
+        Date endDate = Optional.ofNullable(event.vEvent.getEndDate(true)).map(new Function<DtEnd, Date>() {
+            @Override
+            public Date apply(DtEnd dtEnd) {
+                return dtEnd.getDate();
+            }
+        }).orElse(startDate);
+
+        String startDateString = dateFormatter.format(startDate);
+        String endDateString = dateFormatter.format(endDate);
         String startTimeString = timeFormatter.format(startDate);
         String endTimeString = timeFormatter.format(endDate);
 
-        timeDateTextView.setText(dateString + '\n' + startTimeString + " - " + endTimeString);
-        timeDateTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+        String combinedDateString = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
+        String combinedTimeString = startTimeString.equals(endTimeString) ? startTimeString : startTimeString + " - " + endTimeString;
+
+        timeDateTextView.setText(combinedDateString + '\n' + combinedTimeString);
 
         TextView locationTextView = (TextView) findViewById(R.id.location);
         final Location location = event.vEvent.getLocation();
