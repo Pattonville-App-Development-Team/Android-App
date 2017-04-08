@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         Log.d(TAG, "savedInstanceState == null is " + (savedInstanceState == null));
 
+        setTheme(R.style.PSD_NoActionBar);
         checkAppIntro();
 
         setContentView(R.layout.activity_main);
