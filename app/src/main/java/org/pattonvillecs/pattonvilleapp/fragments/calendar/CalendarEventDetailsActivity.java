@@ -3,21 +3,29 @@ package org.pattonvillecs.pattonvilleapp.fragments.calendar;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import net.fortuna.ical4j.model.property.Location;
+
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CalendarEventDetailsActivity extends AppCompatActivity {
 
     public static final String CALENDAR_EVENT_KEY = "calendar_event";
     public static final String PATTONVILLE_COORDINATES = "38.733249,-90.420162";
+    private EventFlexibleItem event;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -25,31 +33,65 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_add_to_calendar:
+                addToCalendar();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void addToCalendar() {
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_calendar_detail, menu);
+
+        //This terrifies me...
+        final ViewTreeObserver viewTreeObserver = getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = findViewById(R.id.action_add_to_calendar);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    SpotlightHelper.showSpotlight(CalendarEventDetailsActivity.this, menuButton, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+        return true;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_event_details);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final EventFlexibleItem event = getIntent().getParcelableExtra(CALENDAR_EVENT_KEY);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        event = getIntent().getParcelableExtra(CALENDAR_EVENT_KEY);
         if (event == null)
             throw new Error("Event required!");
 
         TextView timeDateTextView = (TextView) findViewById(R.id.time_and_date);
 
-        //DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-        //DateFormat timeFormatter = SimpleDateFormat.getTimeInstance();
-        DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
+        DateFormat dateFormatter = SimpleDateFormat.getDateInstance(DateFormat.FULL);
+        DateFormat timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+        //DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
+        Date startDate = event.vEvent.getStartDate().getDate();
+        String dateString = dateFormatter.format(startDate);
+        String timeString = timeFormatter.format(startDate);
 
-        timeDateTextView.setText(dateTimeFormatter.format(event.vEvent.getStartDate().getDate()));
+        timeDateTextView.setText(dateString + '\n' + timeString);
         timeDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,33 +99,23 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         });
 
         TextView locationTextView = (TextView) findViewById(R.id.location);
-        if (event.vEvent.getLocation() != null) {
-            final String location = event.vEvent.getLocation().getValue();
-            locationTextView.setText(location);
+        final Location location = event.vEvent.getLocation();
+        final String locationString = location != null && !location.getValue().isEmpty() ? location.getValue() : null;
+        if (locationString != null) {
+            locationTextView.setText(locationString);
             locationTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startMapsActivityForPattonvilleLocation(location);
+                    startMapsActivityForPattonvilleLocation(locationString);
                 }
             });
         } else {
             locationTextView.setText(R.string.no_location);
-            locationTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startMapsActivityForPattonvilleLocation("Pattonville High School");
-                }
-            });
         }
 
         TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
         if (event.vEvent.getSummary() != null)
             extraInfoTextView.setText(event.vEvent.getSummary().getValue());
-
-        //ImageView schoolColorCircle = (ImageView) findViewById(R.id.school_color_circle);
-        //schoolColorCircle.setColorFilter(event.dataSources.calendarColor);
-
-        //SpotlightHelper.showSpotlight(this, fab, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
     }
 
     private void startMapsActivityForPattonvilleLocation(String location) {
