@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
 
     public static final String CALENDAR_EVENT_KEY = "calendar_event";
     public static final String PATTONVILLE_COORDINATES = "38.733249,-90.420162";
+    private static final String TAG = CalendarEventDetailsActivity.class.getSimpleName();
     private EventFlexibleItem event;
 
     @Override
@@ -42,8 +44,22 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
     }
 
     private void addToCalendar() {
+        Log.i(TAG, "addToCalendar: " + event.vEvent);
+        Date startDate = event.vEvent.getStartDate().getDate();
+        Date endDate = event.vEvent.getEndDate(true).getDate();
+
+        Location location = event.vEvent.getLocation();
+        String locationString = location != null && !location.getValue().isEmpty() ? location.getValue() : null;
+
         Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI);
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startDate.getTime())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endDate.getTime())
+                .putExtra(CalendarContract.Events.TITLE, event.vEvent.getSummary().getValue());
+
+        if (locationString != null)
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, locationString);
+
         startActivity(intent);
     }
 
@@ -88,10 +104,12 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         DateFormat timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
         //DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
         Date startDate = event.vEvent.getStartDate().getDate();
+        Date endDate = event.vEvent.getEndDate(true).getDate();
         String dateString = dateFormatter.format(startDate);
-        String timeString = timeFormatter.format(startDate);
+        String startTimeString = timeFormatter.format(startDate);
+        String endTimeString = timeFormatter.format(endDate);
 
-        timeDateTextView.setText(dateString + '\n' + timeString);
+        timeDateTextView.setText(dateString + '\n' + startTimeString + " - " + endTimeString);
         timeDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
