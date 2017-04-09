@@ -190,13 +190,13 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 result = requestFuture.get(5, TimeUnit.MINUTES);
                 downloadSucceeded = true;
             } catch (InterruptedException e) {
-                Log.e(TAG, "Thread interrupted!");
+                Log.e(TAG, "Thread interrupted!", e);
                 downloadSucceeded = false;
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Execution exception!", e);
                 downloadSucceeded = false;
             } catch (TimeoutException e) {
-                Log.e(TAG, "Download timed out!");
+                Log.e(TAG, "Download timed out!", e);
                 downloadSucceeded = false;
             }
 
@@ -223,7 +223,6 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                     e.printStackTrace();
                 } finally {
                     if (output != null) {
-                        //noinspection ThrowFromFinallyBlock
                         output.close();
                     }
                 }
