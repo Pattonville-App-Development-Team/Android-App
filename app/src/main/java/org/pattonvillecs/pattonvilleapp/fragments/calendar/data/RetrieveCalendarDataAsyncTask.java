@@ -133,7 +133,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
         // Begin caching operations.
 
-        File calendarDataCache = new File(this.pattonvilleApplication.getCacheDir(), dataSource.shortName + ".bin");
+        File calendarDataCache = new File(this.pattonvilleApplication.getCacheDir(), dataSource.shortName + "_calendar.bin");
 
         boolean cacheExists = calendarDataCache.exists();
         long cacheAge = System.currentTimeMillis() - calendarDataCache.lastModified();
