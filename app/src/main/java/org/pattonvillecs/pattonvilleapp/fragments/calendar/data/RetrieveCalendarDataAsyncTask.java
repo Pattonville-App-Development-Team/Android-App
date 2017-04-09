@@ -54,6 +54,7 @@ import java.util.concurrent.TimeoutException;
 public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, List<VEvent>> {
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
+    private static final long CALENDAR_CACHE_EXPIRATION_HOURS = 24 * 7;
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
     private DataSource dataSource;
@@ -137,7 +138,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
         boolean cacheExists = calendarDataCache.exists();
         long cacheAge = System.currentTimeMillis() - calendarDataCache.lastModified();
-        boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < 24 * 7; // One week expiration
+        boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < CALENDAR_CACHE_EXPIRATION_HOURS; // One week expiration
 
         if (cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
