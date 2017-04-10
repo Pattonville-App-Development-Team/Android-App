@@ -119,6 +119,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                 }
                 firebaseMessaging.unsubscribeFromTopic("All-Middle-Schools");
                 firebaseMessaging.unsubscribeFromTopic("All-Elementary-Schools");
+                firebaseMessaging.unsubscribeFromTopic("test");
 
                 for (DataSource dataSource : newSelectedDataSources) {
                     firebaseMessaging.subscribeToTopic(dataSource.topicName);
@@ -127,6 +128,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                     } else if (dataSource.isMiddleSchool) {
                         firebaseMessaging.subscribeToTopic("All-Middle-Schools");
                     }
+                }
+
+                if (BuildConfig.DEBUG) {
+                    firebaseMessaging.subscribeToTopic("test");
                 }
             }
         });
