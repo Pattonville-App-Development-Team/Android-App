@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_to_calendar"
+        android:icon="@drawable/calendar_plus"
+        android:title="@string/add_to_your_calendar_title"
+        android:titleCondensed="@string/add_to_your_calendar_title_condensed"
+        app:showAsAction="ifRoom" />
+</menu>
