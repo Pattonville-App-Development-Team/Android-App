@@ -9,7 +9,7 @@
         <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
     </style>
 
-    <style name="PSD.SplashScreen">
+    <style name="PSD.NoActionBar.SplashScreen">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
