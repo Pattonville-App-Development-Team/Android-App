@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Px;
 import android.support.v4.view.BetterViewPager;
 import android.util.AttributeSet;
@@ -126,6 +127,11 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     @Override
     public void dispatchOnDateSelected(CalendarDay day, boolean selected) {
         super.dispatchOnDateSelected(day, selected);
+    }
+
+    @Override
+    public void onDateClicked(@NonNull CalendarDay date, boolean nowSelected) {
+        super.onDateClicked(date, nowSelected);
     }
 
     @Override
