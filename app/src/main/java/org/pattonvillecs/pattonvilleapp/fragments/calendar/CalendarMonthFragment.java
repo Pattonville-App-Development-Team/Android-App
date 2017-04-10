@@ -163,16 +163,16 @@ public class CalendarMonthFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_today:
-                setDisplayedDayToDay(CalendarDay.today());
+                setDisplayedDayTo(CalendarDay.today());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void setDisplayedDayToDay(CalendarDay calendarDay) {
-        fixedMaterialCalendarView.setCurrentDate(calendarDay);
-        //fixedMaterialCalendarView.dispatchOnDateSelected(calendarDay, true);
+    private void setDisplayedDayTo(CalendarDay calendarDay) {
+        //fixedMaterialCalendarView.setCurrentDate(calendarDay);
+        fixedMaterialCalendarView.dispatchOnDateSelected(calendarDay, true);
     }
 
     private List<FlexibleHasCalendarDay> getItemsForDay(@NonNull CalendarDay calendarDay) {
@@ -402,7 +402,7 @@ public class CalendarMonthFragment extends Fragment {
         fixedMaterialCalendarView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                setDisplayedDayToDay(currentDateSelected);
+                setDisplayedDayTo(currentDateSelected);
             }
         }, 1000);
 
