@@ -15,7 +15,7 @@
         <com.synnapps.carouselview.CarouselView
             android:id="@+id/carouselView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             app:animateOnBoundary="true"
             app:fillColor="@color/colorAccent"
             app:pageColor="#00000000"
@@ -39,7 +39,10 @@
                 android:layout_weight="3"
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="20dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_news_header_text"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
@@ -49,35 +52,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimary"
+                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
                 android:gravity="center_vertical|end"
+                android:padding="8dp"
                 android:text="@string/see_more"
                 android:textColor="@color/colorAccent" />
 
-            <ImageView
-                android:id="@+id/home_recent_news_see_more_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:paddingEnd="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="8dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_arrow_forward_white_18dp" />
-
-
         </LinearLayout>
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_news_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-
         <LinearLayout
             android:id="@+id/home_events_header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
@@ -85,9 +79,11 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="3"
-                android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="20dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_upcoming_events_header_text"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
@@ -96,28 +92,19 @@
                 android:id="@+id/home_upcoming_events_see_more_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
+                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
                 android:gravity="center_vertical|end"
+                android:padding="8dp"
                 android:text="@string/see_more"
                 android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/home_upcoming_events_see_more_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:paddingEnd="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="8dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_arrow_forward_white_18dp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_calendar_event_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
 
         <LinearLayout
             android:id="@+id/home_pinned_header_layout"
@@ -132,7 +119,10 @@
                 android:layout_weight="3"
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="20dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_pinned_events_header_text"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
@@ -142,20 +132,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimary"
+                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
                 android:gravity="center_vertical"
+                android:padding="8dp"
                 android:text="@string/see_more"
                 android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/home_pinned_events_see_more_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:paddingEnd="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="8dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_arrow_forward_white_18dp" />
 
         </LinearLayout>
 
