@@ -192,6 +192,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         if (getExtension1().isEmpty()) {
             holder.extensionButton.setVisibility(View.INVISIBLE);
         } else {
+            holder.extensionButton.setVisibility(View.VISIBLE);
             holder.extensionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,6 +208,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         if (getEmail().isEmpty()) {
             holder.emailButton.setVisibility(View.INVISIBLE);
         } else {
+            holder.emailButton.setVisibility(View.VISIBLE);
             holder.emailButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
