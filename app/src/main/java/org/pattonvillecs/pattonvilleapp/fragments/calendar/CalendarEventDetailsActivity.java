@@ -145,7 +145,7 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
             extraInfoTextView.setText(event.vEvent.getSummary().getValue());
 
         TextView dataSourcesTextView = (TextView) findViewById(R.id.datasources);
-        dataSourcesTextView.setText(event.getDataSourcesSpannableStringBuilder());
+        dataSourcesTextView.setText(event.getDataSourcesSpannableStringBuilder(getApplicationContext().getAssets()));
     }
 
     private void startMapsActivityForPattonvilleLocation(String location) {
