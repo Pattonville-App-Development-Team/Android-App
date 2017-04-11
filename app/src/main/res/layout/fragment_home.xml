@@ -18,13 +18,13 @@
             android:layout_height="250dp"
             app:animateOnBoundary="true"
             app:fillColor="@color/colorAccent"
-            app:pageColor="#00000000"
+            app:pageColor="@android:color/transparent"
             app:pageTransformInterval="3000"
             app:radius="6dp"
             app:slideInterval="5000"
             app:snap="true"
-            app:strokeColor="#FF777777"
-            app:strokeWidth="2dp" />
+            app:strokeColor="@android:color/secondary_text_light"
+            app:strokeWidth="1dp" />
 
         <LinearLayout
             android:id="@+id/home_news_header_layout"
