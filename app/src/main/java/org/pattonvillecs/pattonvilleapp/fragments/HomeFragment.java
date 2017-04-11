@@ -67,10 +67,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private static final int EVENTS_PREFERENCE_VALUES_INDEX = 1;
     private static final int NEWS_PREFERENCE_VALUES_INDEX = 0;
     private static final int PINNED_EVENTS_LOADER_ID = 2;
-    public static int[] sampleImages = {
-            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
-            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
-            R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
     private CarouselView carouselView;
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
     private ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
