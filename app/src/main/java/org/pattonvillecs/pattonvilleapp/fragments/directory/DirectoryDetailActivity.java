@@ -3,6 +3,9 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -72,39 +75,22 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         facultyView.addItemDecoration(dividerItemDecoration);
 
         ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
+
+        int resource = -1;
         switch (school) {
-            /*case HIGH_SCHOOL:
-                schoolImage.setImageResource(R.drawable.phs_building);
-                break;
-            case HEIGHTS_MIDDLE_SCHOOL:
-                schoolImage.setImageResource(R.drawable.ht_building);
-                break;
-            case HOLMAN_MIDDLE_SCHOOL:
-                schoolImage.setImageResource(R.drawable.ho_building);
-                break;
-            case REMINGTON_TRADITIONAL_SCHOOL:
-                schoolImage.setImageResource(R.drawable.rt_building);
-                break;
-            case BRIDGEWAY_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.bw_building);
-                break;
-            case DRUMMOND_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.dr_building);
-                break;
-            case PARKWOOD_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.pw_building);
-                break;
-            case ROSE_ACRES_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.ra_building);
-                break;
-            case WILLOW_BROOK_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.wb_building);
-                break;*/
+            case HIGH_SCHOOL: resource = R.drawable.highschool_building; break;
+            case HEIGHTS_MIDDLE_SCHOOL: resource = R.drawable.heights_building; break;
+            case HOLMAN_MIDDLE_SCHOOL: resource = R.drawable.holman_building; break;
+            case REMINGTON_TRADITIONAL_SCHOOL: resource = R.drawable.remington_building; break;
+            case BRIDGEWAY_ELEMENTARY: resource = R.drawable.brideway_building;break;
+            case DRUMMOND_ELEMENTARY: resource = R.drawable.drummond_building; break;
+            case PARKWOOD_ELEMENTARY: resource = R.drawable.parkwood_building; break;
+            case ROSE_ACRES_ELEMENTARY: resource = R.drawable.roseacres_building; break;
+            case WILLOW_BROOK_ELEMENTARY: resource = R.drawable.willowbrook_building; break;
             case DISTRICT:
-            default:
-                schoolImage.setImageResource(R.drawable.psd_logo);
-                break;
-        }
+            default: resource = R.drawable.learningcenter_building; break; }
+
+        schoolImage.setImageBitmap(decodeSampledBitmapFromResource(getResources(), resource, 512, 512));
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
@@ -214,5 +200,44 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
             searchView.setOnQueryTextListener(this);
         }
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
     }
 }
