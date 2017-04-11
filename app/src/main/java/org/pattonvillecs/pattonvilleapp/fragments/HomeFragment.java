@@ -27,6 +27,7 @@ import com.annimon.stream.function.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
@@ -70,7 +71,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
-    public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
     private CarouselView carouselView;
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
     private ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-            imageView.setImageResource(sampleImages[position]);
+            Picasso.with(getContext()).load("http://moodle.psdr3.org/psdlogin/backgrounds/bg" + position + ".jpg").into(imageView);
         }
     };
     private PauseableListener<NewsParsingUpdateData> homeListener;
@@ -302,7 +302,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         List<HashMap<String, String>> homePinnedList = new ArrayList<>();
 
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
-        carouselView.setPageCount(4);
+        carouselView.setPageCount(16);
         carouselView.setImageListener(imageListener);
 
         int homeNewsAmount = PreferenceUtils.getHomeNewsAmount(getContext());
