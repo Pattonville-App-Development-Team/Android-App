@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -109,11 +110,11 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         // If the cache has the link's content save, parse and display
         // Otherwise, pull the data
-        if (queue.getCache().get(stringRequest.getCacheKey()) != null
-                && queue.getCache().get(stringRequest.getCacheKey()).data != null) {
-            Log.e(TAG, "Using Cache");
-            mWebView.loadData(CONTENT_FORMATTING_STRING + NewsArticle.formatContent(
-                    new String(queue.getCache().get(stringRequest.getCacheKey()).data)), "text/html", null);
+        Cache.Entry cacheEntry = queue.getCache().get(stringRequest.getCacheKey());
+        if (cacheEntry != null && cacheEntry.data != null) {
+            Log.d(TAG, "Using cached article data");
+            String cachedData = new String(cacheEntry.data);
+            mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(cachedData), "text/html; charset=utf-8", "utf-8", null);
         } else {
             queue.add(stringRequest);
         }
