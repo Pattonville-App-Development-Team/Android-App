@@ -171,8 +171,7 @@ public class CalendarMonthFragment extends Fragment {
     }
 
     private void setDisplayedDayTo(CalendarDay calendarDay) {
-        //fixedMaterialCalendarView.setCurrentDate(calendarDay);
-        fixedMaterialCalendarView.onDateClicked(calendarDay, true);
+        fixedMaterialCalendarView.onDateClickedMoveMonth(calendarDay, true);
     }
 
     private List<FlexibleHasCalendarDay> getItemsForDay(@NonNull CalendarDay calendarDay) {
