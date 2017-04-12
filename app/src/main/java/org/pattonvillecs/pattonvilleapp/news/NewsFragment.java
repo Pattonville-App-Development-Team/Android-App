@@ -75,16 +75,13 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public void onStart() {
         super.onStart();
-
         listener.attach(pattonvilleApplication);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
 
         // Sets up listener for data changes and updates
@@ -101,7 +98,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
 
                 setNewsArticles(data);
-
                 checkRefresh(data);
             }
 
@@ -112,7 +108,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 Log.d(TAG, "Size: " + data.getRunningNewsAsyncTasks().size());
 
                 setNewsArticles(data);
-
                 checkRefresh(data);
             }
 
@@ -160,7 +155,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         pattonvilleApplication.registerPauseableListener(listener);
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
@@ -188,7 +182,6 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         listener.unattach();
         pattonvilleApplication.unregisterPauseableListener(listener);
     }
@@ -218,10 +211,8 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
             case R.id.news_menu_refresh:
                 pattonvilleApplication.refreshNewsData();
-
                 Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
                 break;
         }

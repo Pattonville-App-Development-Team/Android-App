@@ -96,6 +96,6 @@
     <string name="home_news_article_source">News Article Source</string>
 
     <string name="no_data_loaded_yet_message">No data loaded, please wait...</string>
-    <string name="no_pinned_events_provided_message">No events pinned yet...</string>
+    <string name="no_pinned_events_provided_message">No calendar events pinned</string>
 
 </resources>

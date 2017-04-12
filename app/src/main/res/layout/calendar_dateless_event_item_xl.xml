@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.varunest.sparkbutton.SparkButton
+        android:id="@+id/pinned_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:sparkbutton_activeImage="@drawable/pin_active"
+        app:sparkbutton_animationSpeed="2"
+        app:sparkbutton_iconSize="42dp"
+        app:sparkbutton_inActiveImage="@drawable/pin_inactive"
+        app:sparkbutton_primaryColor="@color/colorPrimary"
+        app:sparkbutton_secondaryColor="@color/colorPrimaryDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="60dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="60dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/text_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:transitionName="@string/text_top_transition_name"
+            tools:text="Event Name" />
+
+        <TextView
+            android:id="@+id/text_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:transitionName="@string/text_bottom_transition_name"
+            tools:text="Date - Time" />
+
+        <TextView
+            android:id="@+id/school_short_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            tools:text="District, High School, Remington, Heights" />
+
+    </LinearLayout>
+
+</RelativeLayout>

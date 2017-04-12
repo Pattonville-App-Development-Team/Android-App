@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,6 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -70,9 +70,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4,
             R.drawable.test_news_1, R.drawable.test_news_2, R.drawable.test_news_3, R.drawable.test_news_4};
-    public static String[] samplePinnedEvents = {"Pinned Event 1", "Pinned Event 2", "Pinned Event 3"};
+    private float dpHeight;
     private CarouselView carouselView;
-    private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
+    private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNoPinnedEventsTextView;
     private ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
     private NavigationView mNavigationView;
     private RecyclerView mHomeNewsRecyclerView, mHomeCalendarEventRecyclerView;
@@ -99,6 +99,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private LinearLayout homePinnedHeader;
     private TextView homeNoItemsView;
     private RecyclerView mHomeCalendarPinnedRecyclerView;
+
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -138,6 +139,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+
+
         cursorLoader = getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
         homeListener = new PauseableListener<NewsParsingUpdateData>(true) {
             @Override
@@ -275,6 +280,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        if (dpHeight > 700) {
+            view = inflater.inflate(R.layout.fragment_home_xl, container, false);
+        }
+
         mHomeNewsRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
         mHomeCalendarEventRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_event_recyclerView);
         mHomeCalendarPinnedRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_pinned_recyclerView);
@@ -299,7 +308,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         mHomeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         mHomeCalendarPinnedRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
-        List<HashMap<String, String>> homePinnedList = new ArrayList<>();
 
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
         carouselView.setPageCount(4);
@@ -313,13 +321,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         homeEventsHeader = (LinearLayout) view.findViewById(R.id.home_events_header_layout);
         homePinnedHeader = (LinearLayout) view.findViewById(R.id.home_pinned_header_layout);
         homeNoItemsView = (TextView) view.findViewById(R.id.home_no_items_shown_textview);
+        homeNoPinnedEventsTextView = (TextView) view.findViewById(R.id.home_no_pinned_events_textView);
 
         if (homeNewsAmount == 0)
             homeNewsHeader.setVisibility(View.GONE);
         if (homeEventsAmount == 0)
             homeEventsHeader.setVisibility(View.GONE);
-        if (homePinnedAmount == 0)
+        if (homePinnedAmount == 0) {
             homePinnedHeader.setVisibility(View.GONE);
+            homeNoPinnedEventsTextView.setVisibility(View.GONE);
+        }
         if (homeNewsAmount == 0 && homeEventsAmount == 0 && homePinnedAmount == 0)
             homeNoItemsView.setVisibility(View.VISIBLE);
 
@@ -418,10 +429,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     }
 
     private void updatePinnedContent() {
-        if (pinnedUIDs.size() == 0)
-            homePinnedHeader.setVisibility(View.GONE);
+        if (pinnedUIDs.size() == 0 && PreferenceUtils.getHomePinnedAmount(getContext()) != 0)
+            homeNoPinnedEventsTextView.setVisibility(View.VISIBLE);
         else if (preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] != 0)
-            homePinnedHeader.setVisibility(View.VISIBLE);
+            homeNoPinnedEventsTextView.setVisibility(View.GONE);
         //There is definitely stuff to display now
         List<EventFlexibleItem> items = new ArrayList<>(calendarData);
 

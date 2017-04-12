@@ -19,6 +19,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,9 +183,23 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         return R.layout.calendar_dateless_event_list_item;
     }
 
+    public int getXlLayoutRes() {
+
+        return R.layout.calendar_dateless_event_item_xl;
+
+    }
+
     @Override
     public EventViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new EventViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+
+        DisplayMetrics displayMetrics = inflater.getContext().getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+
+        if (dpHeight > 700) {
+            return new EventViewHolder(inflater.inflate(getXlLayoutRes(), parent, false), adapter);
+        } else {
+            return new EventViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+        }
     }
 
     @Override

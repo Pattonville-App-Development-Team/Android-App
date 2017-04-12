@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -43,6 +46,16 @@ public class SchoolListActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_school_list);
         setTitle("Nutrislice Links");
+
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = getResources().getDisplayMetrics().density;
+        float dpHeight = outMetrics.heightPixels / density;
+        float dpWidth = outMetrics.widthPixels / density;
+
+        Log.e("TESTING SCREEN SIZE", "Width: " + dpWidth + " Height: " + dpHeight);
 
         peachjar = getIntent().getBooleanExtra("peachjar", false);
 

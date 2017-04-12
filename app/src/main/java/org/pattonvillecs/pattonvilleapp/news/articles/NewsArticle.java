@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -190,7 +191,13 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     @Override
     public int getLayoutRes() {
-        return R.layout.home_news_listview_item;
+
+        return R.layout.home_news_recyclerview_item;
+    }
+
+    public int getXlLayoutRes() {
+
+        return R.layout.home_news_recyclerview_item_xl;
     }
 
     /**
@@ -212,7 +219,15 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     @Override
     public NewsArticleViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new NewsArticleViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+
+        DisplayMetrics displayMetrics = inflater.getContext().getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+
+        if (dpHeight > 700) {
+            return new NewsArticleViewHolder(inflater.inflate(getXlLayoutRes(), parent, false), adapter);
+        } else {
+            return new NewsArticleViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+        }
     }
 
     /**

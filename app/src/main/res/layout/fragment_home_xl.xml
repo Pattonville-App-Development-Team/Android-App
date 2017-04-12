@@ -15,7 +15,7 @@
         <com.synnapps.carouselview.CarouselView
             android:id="@+id/carouselView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             app:animateOnBoundary="true"
             app:fillColor="@color/colorAccent"
             app:pageColor="#00000000"
@@ -35,14 +35,17 @@
             <TextView
                 android:id="@+id/home_news_header"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="3"
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="0dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="0dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_news_header_text"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/recent_news_see_more_textview"
@@ -51,7 +54,8 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical|end"
                 android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/home_recent_news_see_more_arrow"
@@ -83,14 +87,17 @@
             <TextView
                 android:id="@+id/upcoming_events_header"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="3"
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="0dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="0dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_upcoming_events_header_text"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/home_upcoming_events_see_more_textview"
@@ -99,7 +106,8 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical|end"
                 android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/home_upcoming_events_see_more_arrow"
@@ -128,14 +136,17 @@
             <TextView
                 android:id="@+id/pinned_events_header"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="3"
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
+                android:paddingEnd="0dp"
                 android:paddingLeft="20dp"
+                android:paddingRight="0dp"
+                android:paddingStart="20dp"
                 android:text="@string/home_pinned_events_header_text"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/home_pinned_events_see_more_textview"
@@ -144,7 +155,8 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
                 android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/home_pinned_events_see_more_arrow"
@@ -172,7 +184,7 @@
             android:paddingTop="16dp"
             android:text="@string/no_pinned_events_provided_message"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_calendar_pinned_recyclerView"
@@ -192,7 +204,7 @@
             android:text="@string/zero_home_items_selected_textview"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
 

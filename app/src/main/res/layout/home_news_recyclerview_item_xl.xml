@@ -19,15 +19,15 @@
 
         <ImageView
             android:id="@+id/news_front_imageview"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:contentDescription="@string/home_news_article_source"
             android:src="@drawable/news_color_circle" />
 
         <TextView
             android:id="@+id/news_circle_school_id"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignBottom="@+id/news_front_imageview"
             android:layout_alignEnd="@+id/news_front_imageview"
             android:layout_alignLeft="@+id/news_front_imageview"
@@ -58,14 +58,14 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/news_list_article_date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/test_date"
-            android:textSize="14sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
