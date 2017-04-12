@@ -29,6 +29,7 @@ import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
 import java.util.Collections;
@@ -118,6 +119,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                 }
                 firebaseMessaging.unsubscribeFromTopic("All-Middle-Schools");
                 firebaseMessaging.unsubscribeFromTopic("All-Elementary-Schools");
+                firebaseMessaging.unsubscribeFromTopic("test");
 
                 for (DataSource dataSource : newSelectedDataSources) {
                     firebaseMessaging.subscribeToTopic(dataSource.topicName);
@@ -126,6 +128,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                     } else if (dataSource.isMiddleSchool) {
                         firebaseMessaging.subscribeToTopic("All-Middle-Schools");
                     }
+                }
+
+                if (BuildConfig.DEBUG) {
+                    firebaseMessaging.subscribeToTopic("test");
                 }
             }
         });

@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.preferences;
 
 import android.os.Bundle;
 import android.preference.Preference;
@@ -6,7 +6,7 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference;
+import org.pattonvillecs.pattonvilleapp.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +26,8 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragmen
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
+import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 
 import java.io.File;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+    private NavigationView mNavigationView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.PSD_NoActionBar);
         super.onCreate(savedInstanceState);
         Log.d(TAG, "savedInstanceState == null is " + (savedInstanceState == null));
 
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
 
-        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
             mNavigationView.setCheckedItem(R.id.nav_home);
@@ -116,11 +119,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            boolean shouldExit = getSupportFragmentManager().findFragmentById(R.id.content_default) instanceof HomeFragment;
+            if (!shouldExit) {
+                mNavigationView.getMenu().getItem(0).setChecked(true);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_default, HomeFragment.newInstance())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -182,8 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            final FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_default, fragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();

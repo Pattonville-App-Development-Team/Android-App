@@ -9,6 +9,10 @@
         <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
     </style>
 
+    <style name="PSD.NoActionBar.SplashScreen">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
     <style name="PSD.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

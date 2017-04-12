@@ -5,8 +5,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -43,6 +45,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity;
+import org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.CustomTypefaceSpan;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned.PinnedEventsContract;
 
 import java.io.Serializable;
@@ -205,50 +208,9 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             holder.bottomText.setVisibility(View.INVISIBLE);
         }
 
-        holder.shortSchoolName.setText(Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
-            @Override
-            public SpannableString apply(DataSource dataSource) {
-                SpannableString spannableString = new SpannableString(("⬤ " + dataSource.shortName).replace(' ', '\u00A0'));
-
-                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                return spannableString;
-            }
-        }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
-            @Override
-            public Supplier<SpannableStringBuilder> supplier() {
-                return new Supplier<SpannableStringBuilder>() {
-                    @Override
-                    public SpannableStringBuilder get() {
-                        return new SpannableStringBuilder();
-                    }
-                };
-            }
-
-            @Override
-            public BiConsumer<SpannableStringBuilder, SpannableString> accumulator() {
-                return new BiConsumer<SpannableStringBuilder, SpannableString>() {
-                    @Override
-                    public void accept(SpannableStringBuilder value1, SpannableString value2) {
-                        value1.append(value2).append(", ");
-                    }
-                };
-            }
-
-            @Override
-            public Function<SpannableStringBuilder, SpannableStringBuilder> finisher() {
-                return new Function<SpannableStringBuilder, SpannableStringBuilder>() {
-                    @Override
-                    public SpannableStringBuilder apply(SpannableStringBuilder spannableStringBuilder) {
-                        return spannableStringBuilder.delete(spannableStringBuilder.length() - 2, spannableStringBuilder.length());
-                    }
-                };
-            }
-        }));
+        Activity activity = getActivity(adapter.getRecyclerView());
+        if (activity != null)
+            holder.shortSchoolName.setText(getDataSourcesSpannableStringBuilder(activity.getApplicationContext().getAssets()));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,6 +292,52 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         };
         contentObserver.onChange(false); // Fire the first "event" to kick-start the requerying process. After this, the ContentObserver is automatically reregistered and cursors are closed/created
 
+    }
+
+    public SpannableStringBuilder getDataSourcesSpannableStringBuilder(final AssetManager assetManager) {
+        return Stream.of(dataSources).map(new Function<DataSource, SpannableString>() {
+            @Override
+            public SpannableString apply(DataSource dataSource) { // \uf111 is a circle in Font Awesome. Supported on all devices
+                SpannableString spannableString = new SpannableString(("\uf111 " + dataSource.shortName).replace(' ', '\u00A0'));
+
+                spannableString.setSpan(new ForegroundColorSpan(dataSource.calendarColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new RelativeSizeSpan(1.25f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new CustomTypefaceSpan(Typeface.createFromAsset(assetManager, "fonts/" +
+                        "fontawesome-webfont.ttf")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                return spannableString;
+            }
+        }).collect(new Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder>() {
+            @Override
+            public Supplier<SpannableStringBuilder> supplier() {
+                return new Supplier<SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder get() {
+                        return new SpannableStringBuilder();
+                    }
+                };
+            }
+
+            @Override
+            public BiConsumer<SpannableStringBuilder, SpannableString> accumulator() {
+                return new BiConsumer<SpannableStringBuilder, SpannableString>() {
+                    @Override
+                    public void accept(SpannableStringBuilder value1, SpannableString value2) {
+                        value1.append(value2).append(", ");
+                    }
+                };
+            }
+
+            @Override
+            public Function<SpannableStringBuilder, SpannableStringBuilder> finisher() {
+                return new Function<SpannableStringBuilder, SpannableStringBuilder>() {
+                    @Override
+                    public SpannableStringBuilder apply(SpannableStringBuilder spannableStringBuilder) {
+                        return spannableStringBuilder.delete(spannableStringBuilder.length() - 2, spannableStringBuilder.length());
+                    }
+                };
+            }
+        });
     }
 
     @Override

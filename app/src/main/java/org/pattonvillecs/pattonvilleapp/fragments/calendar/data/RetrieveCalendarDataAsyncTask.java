@@ -54,6 +54,7 @@ import java.util.concurrent.TimeoutException;
 public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double, List<VEvent>> {
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
+    private static final long CALENDAR_CACHE_EXPIRATION_HOURS = 24 * 7;
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
     private DataSource dataSource;
@@ -133,11 +134,11 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
         // Begin caching operations.
 
-        File calendarDataCache = new File(this.pattonvilleApplication.getCacheDir(), dataSource.shortName + ".bin");
+        File calendarDataCache = new File(this.pattonvilleApplication.getCacheDir(), dataSource.shortName + "_calendar.bin");
 
         boolean cacheExists = calendarDataCache.exists();
         long cacheAge = System.currentTimeMillis() - calendarDataCache.lastModified();
-        boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < 24 * 7; // One week expiration
+        boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < CALENDAR_CACHE_EXPIRATION_HOURS; // One week expiration
 
         if (cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
@@ -189,13 +190,13 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 result = requestFuture.get(5, TimeUnit.MINUTES);
                 downloadSucceeded = true;
             } catch (InterruptedException e) {
-                Log.e(TAG, "Thread interrupted!");
+                Log.e(TAG, "Thread interrupted!", e);
                 downloadSucceeded = false;
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Execution exception!", e);
                 downloadSucceeded = false;
             } catch (TimeoutException e) {
-                Log.e(TAG, "Download timed out!");
+                Log.e(TAG, "Download timed out!", e);
                 downloadSucceeded = false;
             }
 
@@ -222,7 +223,6 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                     e.printStackTrace();
                 } finally {
                     if (output != null) {
-                        //noinspection ThrowFromFinallyBlock
                         output.close();
                     }
                 }
