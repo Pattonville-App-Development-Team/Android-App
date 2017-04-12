@@ -50,7 +50,6 @@ import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -294,10 +293,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         mHomeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         mHomeCalendarPinnedRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
-        List<HashMap<String, String>> homePinnedList = new ArrayList<>();
-
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
-        carouselView.setPageCount(16);
+        carouselView.setPageCount(8);
         carouselView.setImageListener(imageListener);
 
         int homeNewsAmount = PreferenceUtils.getHomeNewsAmount(getContext());
