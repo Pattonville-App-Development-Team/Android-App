@@ -93,17 +93,15 @@ public class NewsDetailActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         // When content found, load
-                        mWebView.loadData(CONTENT_FORMATTING_STRING +
-                                NewsArticle.formatContent(response), "text/html", null);
+                        mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), "text/html; charset=utf-8", "utf-8", null);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
                 // When unable to get content, inform the user
-                Toast.makeText(getApplicationContext(), "Unable to load content", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Unable to download news article content", Toast.LENGTH_SHORT).show();
                 mRefreshLayout.setRefreshing(false);
                 mRefreshLayout.setEnabled(false);
             }
