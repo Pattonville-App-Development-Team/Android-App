@@ -142,11 +142,11 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
     public void onDateClickedMoveMonth(@NonNull final CalendarDay selectedDate, boolean shouldCheck) {
         CalendarDay currentDate = getCurrentDate();
-        int currentMonth = currentDate.getMonth();
-        int selectedMonth = selectedDate.getMonth();
+        final int selectedMonth = selectedDate.getMonth();
+        final int selectedYear = selectedDate.getYear();
 
         CalendarMode calendarMode = getCalendarMode();
-        while (calendarMode == CalendarMode.MONTHS && allowClickDaysOutsideCurrentMonth() && currentMonth != selectedMonth) {
+        while (calendarMode == CalendarMode.MONTHS && allowClickDaysOutsideCurrentMonth() && (currentDate.getMonth() != selectedMonth || currentDate.getYear() != selectedYear)) {
             if (currentDate.isAfter(selectedDate)) {
                 goToPrevious();
             } else if (currentDate.isBefore(selectedDate)) {
@@ -154,7 +154,6 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             }
 
             currentDate = getCurrentDate();
-            currentMonth = currentDate.getMonth();
         }
         onDateClicked(selectedDate, shouldCheck);
     }
