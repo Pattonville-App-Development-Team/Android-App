@@ -31,23 +31,27 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     private static final int DAY_NAMES_ROW = 1;
     private static final String TAG = "FixedMatCalView";
     private static final Method getWeekCountBasedOnModeMethod;
-    private static final Field tileHeightField, tileWidthField, adapterField;
+    private static final Field tileHeightField, tileWidthField, adapterField, calendarModeField, pagerField;
 
     @Px
     private static final int INVALID_TILE_DIMENSION = -10;
 
-
     static {
         try {
+
+            calendarModeField = MaterialCalendarView.class.getDeclaredField("calendarMode");
             getWeekCountBasedOnModeMethod = MaterialCalendarView.class.getDeclaredMethod("getWeekCountBasedOnMode");
             tileHeightField = MaterialCalendarView.class.getDeclaredField("tileHeight");
             tileWidthField = MaterialCalendarView.class.getDeclaredField("tileWidth");
             adapterField = MaterialCalendarView.class.getDeclaredField("adapter");
+            pagerField = MaterialCalendarView.class.getDeclaredField("pager");
 
             getWeekCountBasedOnModeMethod.setAccessible(true);
             tileHeightField.setAccessible(true);
             tileWidthField.setAccessible(true);
             adapterField.setAccessible(true);
+            calendarModeField.setAccessible(true);
+            pagerField.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new NoSuchMethodError(e.getLocalizedMessage());
         } catch (NoSuchFieldException e) {
@@ -60,8 +64,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
         Log.d(TAG, "Constructor called");
 
-        TypedArray a = context.getTheme()
-                .obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
         try {
             final int tileSize = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileSize, INVALID_TILE_DIMENSION);
             if (tileSize > INVALID_TILE_DIMENSION) {
@@ -129,9 +132,30 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         super.dispatchOnDateSelected(day, selected);
     }
 
-    @Override
-    public void onDateClicked(@NonNull CalendarDay date, boolean nowSelected) {
-        super.onDateClicked(date, nowSelected);
+    private CalendarMode getCalendarMode() {
+        try {
+            return (CalendarMode) calendarModeField.get(this);
+        } catch (IllegalAccessException e) {
+            throw new IllegalAccessError(e.getLocalizedMessage());
+        }
+    }
+
+    public void onDateClickedMoveMonth(@NonNull final CalendarDay selectedDate, boolean shouldCheck) {
+        CalendarDay currentDate = getCurrentDate();
+        final int selectedMonth = selectedDate.getMonth();
+        final int selectedYear = selectedDate.getYear();
+
+        CalendarMode calendarMode = getCalendarMode();
+        while (calendarMode == CalendarMode.MONTHS && allowClickDaysOutsideCurrentMonth() && (currentDate.getMonth() != selectedMonth || currentDate.getYear() != selectedYear)) {
+            if (currentDate.isAfter(selectedDate)) {
+                goToPrevious();
+            } else if (currentDate.isBefore(selectedDate)) {
+                goToNext();
+            }
+
+            currentDate = getCurrentDate();
+        }
+        onDateClicked(selectedDate, shouldCheck);
     }
 
     @Override

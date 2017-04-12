@@ -42,7 +42,12 @@ public class SchoolListActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_school_list);
-        setTitle("Nutrislice Links");
+
+        if (peachjar) {
+            setTitle("Peachjar Links");
+        } else {
+            setTitle("Nutrislice Links");
+        }
 
         peachjar = getIntent().getBooleanExtra("peachjar", false);
 
