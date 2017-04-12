@@ -50,7 +50,6 @@ import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -69,7 +68,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private static final int PINNED_EVENTS_LOADER_ID = 2;
     private CarouselView carouselView;
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
-    private ImageView newsSeeMoreArrow, upcomingSeeMoreArrow, pinnedSeeMoreArrow;
     private NavigationView mNavigationView;
     private RecyclerView mHomeNewsRecyclerView, mHomeCalendarEventRecyclerView;
     private NewsRecyclerViewAdapter mHomeNewsAdapter;
@@ -295,10 +293,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         mHomeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         mHomeCalendarPinnedRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
-        List<HashMap<String, String>> homePinnedList = new ArrayList<>();
-
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
-        carouselView.setPageCount(16);
+        carouselView.setPageCount(8);
         carouselView.setImageListener(imageListener);
 
         int homeNewsAmount = PreferenceUtils.getHomeNewsAmount(getContext());
@@ -322,17 +318,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         newsSeeMoreTextView = (TextView) view.findViewById(R.id.recent_news_see_more_textview);
         upcomingSeeMoreTextView = (TextView) view.findViewById(R.id.home_upcoming_events_see_more_textview);
         pinnedSeeMoreTextView = (TextView) view.findViewById(R.id.home_pinned_events_see_more_textview);
-        newsSeeMoreArrow = (ImageView) view.findViewById(R.id.home_recent_news_see_more_arrow);
-        upcomingSeeMoreArrow = (ImageView) view.findViewById(R.id.home_upcoming_events_see_more_arrow);
-        pinnedSeeMoreArrow = (ImageView) view.findViewById(R.id.home_pinned_events_see_more_arrow);
         mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
         newsSeeMoreTextView.setOnClickListener(this);
         upcomingSeeMoreTextView.setOnClickListener(this);
         pinnedSeeMoreTextView.setOnClickListener(this);
-        newsSeeMoreArrow.setOnClickListener(this);
-        upcomingSeeMoreArrow.setOnClickListener(this);
-        pinnedSeeMoreArrow.setOnClickListener(this);
 
         return view;
     }
@@ -362,22 +352,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             case R.id.recent_news_see_more_textview:
                 seeMoreFragment = new NewsFragment();
                 break;
-            case R.id.home_recent_news_see_more_arrow:
-                seeMoreFragment = new NewsFragment();
-                break;
             case R.id.home_upcoming_events_see_more_textview:
-                seeMoreFragment = new CalendarFragment();
-                break;
-            case R.id.home_upcoming_events_see_more_arrow:
                 seeMoreFragment = new CalendarFragment();
                 break;
             case R.id.home_pinned_events_see_more_textview:
                 seeMoreFragment = new CalendarPinnedFragment();
                 break;
-            case R.id.home_pinned_events_see_more_arrow:
-                seeMoreFragment = new CalendarPinnedFragment();
-                break;
-
         }
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_default, seeMoreFragment)
