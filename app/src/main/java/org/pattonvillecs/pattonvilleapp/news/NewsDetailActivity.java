@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -33,11 +32,11 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
  */
 public class NewsDetailActivity extends AppCompatActivity {
 
+    public static final String KEY_NEWS_ARTICLE = "news_article";
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
-
-    private static final String CONTENT_FORMATTING_STRING =
-            "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
-
+    private static final String CONTENT_FORMATTING_STRING = "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
+    private static final String DEFAULT_MIME_TYPE = "text/html; charset=utf-8";
+    private static final String DEFAULT_ENCODING = "utf-8";
     private WebView mWebView;
     private SwipeRefreshLayout mRefreshLayout;
 
@@ -76,10 +75,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             }
         });
 
-        WebSettings settings = mWebView.getSettings();
-        settings.setDefaultTextEncodingName("utf-8");
-
-        newsArticle = getIntent().getParcelableExtra("NewsArticle");
+        newsArticle = getIntent().getParcelableExtra(KEY_NEWS_ARTICLE);
 
         setTitle("News");
 
@@ -95,7 +91,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // When content found, load
-                        mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), "text/html; charset=utf-8", "utf-8", null);
+                        mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -114,7 +110,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         if (cacheEntry != null && cacheEntry.data != null) {
             Log.d(TAG, "Using cached article data");
             String cachedData = new String(cacheEntry.data);
-            mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(cachedData), "text/html; charset=utf-8", "utf-8", null);
+            mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(cachedData), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
         } else {
             queue.add(stringRequest);
         }
