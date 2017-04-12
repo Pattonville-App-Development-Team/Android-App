@@ -232,7 +232,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
                 Log.i(TAG, "Opening NewsDetailActivity");
 
                 Intent intent = new Intent(v.getContext(), NewsDetailActivity.class);
-                intent.putExtra("NewsArticle", NewsArticle.this);
+                intent.putExtra(NewsDetailActivity.KEY_NEWS_ARTICLE, NewsArticle.this);
                 v.getContext().startActivity(intent);
 
             }
