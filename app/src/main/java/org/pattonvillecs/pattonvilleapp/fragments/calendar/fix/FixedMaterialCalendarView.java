@@ -36,7 +36,6 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     @Px
     private static final int INVALID_TILE_DIMENSION = -10;
 
-
     static {
         try {
 
@@ -65,8 +64,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
         Log.d(TAG, "Constructor called");
 
-        TypedArray a = context.getTheme()
-                .obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
         try {
             final int tileSize = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileSize, INVALID_TILE_DIMENSION);
             if (tileSize > INVALID_TILE_DIMENSION) {
@@ -148,9 +146,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
         int selectedMonth = selectedDate.getMonth();
 
         CalendarMode calendarMode = getCalendarMode();
-        while (calendarMode == CalendarMode.MONTHS
-                && allowClickDaysOutsideCurrentMonth()
-                && currentMonth != selectedMonth) {
+        while (calendarMode == CalendarMode.MONTHS && allowClickDaysOutsideCurrentMonth() && currentMonth != selectedMonth) {
             if (currentDate.isAfter(selectedDate)) {
                 goToPrevious();
             } else if (currentDate.isBefore(selectedDate)) {
