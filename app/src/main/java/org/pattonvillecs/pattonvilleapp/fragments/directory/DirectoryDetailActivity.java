@@ -40,6 +40,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+    public static final String KEY_DATASOURCE = "datasource";
     //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
     private static final String TAG = "DirectoryDetailActivity";
     private static DataSource school;
@@ -99,7 +100,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         pattonvilleApplication = PattonvilleApplication.get(this);
 
         Intent intent = getIntent();
-        school = (DataSource) intent.getSerializableExtra("School");
+        school = (DataSource) intent.getSerializableExtra(KEY_DATASOURCE);
         setTitle(school.shortName + " Directory");
         //TODO: Make constant field
         faculties = pattonvilleApplication.getDirectoryData().get(school);
@@ -122,7 +123,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
         final ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
 
-        int resource = -1;
+        int resource;
         switch (school) {
             case HIGH_SCHOOL:
                 resource = R.drawable.highschool_building;
