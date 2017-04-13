@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,9 +110,8 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
-        intent.putExtra("School", schools.get(position));
+        intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, schools.get(position));
 
-        Log.d("DIRECTORY", "WE GOT HERE :)");
         startActivity(intent);
     }
 }
