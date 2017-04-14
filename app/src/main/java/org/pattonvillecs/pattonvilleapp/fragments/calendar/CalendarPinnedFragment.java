@@ -26,11 +26,11 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.FlexibleHasCalendarDay;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NavigableSet;
@@ -50,13 +50,13 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
 
     private static final int PINNED_EVENTS_LOADER_ID = 1;
     private static final String TAG = CalendarPinnedFragment.class.getSimpleName();
+    private static final String KEY_PINNED_UIDS = "pinned_uids";
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private TextView noItemsTextView;
 
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
-    private Loader<Cursor> cursorLoader;
 
     private Set<String> pinnedUIDs = new HashSet<>();
     private NavigableSet<EventFlexibleItem> calendarData = new TreeSet<>();
@@ -116,7 +116,7 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        cursorLoader = getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
+        getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
     }
 
     private void setCalendarData(TreeSet<EventFlexibleItem> calendarData) {
@@ -127,9 +127,9 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         FrameLayout layout = (FrameLayout) inflater.inflate(R.layout.fragment_calendar_pinned, container, false);
-
 
         recyclerView = (RecyclerView) layout.findViewById(R.id.event_recycler_view);
 
@@ -164,7 +164,7 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
             }
         });
 
-        eventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(items), true);
+        eventAdapter.updateDataSet(new ArrayList<>(items), true);
     }
 
     @Override
@@ -179,6 +179,7 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
         super.onResume();
         Log.i(TAG, "onResume called!");
         listener.resume();
+        getLoaderManager().restartLoader(PINNED_EVENTS_LOADER_ID, null, this);
     }
 
     @Override
@@ -216,7 +217,8 @@ public class CalendarPinnedFragment extends Fragment implements LoaderManager.Lo
         setPinnedData(uids);
     }
 
-    private void setPinnedData(Set<String> uids) {
+    private void setPinnedData(Collection<String> uids) {
+        Log.i(TAG, "setPinnedData: News uids: " + uids);
         pinnedUIDs.clear();
         pinnedUIDs.addAll(uids);
         updatePinnedContent();
