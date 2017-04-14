@@ -86,7 +86,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     };
     private PauseableListener<NewsParsingUpdateData> homeListener;
     private OnFragmentInteractionListener mListener;
-    private Loader<Cursor> cursorLoader;
     private Set<String> pinnedUIDs = new HashSet<>();
     private LinearLayout homeNewsHeader;
     private LinearLayout homeEventsHeader;
@@ -114,6 +113,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         super.onResume();
         homeListener.resume();
         calendarListener.resume();
+        getLoaderManager().restartLoader(PINNED_EVENTS_LOADER_ID, null, this);
 
         //TODO fix this terrible hack. There needs to be a method to recalculate each news section individually
         if (preferenceValues[NEWS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[EVENTS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomePinnedAmount(getContext())) {
@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pattonvilleApplication = PattonvilleApplication.get(getActivity());
-        cursorLoader = getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
+        getLoaderManager().initLoader(PINNED_EVENTS_LOADER_ID, null, this);
         homeListener = new PauseableListener<NewsParsingUpdateData>(true) {
             @Override
             public int getIdentifier() {
