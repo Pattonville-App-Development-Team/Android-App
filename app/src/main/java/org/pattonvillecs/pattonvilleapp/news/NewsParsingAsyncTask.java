@@ -106,13 +106,13 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
             }
         }
 
-        String result = null;
         if (hasInternet) {
             RequestFuture<String> requestFuture = RequestFuture.newFuture();
             StringRequest request = new StringRequest(dataSource.newsURL, requestFuture, requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(3000, 10, 1.3f));
             pattonvilleApplication.getRequestQueue().add(request);
 
+            String result = null;
             boolean downloadSucceeded;
             //Wait for the request
             try {

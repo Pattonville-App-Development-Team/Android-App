@@ -55,12 +55,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
     private static final long CALENDAR_CACHE_EXPIRATION_HOURS = 24 * 7;
+    private final boolean skipCacheLoad;
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
     private DataSource dataSource;
 
-    public RetrieveCalendarDataAsyncTask(PattonvilleApplication pattonvilleApplication) {
+    public RetrieveCalendarDataAsyncTask(PattonvilleApplication pattonvilleApplication, boolean skipCacheLoad) {
         this.pattonvilleApplication = pattonvilleApplication;
+        this.skipCacheLoad = skipCacheLoad;
     }
 
     public static String fixICalStrings(@NonNull String iCalString) {
@@ -140,7 +142,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         long cacheAge = System.currentTimeMillis() - calendarDataCache.lastModified();
         boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < CALENDAR_CACHE_EXPIRATION_HOURS; // One week expiration
 
-        if (cacheExists && (cacheIsYoung || !hasInternet)) {
+        if (!skipCacheLoad && cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
             ArrayList<VEvent> cachedCalendarData = null;

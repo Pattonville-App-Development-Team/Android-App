@@ -166,12 +166,12 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
                 newSelectedDataSources.removeAll(loadedCalendarDataSources); //Remove DataSources that are already present
 
-                executeCalendarDataTasks(newSelectedDataSources);
+                executeCalendarDataTasks(newSelectedDataSources, false);
             }
         });
 
         //Initial download of calendar
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), false);
     }
 
     private void setUpNewsParsing() {
@@ -202,9 +202,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         }
     }
 
-    private void executeCalendarDataTasks(Set<DataSource> dataSources) {
+    private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
         for (DataSource dataSource : dataSources) {
-            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
+            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
         }
     }
 
@@ -356,8 +356,8 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         return runningCalendarAsyncTasks;
     }
 
-    public void refreshCalendarData() {
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this));
+    public void hardRefreshCalendarData() {
+        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
     }
 
     public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
