@@ -3,9 +3,13 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
@@ -18,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -32,7 +37,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
+
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+    public static final String KEY_DATASOURCE = "datasource";
     //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
     private static final String TAG = "DirectoryDetailActivity";
     private static DataSource school;
@@ -42,21 +50,61 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<CalendarParsingUpdateData> listener;
     private List<Faculty> faculties;
+    private RelativeLayout directoryDetailRelativeLayout;
+    private NestedScrollView directoryDetailNestedScrollView;
 
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_detail);
 
-
         pattonvilleApplication = PattonvilleApplication.get(this);
 
         Intent intent = getIntent();
-        school = (DataSource) intent.getSerializableExtra("School");
+        school = (DataSource) intent.getSerializableExtra(KEY_DATASOURCE);
         setTitle(school.shortName + " Directory");
         //TODO: Make constant field
         faculties = pattonvilleApplication.getDirectoryData().get(school);
+
 
         directoryAdapter = new DirectoryAdapter();
 
@@ -70,41 +118,50 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         facultyView.setLayoutManager(new SmoothScrollLinearLayoutManager(this, OrientationHelper.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyView.getContext(), DividerItemDecoration.VERTICAL);
         facultyView.addItemDecoration(dividerItemDecoration);
+        facultyView.setFocusable(false);
 
-        ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
+
+        final ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
+
+        int resource;
         switch (school) {
-            /*case HIGH_SCHOOL:
-                schoolImage.setImageResource(R.drawable.phs_building);
+            case HIGH_SCHOOL:
+                resource = R.drawable.highschool_building;
                 break;
             case HEIGHTS_MIDDLE_SCHOOL:
-                schoolImage.setImageResource(R.drawable.ht_building);
+                resource = R.drawable.heights_building;
                 break;
             case HOLMAN_MIDDLE_SCHOOL:
-                schoolImage.setImageResource(R.drawable.ho_building);
+                resource = R.drawable.holman_building;
                 break;
             case REMINGTON_TRADITIONAL_SCHOOL:
-                schoolImage.setImageResource(R.drawable.rt_building);
+                resource = R.drawable.remington_building;
                 break;
             case BRIDGEWAY_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.bw_building);
+                resource = R.drawable.brideway_building;
                 break;
             case DRUMMOND_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.dr_building);
+                resource = R.drawable.drummond_building;
                 break;
             case PARKWOOD_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.pw_building);
+                resource = R.drawable.parkwood_building;
                 break;
             case ROSE_ACRES_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.ra_building);
+                resource = R.drawable.roseacres_building;
                 break;
             case WILLOW_BROOK_ELEMENTARY:
-                schoolImage.setImageResource(R.drawable.wb_building);
-                break;*/
+                resource = R.drawable.willowbrook_building;
+                break;
             case DISTRICT:
             default:
-                schoolImage.setImageResource(R.drawable.psd_logo);
+                resource = R.drawable.learningcenter_building;
                 break;
         }
+
+        schoolImage.setImageBitmap(decodeSampledBitmapFromResource(getResources(), resource, 512, 512));
+
+        directoryDetailRelativeLayout = (RelativeLayout) findViewById(R.id.directory_detail_relative_layout);
+        directoryDetailNestedScrollView = (NestedScrollView) findViewById(R.id.directory_detail_nested_scroll);
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
@@ -112,20 +169,55 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
         TextView schoolAddress = (TextView) findViewById(R.id.directory_address_textView);
         schoolAddress.setText(school.address);
+        schoolAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMapsActivityForPattonvilleLocation(school.address);
+            }
+        });
 
         TextView schoolPhone = (TextView) findViewById(R.id.directory_phoneNumber_textView);
         schoolPhone.setText(school.mainNumber);
+        schoolPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                //currently not working with pauseString extension = getExtension1();
+                //currently not working with pause
+                phoneIntent.setData(Uri.parse("tel:" + school.mainNumber));
+                startActivity(phoneIntent);
+            }
+        });
 
         TextView schoolAttendance = (TextView) findViewById(R.id.directory_attendanceNumber_textView);
-        if (school.attendanceNumber.isPresent())
+        if (school.attendanceNumber.isPresent()) {
             schoolAttendance.setText(school.attendanceNumber.get());
-        else
+            schoolAttendance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                    phoneIntent.setData(Uri.parse("tel:" +
+                            school.attendanceNumber.orElse(getResources().getString(R.string.directory_info_unavaiable))));
+                    startActivity(phoneIntent);
+                }
+            });
+        } else {
             schoolAttendance.setText(R.string.directory_info_unavaiable);
+        }
 
         TextView schoolFax = (TextView) findViewById(R.id.directory_faxNumber_textView);
-        if (school.faxNumber.isPresent())
+        if (school.faxNumber.isPresent()) {
             schoolFax.setText(school.faxNumber.get());
-        else
+            schoolFax.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                    phoneIntent.setData(Uri.parse("tel:" +
+                            school.faxNumber.orElse(getResources().getString(R.string.directory_info_unavaiable))));
+                    startActivity(phoneIntent);
+                }
+            });
+        } else
             schoolFax.setText(R.string.directory_info_unavaiable);
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
@@ -171,6 +263,13 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         return true;
     }
 
+    private void startMapsActivityForPattonvilleLocation(String location) {
+        Uri gmmIntentUri = Uri.parse("geo:" + PATTONVILLE_COORDINATES + "?q=" + Uri.encode(location));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+
     /**
      * Method to setup the search functionality of the list
      * <p>
@@ -178,34 +277,29 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
      *
      * @param menu Menu object of current options menu
      */
+
     private void initSearchView(final Menu menu) {
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchItem = menu.findItem(R.id.directory_detail_menu_search);
         if (searchItem != null) {
 
-            /*
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-
-                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
-                    if (listTypeItem != null)
-                        listTypeItem.setVisible(false);
+                    directoryDetailRelativeLayout.setVisibility(View.GONE);
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
-                    if (listTypeItem != null)
-                        listTypeItem.setVisible(true);
+                    directoryDetailNestedScrollView.scrollTo(0,0);
+                    directoryDetailRelativeLayout.setVisibility(View.VISIBLE);
                     return true;
                 }
 
             });
-            */
 
             SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);

@@ -9,21 +9,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Activity for displaying a news article's content
@@ -32,11 +36,11 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
  */
 public class NewsDetailActivity extends AppCompatActivity {
 
+    public static final String KEY_NEWS_ARTICLE = "news_article";
     private static final String TAG = NewsDetailActivity.class.getSimpleName();
-
-    private static final String CONTENT_FORMATTING_STRING =
-            "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
-
+    private static final String CONTENT_FORMATTING_STRING = "<style>img{display: inline;height: auto;max-width: 100%;}</style>";
+    private static final String DEFAULT_MIME_TYPE = "text/html; charset=utf-8";
+    private static final String DEFAULT_ENCODING = "utf-8";
     private WebView mWebView;
     private SwipeRefreshLayout mRefreshLayout;
 
@@ -75,10 +79,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             }
         });
 
-        WebSettings settings = mWebView.getSettings();
-        settings.setDefaultTextEncodingName("utf-8");
-
-        newsArticle = getIntent().getParcelableExtra("NewsArticle");
+        newsArticle = getIntent().getParcelableExtra(KEY_NEWS_ARTICLE);
 
         setTitle("News");
 
@@ -89,33 +90,38 @@ public class NewsDetailActivity extends AppCompatActivity {
         RequestQueue queue = PattonvilleApplication.get(this).getRequestQueue();
 
         // Article content request using Volley
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, newsArticle.getPrivateUrl(),
+        CustomStringRequest stringRequest = new CustomStringRequest(Request.Method.GET, newsArticle.getPrivateUrl(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         // When content found, load
-                        mWebView.loadData(CONTENT_FORMATTING_STRING +
-                                NewsArticle.formatContent(response), "text/html", null);
+                        response = new String(response.getBytes());
+                        mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                // When unable to get content, inform the user
-                Toast.makeText(getApplicationContext(), "Unable to load content", Toast.LENGTH_SHORT).show();
-                mRefreshLayout.setRefreshing(false);
-                mRefreshLayout.setEnabled(false);
-            }
-        });
+                        // When unable to get content, inform the user
+                        Toast.makeText(getApplicationContext(), "Unable to download news article content", Toast.LENGTH_SHORT).show();
+                        mRefreshLayout.setRefreshing(false);
+                        mRefreshLayout.setEnabled(false);
+                    }
+                });
 
         // If the cache has the link's content save, parse and display
         // Otherwise, pull the data
-        if (queue.getCache().get(stringRequest.getCacheKey()) != null
-                && queue.getCache().get(stringRequest.getCacheKey()).data != null) {
-            Log.e(TAG, "Using Cache");
-            mWebView.loadData(CONTENT_FORMATTING_STRING + NewsArticle.formatContent(
-                    new String(queue.getCache().get(stringRequest.getCacheKey()).data)), "text/html", null);
+        Cache.Entry cacheEntry = queue.getCache().get(stringRequest.getCacheKey());
+        if (cacheEntry != null && cacheEntry.data != null) {
+            Log.d(TAG, "Using cached article data");
+            String cachedData;
+            try {
+                cachedData = new String(cacheEntry.data, DEFAULT_ENCODING);
+            } catch (UnsupportedEncodingException e) {
+                cachedData = new String(cacheEntry.data);
+            }
+            mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(cachedData), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
         } else {
             queue.add(stringRequest);
         }
@@ -149,5 +155,26 @@ public class NewsDetailActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    private static final class CustomStringRequest extends StringRequest {
+        public CustomStringRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+            super(method, url, listener, errorListener);
+        }
+
+        public CustomStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+            super(url, listener, errorListener);
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            String parsed;
+            try {
+                parsed = new String(response.data, DEFAULT_ENCODING);
+            } catch (UnsupportedEncodingException e) {
+                parsed = new String(response.data);
+            }
+            return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
+        }
     }
 }

@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">PSD App</string>
+    <string name="app_name">PSD</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
-    <string name="title_fragment_home">Home</string>
+    <string name="title_fragment_home">Pattonville</string>
     <string name="title_fragment_news">News</string>
     <string name="title_fragment_calendar">Calendar</string>
     <string name="title_fragment_directory">Directory</string>
