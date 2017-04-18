@@ -174,12 +174,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                pattonvilleApplication.refreshNewsData();
-            }
-        });
+        mRefreshLayout.setOnRefreshListener(() -> pattonvilleApplication.hardRefreshNewsData());
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 
         return root;
@@ -220,7 +215,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         switch (item.getItemId()) {
 
             case R.id.news_menu_refresh:
-                pattonvilleApplication.refreshNewsData();
+                pattonvilleApplication.hardRefreshNewsData();
 
                 Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
                 break;

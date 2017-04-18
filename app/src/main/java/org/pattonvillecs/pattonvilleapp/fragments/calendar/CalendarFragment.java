@@ -250,7 +250,7 @@ public class CalendarFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                pattonvilleApplication.refreshCalendarData();
+                pattonvilleApplication.hardRefreshCalendarData();
             }
         }, 500);
     }
