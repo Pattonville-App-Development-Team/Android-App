@@ -10,13 +10,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
-
+/**
+ * Custom preference to select a number value within a range set by the static final fields.
+ */
 public class NumberPickerPreference extends DialogPreference {
 
-    public static final int MAX_VALUE = 6;
-    public static final int MIN_VALUE = 0;
+    private static final int MAX_VALUE = 6;
+    private static final int MIN_VALUE = 0;
     // enable or disable the 'circular behavior'
-    public static final boolean WRAP_SELECTOR_WHEEL = true;
+    private static final boolean WRAP_SELECTOR_WHEEL = true;
 
     private NumberPicker picker;
     private int value;
