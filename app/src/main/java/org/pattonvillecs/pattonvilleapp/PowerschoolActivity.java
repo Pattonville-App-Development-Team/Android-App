@@ -12,9 +12,13 @@ import android.widget.ListView;
 
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
+/**
+ * Activity to handle the proper link to powerschool, differing between administrators, teachers,
+ * and students & parents
+ *
+ * @author Nathan Skelton
+ */
 public class PowerschoolActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-
-    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,29 +26,31 @@ public class PowerschoolActivity extends AppCompatActivity implements AdapterVie
         setContentView(R.layout.activity_simple_school_list);
         setTitle("Powerschool Links");
 
-        mListView = (ListView) findViewById(R.id.school_list_view);
+        ListView listView = (ListView) findViewById(R.id.school_list_view);
 
 
-        mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+        listView.setAdapter(new ArrayAdapter<>(getApplicationContext(),
                 R.layout.simple_listview_item,
                 R.id.simple_listview_item_textView,
                 new String[]{"Student or Parent", "Teacher", "Administrator"}));
-        mListView.setOnItemClickListener(this);
+        listView.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+        // Launch the proper link, using the position of the element.
         switch (position) {
 
-            case 1:
+            case 1:     // Teacher
                 launchWebsite("https://powerschool.psdr3.org/teachers/pw.html");
                 break;
-            case 2:
+            case 2:     // Administrator
                 launchWebsite("https://powerschool.psdr3.org/admin/pw.html");
                 break;
-            default:
+            default:    // Student & Parent
 
+                // Check the preference regarding Powerschool app and handle accordingly
                 if (PreferenceUtils.getPowerSchoolIntent(this)) {
                     launchPowerSchoolApp();
                 } else {
