@@ -31,11 +31,13 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
     private static final String TAG = NewsParsingAsyncTask.class.getSimpleName();
     private static final long NEWS_CACHE_EXPIRATION_HOURS = 24;
     private final PattonvilleApplication pattonvilleApplication;
+    private final boolean skipCacheLoad;
     private DataSource dataSource;
     private Kryo kryo;
 
-    public NewsParsingAsyncTask(PattonvilleApplication pattonvilleApplication) {
+    public NewsParsingAsyncTask(PattonvilleApplication pattonvilleApplication, boolean skipCacheLoad) {
         this.pattonvilleApplication = pattonvilleApplication;
+        this.skipCacheLoad = skipCacheLoad;
     }
 
     private static ArrayList<NewsArticle> parseNewsArticles(String result, DataSource dataSource) {
@@ -70,7 +72,7 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
         boolean cacheIsYoung = TimeUnit.HOURS.convert(cacheAge, TimeUnit.MILLISECONDS) < NEWS_CACHE_EXPIRATION_HOURS;
 
 
-        if (cacheExists && (cacheIsYoung || !hasInternet)) {
+        if (!skipCacheLoad && cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
             String cachedNewsData = null;
@@ -104,14 +106,14 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
             }
         }
 
-        boolean downloadSucceeded = false;
-        String result = null;
         if (hasInternet) {
             RequestFuture<String> requestFuture = RequestFuture.newFuture();
             StringRequest request = new StringRequest(dataSource.newsURL, requestFuture, requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(3000, 10, 1.3f));
             pattonvilleApplication.getRequestQueue().add(request);
 
+            String result = null;
+            boolean downloadSucceeded;
             //Wait for the request
             try {
                 result = requestFuture.get(5, TimeUnit.MINUTES);
