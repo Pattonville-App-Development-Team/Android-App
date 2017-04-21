@@ -102,4 +102,8 @@
     <string name="title_activity_peachjar">Peachjar Links</string>
     <string name="title_activity_nutrislice">Nutrislice Links</string>
 
+    <string name="preference_summary_news">" News Articles Displayed"</string>
+    <string name="preference_summary_upcoming">" Upcoming Events Displayed"</string>
+    <string name="preference_summary_pinned">" Pinned Events Displayed"</string>
+
 </resources>
