@@ -28,7 +28,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable {
 
-    private String mFirstName, mLastName, mLongDesc, mLocation, mEmail, mOffice1,
+    private String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
     private int mRank;
     private DataSource directoryKey;
@@ -38,14 +38,15 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     public Faculty(String[] facultyMember) {
         this(facultyMember[0], facultyMember[1], facultyMember[2], facultyMember[3],
                 facultyMember[4], facultyMember[5], facultyMember[6], facultyMember[7],
-                facultyMember[8], facultyMember[9], facultyMember[10]);
+                facultyMember[8], facultyMember[9], facultyMember[10], facultyMember[11]);
     }
 
-    public Faculty(String mFirstName, String mLastName, String mLongDesc, String mLocation,
+    public Faculty(String mFirstName, String mLastName, String mPCN, String mLongDesc, String mLocation,
                    String mEmail, String mOffice1, String mExtension1, String mOffice2,
                    String mExtension2, String mOffice3, String mExtension3) {
         this.mFirstName = mFirstName;
         this.mLastName = mLastName;
+        this.mPCN = mPCN;
         this.mLongDesc = mLongDesc;
         this.mLocation = mLocation;
         this.mEmail = mEmail;
@@ -66,6 +67,8 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     public String getLastName() {
         return mLastName;
     }
+
+    public String getPCN() { return mPCN; }
 
     public String getLongDesc() {
         return mLongDesc;
@@ -150,27 +153,26 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     }
 
     public void setRank() {
-        if (mLongDesc.contains("PRINCIPAL")) {
-            if (mLongDesc.contains("ASSOCIATE PRINCIPAL")) {
-                mRank = 1;
-            } else if (mLongDesc.contains("ASSISTANT PRINCIPAL")) {
-                mRank = 2;
-            } else {
-                mRank = 0;
-            }
-        } else if (org.apache.commons.lang3.StringUtils.containsIgnoreCase(mLongDesc, "TEA") ||
-                mLongDesc.contains("TCHR")) {
+        if (mPCN.contains("ADMSPR") || mPCN.contains("ADMPRN")) {
+            mRank = 0;
+        } else if (mPCN.contains("ASCPRN")) {
+            mRank = 1;
+        } else if (mPCN.contains("ADMAPR")) {
+            mRank = 2;
+        } else if (mPCN.contains("TCH")) {
             mRank = 3;
-        } else if (mLongDesc.contains("SECRETARY")) {
-            if (mLongDesc.contains("EXECUTIVE SECRETARY 1")) {
-                mRank = 4;
-            } else if (mLongDesc.contains("EXECUTIVE SECRETARY 2")) {
-                mRank = 5;
-            } else {
-                mRank = 6;
-            }
-        } else {
+        } else if (mPCN.contains("EXSEC1")) {
+            mRank = 4;
+        } else if (mPCN.contains("EXSEC2")) {
+            mRank = 5;
+        } else if (mPCN.contains("GUISEC")) {
+            mRank = 6;
+        } else if (mPCN.contains("CONSEC")) {
             mRank = 7;
+        } else if (mPCN.contains("SECRTY")) {
+            mRank = 8;
+        } else {
+            mRank = 9;
         }
     }
 
