@@ -138,7 +138,7 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private void executeDirectoryDataTasks() {
-        new DirectoryAsyncTask(PattonvilleApplication.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void setUpCalendarParsing() {

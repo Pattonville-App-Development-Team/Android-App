@@ -79,7 +79,7 @@
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/directory_school_image"
         android:layout_toRightOf="@id/directory_school_image"
-        android:text="Fax -"
+        android:text="Fax: "
         android:textColor="?android:attr/textColorPrimary" />
 
 
