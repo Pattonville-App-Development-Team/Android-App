@@ -68,14 +68,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private static final int PINNED_EVENTS_LOADER_ID = 2;
     private CarouselView carouselView;
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
-    private NavigationView mNavigationView;
-    private RecyclerView mHomeNewsRecyclerView, mHomeCalendarEventRecyclerView;
-    private NewsRecyclerViewAdapter mHomeNewsAdapter;
+    private NavigationView navigationView;
+    private RecyclerView homeNewsRecyclerView, homeCalendarEventRecyclerView;
+    private NewsRecyclerViewAdapter homeNewsAdapter;
     private PattonvilleApplication pattonvilleApplication;
-    private List<NewsArticle> mNewsArticles;
+    private List<NewsArticle> newsArticles;
     private PauseableListener<CalendarParsingUpdateData> calendarListener;
-    private EventAdapter mHomeCalendarEventAdapter;
-    private EventAdapter mHomeCalendarPinnedAdapter;
+    private EventAdapter homeCalendarEventAdapter;
+    private EventAdapter homeCalendarPinnedAdapter;
     private TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     private int[] preferenceValues = new int[3];
     private ImageListener imageListener = new ImageListener() {
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         }
     };
     private PauseableListener<NewsParsingUpdateData> homeListener;
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener listener;
     private Set<String> pinnedUIDs = new HashSet<>();
     private LinearLayout homeNewsHeader;
     private LinearLayout homeEventsHeader;
@@ -119,6 +119,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         if (preferenceValues[NEWS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeNewsAmount(getContext()) || preferenceValues[EVENTS_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomeEventsAmount(getContext()) || preferenceValues[PINNED_PREFERENCE_VALUES_INDEX] != PreferenceUtils.getHomePinnedAmount(getContext())) {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
+
+        if (PreferenceUtils.getCarouselVisible(getContext()))
+            carouselView.setVisibility(View.VISIBLE);
+        else
+            carouselView.setVisibility(View.GONE);
     }
 
     @Override
@@ -183,8 +188,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
                         .collect((Collectors.<NewsArticle>toList()));
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
-                mNewsArticles = newNewsArticles;
-                mHomeNewsAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
+                newsArticles = newNewsArticles;
+                homeNewsAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
 
             }
         };
@@ -238,7 +243,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             }
         }
 
-        mHomeCalendarEventAdapter.updateDataSet(new ArrayList<>(itemsToAdd), true);
+        homeCalendarEventAdapter.updateDataSet(new ArrayList<>(itemsToAdd), true);
         updatePinnedContent();
     }
 
@@ -268,28 +273,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mHomeNewsRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
-        mHomeCalendarEventRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_event_recyclerView);
+        homeNewsRecyclerView = (RecyclerView) view.findViewById(R.id.home_news_recyclerView);
+        homeCalendarEventRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_event_recyclerView);
         mHomeCalendarPinnedRecyclerView = (RecyclerView) view.findViewById(R.id.home_calendar_pinned_recyclerView);
 
-        mHomeNewsRecyclerView.setNestedScrollingEnabled(false);
-        mHomeCalendarEventRecyclerView.setNestedScrollingEnabled(false);
+        homeNewsRecyclerView.setNestedScrollingEnabled(false);
+        homeCalendarEventRecyclerView.setNestedScrollingEnabled(false);
         mHomeCalendarPinnedRecyclerView.setNestedScrollingEnabled(false);
 
-        mHomeNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mHomeCalendarEventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        homeNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        homeCalendarEventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mHomeCalendarPinnedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mHomeNewsAdapter = new NewsRecyclerViewAdapter(null);
-        mHomeCalendarEventAdapter = new EventAdapter(null);
-        mHomeCalendarPinnedAdapter = new EventAdapter(null);
+        homeNewsAdapter = new NewsRecyclerViewAdapter(null);
+        homeCalendarEventAdapter = new EventAdapter(null);
+        homeCalendarPinnedAdapter = new EventAdapter(null);
 
-        mHomeNewsRecyclerView.setAdapter(mHomeNewsAdapter);
-        mHomeCalendarEventRecyclerView.setAdapter(mHomeCalendarEventAdapter);
-        mHomeCalendarPinnedRecyclerView.setAdapter(mHomeCalendarPinnedAdapter);
+        homeNewsRecyclerView.setAdapter(homeNewsAdapter);
+        homeCalendarEventRecyclerView.setAdapter(homeCalendarEventAdapter);
+        mHomeCalendarPinnedRecyclerView.setAdapter(homeCalendarPinnedAdapter);
 
-        mHomeNewsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
-        mHomeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        homeNewsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        homeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         mHomeCalendarPinnedRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
@@ -317,7 +322,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         newsSeeMoreTextView = (TextView) view.findViewById(R.id.recent_news_see_more_textview);
         upcomingSeeMoreTextView = (TextView) view.findViewById(R.id.home_upcoming_events_see_more_textview);
         pinnedSeeMoreTextView = (TextView) view.findViewById(R.id.home_pinned_events_see_more_textview);
-        mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
+        navigationView = (NavigationView) view.findViewById(R.id.nav_view);
 
         newsSeeMoreTextView.setOnClickListener(this);
         upcomingSeeMoreTextView.setOnClickListener(this);
@@ -327,8 +332,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     }
 
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if (listener != null) {
+            listener.onFragmentInteraction(uri);
         }
     }
 
@@ -339,7 +344,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override
@@ -407,7 +412,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             }
         });
 
-        mHomeCalendarPinnedAdapter.updateDataSet(
+        homeCalendarPinnedAdapter.updateDataSet(
                 new ArrayList<FlexibleHasCalendarDay>(items)
                         .subList(0, Math.min(items.size(), preferenceValues[PINNED_PREFERENCE_VALUES_INDEX])),
                 true);
