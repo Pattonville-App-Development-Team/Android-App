@@ -14,7 +14,7 @@
         </MultiSelectListPreference>
 
         <CheckBoxPreference
-            android:defaultValue="0"
+            android:defaultValue="false"
             android:key="@string/key_powerschool_intent"
             android:summary="Switch between a browser view or app for student/parent access"
             android:title="Use PowerSchool App">
@@ -22,7 +22,7 @@
         </CheckBoxPreference>
 
         <CheckBoxPreference
-            android:defaultValue="0"
+            android:defaultValue="false"
             android:key="@string/key_nutrislice_intent"
             android:summary="Switch between a browser view or app for Nutrislice (Menu) access"
             android:title="Use Nutrislice App">
@@ -32,6 +32,12 @@
 
     <PreferenceCategory android:title="Home">
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_carousel_visibility"
+            android:summary="Show/hide the carousel on the home screen"
+            android:title="Show Carousel" />
+
         <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
             android:defaultValue="3"
             android:key="@string/key_home_newsamount"
@@ -40,7 +46,7 @@
         <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
             android:defaultValue="3"
             android:key="@string/key_home_eventsamount"
-            android:title="Upcomming Events" />
+            android:title="Upcoming Events" />
 
         <org.pattonvillecs.pattonvilleapp.preferences.NumberPickerPreference
             android:defaultValue="3"

@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.annimon.stream.Stream;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.AbstractCollection;
 import java.util.EnumSet;
@@ -92,5 +93,9 @@ public final class PreferenceUtils {
                             throw new Error("Invalid school selection value! Was: " + s);
                     }
                 }).collect(() -> EnumSet.of(DataSource.DISTRICT), AbstractCollection::add);
+    }
+
+    public static boolean getCarouselVisible(Context context) {
+        return getSharedPreferences(context).getBoolean(context.getString(R.string.key_carousel_visibility), true);
     }
 }
