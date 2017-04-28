@@ -238,7 +238,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             }
         }
 
-        mHomeCalendarEventAdapter.updateDataSet(new ArrayList<FlexibleHasCalendarDay>(itemsToAdd), true);
+        mHomeCalendarEventAdapter.updateDataSet(new ArrayList<>(itemsToAdd), true);
         updatePinnedContent();
     }
 
@@ -264,8 +264,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 

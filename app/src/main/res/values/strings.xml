@@ -21,6 +21,7 @@
     <string name="key_home_pinnedamount">home_pinned_amount</string>
     <string name="key_news_notifications">news_notifications</string>
     <string name="key_nutrislice_intent">nutrislice_intent</string>
+    <string name="key_carousel_visibility">carousel_visibility</string>
 
     <string-array name="schools">
         <item>High School</item>
