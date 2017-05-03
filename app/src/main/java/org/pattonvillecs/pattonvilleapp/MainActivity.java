@@ -16,11 +16,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.ResourceFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
@@ -29,46 +27,41 @@ import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 
-import java.io.File;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * Activity that handles navigation through each fragment and accessible activities
+ *
+ * @author Nathan Skelton
+ */
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
-    private TabLayout tabLayout;
-    private Toolbar toolbar;
+    private TabLayout mTabLayout;
     private NavigationView mNavigationView;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }
-
     public TabLayout getTabLayout() {
-        return tabLayout;
+        return mTabLayout;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.PSD_NoActionBar);
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "savedInstanceState == null is " + (savedInstanceState == null));
+        setContentView(R.layout.activity_main);
 
         checkAppIntro();
 
-        setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        mTabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.d("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -77,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.onNavigationItemSelected(mNavigationView.getMenu().findItem(R.id.nav_home));
         }
 
-        ResourceFragment.retrieveResourceFragment(getSupportFragmentManager());
-        enableHttpResponseCache();
+        Log.d("SELECTED SCHOOLS", "These are selected: " + PreferenceUtils.getSelectedSchoolsSet(this));
     }
 
     private void checkAppIntro() {
@@ -101,34 +93,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /**
-     * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
-     */
-    @Deprecated
-    private void enableHttpResponseCache() {
-        try {
-            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-            File httpCacheDir = new File(getCacheDir(), "http");
-            Class.forName("android.net.http.HttpResponseCache")
-                    .getMethod("install", File.class, long.class)
-                    .invoke(null, httpCacheDir, httpCacheSize);
-        } catch (Exception httpResponseCacheNotAvailable) {
-            Log.d(TAG, "HTTP response cache is unavailable.");
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+
         } else {
-            boolean shouldExit = getSupportFragmentManager().findFragmentById(R.id.content_default) instanceof HomeFragment;
+            boolean shouldExit = getSupportFragmentManager()
+                    .findFragmentById(R.id.content_default) instanceof HomeFragment;
+
             if (!shouldExit) {
                 mNavigationView.getMenu().getItem(0).setChecked(true);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_default, HomeFragment.newInstance())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                replaceFragment(HomeFragment.newInstance());
+
             } else {
                 super.onBackPressed();
             }
@@ -188,15 +165,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_feedback:
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
-                //startActivity(new Intent(this, FeedbackActivity.class));
                 break;
         }
 
         if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_default, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+            replaceFragment(fragment);
         }
 
         supportInvalidateOptionsMenu();
@@ -204,13 +177,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    private void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_default, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
     private void launchNutrislice() {
 
         if (PreferenceUtils.getNutrisliceIntent(getApplicationContext())) {
 
             // If app installed, launch, if not, open play store to it
-            if (getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)) != null) {
-                startActivity(getPackageManager().getLaunchIntentForPackage(getString(R.string.package_name_nutrislice)));
+            if (getPackageManager().getLaunchIntentForPackage(
+                    getString(R.string.package_name_nutrislice)) != null) {
+                startActivity(getPackageManager().getLaunchIntentForPackage(
+                        getString(R.string.package_name_nutrislice)));
             } else {
 
                 // Open store app if there, if not open in browser
