@@ -99,14 +99,18 @@ public class MainActivity extends AppCompatActivity
             mDrawerLayout.closeDrawer(GravityCompat.START);
 
         } else {
+
+            // Determine if current fragment is a HomeFragment
             boolean shouldExit = getSupportFragmentManager()
                     .findFragmentById(R.id.content_default) instanceof HomeFragment;
 
             if (!shouldExit) {
+                // If it isn't, switch to HomeFragment
                 mNavigationView.getMenu().getItem(0).setChecked(true);
                 replaceFragment(HomeFragment.newInstance());
 
             } else {
+                // Else close the app
                 super.onBackPressed();
             }
         }
@@ -214,6 +218,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
+
+        //Handles proper nav drawer item clicked
         int id;
         if (fragment instanceof NewsFragment) id = R.id.nav_news;
         else if (fragment instanceof DirectoryFragment) id = R.id.nav_directory;
