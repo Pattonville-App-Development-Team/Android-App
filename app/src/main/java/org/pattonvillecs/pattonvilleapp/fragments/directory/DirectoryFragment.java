@@ -14,7 +14,6 @@ import android.widget.SimpleAdapter;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
@@ -69,26 +68,18 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
         mListView = (ListView) layout.findViewById(R.id.list_view_directory);
 
         schools = Stream.of(DataSource.ALL)
-                .sortBy(new Function<DataSource, String>() {
-                    @Override
-                    public String apply(DataSource dataSource) {
-                        return dataSource.name;
-                    }
-                }).sortBy(new Function<DataSource, Integer>() {
-                    @Override
-                    public Integer apply(DataSource dataSource) {
-                        if (!dataSource.isDisableable)
-                            return 0;
-                        else if (dataSource.isHighSchool)
-                            return 1;
-                        else if (dataSource.isMiddleSchool)
-                            return 2;
-                        else if (dataSource.isElementarySchool)
-                            return 3;
-                        else
-                            return 4;
-                    }
-                }).collect(Collectors.<DataSource>toList());
+                .sortBy(dataSource -> dataSource.name).sortBy(dataSource -> {
+                    if (!dataSource.isDisableable)
+                        return 0;
+                    else if (dataSource.isHighSchool)
+                        return 1;
+                    else if (dataSource.isMiddleSchool)
+                        return 2;
+                    else if (dataSource.isElementarySchool)
+                        return 3;
+                    else
+                        return 4;
+                }).collect(Collectors.toList());
 
         List<HashMap<String, String>> homeNewsList = new ArrayList<>();
         for (int i = 0; i < 11; i++) {
@@ -96,17 +87,39 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
             HashMap<String, String> newsListItem = new HashMap<>();
             newsListItem.put("image", Integer.toString(images[i]));
             switch (i) {
-                case 0: newsListItem.put("headline", schools.get(i).name); break;
-                case 1: newsListItem.put("headline", schools.get(i).name); break;
-                case 2: newsListItem.put("headline", schools.get(i).name); break;
-                case 3: newsListItem.put("headline", schools.get(i).name); break;
-                case 4: newsListItem.put("headline", schools.get(i).name); break;
-                case 5: newsListItem.put("headline", schools.get(i).name); break;
-                case 6: newsListItem.put("headline", schools.get(i).name); break;
-                case 7: newsListItem.put("headline", schools.get(i).name); break;
-                case 8: newsListItem.put("headline", schools.get(i).name); break;
-                case 9: newsListItem.put("headline", schools.get(i).name); break;
-                case 10: newsListItem.put("headline", "All"); break;
+                case 0:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 1:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 2:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 3:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 4:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 5:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 6:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 7:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 8:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 9:
+                    newsListItem.put("headline", schools.get(i).name);
+                    break;
+                case 10:
+                    newsListItem.put("headline", "All");
+                    break;
             }
             homeNewsList.add(newsListItem);
         }
@@ -126,8 +139,10 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
         if (position == 0) {
-            intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, new ArrayList<>(DataSource.ALL));
-        } else { intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, (Serializable) Collections.singletonList(schools.get(position)));}
+            intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCES, (Serializable) DataSource.ALL);
+        } else {
+            intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCES, (Serializable) Collections.singleton(schools.get(position)));
+        }
 
         startActivity(intent);
     }

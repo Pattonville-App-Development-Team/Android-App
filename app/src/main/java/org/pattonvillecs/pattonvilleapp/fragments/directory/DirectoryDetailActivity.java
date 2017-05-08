@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +32,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingU
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -41,10 +41,10 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    public static final String KEY_DATASOURCE = "datasource";
+    public static final String KEY_DATASOURCES = "dataSources";
     //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
     private static final String TAG = "DirectoryDetailActivity";
-    private static DataSource school;
+    private Set<DataSource> dataSources;
     private RecyclerView facultyView;
     private DirectoryAdapter directoryAdapter;
     private ConcurrentMap<DataSource, List<Faculty>> directoryData = new ConcurrentHashMap<>();
@@ -77,8 +77,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         return inSampleSize;
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) {
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -101,10 +100,18 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         pattonvilleApplication = PattonvilleApplication.get(this);
 
         Intent intent = getIntent();
-        school = (DataSource) intent.getSerializableExtra(KEY_DATASOURCE);
-        setTitle(school.shortName + " Directory");
+        //noinspection unchecked
+        dataSources = (Set<DataSource>) intent.getSerializableExtra(KEY_DATASOURCES);
+
+        DataSource dataSource;
+        if (dataSources.size() == 1)
+            dataSource = dataSources.iterator().next();
+        else
+            dataSource = DataSource.DISTRICT;
+
+        setTitle(dataSource.shortName + " Directory");
         //TODO: Make constant field
-        faculties = pattonvilleApplication.getDirectoryData().get(school);
+        faculties = pattonvilleApplication.getDirectoryData().get(dataSource);
 
 
         directoryAdapter = new DirectoryAdapter();
@@ -125,7 +132,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         final ImageView schoolImage = (ImageView) findViewById(R.id.directory_school_image);
 
         int resource;
-        switch (school) {
+        switch (dataSources.iterator().next()) {
             case HIGH_SCHOOL:
                 resource = R.drawable.highschool_building;
                 break;
@@ -166,73 +173,52 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
         //Inflate the layout the textViews for this Activity
         TextView schoolName = (TextView) findViewById(R.id.directory_detail_schoolName);
-        schoolName.setText(school.name);
+        schoolName.setText(dataSource.name);
 
         TextView schoolAddress = (TextView) findViewById(R.id.directory_address_textView);
-        schoolAddress.setText(school.address);
-        schoolAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startMapsActivityForPattonvilleLocation(school.address);
-            }
-        });
+        schoolAddress.setText(dataSource.address);
+        schoolAddress.setOnClickListener(v -> startMapsActivityForPattonvilleLocation(dataSource.address));
 
         TextView schoolPhone = (TextView) findViewById(R.id.directory_phoneNumber_textView);
-        schoolPhone.setText(school.mainNumber);
-        schoolPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                //currently not working with pauseString extension = getExtension1();
-                //currently not working with pause
-                phoneIntent.setData(Uri.parse("tel:" + school.mainNumber));
-                startActivity(phoneIntent);
-            }
+        schoolPhone.setText(dataSource.mainNumber);
+        schoolPhone.setOnClickListener(v -> {
+            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+            //currently not working with pauseString extension = getExtension1();
+            //currently not working with pause
+            phoneIntent.setData(Uri.parse("tel:" + dataSource.mainNumber));
+            startActivity(phoneIntent);
         });
 
         TextView schoolAttendance = (TextView) findViewById(R.id.directory_attendanceNumber_textView);
-        if (school.attendanceNumber.isPresent()) {
-            schoolAttendance.setText(school.attendanceNumber.get());
-            schoolAttendance.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                    phoneIntent.setData(Uri.parse("tel:" +
-                            school.attendanceNumber.orElse(getResources().getString(R.string.directory_info_unavaiable))));
-                    startActivity(phoneIntent);
-                }
+        dataSource.attendanceNumber.ifPresentOrElse(s -> {
+            schoolAttendance.setText(s);
+            schoolAttendance.setOnClickListener(v -> {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                phoneIntent.setData(Uri.parse("tel:" + s));
+                startActivity(phoneIntent);
             });
-        } else {
-            schoolAttendance.setText(R.string.directory_info_unavaiable);
-        }
+        }, () -> schoolAttendance.setText(R.string.directory_info_unavaiable));
 
         TextView schoolFax = (TextView) findViewById(R.id.directory_faxNumber_textView);
-        if (school.faxNumber.isPresent()) {
-            schoolFax.setText(school.faxNumber.get());
-            schoolFax.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                    phoneIntent.setData(Uri.parse("tel:" +
-                            school.faxNumber.orElse(getResources().getString(R.string.directory_info_unavaiable))));
-                    startActivity(phoneIntent);
-                }
+        dataSource.faxNumber.ifPresentOrElse(s -> {
+            schoolFax.setText(s);
+            schoolFax.setOnClickListener(v -> {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                phoneIntent.setData(Uri.parse("tel:" + s));
+                startActivity(phoneIntent);
             });
-        } else
-            schoolFax.setText(R.string.directory_info_unavaiable);
+        }, () -> schoolFax.setText(R.string.directory_info_unavaiable));
 
         TextView websiteView = (TextView) findViewById(R.id.directory_website_textView);
-        if (school == DataSource.DISTRICT) {
-            websiteView.setText("District Website");
-        } else {
-            websiteView.setText("School Website");
-        }
+        if (dataSource == DataSource.DISTRICT)
+            websiteView.setText(R.string.title_district_website);
+        else
+            websiteView.setText(R.string.title_school_website);
 
-        websiteView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(school.websiteURL));
-                startActivity(browserIntent);
-            }
+
+        websiteView.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(dataSource.websiteURL));
+            startActivity(browserIntent);
         });
     }
 
@@ -295,7 +281,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    directoryDetailNestedScrollView.scrollTo(0,0);
+                    directoryDetailNestedScrollView.scrollTo(0, 0);
                     directoryDetailRelativeLayout.setVisibility(View.VISIBLE);
                     return true;
                 }

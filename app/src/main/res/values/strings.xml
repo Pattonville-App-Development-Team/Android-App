@@ -106,5 +106,7 @@
     <string name="preference_summary_news">" News Articles Displayed"</string>
     <string name="preference_summary_upcoming">" Upcoming Events Displayed"</string>
     <string name="preference_summary_pinned">" Pinned Events Displayed"</string>
+    <string name="title_district_website">District Website</string>
+    <string name="title_school_website">School Website</string>
 
 </resources>
