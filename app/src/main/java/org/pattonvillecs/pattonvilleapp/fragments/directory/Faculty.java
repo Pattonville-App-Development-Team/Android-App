@@ -60,7 +60,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         this.mOffice3 = mOffice3;
         this.mExtension3 = mExtension3;
         setRank();
-        setDirectoryKey(mLocation);
+        setDirectoryKey();
     }
 
     public String getFirstName() {
@@ -119,9 +119,9 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         return directoryKey;
     }
 
-    private void setDirectoryKey(String location) {
-        DataSource key = null;
-        switch (location.trim().toUpperCase()) {
+    private void setDirectoryKey() {
+        DataSource key;
+        switch (mLocation.trim().toUpperCase()) {
             case "BRIDGEWAY ELEMENTARY":
                 key = DataSource.BRIDGEWAY_ELEMENTARY;
                 break;
@@ -243,12 +243,45 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Faculty faculty = (Faculty) o;
+
+        return mRank == faculty.mRank
+                && (mFirstName != null ? mFirstName.equals(faculty.mFirstName) : faculty.mFirstName == null
+                && (mLastName != null ? mLastName.equals(faculty.mLastName) : faculty.mLastName == null
+                && (mPCN != null ? mPCN.equals(faculty.mPCN) : faculty.mPCN == null
+                && (mLongDesc != null ? mLongDesc.equals(faculty.mLongDesc) : faculty.mLongDesc == null
+                && (mLocation != null ? mLocation.equals(faculty.mLocation) : faculty.mLocation == null
+                && (mEmail != null ? mEmail.equals(faculty.mEmail) : faculty.mEmail == null
+                && (mOffice1 != null ? mOffice1.equals(faculty.mOffice1) : faculty.mOffice1 == null
+                && (mExtension1 != null ? mExtension1.equals(faculty.mExtension1) : faculty.mExtension1 == null
+                && (mOffice2 != null ? mOffice2.equals(faculty.mOffice2) : faculty.mOffice2 == null
+                && (mExtension2 != null ? mExtension2.equals(faculty.mExtension2) : faculty.mExtension2 == null
+                && (mOffice3 != null ? mOffice3.equals(faculty.mOffice3) : faculty.mOffice3 == null
+                && (mExtension3 != null ? mExtension3.equals(faculty.mExtension3) : faculty.mExtension3 == null
+                && directoryKey == faculty.directoryKey))))))))))));
+
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = mFirstName != null ? mFirstName.hashCode() : 0;
+        result = 31 * result + (mLastName != null ? mLastName.hashCode() : 0);
+        result = 31 * result + (mPCN != null ? mPCN.hashCode() : 0);
+        result = 31 * result + (mLongDesc != null ? mLongDesc.hashCode() : 0);
+        result = 31 * result + (mLocation != null ? mLocation.hashCode() : 0);
+        result = 31 * result + (mEmail != null ? mEmail.hashCode() : 0);
+        result = 31 * result + (mOffice1 != null ? mOffice1.hashCode() : 0);
+        result = 31 * result + (mExtension1 != null ? mExtension1.hashCode() : 0);
+        result = 31 * result + (mOffice2 != null ? mOffice2.hashCode() : 0);
+        result = 31 * result + (mExtension2 != null ? mExtension2.hashCode() : 0);
+        result = 31 * result + (mOffice3 != null ? mOffice3.hashCode() : 0);
+        result = 31 * result + (mExtension3 != null ? mExtension3.hashCode() : 0);
+        result = 31 * result + mRank;
+        result = 31 * result + (directoryKey != null ? directoryKey.hashCode() : 0);
+        return result;
     }
 
     @Override
