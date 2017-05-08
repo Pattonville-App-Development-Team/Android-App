@@ -1,7 +1,10 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
@@ -68,7 +71,9 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
         return mLastName;
     }
 
-    public String getPCN() { return mPCN; }
+    public String getPCN() {
+        return mPCN;
+    }
 
     public String getLongDesc() {
         return mLongDesc;
@@ -199,9 +204,22 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
                 @Override
                 public void onClick(View v) {
                     String extension = getExtension1();
-                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                    Intent phoneIntent = new Intent(Intent.ACTION_CALL);
                     //currently not working with pause
-                    phoneIntent.setData(Uri.parse("tel:3142138010;" + PhoneNumberUtils.PAUSE + getExtension1()));
+                    phoneIntent.setData(Uri.parse("tel:3142138010;" + PhoneNumberUtils.PAUSE + PhoneNumberUtils.PAUSE
+                            + PhoneNumberUtils.PAUSE + getExtension1()));
+                    if (ActivityCompat.checkSelfPermission(adapter.getRecyclerView().getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+
+                        ActivityCompat.requestPermissions((DirectoryDetailActivity) adapter.getRecyclerView().getContext(),
+                                new String[]{"ACTION_CALL"}, 0);
+                    }
                     adapter.getRecyclerView().getContext().startActivity(phoneIntent);
                 }
             });

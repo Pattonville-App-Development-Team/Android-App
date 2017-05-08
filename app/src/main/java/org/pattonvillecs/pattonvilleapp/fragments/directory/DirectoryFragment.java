@@ -19,14 +19,16 @@ import com.annimon.stream.function.Function;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
     public static int[] images = {
             R.drawable.d_mascot,
-            R.drawable.d_mascot,
+            R.drawable.hs_mascot,
             R.drawable.d_mascot,
             R.drawable.d_mascot,
             R.drawable.rm_mascot,
@@ -34,7 +36,8 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
             R.drawable.dr_mascot,
             R.drawable.pw_mascot,
             R.drawable.ra_mascot,
-            R.drawable.wb_mascot
+            R.drawable.wb_mascot,
+            R.drawable.d_mascot
     };
     private ListView mListView;
     private List<DataSource> schools;
@@ -88,11 +91,23 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
                 }).collect(Collectors.<DataSource>toList());
 
         List<HashMap<String, String>> homeNewsList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 11; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<>();
             newsListItem.put("image", Integer.toString(images[i]));
-            newsListItem.put("headline", schools.get(i).name);
+            switch (i) {
+                case 0: newsListItem.put("headline", schools.get(i).name); break;
+                case 1: newsListItem.put("headline", schools.get(i).name); break;
+                case 2: newsListItem.put("headline", schools.get(i).name); break;
+                case 3: newsListItem.put("headline", schools.get(i).name); break;
+                case 4: newsListItem.put("headline", schools.get(i).name); break;
+                case 5: newsListItem.put("headline", schools.get(i).name); break;
+                case 6: newsListItem.put("headline", schools.get(i).name); break;
+                case 7: newsListItem.put("headline", schools.get(i).name); break;
+                case 8: newsListItem.put("headline", schools.get(i).name); break;
+                case 9: newsListItem.put("headline", schools.get(i).name); break;
+                case 10: newsListItem.put("headline", "All"); break;
+            }
             homeNewsList.add(newsListItem);
         }
         String[] homeNewsListFrom = {"image", "headline"};
@@ -110,7 +125,9 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
-        intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, schools.get(position));
+        if (position == 0) {
+            intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, new ArrayList<>(DataSource.ALL));
+        } else { intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, (Serializable) Collections.singletonList(schools.get(position)));}
 
         startActivity(intent);
     }
