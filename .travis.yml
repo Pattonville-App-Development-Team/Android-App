@@ -13,8 +13,8 @@ android:
 #    - android-24
     - android-25
 #    - sys-img-armeabi-v7a-android-24
-    - extras-android-m2repository
-    - extras-google-m2repository
+    - extra-android-m2repository
+    - extra-google-m2repository
 
 before_install:
   - mkdir "$ANDROID_HOME/licenses" || true
