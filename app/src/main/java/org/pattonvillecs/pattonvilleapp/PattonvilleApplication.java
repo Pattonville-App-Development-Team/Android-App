@@ -32,6 +32,7 @@ import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChanged
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -100,6 +101,22 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         setUpCalendarParsing();
         setUpNewsParsing();
         setUpDirectoryParsing();
+        enableHttpResponseCache();
+    }
+
+    /**
+     * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
+     */
+    private void enableHttpResponseCache() {
+        try {
+            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+            File httpCacheDir = new File(getCacheDir(), "http");
+            Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("install", File.class, long.class)
+                    .invoke(null, httpCacheDir, httpCacheSize);
+        } catch (Exception httpResponseCacheNotAvailable) {
+            Log.d(TAG, "HTTP response cache is unavailable.");
+        }
     }
 
     private void setUpDirectoryParsing() {
