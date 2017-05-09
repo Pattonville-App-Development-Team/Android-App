@@ -108,5 +108,6 @@
     <string name="preference_summary_pinned">" Pinned Events Displayed"</string>
     <string name="title_district_website">District Website</string>
     <string name="title_school_website">School Website</string>
+    <string name="directory_name_all_schools">All Schools</string>
 
 </resources>

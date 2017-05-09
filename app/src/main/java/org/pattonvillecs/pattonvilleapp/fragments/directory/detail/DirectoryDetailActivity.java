@@ -27,10 +27,10 @@ import com.annimon.stream.Stream;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +53,11 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
     private List<Faculty> faculties;
     private DirectoryDetailHeaderItem headerItem;
     private FastScroller fastScroller;
+
+    public static Intent createIntent(Context context, Set<DataSource> dataSources) {
+        return new Intent(context, DirectoryDetailActivity.class)
+                .putExtra(KEY_DATASOURCES, (Serializable) dataSources);
+    }
 
     public static void startMapsActivityForPattonvilleLocation(String location, Context context) {
         Uri gmmIntentUri = Uri.parse("geo:" + PATTONVILLE_COORDINATES + "?q=" + Uri.encode(location));

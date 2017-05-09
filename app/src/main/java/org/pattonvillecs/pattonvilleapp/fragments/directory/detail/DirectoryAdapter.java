@@ -1,9 +1,8 @@
-package org.pattonvillecs.pattonvilleapp.fragments.directory;
+package org.pattonvillecs.pattonvilleapp.fragments.directory.detail;
 
 import android.support.annotation.Nullable;
 
 import org.apache.commons.lang.WordUtils;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.Faculty;
 
 import java.util.List;
 
