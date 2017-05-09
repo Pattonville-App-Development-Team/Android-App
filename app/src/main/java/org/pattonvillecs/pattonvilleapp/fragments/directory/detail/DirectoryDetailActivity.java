@@ -3,10 +3,8 @@ package org.pattonvillecs.pattonvilleapp.fragments.directory.detail;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -17,9 +15,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -31,6 +31,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAdapter;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,56 +45,38 @@ import static org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarEventD
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public static final String KEY_DATASOURCES = "dataSources";
-    //TODO: Make PauseableListener<DirectoryParsingUpdateData> similar to Calendar*Fragment. Listener must create+attach+register when activity opens, unattach+unregister when it closes, pause when it pauses, resume when it resumes.
     private static final String TAG = "DirectoryDetailActivity";
     private Set<DataSource> dataSources;
     private FlexibleAdapter<DirectoryItem> directoryAdapter;
     private PattonvilleApplication pattonvilleApplication;
     private PauseableListener<DirectoryParsingUpdateData> listener;
     private List<Faculty> faculties;
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
-    }
+    private DirectoryDetailHeaderItem headerItem;
+    private FastScroller fastScroller;
 
     public static void startMapsActivityForPattonvilleLocation(String location, Context context) {
         Uri gmmIntentUri = Uri.parse("geo:" + PATTONVILLE_COORDINATES + "?q=" + Uri.encode(location));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         context.startActivity(mapIntent);
+    }
+
+    private static void setBubbleTextSize(FastScroller fastScroller) {
+        //noinspection TryWithIdenticalCatches
+        try {
+            Field bubbleField = FastScroller.class.getDeclaredField("bubble");
+            bubbleField.setAccessible(true);
+            TextView bubble = (TextView) bubbleField.get(fastScroller);
+
+            bubble.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            bubble.setBackgroundResource(R.drawable.fast_scroller_bubble_small);
+
+            ((GradientDrawable) bubble.getBackground()).setColor(Utils.fetchAccentColor(fastScroller.getContext(), Color.RED));
+        } catch (NoSuchFieldException e) {
+            Log.wtf(TAG, e);
+        } catch (IllegalAccessException e) {
+            Log.wtf(TAG, e);
+        }
     }
 
     @Override
@@ -108,6 +91,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         super.onStart();
         Log.i(TAG, "onStart: Called");
         listener.attach(pattonvilleApplication);
+        setBubbleTextSize(fastScroller);
     }
 
     @Override
@@ -172,10 +156,12 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         facultyRecyclerView.addItemDecoration(dividerItemDecoration);
         facultyRecyclerView.setFocusable(false);
 
-        FastScroller fastScroller = (FastScroller) findViewById(R.id.fast_scroller);
+        fastScroller = (FastScroller) findViewById(R.id.fast_scroller);
         directoryAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(this, Color.RED)); // Default red to show an error
 
-        directoryAdapter.addScrollableHeader(new DirectoryDetailHeaderItem(dataSource));
+        headerItem = new DirectoryDetailHeaderItem(dataSource);
+        directoryAdapter.addScrollableHeader(headerItem);
+        directoryAdapter.setDisplayHeadersAtStartUp(true);
     }
 
     private void updateDirectoryData(DirectoryParsingUpdateData data) {
@@ -229,14 +215,15 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-                    directoryAdapter.hideAllHeaders();
+                    //directoryAdapter.removeScrollableHeader(headerItem);
+                    directoryAdapter.removeAllScrollableHeaders();
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    directoryAdapter.showAllHeaders();
-                    directoryAdapter.getRecyclerView().smoothScrollToPosition(0);
+                    directoryAdapter.addScrollableHeader(headerItem);
+                    //directoryAdapter.getRecyclerView().smoothScrollToPosition(0);
                     return true;
                 }
 
