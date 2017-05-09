@@ -114,6 +114,10 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         Log.i(TAG, "onCreate: Called");
         setContentView(R.layout.activity_directory_detail);
 
+        Intent intent = getIntent();
+        //noinspection unchecked
+        dataSources = (Set<DataSource>) intent.getSerializableExtra(KEY_DATASOURCES);
+
         pattonvilleApplication = PattonvilleApplication.get(this);
         listener = new PauseableListener<DirectoryParsingUpdateData>() {
             @Override
@@ -135,9 +139,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         };
         pattonvilleApplication.registerPauseableListener(listener);
 
-        Intent intent = getIntent();
-        //noinspection unchecked
-        dataSources = (Set<DataSource>) intent.getSerializableExtra(KEY_DATASOURCES);
 
         DataSource dataSource;
         if (dataSources.size() == 1)
@@ -215,7 +216,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-                    //directoryAdapter.removeScrollableHeader(headerItem);
                     directoryAdapter.removeAllScrollableHeaders();
                     return true;
                 }
@@ -223,7 +223,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     directoryAdapter.addScrollableHeader(headerItem);
-                    //directoryAdapter.getRecyclerView().smoothScrollToPosition(0);
                     return true;
                 }
 

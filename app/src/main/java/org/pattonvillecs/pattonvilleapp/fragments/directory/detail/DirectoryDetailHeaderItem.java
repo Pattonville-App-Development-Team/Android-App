@@ -63,13 +63,19 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DirectoryDetailHeaderItem that = (DirectoryDetailHeaderItem) o;
+
+        return dataSource == that.dataSource;
+
     }
 
     @Override
-    public boolean equals(Object o) {
-        return false;
+    public int hashCode() {
+        return dataSource != null ? dataSource.hashCode() : 0;
     }
 
     @Override

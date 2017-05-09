@@ -79,9 +79,15 @@
         <activity
             android:name=".PowerschoolActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity
             android:name=".SchoolListActivity"
             android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".fragments.directory.detail.CallExtensionActivity"
+            android:parentActivityName=".fragments.directory.detail.DirectoryDetailActivity"
+            android:theme="@style/PSD.NoActionBar.Invisible" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
