@@ -1,32 +1,31 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
-import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 
-public class DirectoryFragment extends Fragment implements AdapterView.OnItemClickListener {
-    public static int[] images = {
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+
+public class DirectoryFragment extends Fragment {
+    public static final int[] images = {
             R.drawable.d_mascot,
-            R.drawable.d_mascot,
+            R.drawable.hs_mascot,
             R.drawable.d_mascot,
             R.drawable.d_mascot,
             R.drawable.rm_mascot,
@@ -34,13 +33,42 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
             R.drawable.dr_mascot,
             R.drawable.pw_mascot,
             R.drawable.ra_mascot,
-            R.drawable.wb_mascot
+            R.drawable.wb_mascot,
+            R.drawable.d_mascot
     };
-    private ListView mListView;
-    private List<DataSource> schools;
+    private RecyclerView directoryRecyclerView;
+    private FlexibleAdapter<DirectoryItem> directoryAdapter;
 
     public DirectoryFragment() {
         // Required empty public constructor
+    }
+
+    @DrawableRes
+    public static int getDrawableResourceForDataSource(DataSource dataSource) {
+        switch (dataSource) {
+            case DISTRICT:
+                return R.drawable.d_mascot;
+            case HIGH_SCHOOL:
+                return R.drawable.hs_mascot;
+            case HEIGHTS_MIDDLE_SCHOOL:
+                return R.drawable.d_mascot;
+            case HOLMAN_MIDDLE_SCHOOL:
+                return R.drawable.d_mascot;
+            case REMINGTON_TRADITIONAL_SCHOOL:
+                return R.drawable.rm_mascot;
+            case BRIDGEWAY_ELEMENTARY:
+                return R.drawable.br_mascot;
+            case DRUMMOND_ELEMENTARY:
+                return R.drawable.dr_mascot;
+            case ROSE_ACRES_ELEMENTARY:
+                return R.drawable.ra_mascot;
+            case PARKWOOD_ELEMENTARY:
+                return R.drawable.pw_mascot;
+            case WILLOW_BROOK_ELEMENTARY:
+                return R.drawable.wb_mascot;
+            default:
+                return R.drawable.d_mascot;
+        }
     }
 
     public static DirectoryFragment newInstance() {
@@ -59,59 +87,37 @@ public class DirectoryFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
-        mListView = (ListView) layout.findViewById(R.id.list_view_directory);
+        directoryRecyclerView = (RecyclerView) layout.findViewById(R.id.directory_recyclerView);
+        directoryAdapter = new FlexibleAdapter<>(null);
 
-        schools = Stream.of(DataSource.ALL)
-                .sortBy(new Function<DataSource, String>() {
-                    @Override
-                    public String apply(DataSource dataSource) {
-                        return dataSource.name;
-                    }
-                }).sortBy(new Function<DataSource, Integer>() {
-                    @Override
-                    public Integer apply(DataSource dataSource) {
-                        if (!dataSource.isDisableable)
-                            return 0;
-                        else if (dataSource.isHighSchool)
-                            return 1;
-                        else if (dataSource.isMiddleSchool)
-                            return 2;
-                        else if (dataSource.isElementarySchool)
-                            return 3;
-                        else
-                            return 4;
-                    }
-                }).collect(Collectors.<DataSource>toList());
+        directoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), OrientationHelper.VERTICAL, false));
+        directoryRecyclerView.setAdapter(directoryAdapter);
 
-        List<HashMap<String, String>> homeNewsList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
-            HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(images[i]));
-            newsListItem.put("headline", schools.get(i).name);
-            homeNewsList.add(newsListItem);
-        }
-        String[] homeNewsListFrom = {"image", "headline"};
+        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
+        Stream.of(DataSource.ALL)
+                .sortBy(dataSource -> dataSource.name)
+                .sortBy(dataSource -> {
+                    if (!dataSource.isDisableable)
+                        return 0;
+                    else if (dataSource.isHighSchool)
+                        return 1;
+                    else if (dataSource.isMiddleSchool)
+                        return 2;
+                    else if (dataSource.isElementarySchool)
+                        return 3;
+                    else
+                        return 4;
+                })
+                .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
+                .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
 
-        int[] homeNewsListTo = {R.id.schools_listview_item_imageView, R.id.schools_listview_item_textView};
-
-
-        SimpleAdapter newsListSimpleAdapter = new SimpleAdapter(layout.getContext(), homeNewsList, R.layout.schools_listview_item, homeNewsListFrom, homeNewsListTo);
-        mListView.setAdapter(newsListSimpleAdapter);
-        mListView.setOnItemClickListener(this);
 
         return layout;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Intent intent = new Intent(getContext(), DirectoryDetailActivity.class);
-        intent.putExtra(DirectoryDetailActivity.KEY_DATASOURCE, schools.get(position));
-
-        startActivity(intent);
     }
 }

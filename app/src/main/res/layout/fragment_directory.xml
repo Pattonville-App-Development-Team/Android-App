@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment">
 
-    <ListView
-        android:id="@+id/list_view_directory"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/directory_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

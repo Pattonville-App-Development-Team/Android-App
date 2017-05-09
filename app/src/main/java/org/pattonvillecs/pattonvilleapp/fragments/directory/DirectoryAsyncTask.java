@@ -15,13 +15,13 @@ import com.esotericsoftware.kryo.io.Output;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.Faculty;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;

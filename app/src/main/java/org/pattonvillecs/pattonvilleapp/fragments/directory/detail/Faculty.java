@@ -1,9 +1,9 @@
-package org.pattonvillecs.pattonvilleapp.fragments.directory;
+package org.pattonvillecs.pattonvilleapp.fragments.directory.detail;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,22 +11,25 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
+import java.io.Serializable;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+
 
 /**
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable {
+public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable {
 
     private String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
@@ -62,6 +65,10 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
 
     public String getFirstName() {
         return mFirstName;
+    }
+
+    public String getFormattedFullName() {
+        return WordUtils.capitalizeFully(getFirstName() + " " + getLastName());
     }
 
     public String getLastName() {
@@ -180,16 +187,18 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
 
     @Override
     public boolean filter(String constraint) {
-
-        return mLastName.toLowerCase().contains(constraint.toLowerCase()) ||
-                mFirstName.toLowerCase().contains(constraint.toLowerCase()) ||
-                mLongDesc.toLowerCase().contains(constraint.toLowerCase());
+        constraint = constraint.toLowerCase();
+        int nameRatio = FuzzySearch.partialRatio(constraint, getFormattedFullName().toLowerCase());
+        int descriptionRatio = FuzzySearch.partialRatio(constraint, getLongDesc().toLowerCase());
+        int dataSourceRatio = FuzzySearch.partialRatio(constraint, getDirectoryKey().toString().toLowerCase());
+        return nameRatio > 80 || descriptionRatio > 80 || dataSourceRatio > 80;
     }
 
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, DirectoryViewHolder holder, int position, List payloads) {
-        holder.nameText.setText(WordUtils.capitalizeFully(String.format("%s %s",
-                getFirstName(), getLastName())));
+        Context context = adapter.getRecyclerView().getContext();
+
+        holder.nameText.setText(getFormattedFullName());
 
         holder.longDesText.setText(WordUtils.capitalizeFully(getLongDesc()));
 
@@ -197,30 +206,19 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
             holder.extensionButton.setVisibility(View.INVISIBLE);
         } else {
             holder.extensionButton.setVisibility(View.VISIBLE);
-            holder.extensionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String extension = getExtension1();
-                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                    //currently not working with pause
-                    phoneIntent.setData(Uri.parse("tel:3142138010;" + PhoneNumberUtils.PAUSE + getExtension1()));
-                    adapter.getRecyclerView().getContext().startActivity(phoneIntent);
-                }
-            });
+            holder.extensionButton.setOnClickListener(
+                    v -> context.startActivity(CallExtensionActivity.newIntent(context, Faculty.this)));
         }
 
         if (getEmail().isEmpty()) {
             holder.emailButton.setVisibility(View.INVISIBLE);
         } else {
             holder.emailButton.setVisibility(View.VISIBLE);
-            holder.emailButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                    emailIntent.setData(Uri.parse("mailto:"));
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getEmail()});
-                    adapter.getRecyclerView().getContext().startActivity(emailIntent);
-                }
+            holder.emailButton.setOnClickListener(v -> {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getEmail()});
+                context.startActivity(emailIntent);
             });
         }
     }

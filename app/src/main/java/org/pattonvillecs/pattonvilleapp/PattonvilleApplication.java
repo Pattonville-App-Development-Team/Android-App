@@ -22,7 +22,7 @@ import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendar
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.Faculty;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.Faculty;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
@@ -329,6 +329,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                 Log.i(TAG, "News update listener paused!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
                 break;
+            case DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID:
+                Log.i(TAG, "Directory update listener paused!");
+                ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onPause(getCurrentDirectoryParsingUpdateData());
+                break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
         }
@@ -345,6 +349,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener resumed!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
+                break;
+            case DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID:
+                Log.i(TAG, "Directory update listener resumed!");
+                ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onResume(getCurrentDirectoryParsingUpdateData());
                 break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
@@ -416,10 +424,6 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
 
     public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
         return directoryData;
-    }
-
-    public void setDirectoryData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
-        this.directoryData = directoryData;
     }
 
     public Set<DataSource> getLoadedCalendarDataSources() {
