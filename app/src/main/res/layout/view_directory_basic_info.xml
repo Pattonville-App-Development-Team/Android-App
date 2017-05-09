@@ -1,9 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/directory_detail_relative_layout"
-                android:background="@color/vpi__background_holo_light"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/directory_detail_relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/directory_detail_schoolName"
@@ -14,9 +15,9 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="@string/directory_detail_school_name"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/background_dark"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/directory_school_image"
@@ -28,7 +29,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
-        android:contentDescription="@string/directory_school_image"/>
+        android:contentDescription="@string/directory_school_image" />
 
     <TextView
         android:id="@+id/directory_address_textView"
@@ -41,9 +42,9 @@
         android:layout_toRightOf="@id/directory_school_image"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="address here..."
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        tools:text="address here..." />
 
     <TextView
         android:id="@+id/directory_phoneLabel_textView"
@@ -54,28 +55,28 @@
         android:layout_below="@+id/directory_address_textView"
         android:layout_marginTop="5dp"
         android:text="Phone: "
-        android:textColor="?android:attr/textColorPrimary"/>
+        android:textColor="?android:attr/textColorPrimary" />
 
     <TextView
         android:id="@+id/directory_attendanceLabel_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/directory_phoneLabel_textView"
-        android:layout_marginTop="5dp"
         android:layout_alignLeft="@+id/directory_phoneLabel_textView"
         android:layout_alignStart="@+id/directory_phoneLabel_textView"
+        android:layout_below="@id/directory_phoneLabel_textView"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/directory_school_image"
         android:layout_toRightOf="@+id/directory_school_image"
         android:text="Attendance: "
-        android:textColor="?android:attr/textColorPrimary"/>
+        android:textColor="?android:attr/textColorPrimary" />
 
     <TextView
         android:id="@+id/directory_faxLabel_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/directory_attendanceLabel_textView"
         android:layout_alignLeft="@+id/directory_attendanceLabel_textView"
         android:layout_alignStart="@+id/directory_attendanceLabel_textView"
+        android:layout_below="@id/directory_attendanceLabel_textView"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/directory_school_image"
         android:layout_toRightOf="@id/directory_school_image"
@@ -93,7 +94,7 @@
         android:layout_marginStart="4dp"
         android:layout_toEndOf="@id/directory_phoneLabel_textView"
         android:layout_toRightOf="@id/directory_phoneLabel_textView"
-        android:text="main phone number here..." />
+        tools:text="Main phone number..." />
 
     <TextView
         android:id="@+id/directory_attendanceNumber_textView"
@@ -105,7 +106,7 @@
         android:layout_marginStart="4dp"
         android:layout_toEndOf="@id/directory_attendanceLabel_textView"
         android:layout_toRightOf="@id/directory_attendanceLabel_textView"
-        android:text="attendance number..." />
+        tools:text="Attendance number..." />
 
     <TextView
         android:id="@+id/directory_faxNumber_textView"
@@ -118,6 +119,24 @@
         android:layout_marginStart="4dp"
         android:layout_toEndOf="@id/directory_faxLabel_textView"
         android:layout_toRightOf="@id/directory_faxLabel_textView"
-        android:text="fax number..." />
+        tools:text="Fax number..." />
 
+    <View
+        android:id="@+id/directory_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/directory_school_image"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/directory_website_textView"
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/directory_divider"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="normal|bold"
+        tools:text="Website here..." />
 </RelativeLayout>

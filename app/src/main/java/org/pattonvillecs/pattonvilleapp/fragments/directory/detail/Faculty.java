@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.fragments.directory;
+package org.pattonvillecs.pattonvilleapp.fragments.directory.detail;
 
 import android.Manifest;
 import android.content.Intent;
@@ -29,7 +29,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable {
+public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder> {
 
     private String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
@@ -183,7 +183,6 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
 
     @Override
     public boolean filter(String constraint) {
-
         return mLastName.toLowerCase().contains(constraint.toLowerCase()) ||
                 mFirstName.toLowerCase().contains(constraint.toLowerCase()) ||
                 mLongDesc.toLowerCase().contains(constraint.toLowerCase());

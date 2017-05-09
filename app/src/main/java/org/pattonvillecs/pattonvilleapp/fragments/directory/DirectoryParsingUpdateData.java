@@ -1,9 +1,10 @@
 package org.pattonvillecs.pattonvilleapp.fragments.directory;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.Faculty;
 
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by skaggsm on 2/10/17.
@@ -12,13 +13,13 @@ import java.util.Map;
 public class DirectoryParsingUpdateData {
     public static final int DIRECTORY_LISTENER_ID = 512982357;
 
-    private final Map<DataSource, List<Faculty>> directoryData;
+    private final ConcurrentMap<DataSource, List<Faculty>> directoryData;
 
-    public DirectoryParsingUpdateData(Map<DataSource, List<Faculty>> directoryData) {
+    public DirectoryParsingUpdateData(ConcurrentMap<DataSource, List<Faculty>> directoryData) {
         this.directoryData = directoryData;
     }
 
-    public Map<DataSource, List<Faculty>> getDirectoryData() {
+    public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
         return directoryData;
     }
 

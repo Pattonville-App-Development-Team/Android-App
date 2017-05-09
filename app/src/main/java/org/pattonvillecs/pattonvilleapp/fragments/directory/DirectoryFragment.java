@@ -17,6 +17,7 @@ import com.annimon.stream.Stream;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.DirectoryDetailActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

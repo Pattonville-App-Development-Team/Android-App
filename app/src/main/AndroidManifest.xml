@@ -62,7 +62,7 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
         <activity
-            android:name=".fragments.directory.DirectoryDetailActivity"
+            android:name=".fragments.directory.detail.DirectoryDetailActivity"
             android:parentActivityName=".MainActivity" />
 
         <service android:name=".firebase.FBNotificationsService">
