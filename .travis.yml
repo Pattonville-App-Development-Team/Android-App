@@ -13,8 +13,13 @@ android:
 #    - android-24
     - android-25
 #    - sys-img-armeabi-v7a-android-24
-    - extra-android-m2repository
-    - extra-google-m2repository
+    - extras-android-m2repository
+    - extras-google-m2repository
+    - extras-m2repository-com-android-support-constraint-constraint-layout-1.0.2
+    - extras-m2repository-com-android-support-constraint-constraint-layout-solver-1.0.2
+
+
+
 
 before_script:
 #    Create and start emulator
