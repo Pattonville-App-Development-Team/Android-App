@@ -109,5 +109,8 @@
     <string name="title_district_website">District Website</string>
     <string name="title_school_website">School Website</string>
     <string name="directory_name_all_schools">All Schools</string>
+    <string name="directory_fax_title">Fax:</string>
+    <string name="directory_attendance_title">Attendance:</string>
+    <string name="directory_phone_title">Phone:</string>
 
 </resources>

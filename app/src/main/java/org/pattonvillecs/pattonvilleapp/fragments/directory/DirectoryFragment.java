@@ -23,19 +23,6 @@ import java.util.Collections;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 public class DirectoryFragment extends Fragment {
-    public static final int[] images = {
-            R.drawable.d_mascot,
-            R.drawable.hs_mascot,
-            R.drawable.d_mascot,
-            R.drawable.d_mascot,
-            R.drawable.rm_mascot,
-            R.drawable.br_mascot,
-            R.drawable.dr_mascot,
-            R.drawable.pw_mascot,
-            R.drawable.ra_mascot,
-            R.drawable.wb_mascot,
-            R.drawable.d_mascot
-    };
     private RecyclerView directoryRecyclerView;
     private FlexibleAdapter<DirectoryItem> directoryAdapter;
 
@@ -99,7 +86,6 @@ public class DirectoryFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
         Stream.of(DataSource.ALL)
                 .sortBy(dataSource -> dataSource.name)
                 .sortBy(dataSource -> {
@@ -116,6 +102,7 @@ public class DirectoryFragment extends Fragment {
                 })
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
+        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
 
 
         return layout;
