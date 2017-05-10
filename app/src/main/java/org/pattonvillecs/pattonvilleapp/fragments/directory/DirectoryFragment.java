@@ -86,7 +86,6 @@ public class DirectoryFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
         Stream.of(DataSource.ALL)
                 .sortBy(dataSource -> dataSource.name)
                 .sortBy(dataSource -> {
@@ -103,6 +102,7 @@ public class DirectoryFragment extends Fragment {
                 })
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
+        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
 
 
         return layout;
