@@ -148,10 +148,14 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         DataSource dataSource;
         if (dataSources.size() == 1)
             dataSource = dataSources.iterator().next();
-        else
+        else if (dataSources.equals(DataSource.ALL)) {
+            dataSource = null;
+            setTitle("All Schools Directory");
+        } else
             dataSource = DataSource.DISTRICT;
 
-        setTitle(dataSource.shortName + " Directory");
+        if (dataSource != null)
+            setTitle(dataSource.shortName + " Directory");
 
         directoryAdapter = new DirectoryAdapter<>(null);
         RecyclerView facultyRecyclerView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
@@ -165,9 +169,11 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         fastScroller = (FastScroller) findViewById(R.id.fast_scroller);
         directoryAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(this, Color.RED)); // Default red to show an error
 
-        headerItem = new DirectoryDetailHeaderItem(dataSource);
-        directoryAdapter.addScrollableHeader(headerItem);
-        directoryAdapter.setDisplayHeadersAtStartUp(true);
+        if (dataSource != null) {
+            headerItem = new DirectoryDetailHeaderItem(dataSource);
+            directoryAdapter.addScrollableHeader(headerItem);
+            directoryAdapter.setDisplayHeadersAtStartUp(true);
+        }
     }
 
     private void updateDirectoryData(DirectoryParsingUpdateData data) {
@@ -227,7 +233,8 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    directoryAdapter.addScrollableHeader(headerItem);
+                    if (headerItem != null)
+                        directoryAdapter.addScrollableHeader(headerItem);
                     return true;
                 }
 
