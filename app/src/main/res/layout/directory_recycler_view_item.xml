@@ -11,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/directory_icon"
         app:layout_constraintLeft_toRightOf="@+id/directory_icon"
         app:layout_constraintTop_toTopOf="@+id/directory_icon"
@@ -18,8 +20,8 @@
 
     <ImageView
         android:id="@+id/directory_icon"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:padding="8dp"
         tools:ignore="ContentDescription"
         tools:src="@drawable/d_mascot" />
