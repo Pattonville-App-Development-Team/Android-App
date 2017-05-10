@@ -13,8 +13,6 @@ import android.widget.SimpleAdapter;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 
-import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +24,19 @@ import java.util.List;
  */
 public class SchoolListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    public static final int[] IMAGES = {
+            R.drawable.d_mascot,
+            R.drawable.hs_mascot,
+            R.drawable.d_mascot,
+            R.drawable.d_mascot,
+            R.drawable.rm_mascot,
+            R.drawable.br_mascot,
+            R.drawable.dr_mascot,
+            R.drawable.pw_mascot,
+            R.drawable.ra_mascot,
+            R.drawable.wb_mascot,
+            R.drawable.d_mascot
+    };
     private final static String INTENT_ARG = "peachjar";
 
     private List<DataSource> schools;
@@ -71,7 +82,7 @@ public class SchoolListActivity extends AppCompatActivity implements AdapterView
         for (int i = 0; i < 9; i++) {
 
             HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(DirectoryFragment.images[schools.get(i).id]));
+            newsListItem.put("image", Integer.toString(IMAGES[schools.get(i).id]));
             newsListItem.put("school", schools.get(i).name);
             homeNewsList.add(newsListItem);
         }

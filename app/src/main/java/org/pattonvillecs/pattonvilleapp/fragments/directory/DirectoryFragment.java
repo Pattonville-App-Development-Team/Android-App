@@ -23,19 +23,6 @@ import java.util.Collections;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 public class DirectoryFragment extends Fragment {
-    public static final int[] images = {
-            R.drawable.d_mascot,
-            R.drawable.hs_mascot,
-            R.drawable.d_mascot,
-            R.drawable.d_mascot,
-            R.drawable.rm_mascot,
-            R.drawable.br_mascot,
-            R.drawable.dr_mascot,
-            R.drawable.pw_mascot,
-            R.drawable.ra_mascot,
-            R.drawable.wb_mascot,
-            R.drawable.d_mascot
-    };
     private RecyclerView directoryRecyclerView;
     private FlexibleAdapter<DirectoryItem> directoryAdapter;
 
