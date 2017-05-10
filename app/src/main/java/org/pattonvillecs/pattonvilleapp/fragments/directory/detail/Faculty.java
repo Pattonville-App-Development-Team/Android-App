@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -29,7 +28,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable {
+public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder, FacultyHeader> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable {
 
     private String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1,
             mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
@@ -47,6 +46,7 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     public Faculty(String mFirstName, String mLastName, String mPCN, String mLongDesc, String mLocation,
                    String mEmail, String mOffice1, String mExtension1, String mOffice2,
                    String mExtension2, String mOffice3, String mExtension3) {
+        super(null);
         this.mFirstName = mFirstName;
         this.mLastName = mLastName;
         this.mPCN = mPCN;
@@ -277,7 +277,6 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
     }
 
     public class DirectoryViewHolder extends FlexibleViewHolder {
-        private static final String TAG = "DirectoryViewHolder";
         final RecyclerView facultyView;
         final TextView nameText, longDesText;
         final ImageButton emailButton, extensionButton;
@@ -293,12 +292,6 @@ public class Faculty extends AbstractFlexibleItem<Faculty.DirectoryViewHolder> i
             emailButton = (ImageButton) view.findViewById(R.id.directory_facultyEmail_imageButton);
             extensionButton = (ImageButton) view.findViewById(R.id.directory_facultyExtension_imageButton);
             facultyView = (RecyclerView) view.findViewById(R.id.directory_detail_recyclerView);
-        }
-
-        @Override
-        public void onClick(View view) {
-            super.onClick(view);
-            Log.i(TAG, "Clicked view: " + view);
         }
     }
 }

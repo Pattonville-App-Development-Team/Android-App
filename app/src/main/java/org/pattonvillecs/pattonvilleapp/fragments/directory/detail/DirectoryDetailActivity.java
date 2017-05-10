@@ -33,7 +33,9 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.davidea.fastscroller.FastScroller;
@@ -148,10 +150,14 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         DataSource dataSource;
         if (dataSources.size() == 1)
             dataSource = dataSources.iterator().next();
-        else
+        else if (dataSources.equals(DataSource.ALL)) {
+            dataSource = null;
+            setTitle("All Schools Directory");
+        } else
             dataSource = DataSource.DISTRICT;
 
-        setTitle(dataSource.shortName + " Directory");
+        if (dataSource != null)
+            setTitle(dataSource.shortName + " Directory");
 
         directoryAdapter = new DirectoryAdapter<>(null);
         RecyclerView facultyRecyclerView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
@@ -165,16 +171,35 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         fastScroller = (FastScroller) findViewById(R.id.fast_scroller);
         directoryAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(this, Color.RED)); // Default red to show an error
 
-        headerItem = new DirectoryDetailHeaderItem(dataSource);
-        directoryAdapter.addScrollableHeader(headerItem);
         directoryAdapter.setDisplayHeadersAtStartUp(true);
+        if (dataSources.size() > 1)
+            facultyRecyclerView.post(() -> directoryAdapter.setStickyHeaders(true)); //Needed because .post() is cleared by the UPDATE handler ID.
+
+        if (dataSource != null) {
+            headerItem = new DirectoryDetailHeaderItem(dataSource);
+            directoryAdapter.addScrollableHeader(headerItem);
+        }
     }
 
     private void updateDirectoryData(DirectoryParsingUpdateData data) {
+        Map<DataSource, FacultyHeader> headerMap = new HashMap<>();
         faculties = Stream.of(dataSources)
                 .flatMap(dataSource -> Stream.of(data.getDirectoryData().get(dataSource)))
+                .map(faculty -> {
+                    if (dataSources.size() != 1) {
+                        DataSource dataSource = faculty.getDirectoryKey();
+
+                        if (!headerMap.containsKey(dataSource))
+                            headerMap.put(dataSource, new FacultyHeader(dataSource));
+
+                        faculty.setHeader(headerMap.get(dataSource));
+                    } else {
+                        faculty.setHeader(null);
+                    }
+
+                    return faculty;
+                })
                 .collect(Collectors.toList());
-        //noinspection unchecked
         directoryAdapter.updateDataSet(new ArrayList<>(faculties), true);
     }
 
@@ -197,7 +222,6 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         if (directoryAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
             directoryAdapter.setSearchText(newText);
-            //noinspection unchecked
             directoryAdapter.filterItems(new ArrayList<>(faculties), 250L);
         }
         return true;
@@ -227,7 +251,8 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    directoryAdapter.addScrollableHeader(headerItem);
+                    if (headerItem != null)
+                        directoryAdapter.addScrollableHeader(headerItem);
                     return true;
                 }
 

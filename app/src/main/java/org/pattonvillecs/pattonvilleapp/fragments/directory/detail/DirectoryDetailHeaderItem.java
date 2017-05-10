@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
 
     private final DataSource dataSource;
 
-    public DirectoryDetailHeaderItem(DataSource dataSource) {
+    public DirectoryDetailHeaderItem(@NonNull DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
