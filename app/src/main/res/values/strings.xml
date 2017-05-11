@@ -112,5 +112,6 @@
     <string name="directory_fax_title">Fax:</string>
     <string name="directory_attendance_title">Attendance:</string>
     <string name="directory_phone_title">Phone:</string>
+    <string name="nav_drawer_title_about">About Us</string>
 
 </resources>
