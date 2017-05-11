@@ -146,9 +146,10 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         };
         pattonvilleApplication.registerPauseableListener(listener);
 
+        boolean oneDataSourceProvided = dataSources.size() == 1;
 
         DataSource dataSource;
-        if (dataSources.size() == 1)
+        if (oneDataSourceProvided)
             dataSource = dataSources.iterator().next();
         else if (dataSources.equals(DataSource.ALL)) {
             dataSource = null;
@@ -159,7 +160,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         if (dataSource != null)
             setTitle(dataSource.shortName + " Directory");
 
-        directoryAdapter = new DirectoryAdapter<>(null);
+        directoryAdapter = new DirectoryAdapter<>(null, oneDataSourceProvided);
         RecyclerView facultyRecyclerView = (RecyclerView) findViewById(R.id.directory_detail_recyclerView);
 
         facultyRecyclerView.setAdapter(directoryAdapter);

@@ -14,24 +14,24 @@ import eu.davidea.flexibleadapter.items.IFlexible;
  */
 
 public class DirectoryAdapter<T extends IFlexible> extends FlexibleAdapter<T> {
-    public DirectoryAdapter(@Nullable List items) {
+    private final boolean useLongDesc;
+
+    public DirectoryAdapter(@Nullable List<T> items, boolean useLongDesc) {
         super(items);
-    }
-
-    public DirectoryAdapter(@Nullable List items, @Nullable Object listeners) {
-        super(items, listeners);
-    }
-
-    public DirectoryAdapter(@Nullable List items, @Nullable Object listeners, boolean stableIds) {
-        super(items, listeners, stableIds);
+        this.useLongDesc = useLongDesc;
     }
 
     @Override
     public String onCreateBubbleText(int position) {
         T item = getItem(position);
-        if (item instanceof Faculty)
-            return WordUtils.capitalizeFully(((Faculty) item).getLongDesc());
-        else
+        if (item instanceof Faculty) {
+            Faculty faculty = (Faculty) item;
+
+            if (useLongDesc)
+                return WordUtils.capitalizeFully(faculty.getLongDesc());
+            else
+                return faculty.getDirectoryKey().name;
+        } else
             return "";
     }
 }
