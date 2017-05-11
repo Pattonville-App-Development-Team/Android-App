@@ -83,12 +83,6 @@ public class MainActivity extends AppCompatActivity
         if (isFirstStart) {
             Intent i = new Intent(this, PattonvilleAppIntro.class);
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-            //  Edit preference to make it false because we don't want this to run again
-            editor.putBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, false);
-            editor.apply();
-
             startActivity(i);
         }
     }
