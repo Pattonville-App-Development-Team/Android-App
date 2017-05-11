@@ -12,7 +12,7 @@ import java.util.Set;
 
 @SuppressWarnings("RedundantTypeArguments")
 public enum DataSource {
-    DISTRICT("Pattonville School District", "District", 0, true, false, false, false, false,
+    DISTRICT("Learning Center", "District", 0, true, false, false, false, false,
             "http://psdr3.org/",
             "11097 St. Charles Rock Road, St. Ann, MO 63074",
             "(314) 213-8500",
