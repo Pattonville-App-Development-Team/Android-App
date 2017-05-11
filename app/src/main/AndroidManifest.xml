@@ -89,6 +89,10 @@
             android:parentActivityName=".fragments.directory.detail.DirectoryDetailActivity"
             android:theme="@style/PSD.NoActionBar.Invisible" />
 
+        <activity
+            android:name=".about.AboutActivity"
+            android:parentActivityName=".MainActivity" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notification_icon" />

@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import org.pattonvillecs.pattonvilleapp.about.AboutActivity;
 import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
@@ -35,7 +36,7 @@ import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
     private TabLayout mTabLayout;
     private NavigationView mNavigationView;
@@ -163,6 +164,10 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_feedback:
                 launchWebsite("https://goo.gl/forms/0ViHrODjYSDlz8BG3");
+                break;
+
+            case R.id.nav_about:
+                startActivity(new Intent(this, AboutActivity.class));
                 break;
         }
 
