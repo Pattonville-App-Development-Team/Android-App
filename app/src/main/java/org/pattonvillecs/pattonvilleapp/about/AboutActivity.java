@@ -53,19 +53,19 @@ public class AboutActivity extends AppCompatActivity {
 
         DeveloperHeaderItem androidHeader = new DeveloperHeaderItem("Android Team");
         DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
-        DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Teachers");
+        DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Instructors");
 
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\nCalendar, Directory, Technical", R.drawable.highschool_building));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Planning", R.drawable.highschool_building));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences", R.drawable.highschool_building));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\nCalendar, Intro, Databases, Directory", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography", R.drawable.highschool_building));
 
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "", R.drawable.bridgeway_building));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thomson", "", R.drawable.bridgeway_building));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "", R.drawable.bridgeway_building));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "TBA", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thomson", "TBA", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA", R.drawable.bridgeway_building));
 
-        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Philosopher", R.drawable.drummond_building));
+        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Philosopher,\nWatcher of Wells", R.drawable.drummond_building));
 
     }
 }
