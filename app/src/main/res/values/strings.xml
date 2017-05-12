@@ -113,5 +113,7 @@
     <string name="directory_attendance_title">Attendance:</string>
     <string name="directory_phone_title">Phone:</string>
     <string name="nav_drawer_title_about">About Us</string>
+    <string name="wells_watched">Wells watched: %1$d</string>
+    <string name="reset">Reset</string>
 
 </resources>
