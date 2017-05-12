@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.about.secret.SecretDeveloperItem;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.FlexibleItemAnimator;
@@ -66,6 +67,6 @@ public class AboutActivity extends AppCompatActivity {
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA", R.drawable.bridgeway_building));
 
         aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Philosopher,\nWatcher of Wells", R.drawable.drummond_building));
-
+        aboutAdapter.addItem(new SecretDeveloperItem(teacherHeader, null, null, 0));
     }
 }

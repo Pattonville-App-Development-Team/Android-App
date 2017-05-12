@@ -79,15 +79,17 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
         return result;
     }
 
-    class DeveloperViewHolder extends FlexibleViewHolder {
-        final TextView name, text;
-        final ImageView image;
+    protected class DeveloperViewHolder extends FlexibleViewHolder {
+        public final View view;
+        public final TextView name, text;
+        public final ImageView image;
 
         public DeveloperViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            name = (TextView) view.findViewById(R.id.developer_name);
-            text = (TextView) view.findViewById(R.id.developer_text);
-            image = (ImageView) view.findViewById(R.id.developer_image);
+            this.view = view;
+            this.name = (TextView) view.findViewById(R.id.developer_name);
+            this.text = (TextView) view.findViewById(R.id.developer_text);
+            this.image = (ImageView) view.findViewById(R.id.developer_image);
         }
     }
 }
