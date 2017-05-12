@@ -3,21 +3,22 @@ package org.pattonvillecs.pattonvilleapp.about;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.text.NumberFormat;
-
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
+import eu.davidea.flexibleadapter.common.FlexibleItemAnimator;
+import eu.davidea.flexibleadapter.common.SmoothScrollGridLayoutManager;
 
 /**
  * Created by skaggsm on 5/11/17.
  */
 
 public class AboutActivity extends AppCompatActivity {
+
+    private static final String TAG = AboutActivity.class.getSimpleName();
 
     private RecyclerView aboutRecyclerView;
     private FlexibleAdapter<DeveloperItem> aboutAdapter;
@@ -31,11 +32,40 @@ public class AboutActivity extends AppCompatActivity {
         aboutRecyclerView = (RecyclerView) findViewById(R.id.about_us_recyclerview);
         aboutAdapter = new FlexibleAdapter<>(null);
 
-        aboutRecyclerView.setLayoutManager(new SmoothScrollStaggeredLayoutManager(this, 2, StaggeredGridLayoutManager.VERTICAL));
+        GridLayoutManager manager = new SmoothScrollGridLayoutManager(this, 2);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (aboutAdapter.isHeader(aboutAdapter.getItem(position))) {
+                    //Headers occupy 2 spans, which is the entire grid
+                    return 2;
+                } else {
+                    //Normally occupy 1 span
+                    return 1;
+                }
+            }
+        });
+        aboutRecyclerView.setLayoutManager(manager);
         aboutRecyclerView.setAdapter(aboutAdapter);
+        aboutRecyclerView.setItemAnimator(new FlexibleItemAnimator());
 
-        for (int i = 0; i < 100; i++) {
-            aboutAdapter.addItem(new DeveloperItem("Test Item no. " + NumberFormat.getIntegerInstance().format(Math.pow(10, i)), R.drawable.highschool_building));
-        }
+        aboutAdapter.setDisplayHeadersAtStartUp(true);
+
+        DeveloperHeaderItem androidHeader = new DeveloperHeaderItem("Android Team");
+        DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
+        DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Teachers");
+
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\nCalendar, Directory, Technical", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Planning", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News", R.drawable.highschool_building));
+
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thomson", "", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "", R.drawable.bridgeway_building));
+
+        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Philosopher", R.drawable.drummond_building));
+
     }
 }

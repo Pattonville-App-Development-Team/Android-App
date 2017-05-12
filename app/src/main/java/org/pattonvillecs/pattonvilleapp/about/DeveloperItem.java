@@ -15,18 +15,21 @@ import org.pattonvillecs.pattonvilleapp.R;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
  * Created by skaggsm on 5/11/17.
  */
 
-public class DeveloperItem extends AbstractFlexibleItem<DeveloperItem.DeveloperViewHolder> {
+public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.DeveloperViewHolder, DeveloperHeaderItem> {
+    private final String name;
     private final String text;
     private final int imageRes;
 
-    public DeveloperItem(String text, @DrawableRes int imageRes) {
+    public DeveloperItem(DeveloperHeaderItem headerItem, String name, String text, @DrawableRes int imageRes) {
+        super(headerItem);
+        this.name = name;
         this.text = text;
         this.imageRes = imageRes;
     }
@@ -35,7 +38,9 @@ public class DeveloperItem extends AbstractFlexibleItem<DeveloperItem.DeveloperV
     public void bindViewHolder(FlexibleAdapter adapter, DeveloperViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
 
+        holder.name.setText(this.name);
         holder.text.setText(this.text);
+
         Picasso.with(context)
                 .load(imageRes)
                 .error(imageRes)
@@ -75,11 +80,12 @@ public class DeveloperItem extends AbstractFlexibleItem<DeveloperItem.DeveloperV
     }
 
     class DeveloperViewHolder extends FlexibleViewHolder {
-        final TextView text;
+        final TextView name, text;
         final ImageView image;
 
         public DeveloperViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
+            name = (TextView) view.findViewById(R.id.developer_name);
             text = (TextView) view.findViewById(R.id.developer_text);
             image = (ImageView) view.findViewById(R.id.developer_image);
         }

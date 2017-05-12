@@ -48,7 +48,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
             case REMINGTON_TRADITIONAL_SCHOOL:
                 return R.drawable.remington_building;
             case BRIDGEWAY_ELEMENTARY:
-                return R.drawable.brideway_building;
+                return R.drawable.bridgeway_building;
             case DRUMMOND_ELEMENTARY:
                 return R.drawable.drummond_building;
             case PARKWOOD_ELEMENTARY:
