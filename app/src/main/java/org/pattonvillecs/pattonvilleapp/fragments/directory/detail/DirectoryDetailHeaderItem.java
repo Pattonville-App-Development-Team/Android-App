@@ -129,7 +129,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
 
     @Override
     public int getLayoutRes() {
-        return R.layout.view_directory_basic_info;
+        return R.layout.directory_detail_header;
     }
 
     @Override
