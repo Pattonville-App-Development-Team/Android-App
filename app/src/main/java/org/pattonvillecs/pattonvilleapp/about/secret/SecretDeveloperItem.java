@@ -26,8 +26,12 @@ public class SecretDeveloperItem extends DeveloperItem {
     public void bindViewHolder(FlexibleAdapter adapter, DeveloperViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
 
+        holder.image.setImageDrawable(null);
+        holder.image.setBackground(null);
+        holder.name.setText(null);
+        holder.text.setText(null);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.image.setBackground(null);
             holder.view.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless}).getResourceId(0, -1));
         } else {
             holder.view.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackground}).getResourceId(0, -1));
