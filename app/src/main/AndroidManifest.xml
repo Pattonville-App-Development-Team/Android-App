@@ -97,6 +97,10 @@
             android:name=".about.secret.SecretActivity"
             android:parentActivityName=".about.AboutActivity" />
 
+        <activity
+            android:name=".about.secret.SecretShopActivity"
+            android:parentActivityName=".about.secret.SecretActivity" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notification_icon" />

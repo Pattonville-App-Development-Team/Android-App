@@ -124,6 +124,9 @@ dependencies {
     //Fuzzy string contains
     compile 'me.xdrop:fuzzywuzzy:1.1.7'
 
+    //Cool Particles
+    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
+
     testCompile 'junit:junit:4.12'
 }
 
