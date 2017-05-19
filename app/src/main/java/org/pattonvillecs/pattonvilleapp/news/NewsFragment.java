@@ -31,6 +31,7 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -228,7 +229,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         if (mAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
             mAdapter.setSearchText(newText);
-            mAdapter.filterItems(mNewsArticles, 100L);
+            mAdapter.filterItems(new ArrayList<>(mNewsArticles), 100L);
         }
         mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
         return true;

@@ -121,8 +121,11 @@ dependencies {
     //News content parsing is in jsoup jar
     compile 'org.jsoup:jsoup:1.10.2'
 
-    //Fuzzy string contains
+    //Fuzzy string contains - !!!GPL 3.0!!!
     compile 'me.xdrop:fuzzywuzzy:1.1.7'
+
+    //Alternative fuzzy string matching
+    compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'
 
     //Cool Particles
     compile 'com.github.jinatonic.confetti:confetti:1.1.0'
