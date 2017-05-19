@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.about.secret;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -54,6 +55,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
     private TextView text;
     private Button resetButton;
     private SharedPreferences sharedPreferences;
+    private Bitmap face;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,9 +96,17 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         wellButton.setOnClickListener(v -> performWellWatch());
         wellButton.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+
+                BitmapConfetto bitmapConfetto;
+                long currentMultiplier = getCurrentMultiplier();
+                if (currentMultiplier >= 0 || face == null)
+                    bitmapConfetto = new BitmapConfetto(getNumberBitmap(getCurrentMultiplier()));
+                else
+                    bitmapConfetto = new BitmapConfetto(face);
+
                 new ConfettiManager(
                         SecretActivity.this,
-                        random -> new BitmapConfetto(getIncrementNumberBitmap()),
+                        random -> bitmapConfetto,
                         new ConfettiSource(Math.round(event.getX()), Math.round(event.getY())),
                         (ViewGroup) findViewById(android.R.id.content))
                         .setVelocityX(0, 500)
@@ -109,10 +119,12 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
             return false;
         });
         resetButton.setOnClickListener(v -> showReset());
+
+        face = BitmapFactory.decodeResource(getResources(), R.drawable.face);
     }
 
-    private Bitmap getIncrementNumberBitmap() {
-        String text = Long.toString(BASE_INCREMENT * getCurrentMultiplier());
+    private Bitmap getNumberBitmap(long number) {
+        String text = Long.toString(number);
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 18, getResources().getDisplayMetrics()));
