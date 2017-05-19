@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.squareup.picasso.Picasso;
@@ -405,12 +404,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         //There is definitely stuff to display now
         List<EventFlexibleItem> items = new ArrayList<>(calendarData);
 
-        Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
-            @Override
-            public boolean apply(EventFlexibleItem input) {
-                return !pinnedUIDs.contains(input.vEvent.getUid().getValue());
-            }
-        });
+        final CalendarDay today = CalendarDay.today();
+        //noinspection ResultOfMethodCallIgnored
+        Iterators.removeIf(items.iterator(), input ->
+                !pinnedUIDs.contains(input.vEvent.getUid().getValue())
+                        || input.getCalendarDay().isBefore(today));
 
         homeCalendarPinnedAdapter.updateDataSet(
                 new ArrayList<FlexibleHasCalendarDay>(items)
