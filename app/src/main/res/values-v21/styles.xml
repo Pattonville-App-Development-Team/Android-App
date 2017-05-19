@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
 
         <!-- Set cursor to white -->
-        <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
+        <item name="autoCompleteTextViewStyle">@style/PSD.CursorColor</item>
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>

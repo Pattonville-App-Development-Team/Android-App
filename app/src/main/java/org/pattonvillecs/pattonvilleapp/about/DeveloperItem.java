@@ -2,6 +2,8 @@ package org.pattonvillecs.pattonvilleapp.about;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +20,15 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
+import static org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem.getActivity;
+
 /**
  * Created by skaggsm on 5/11/17.
  */
 
 public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.DeveloperViewHolder, DeveloperHeaderItem> {
+    private static final String TAG = DeveloperItem.class.getSimpleName();
+
     private final String name;
     private final String text;
     private final int imageRes;
@@ -39,7 +45,6 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
         Context context = adapter.getRecyclerView().getContext();
 
         holder.name.setText(this.name);
-        holder.text.setText(this.text);
 
         Picasso.with(context)
                 .load(imageRes)
@@ -48,6 +53,15 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
                 .centerCrop()
                 .transform(new CircleTransformation())
                 .into(holder.image);
+
+        holder.view.setOnClickListener(v -> {
+            @SuppressWarnings("unchecked")
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(context),
+                    Pair.create(holder.image, "developer_image"),
+                    Pair.create(holder.name, "developer_name"));
+
+            context.startActivity(AboutDetailActivity.createIntent(context, name, text, imageRes), options.toBundle());
+        });
     }
 
     @Override
@@ -81,14 +95,13 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
 
     protected class DeveloperViewHolder extends FlexibleViewHolder {
         public final View view;
-        public final TextView name, text;
+        public final TextView name;
         public final ImageView image;
 
         public DeveloperViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             this.view = view;
             this.name = (TextView) view.findViewById(R.id.developer_name);
-            this.text = (TextView) view.findViewById(R.id.developer_text);
             this.image = (ImageView) view.findViewById(R.id.developer_image);
         }
     }

@@ -28,8 +28,8 @@ public class SecretDeveloperItem extends DeveloperItem {
 
         holder.image.setImageDrawable(null);
         holder.image.setBackground(null);
+        holder.view.setBackground(null);
         holder.name.setText(null);
-        holder.text.setText(null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.view.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless}).getResourceId(0, -1));

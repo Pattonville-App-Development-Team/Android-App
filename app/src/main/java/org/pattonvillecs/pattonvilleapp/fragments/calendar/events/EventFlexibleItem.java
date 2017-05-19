@@ -99,8 +99,11 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
         this.calendarStartDay = CalendarDay.from(vEvent.getStartDate().getDate());
     }
 
-    private static Activity getActivity(View v) {
-        Context context = v.getContext();
+    public static Activity getActivity(View view) {
+        return getActivity(view.getContext());
+    }
+
+    public static Activity getActivity(Context context) {
         while (context instanceof ContextWrapper) {
             if (context instanceof Activity) {
                 return (Activity) context;

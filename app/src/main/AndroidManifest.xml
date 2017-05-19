@@ -94,6 +94,10 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".about.AboutDetailActivity"
+            android:parentActivityName=".about.AboutActivity"/>
+
+        <activity
             android:name=".about.secret.SecretActivity"
             android:parentActivityName=".about.AboutActivity" />
 
