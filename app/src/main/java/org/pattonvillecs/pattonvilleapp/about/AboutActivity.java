@@ -63,7 +63,7 @@ public class AboutActivity extends AppCompatActivity {
 
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "TBA", R.drawable.bridgeway_building));
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "TBA", R.drawable.face_thompkins));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA", R.drawable.bridgeway_building));
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA", R.drawable.face_bowers));
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA", R.drawable.face_barrie));
 
         aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Philosopher,\nWatcher of Wells", R.drawable.face_simmons));
