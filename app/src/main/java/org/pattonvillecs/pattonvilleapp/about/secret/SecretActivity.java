@@ -120,7 +120,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         });
         resetButton.setOnClickListener(v -> showReset());
 
-        face = BitmapFactory.decodeResource(getResources(), R.drawable.face);
+        face = BitmapFactory.decodeResource(getResources(), R.drawable.face_secret);
     }
 
     private Bitmap getNumberBitmap(long number) {
