@@ -72,7 +72,7 @@ public class AboutActivity extends AppCompatActivity {
                 new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
         ));
 
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "Calendar...?", R.drawable.bridgeway_building,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "Calendar...?", R.drawable.face_zahner,
                 new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
         ));
