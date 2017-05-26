@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.about.detail.AboutDetailActivity;
+import org.pattonvillecs.pattonvilleapp.about.detail.LinkItem;
 
 import java.util.List;
 
@@ -32,12 +34,14 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
     private final String name;
     private final String text;
     private final int imageRes;
+    private final LinkItem[] linkItems;
 
-    public DeveloperItem(DeveloperHeaderItem headerItem, String name, String text, @DrawableRes int imageRes) {
+    public DeveloperItem(DeveloperHeaderItem headerItem, String name, String text, @DrawableRes int imageRes, LinkItem... linkItems) {
         super(headerItem);
         this.name = name;
         this.text = text;
         this.imageRes = imageRes;
+        this.linkItems = linkItems;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
                     Pair.create(holder.image, "developer_image"),
                     Pair.create(holder.name, "developer_name"));
 
-            context.startActivity(AboutDetailActivity.createIntent(context, name, text, imageRes), options.toBundle());
+            context.startActivity(AboutDetailActivity.createIntent(context, name, text, imageRes, linkItems), options.toBundle());
         });
     }
 
