@@ -59,7 +59,7 @@ public class AboutActivity extends AppCompatActivity {
         aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\nCalendar, Intro, Databases, Directory", R.drawable.face_skaggs));
         aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning", R.drawable.face_gadson));
         aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation", R.drawable.highschool_building));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography", R.drawable.highschool_building));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography", R.drawable.face_holtgrieve));
 
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "TBA", R.drawable.bridgeway_building));
         aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "TBA", R.drawable.face_thompkins));
