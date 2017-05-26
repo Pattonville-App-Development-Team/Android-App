@@ -89,6 +89,8 @@ public final class PreferenceUtils {
                             return DataSource.PARKWOOD_ELEMENTARY;
                         case "Willow Brook":
                             return DataSource.WILLOW_BROOK_ELEMENTARY;
+                        case "Early Childhood":
+                            return DataSource.EARLY_CHILDHOOD;
                         default:
                             throw new Error("Invalid school selection value! Was: " + s);
                     }

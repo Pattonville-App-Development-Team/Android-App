@@ -102,7 +102,7 @@ public class DirectoryFragment extends Fragment {
                 })
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
-        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
+        directoryAdapter.removeItem(10);
 
 
         return layout;
