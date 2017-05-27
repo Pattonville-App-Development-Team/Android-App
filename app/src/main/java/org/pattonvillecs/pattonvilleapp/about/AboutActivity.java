@@ -57,33 +57,33 @@ public class AboutActivity extends AppCompatActivity {
         DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
         DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Instructors");
 
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\nCalendar, Intro, Databases, Directory", R.drawable.face_skaggs,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\n\nCalendar, Intro, Databases, Directory\n\nMissouri University of Science and Technology", R.drawable.face_skaggs,
                 new LinkItem(R.drawable.github_box, "https://github.com/magneticflux-"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/mitchell-s-16085b13b")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning", R.drawable.face_gadson,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning\n\nHarvard University", R.drawable.face_gadson,
                 new LinkItem(R.drawable.github_box, "https://github.com/gadsonk")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation", R.drawable.face_skelton,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography\n\nTruman State University", R.drawable.face_holtgrieve,
+                new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
+        ));
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation\n\nMissouri University of Science and Technology", R.drawable.face_skelton,
                 new LinkItem(R.drawable.github_box, "https://github.com/skeltonn"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography", R.drawable.face_holtgrieve,
-                new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
-        ));
 
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "Calendar...?", R.drawable.face_zahner,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nCalendar...?\n\nUniversity of Miami", R.drawable.face_zahner,
                 new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "TBA", R.drawable.face_thompkins,
-                new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA\n\nWashington University in St. Louis", R.drawable.face_barrie,
+                new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA", R.drawable.face_bowers,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
                 new LinkItem(R.drawable.github_box, "https://github.com/KevinBowers73")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA", R.drawable.face_barrie,
-                new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "TBA\n\nNorthwestern University", R.drawable.face_thompkins,
+                new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
         ));
 
         aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative", R.drawable.face_simmons,
