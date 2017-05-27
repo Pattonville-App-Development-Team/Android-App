@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
@@ -32,11 +31,12 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 /**
  * Fragment used within MainActivity to display the News tab
@@ -133,17 +133,13 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                                 return Stream.of(dataSourceListEntry.getValue());
                             }
                         })
-                        .sorted(new Comparator<NewsArticle>() {
-                            @Override
-                            public int compare(NewsArticle o1, NewsArticle o2) {
-                                return -o1.getPublishDate().compareTo(o2.getPublishDate());
-                            }
-                        })
-                        .collect(Collectors.<NewsArticle>toList());
+                        .sorted((o1, o2) -> -o1.getPublishDate().compareTo(o2.getPublishDate()))
+                        .collect(Collectors.toList());
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
                 mNewsArticles = newNewsArticles;
                 mAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
+                mAdapter.getRecyclerView().smoothScrollToPosition(0);
             }
 
             private void checkRefresh(NewsParsingUpdateData data) {
@@ -168,7 +164,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         mAdapter = new NewsRecyclerViewAdapter(null);
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
         // Adds item divider between elements
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
@@ -233,7 +229,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         if (mAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
             mAdapter.setSearchText(newText);
-            mAdapter.filterItems(mNewsArticles, 100L);
+            mAdapter.filterItems(new ArrayList<>(mNewsArticles), 100L);
         }
         mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
         return true;

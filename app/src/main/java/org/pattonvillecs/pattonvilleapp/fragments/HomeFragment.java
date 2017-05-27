@@ -2,7 +2,6 @@ package org.pattonvillecs.pattonvilleapp.fragments;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.squareup.picasso.Picasso;
@@ -49,7 +47,6 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -85,7 +82,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         }
     };
     private PauseableListener<NewsParsingUpdateData> homeListener;
-    private OnFragmentInteractionListener listener;
     private Set<String> pinnedUIDs = new HashSet<>();
     private LinearLayout homeNewsHeader;
     private LinearLayout homeEventsHeader;
@@ -178,14 +174,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
                                 return Stream.of(dataSourceListEntry.getValue());
                             }
                         })
-                        .sorted(new Comparator<NewsArticle>() {
-                            @Override
-                            public int compare(NewsArticle o1, NewsArticle o2) {
-                                return -o1.getPublishDate().compareTo(o2.getPublishDate());
-                            }
-                        })
+                        .sorted((o1, o2) -> -o1.getPublishDate().compareTo(o2.getPublishDate()))
                         .limit(preferenceValues[NEWS_PREFERENCE_VALUES_INDEX])
-                        .collect((Collectors.<NewsArticle>toList()));
+                        .collect((Collectors.toList()));
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
                 newsArticles = newNewsArticles;
@@ -331,12 +322,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (listener != null) {
-            listener.onFragmentInteraction(uri);
-        }
-    }
-
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -344,7 +329,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
     }
 
     @Override
@@ -405,12 +389,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         //There is definitely stuff to display now
         List<EventFlexibleItem> items = new ArrayList<>(calendarData);
 
-        Iterators.removeIf(items.iterator(), new Predicate<EventFlexibleItem>() {
-            @Override
-            public boolean apply(EventFlexibleItem input) {
-                return !pinnedUIDs.contains(input.vEvent.getUid().getValue());
-            }
-        });
+        final CalendarDay today = CalendarDay.today();
+        //noinspection ResultOfMethodCallIgnored
+        Iterators.removeIf(items.iterator(), input ->
+                input == null
+                        || !pinnedUIDs.contains(input.vEvent.getUid().getValue())
+                        || input.getCalendarDay().isBefore(today));
 
         homeCalendarPinnedAdapter.updateDataSet(
                 new ArrayList<FlexibleHasCalendarDay>(items)
@@ -421,9 +405,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "Loader reset");
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

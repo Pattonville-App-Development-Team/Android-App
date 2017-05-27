@@ -1,5 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.intro;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.github.paolorotolo.appintro.AppIntro2;
 
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 /**
  * Created by Mitchell Skaggs on 1/27/17.
@@ -44,6 +46,12 @@ public class PattonvilleAppIntro extends AppIntro2 {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+
+        SharedPreferences.Editor editor = PreferenceUtils.getSharedPreferences(this).edit();
+        //  Edit preference to make it false because we don't want this to run again
+        editor.putBoolean(PreferenceUtils.APP_INTRO_FIRST_START_PREFERENCE_KEY, false);
+        editor.apply();
+
         finish();
     }
 

@@ -252,6 +252,10 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             onSharedPreferenceKeyChangedListeners.add(onSharedPreferenceKeyChangedListener);
     }
 
+    public void unregisterOnPreferenceKeyChangedListener(OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener) {
+        onSharedPreferenceKeyChangedListeners.remove(onSharedPreferenceKeyChangedListener);
+    }
+
     private void updateCalendarListeners(CalendarParsingUpdateData data) {
         Log.d(TAG, "Updating calendar listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {

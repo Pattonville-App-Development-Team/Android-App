@@ -113,5 +113,13 @@
     <string name="directory_fax_title">Fax:</string>
     <string name="directory_attendance_title">Attendance:</string>
     <string name="directory_phone_title">Phone:</string>
+    <string name="nav_drawer_title_about">About Us</string>
+    <string name="wells_watched">Wells watched: %1$d\n\nCurrent multiplier: %2$dx</string>
+    <string name="reset">Reset</string>
+    <string name="secret_shop_action_title">Shop</string>
+    <plurals name="secret_purchase_toast">
+        <item quantity="one">Purchased %1$d item!</item>
+        <item quantity="other">Purchased %1$d items!</item>
+    </plurals>
 
 </resources>

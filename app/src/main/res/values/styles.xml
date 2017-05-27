@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="autoCompleteTextViewStyle">@style/CursorColor</item>
+        <item name="autoCompleteTextViewStyle">@style/PSD.CursorColor</item>
         <item name="alertDialogTheme">@style/PSD.AlertDialog</item>
     </style>
 
@@ -48,7 +48,7 @@
         <item name="colorPrimary">@android:color/darker_gray</item>
     </style>
 
-    <style name="CursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+    <style name="PSD.CursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
         <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
 
