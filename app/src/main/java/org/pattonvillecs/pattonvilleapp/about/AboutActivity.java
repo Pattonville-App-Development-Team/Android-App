@@ -72,21 +72,21 @@ public class AboutActivity extends AppCompatActivity {
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
         ));
 
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nCalendar...?\n\nUniversity of Miami", R.drawable.face_zahner,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nCalendar, Various Features\n\nUniversity of Miami", R.drawable.face_zahner,
                 new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "TBA\n\nWashington University in St. Louis", R.drawable.face_barrie,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "Various Features\n\nWashington University in St. Louis", R.drawable.face_barrie,
                 new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "TBA\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "Various Features\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
                 new LinkItem(R.drawable.github_box, "https://github.com/KevinBowers73")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "TBA\n\nNorthwestern University", R.drawable.face_thompkins,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "Various Features\n\nNorthwestern University", R.drawable.face_thompkins,
                 new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
         ));
 
-        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative", R.drawable.face_simmons,
+        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative, Philosopher", R.drawable.face_simmons,
                 new LinkItem(R.drawable.github_box, "https://github.com/jtsimmons108")
         ));
         aboutAdapter.addItem(new SecretDeveloperItem(teacherHeader, null, null, 0));
