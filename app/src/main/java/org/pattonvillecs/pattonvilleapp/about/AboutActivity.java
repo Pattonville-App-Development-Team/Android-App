@@ -64,7 +64,7 @@ public class AboutActivity extends AppCompatActivity {
         aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning", R.drawable.face_gadson,
                 new LinkItem(R.drawable.github_box, "https://github.com/gadsonk")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation", R.drawable.highschool_building,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation", R.drawable.face_skelton,
                 new LinkItem(R.drawable.github_box, "https://github.com/skeltonn"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
         ));
