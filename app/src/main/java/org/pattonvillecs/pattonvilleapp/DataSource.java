@@ -141,7 +141,20 @@ public enum DataSource {
             Color.parseColor("#000178"),
             Optional.of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
             Optional.of("http://psdr3.nutrislice.com/menu/willow-brook"),
-            "/topics/Willow-Brook-Elementary");
+            "/topics/Willow-Brook-Elementary"),
+    EARLY_CHILDHOOD("Early Childhood", "Early Childhood", 10, false, true, false, false, false,
+            "http://ec.psdr3.org/",
+            "11097 St. Charles Rock Road, St. Ann, MO 63074",
+            "(314) 213-8105",
+            Optional.<String>empty(),
+            Optional.of("(314) 213-8696"),
+            "http://ec.psdr3.org/ical/Early%20Childhood.ics",
+            "http://fccms.psdr3.org/",
+            "EC",
+            Color.parseColor("#000000"),
+            Optional.<String>empty(),
+            Optional.<String>empty(),
+            "/topics/Early-Childhood");
 
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 

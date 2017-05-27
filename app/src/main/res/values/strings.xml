@@ -33,6 +33,7 @@
         <item>Rose Acres</item>
         <item>Parkwood</item>
         <item>Willow Brook</item>
+        <item>Early Childhood</item>
     </string-array>
 
     <string name="title_activity_calendar_event_details">Event Details</string>
