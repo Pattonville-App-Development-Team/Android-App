@@ -50,7 +50,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 
 public class PattonvilleApplication extends MultiDexApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
+    public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
+    public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
+    public static final String TOPIC_TEST = "test";
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
+
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
@@ -134,21 +138,21 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                 for (DataSource dataSource : DataSource.ALL) {
                     firebaseMessaging.unsubscribeFromTopic(dataSource.topicName);
                 }
-                firebaseMessaging.unsubscribeFromTopic("All-Middle-Schools");
-                firebaseMessaging.unsubscribeFromTopic("All-Elementary-Schools");
-                firebaseMessaging.unsubscribeFromTopic("test");
+                firebaseMessaging.unsubscribeFromTopic(TOPIC_ALL_MIDDLE_SCHOOLS);
+                firebaseMessaging.unsubscribeFromTopic(TOPIC_ALL_ELEMENTARY_SCHOOLS);
+                firebaseMessaging.unsubscribeFromTopic(TOPIC_TEST);
 
                 for (DataSource dataSource : newSelectedDataSources) {
                     firebaseMessaging.subscribeToTopic(dataSource.topicName);
                     if (dataSource.isElementarySchool) {
-                        firebaseMessaging.subscribeToTopic("All-Elementary-Schools");
+                        firebaseMessaging.subscribeToTopic(TOPIC_ALL_ELEMENTARY_SCHOOLS);
                     } else if (dataSource.isMiddleSchool) {
-                        firebaseMessaging.subscribeToTopic("All-Middle-Schools");
+                        firebaseMessaging.subscribeToTopic(TOPIC_ALL_MIDDLE_SCHOOLS);
                     }
                 }
 
                 if (BuildConfig.DEBUG) {
-                    firebaseMessaging.subscribeToTopic("test");
+                    firebaseMessaging.subscribeToTopic(TOPIC_TEST);
                 }
             }
         });
