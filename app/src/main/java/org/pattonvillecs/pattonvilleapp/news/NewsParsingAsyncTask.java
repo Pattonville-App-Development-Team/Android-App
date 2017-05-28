@@ -108,7 +108,10 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
 
         if (hasInternet) {
             RequestFuture<String> requestFuture = RequestFuture.newFuture();
-            StringRequest request = new StringRequest(dataSource.newsURL, requestFuture, requestFuture);
+            StringRequest request = new StringRequest(
+                    dataSource.newsURL.orElseThrow(() -> new IllegalStateException("newsURL must be present to download news! Did you filter by DataSources that have news?")),
+                    requestFuture,
+                    requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(3000, 10, 1.3f));
             pattonvilleApplication.getRequestQueue().add(request);
 

@@ -22,7 +22,7 @@ public enum DataSource {
             empty(),
             empty(),
             "http://drummond.psdr3.org/ical/Learning%20Center.ics",
-            "http://fccms.psdr3.org/District/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/District/news/?plugin=xml&leaves"),
             "PSD",
             parseColor("#007a33"),
             empty(),
@@ -36,7 +36,7 @@ public enum DataSource {
             of("(314) 213-8351"),
             of("(314) 213-8696"),
             "http://drummond.psdr3.org/ical/High%20School.ics",
-            "http://fccms.psdr3.org/HighSchool/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/HighSchool/news/?plugin=xml&leaves"),
             "HS",
             parseColor("#02d4c4"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94969"),
@@ -50,7 +50,7 @@ public enum DataSource {
             of("(314) 213-8333"),
             of("(314) 213-8633"),
             "http://drummond.psdr3.org/ical/Heights.ics",
-            "http://fccms.psdr3.org/Heights/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Heights/news/?plugin=xml&leaves"),
             "HT",
             parseColor("#ddd739"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94968"),
@@ -64,7 +64,7 @@ public enum DataSource {
             of("(314) 213-8332"),
             of("(314) 213-8632"),
             "http://drummond.psdr3.org/ical/Holman.ics",
-            "http://fccms.psdr3.org/Holman/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Holman/news/?plugin=xml&leaves"),
             "HO",
             parseColor("#ff8d00"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94975"),
@@ -78,7 +78,7 @@ public enum DataSource {
             of("(314) 213-8116"),
             of("(314) 213-8616"),
             "http://drummond.psdr3.org/ical/Remington.ics",
-            "http://fccms.psdr3.org/Remington/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Remington/news/?plugin=xml&leaves"),
             "RT",
             parseColor("#e50b00"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94971"),
@@ -92,7 +92,7 @@ public enum DataSource {
             of("(314) 213-8112"),
             of("(314) 213-8612"),
             "http://drummond.psdr3.org/ical/Bridgeway.ics",
-            "http://fccms.psdr3.org/Bridgeway/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Bridgeway/news/?plugin=xml&leaves"),
             "BW",
             parseColor("#724338"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94979"),
@@ -106,7 +106,7 @@ public enum DataSource {
             of("(314) 213-8519"),
             of("(314) 213-8619"),
             "http://drummond.psdr3.org/ical/Drummond.ics",
-            "http://fccms.psdr3.org/Drummond/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Drummond/news/?plugin=xml&leaves"),
             "DR",
             parseColor("#73c300"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94976"),
@@ -120,7 +120,7 @@ public enum DataSource {
             of("(314) 213-8117"),
             of("(314) 213-8617"),
             "http://drummond.psdr3.org/ical/Rose%20Acres.ics",
-            "http://fccms.psdr3.org/RoseAcres/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/RoseAcres/news/?plugin=xml&leaves"),
             "RA",
             parseColor("#f6258e"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
@@ -134,7 +134,7 @@ public enum DataSource {
             of("(314) 213-8115"),
             of("(314) 213-8615"),
             "http://drummond.psdr3.org/ical/Parkwood.ics",
-            "http://fccms.psdr3.org/Parkwood/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/Parkwood/news/?plugin=xml&leaves"),
             "PW",
             parseColor("#a300ff"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94967"),
@@ -148,7 +148,7 @@ public enum DataSource {
             of("(314) 213-8118"),
             of("(314) 213-8618"),
             "http://drummond.psdr3.org/ical/Willow%20Brook.ics",
-            "http://fccms.psdr3.org/WillowBrook/news/?plugin=xml&leaves",
+            of("http://fccms.psdr3.org/WillowBrook/news/?plugin=xml&leaves"),
             "WB",
             parseColor("#000178"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
@@ -162,7 +162,7 @@ public enum DataSource {
             empty(),
             of("(314) 213-8696"),
             "http://ec.psdr3.org/ical/Early%20Childhood.ics",
-            "http://fccms.psdr3.org/",
+            empty(),
             "EC",
             parseColor("#000000"),
             empty(),
@@ -197,10 +197,10 @@ public enum DataSource {
             .filter(d -> d.nutrisliceLink.isPresent())
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
-    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsURL, initialsName, topicName;
+    public final String name, shortName, websiteURL, address, mainNumber, calendarURL, initialsName, topicName;
     public final int id, calendarColor;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
-    public final Optional attendanceNumber, faxNumber, peachjarLink, nutrisliceLink;
+    public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink, newsURL;
 
     DataSource(String name,
                String shortName,
@@ -213,14 +213,14 @@ public enum DataSource {
                String websiteLink,
                String address,
                String mainNumber,
-               Optional attendanceNumber,
-               Optional faxNumber,
+               Optional<String> attendanceNumber,
+               Optional<String> faxNumber,
                String calendarLink,
-               String newsURL,
+               Optional<String> newsURL,
                String initialsName,
                int calendarColor,
-               Optional peachjarLink,
-               Optional nutrisliceLink,
+               Optional<String> peachjarLink,
+               Optional<String> nutrisliceLink,
                String topicName) {
         this.name = name;
         this.shortName = shortName;
