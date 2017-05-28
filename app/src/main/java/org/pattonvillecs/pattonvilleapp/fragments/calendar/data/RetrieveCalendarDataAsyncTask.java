@@ -12,9 +12,6 @@ import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
-import com.annimon.stream.function.Predicate;
-import com.annimon.stream.function.Supplier;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -65,13 +62,13 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         this.skipCacheLoad = skipCacheLoad;
     }
 
-    public static String fixICalStrings(@NonNull String iCalString) {
+    private static String fixICalStrings(@NonNull String iCalString) {
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:").replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
     }
 
-    public static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
+    private static List<VEvent> parseFile(String iCalFile, DataSource dataSource) {
         Log.d(TAG, "Initial");
-        ArrayList<VEvent> vEvents = new ArrayList<>();
+        List<VEvent> vEvents = new ArrayList<>();
         StringReader stringReader = new StringReader(iCalFile);
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
@@ -90,28 +87,17 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         stopWatch.stop();
 
         Log.d(TAG, "Calendar build time: " + stopWatch.getTime() + "ms");
-        //Log.d(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
+        Log.v(TAG, Runtime.getRuntime().availableProcessors() + " possible simultaneous tasks with " + Runtime.getRuntime().maxMemory() + " bytes of memory max and " + Runtime.getRuntime().freeMemory() + " bytes of memory free");
+
         if (calendar != null) {
             Log.i(TAG, "VTIMEZONEs of " + dataSource + ": " + calendar.getComponents(CalendarComponent.VTIMEZONE));
             //VTimeZone vTimeZone = (VTimeZone) calendar.getComponent(CalendarComponent.VTIMEZONE);
             //final TimeZone timeZone = new TimeZone(vTimeZone);
             //Log.i(TAG, "parseFile: " + vTimeZone);
-            vEvents = Stream.of(calendar.getComponents()).filter(new Predicate<CalendarComponent>() {
-                @Override
-                public boolean test(CalendarComponent value) {
-                    return value instanceof VEvent;
-                }
-            }).map(new Function<CalendarComponent, VEvent>() {
-                @Override
-                public VEvent apply(CalendarComponent value) {
-                    return (VEvent) value;
-                }
-            }).collect(Collectors.toCollection(new Supplier<ArrayList<VEvent>>() {
-                @Override
-                public ArrayList<VEvent> get() {
-                    return new ArrayList<>();
-                }
-            }));
+            vEvents = Stream.of(calendar.getComponents())
+                    .filter(value -> value instanceof VEvent)
+                    .map(value -> (VEvent) value)
+                    .collect(Collectors.toList());
         }
 
         return vEvents;
@@ -145,14 +131,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (!skipCacheLoad && cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
-            ArrayList<VEvent> cachedCalendarData = null;
+            List<VEvent> cachedCalendarData = null;
 
             Input input = null;
             try {
                 input = new Input(new FileInputStream(calendarDataCache));
 
                 //noinspection unchecked
-                cachedCalendarData = this.kryo.readObject(input, ArrayList.class);
+                cachedCalendarData = this.kryo.readObject(input, List.class);
                 isCacheCorrupt = false;
             } catch (FileNotFoundException e) {
                 Log.wtf(TAG, "This should never happen. The file should already be checked to exist before opening.");
@@ -214,7 +200,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 String processedResult = fixICalStrings(result);
                 Log.d(TAG, "Finished iCal fix for " + dataSource);
 
-                ArrayList<VEvent> downloadedCalendarData = parseFile(processedResult, dataSource);
+                List<VEvent> downloadedCalendarData = parseFile(processedResult, dataSource);
 
                 Output output = null;
                 try {
