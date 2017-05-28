@@ -66,9 +66,9 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:").replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
     }
 
-    private static List<VEvent> parseFile(String iCalFile, DataSource dataSource) {
+    private static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
         Log.d(TAG, "Initial");
-        List<VEvent> vEvents = new ArrayList<>();
+        ArrayList<VEvent> vEvents = new ArrayList<>();
         StringReader stringReader = new StringReader(iCalFile);
         CalendarBuilder calendarBuilder = new CalendarBuilder();
         Calendar calendar = null;
@@ -97,7 +97,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             vEvents = Stream.of(calendar.getComponents())
                     .filter(value -> value instanceof VEvent)
                     .map(value -> (VEvent) value)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
         }
 
         return vEvents;
@@ -131,14 +131,14 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         if (!skipCacheLoad && cacheExists && (cacheIsYoung || !hasInternet)) {
             //Attempt to load the cache
             boolean isCacheCorrupt;
-            List<VEvent> cachedCalendarData = null;
+            ArrayList<VEvent> cachedCalendarData = null;
 
             Input input = null;
             try {
                 input = new Input(new FileInputStream(calendarDataCache));
 
                 //noinspection unchecked
-                cachedCalendarData = this.kryo.readObject(input, List.class);
+                cachedCalendarData = this.kryo.readObject(input, ArrayList.class);
                 isCacheCorrupt = false;
             } catch (FileNotFoundException e) {
                 Log.wtf(TAG, "This should never happen. The file should already be checked to exist before opening.");
@@ -200,7 +200,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 String processedResult = fixICalStrings(result);
                 Log.d(TAG, "Finished iCal fix for " + dataSource);
 
-                List<VEvent> downloadedCalendarData = parseFile(processedResult, dataSource);
+                ArrayList<VEvent> downloadedCalendarData = parseFile(processedResult, dataSource);
 
                 Output output = null;
                 try {
