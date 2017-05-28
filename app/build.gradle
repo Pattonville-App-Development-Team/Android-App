@@ -3,18 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-    productFlavors {
-        api21 {
-            // Enable pre-dexing to produce an APK that can be tested on
-            // Android 5.0+ without the time-consuming DEX build processes.
-            minSdkVersion 21
-        }
-        api16 {
-            // The actual minSdkVersion for the production version.
-            minSdkVersion 16
-        }
-    }
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 16
