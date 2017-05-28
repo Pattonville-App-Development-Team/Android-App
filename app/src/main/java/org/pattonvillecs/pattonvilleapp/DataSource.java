@@ -4,7 +4,11 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
+import org.apache.commons.collections4.comparators.ComparatorChain;
+
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -168,6 +172,14 @@ public enum DataSource {
             empty(),
             "Early-Childhood");
 
+    public static final Comparator<DataSource> DEFAULT_ORDERING = new ComparatorChain<>(Arrays.asList(
+            (Comparator<DataSource>) (o1, o2) -> {
+                Integer o1Value = o1.getSortingScore();
+                Integer o2Value = o2.getSortingScore();
+                return o1Value.compareTo(o2Value);
+            },
+            (o1, o2) -> o1.name.compareTo(o2.name)));
+
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 
     public static final Set<DataSource> MIDDLE_SCHOOLS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
@@ -239,6 +251,19 @@ public enum DataSource {
         this.newsURL = newsURL;
         this.nutrisliceLink = nutrisliceLink;
         this.topicName = topicName;
+    }
+
+    public int getSortingScore() {
+        if (!this.isDisableable)
+            return 0;
+        else if (this.isHighSchool)
+            return 1;
+        else if (this.isMiddleSchool)
+            return 2;
+        else if (this.isElementarySchool)
+            return 3;
+        else
+            return 4;
     }
 
     @Override

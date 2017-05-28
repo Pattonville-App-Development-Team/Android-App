@@ -55,6 +55,8 @@ public class SchoolListActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_school_list);
 
+        peachjar = getIntent().getBooleanExtra(INTENT_ARG, false);
+
         // Set title appropriately
         if (peachjar) {
             setTitle(getString(R.string.title_activity_peachjar));
@@ -62,21 +64,9 @@ public class SchoolListActivity extends AppCompatActivity implements AdapterView
             setTitle(getString(R.string.title_activity_nutrislice));
         }
 
-        peachjar = getIntent().getBooleanExtra(INTENT_ARG, false);
-
         schools = Stream.of(DataSource.SCHOOLS)
-                .sortBy(dataSource -> dataSource.name).sortBy(dataSource -> {
-                    if (!dataSource.isDisableable)
-                        return 0;
-                    else if (dataSource.isHighSchool)
-                        return 1;
-                    else if (dataSource.isMiddleSchool)
-                        return 2;
-                    else if (dataSource.isElementarySchool)
-                        return 3;
-                    else
-                        return 4;
-                }).collect(Collectors.toList());
+                .sorted(DataSource.DEFAULT_ORDERING)
+                .collect(Collectors.toList());
 
         List<HashMap<String, String>> homeNewsList = new ArrayList<>();
         for (int i = 0; i < 9; i++) {

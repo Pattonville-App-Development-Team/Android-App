@@ -87,19 +87,7 @@ public class DirectoryFragment extends Fragment {
         directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
         Stream.of(DataSource.ALL)
-                .sortBy(dataSource -> dataSource.name)
-                .sortBy(dataSource -> {
-                    if (!dataSource.isDisableable)
-                        return 0;
-                    else if (dataSource.isHighSchool)
-                        return 1;
-                    else if (dataSource.isMiddleSchool)
-                        return 2;
-                    else if (dataSource.isElementarySchool)
-                        return 3;
-                    else
-                        return 4;
-                })
+                .sorted(DataSource.DEFAULT_ORDERING)
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
         directoryAdapter.removeItem(10);
