@@ -63,7 +63,7 @@ dependencies {
     compile 'com.takisoft.fix:preference-v7:25.3.1.0'
 
     //Calendar view
-    compile 'com.prolificinteractive:material-calendarview:1.4.2'
+    compile 'com.prolificinteractive:material-calendarview:1.4.3'
 
     //Home carousel
     compile 'com.synnapps:carouselview:0.1.3'
@@ -75,7 +75,7 @@ dependencies {
     compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
 
     //Java 8 streams
-    compile 'com.annimon:stream:1.1.3'
+    compile 'com.annimon:stream:1.1.7'
 
     //Collections, utilities
     compile 'com.google.guava:guava:20.0'
@@ -88,9 +88,9 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     //compile 'backport-util-concurrent:backport-util-concurrent:3.1'
-    compile 'commons-codec:commons-codec:1.8'
+    compile 'commons-codec:commons-codec:1.10'
     compile 'commons-lang:commons-lang:2.6'
-    compile 'org.slf4j:slf4j-android:1.7.22'
+    compile 'org.slf4j:slf4j-android:1.7.25'
 
     compile 'com.google.firebase:firebase-core:9.8.0'
     compile 'com.google.firebase:firebase-messaging:9.8.0'
@@ -114,7 +114,7 @@ dependencies {
     compile 'me.xdrop:fuzzywuzzy:1.1.7'
 
     //Alternative fuzzy string matching
-    compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'
+    compile group: 'org.apache.commons', name: 'commons-text', version: '1.1'
 
     //Cool Particles
     compile 'com.github.jinatonic.confetti:confetti:1.1.0'
