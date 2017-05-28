@@ -200,7 +200,7 @@ public enum DataSource {
     public final String name, shortName, websiteURL, address, mainNumber, calendarURL, newsURL, initialsName, topicName;
     public final int id, calendarColor;
     public final boolean hasNews, isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
-    public final Optional attendanceNumber, faxNumber, peachjarLink, nutrisliceLink;
+    public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink;
 
     DataSource(String name,
                String shortName,
@@ -213,14 +213,14 @@ public enum DataSource {
                String websiteLink,
                String address,
                String mainNumber,
-               Optional attendanceNumber,
-               Optional faxNumber,
+               Optional<String> attendanceNumber,
+               Optional<String> faxNumber,
                String calendarLink,
                String newsURL,
                String initialsName,
                int calendarColor,
-               Optional peachjarLink,
-               Optional nutrisliceLink,
+               Optional<String> peachjarLink,
+               Optional<String> nutrisliceLink,
                String topicName) {
         this.name = name;
         this.shortName = shortName;
