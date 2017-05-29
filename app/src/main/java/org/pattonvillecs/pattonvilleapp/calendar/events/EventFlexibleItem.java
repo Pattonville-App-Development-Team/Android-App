@@ -172,15 +172,16 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
 
         EventFlexibleItem that = (EventFlexibleItem) o;
 
-        return !(vEvent == null || that.vEvent == null)
-                && !(vEvent.getUid() == null || that.vEvent.getUid() == null)
-                && vEvent.getUid().getValue().equals(that.vEvent.getUid().getValue());
+        return dataSources != null ? dataSources.equals(that.dataSources) : that.dataSources == null
+                && (vEvent != null ? vEvent.equals(that.vEvent) : that.vEvent == null);
 
     }
 
     @Override
     public int hashCode() {
-        return vEvent != null ? vEvent.hashCode() : 0;
+        int result = dataSources != null ? dataSources.hashCode() : 0;
+        result = 31 * result + (vEvent != null ? vEvent.hashCode() : 0);
+        return result;
     }
 
     @Override

@@ -191,6 +191,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             public void onReceiveData(CalendarParsingUpdateData data) {
                 super.onReceiveData(data);
                 Log.i(TAG, "Received new data!");
+                Log.i(TAG, "Loaded calendar DataSources: " + pattonvilleApplication.getLoadedCalendarDataSources());
 
                 setCalendarData(data.getCalendarData());
             }
@@ -199,6 +200,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             public void onResume(CalendarParsingUpdateData data) {
                 super.onResume(data);
                 Log.i(TAG, "Received data after resume!");
+                Log.i(TAG, "Loaded calendar DataSources: " + pattonvilleApplication.getLoadedCalendarDataSources());
 
                 setCalendarData(data.getCalendarData());
             }
@@ -227,6 +229,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
             }
         }
 
+        if (homeCalendarEventAdapter.getItemCount() != 0)
+            homeCalendarEventAdapter.clear();
         homeCalendarEventAdapter.updateDataSet(new ArrayList<>(itemsToAdd), true);
         updatePinnedContent();
     }
