@@ -99,7 +99,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
 
                 BitmapConfetto bitmapConfetto;
                 long currentMultiplier = getCurrentMultiplier();
-                boolean showFace = currentMultiplier >= 0 && face != null;
+                boolean showFace = currentMultiplier < 0 && face != null;
 
                 if (showFace)
                     bitmapConfetto = new BitmapConfetto(face);
