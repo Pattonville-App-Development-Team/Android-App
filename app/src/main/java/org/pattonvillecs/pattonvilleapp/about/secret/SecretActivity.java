@@ -99,10 +99,12 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
 
                 BitmapConfetto bitmapConfetto;
                 long currentMultiplier = getCurrentMultiplier();
-                if (currentMultiplier >= 0 || face == null)
-                    bitmapConfetto = new BitmapConfetto(getNumberBitmap(getCurrentMultiplier()));
-                else
+                boolean showFace = currentMultiplier >= 0 && face != null;
+
+                if (showFace)
                     bitmapConfetto = new BitmapConfetto(face);
+                else
+                    bitmapConfetto = new BitmapConfetto(getNumberBitmap(getCurrentMultiplier()));
 
                 new ConfettiManager(
                         SecretActivity.this,
@@ -113,7 +115,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
                         .setVelocityY(0, 500)
                         .setEmissionDuration(0)
                         .setNumInitialCount(1)
-                        .setAccelerationY(3500)
+                        .setAccelerationY(showFace ? 1000 : 3500)
                         .animate();
             }
             return false;
