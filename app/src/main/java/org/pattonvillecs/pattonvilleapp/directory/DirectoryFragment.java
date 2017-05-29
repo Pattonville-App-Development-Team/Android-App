@@ -87,11 +87,10 @@ public class DirectoryFragment extends Fragment {
         directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
         Stream.of(DataSource.ALL)
+                .filter(dataSource -> dataSource != DataSource.EARLY_CHILDHOOD)
                 .sorted(DataSource.DEFAULT_ORDERING)
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
-        directoryAdapter.removeItem(10);
-
 
         return layout;
     }

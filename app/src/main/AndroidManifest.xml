@@ -77,11 +77,11 @@
         </service>
 
         <activity
-            android:name=".PowerschoolActivity"
+            android:name=".links.PowerschoolActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".SchoolListActivity"
+            android:name=".links.SchoolListActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity

@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.links;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 /**

@@ -23,6 +23,8 @@ import org.pattonvillecs.pattonvilleapp.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
+import org.pattonvillecs.pattonvilleapp.links.PowerschoolActivity;
+import org.pattonvillecs.pattonvilleapp.links.SchoolListActivity;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
