@@ -151,7 +151,7 @@ public class CalendarMonthFragment extends Fragment {
                 // This could be called when the button is not there yet, so we must test for null
                 if (menuButton != null) {
                     // Found it! Do what you need with the button
-                    showSpotlight(getActivity(), menuButton, "CalendarMonthFragment_MenuButtonGoToCurrentDay", "Touch this button to return to the current day.", "Today");
+                    showSpotlight(getActivity(), menuButton, "CalendarMonthFragment_MenuButtonGoToCurrentDay", "Tap here to return to the current day.", "Today");
                     // Now you can get rid of this listener
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
                 }

@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
@@ -37,6 +38,8 @@ import java.util.Map;
 
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+
+import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 
 /**
  * Fragment used within MainActivity to display the News tab
@@ -203,6 +206,35 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_news_menu_main, menu);
         initSearchView(menu);
+
+        //This terrifies me...
+        final ViewTreeObserver viewTreeObserver = getActivity().getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = getActivity().findViewById(R.id.news_menu_refresh);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    showSpotlight(getActivity(), menuButton, "NewsFragment_MenuButtonRefresh", "Tap here to manually check for new news articles. The app periodically updates news on its own.", "Refresh");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = getActivity().findViewById(R.id.news_menu_search);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    showSpotlight(getActivity(), menuButton, "NewsFragment_MenuButtonSearch", "Tap here to search news titles and sources similar to your query.", "Search");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
     }
 
     @Override
