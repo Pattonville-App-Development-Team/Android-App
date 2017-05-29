@@ -1,5 +1,7 @@
 package org.pattonvillecs.pattonvilleapp;
 
+import android.support.annotation.DrawableRes;
+
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
@@ -30,7 +32,8 @@ public enum DataSource {
             parseColor("#007a33"),
             empty(),
             empty(),
-            "District"),
+            "District",
+            of(R.drawable.d_mascot)),
     HIGH_SCHOOL("Pattonville High School", "High School",
             true, true, false, false,
             "http://phs.psdr3.org/",
@@ -44,7 +47,8 @@ public enum DataSource {
             parseColor("#02d4c4"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94969"),
             of("http://psdr3.nutrislice.com/menu/pattonville-high"),
-            "Pattonville-High-School"),
+            "Pattonville-High-School",
+            of(R.drawable.hs_mascot)),
     HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights",
             true, false, true, false,
             "http://ht.psdr3.org/",
@@ -58,7 +62,8 @@ public enum DataSource {
             parseColor("#ddd739"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94968"),
             of("http://psdr3.nutrislice.com/menu/pattonville-heights"),
-            "Heights-Middle-School"),
+            "Heights-Middle-School",
+            empty()),
     HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman",
             true, false, true, false,
             "http://ho.psdr3.org/",
@@ -72,7 +77,8 @@ public enum DataSource {
             parseColor("#ff8d00"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94975"),
             of("http://psdr3.nutrislice.com/menu/holman"),
-            "Holman-Middle-School"),
+            "Holman-Middle-School",
+            empty()),
     REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington",
             true, false, true, true,
             "http://remington.psdr3.org/",
@@ -86,7 +92,8 @@ public enum DataSource {
             parseColor("#e50b00"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94971"),
             of("http://psdr3.nutrislice.com/menu/remington-traditional"),
-            "Remington-Traditional"),
+            "Remington-Traditional",
+            of(R.drawable.rt_mascot)),
     BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway",
             true, false, false, true,
             "http://bridgeway.psdr3.org/",
@@ -100,7 +107,8 @@ public enum DataSource {
             parseColor("#724338"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94979"),
             of("http://psdr3.nutrislice.com/menu/bridgeway"),
-            "Bridgeway-Elementary"),
+            "Bridgeway-Elementary",
+            of(R.drawable.bw_mascot)),
     DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond",
             true, false, false, true,
             "http://drummond.psdr3.org/",
@@ -114,7 +122,8 @@ public enum DataSource {
             parseColor("#73c300"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94976"),
             of("http://psdr3.nutrislice.com/menu/drummond"),
-            "Drummond-Elementary"),
+            "Drummond-Elementary",
+            of(R.drawable.dr_mascot)),
     ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres",
             true, false, false, true,
             "http://roseacres.psdr3.org/",
@@ -128,7 +137,8 @@ public enum DataSource {
             parseColor("#f6258e"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
             of("http://psdr3.nutrislice.com/menu/rose-acres"),
-            "Rose-Acres-Elementary"),
+            "Rose-Acres-Elementary",
+            of(R.drawable.ra_mascot)),
     PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood",
             true, false, false, true,
             "http://parkwood.psdr3.org/",
@@ -142,7 +152,8 @@ public enum DataSource {
             parseColor("#a300ff"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94967"),
             of("http://psdr3.nutrislice.com/menu/parkwood"),
-            "Parkwood-Elementary"),
+            "Parkwood-Elementary",
+            of(R.drawable.pw_mascot)),
     WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook",
             true, false, false, true,
             "http://willowbrook.psdr3.org/",
@@ -156,7 +167,8 @@ public enum DataSource {
             parseColor("#000178"),
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
             of("http://psdr3.nutrislice.com/menu/willow-brook"),
-            "Willow-Brook-Elementary"),
+            "Willow-Brook-Elementary",
+            of(R.drawable.wb_mascot)),
     EARLY_CHILDHOOD("Early Childhood", "Early Childhood",
             true, false, false, false,
             "http://ec.psdr3.org/",
@@ -170,7 +182,8 @@ public enum DataSource {
             parseColor("#000000"),
             empty(),
             empty(),
-            "Early-Childhood");
+            "Early-Childhood",
+            empty());
 
     public static final Comparator<DataSource> DEFAULT_ORDERING = new ComparatorChain<>(Arrays.asList(
             (Comparator<DataSource>) (o1, o2) -> {
@@ -210,6 +223,8 @@ public enum DataSource {
 
     public final String name, shortName, websiteURL, address, mainNumber, initialsName, topicName;
     public final int calendarColor;
+    @DrawableRes
+    public final int mascotDrawableRes;
     public final boolean isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink, newsURL, calendarURL;
 
@@ -230,7 +245,8 @@ public enum DataSource {
                int calendarColor,
                Optional<String> peachjarLink,
                Optional<String> nutrisliceLink,
-               String topicName) {
+               String topicName,
+               Optional<Integer> mascotDrawableRes) {
         this.name = name;
         this.shortName = shortName;
         this.isDisableable = isDisableable;
@@ -249,6 +265,7 @@ public enum DataSource {
         this.newsURL = newsURL;
         this.nutrisliceLink = nutrisliceLink;
         this.topicName = topicName;
+        this.mascotDrawableRes = mascotDrawableRes.orElse(R.drawable.d_mascot);
     }
 
     public int getSortingScore() {

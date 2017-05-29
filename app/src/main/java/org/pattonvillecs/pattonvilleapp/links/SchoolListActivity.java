@@ -52,12 +52,7 @@ public class SchoolListActivity extends AppCompatActivity {
         List<SchoolLinkItem> schools = Stream.of(DataSource.ALL)
                 .filter(dataSource -> peachjar ? dataSource.peachjarLink.isPresent() : dataSource.nutrisliceLink.isPresent())
                 .sorted(DataSource.DEFAULT_ORDERING)
-                .map(dataSource -> {
-                    if (peachjar)
-                        return new PeachjarItem(dataSource);
-                    else
-                        return new NutrisliceItem(dataSource);
-                })
+                .map(dataSource -> peachjar ? new PeachjarItem(dataSource) : new NutrisliceItem(dataSource))
                 .collect(Collectors.toList());
 
         schoolLinksRecyclerView = (RecyclerView) findViewById(R.id.school_links_recyclerview);
@@ -67,27 +62,6 @@ public class SchoolListActivity extends AppCompatActivity {
 
         schoolLinksAdapter = new FlexibleAdapter<>(schools);
         schoolLinksRecyclerView.setAdapter(schoolLinksAdapter);
-
-        // --- REFACTOR LINE ---
-
-        /*
-        List<HashMap<String, String>> homeNewsList = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-
-            HashMap<String, String> newsListItem = new HashMap<>();
-            newsListItem.put("image", Integer.toString(DirectoryFragment.getDrawableResourceForDataSource(schools.get(i))));
-            newsListItem.put("school", schools.get(i).name);
-            homeNewsList.add(newsListItem);
-        }
-        String[] homeNewsListFrom = {"image", "school"};
-
-        int[] homeNewsListTo = {R.id.schools_listview_item_imageView, R.id.schools_listview_item_textView};
-
-        ListView listView = (ListView) findViewById(R.id.school_list_view);
-        listView.setAdapter(new SimpleAdapter(this, homeNewsList, R.layout.school_links_list_item,
-                homeNewsListFrom, homeNewsListTo));
-        listView.setOnItemClickListener(this);
-        */
     }
 }
 

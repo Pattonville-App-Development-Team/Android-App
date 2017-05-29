@@ -1,7 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.directory;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,10 +52,9 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
             holder.name.setText(StringUtils.join(dataSources, ", "));
         }
 
-        @DrawableRes int drawableResource = DirectoryFragment.getDrawableResourceForDataSource(dataSource);
         Picasso.with(context)
-                .load(drawableResource)
-                .error(drawableResource) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
+                .load(dataSource.mascotDrawableRes)
+                .error(dataSource.mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside().fit().into(holder.icon);
     }
 

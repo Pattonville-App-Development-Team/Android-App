@@ -1,7 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.links;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import com.squareup.picasso.Picasso;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 
 import java.util.List;
 
@@ -35,10 +33,9 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
     public void bindViewHolder(FlexibleAdapter adapter, SchoolLinkItemViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
 
-        @DrawableRes int mascot = DirectoryFragment.getDrawableResourceForDataSource(dataSource);
         Picasso.with(context)
-                .load(mascot)
-                .error(mascot)
+                .load(dataSource.mascotDrawableRes)
+                .error(dataSource.mascotDrawableRes)
                 .fit()
                 .centerInside()
                 .into(holder.schoolMascot);

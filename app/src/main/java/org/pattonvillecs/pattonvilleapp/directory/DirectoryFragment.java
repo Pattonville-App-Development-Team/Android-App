@@ -2,7 +2,6 @@ package org.pattonvillecs.pattonvilleapp.directory;
 
 
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -28,34 +27,6 @@ public class DirectoryFragment extends Fragment {
 
     public DirectoryFragment() {
         // Required empty public constructor
-    }
-
-    @DrawableRes
-    public static int getDrawableResourceForDataSource(DataSource dataSource) {
-        switch (dataSource) {
-            case DISTRICT:
-                return R.drawable.d_mascot;
-            case HIGH_SCHOOL:
-                return R.drawable.hs_mascot;
-            case HEIGHTS_MIDDLE_SCHOOL:
-                return R.drawable.d_mascot;
-            case HOLMAN_MIDDLE_SCHOOL:
-                return R.drawable.d_mascot;
-            case REMINGTON_TRADITIONAL_SCHOOL:
-                return R.drawable.rm_mascot;
-            case BRIDGEWAY_ELEMENTARY:
-                return R.drawable.br_mascot;
-            case DRUMMOND_ELEMENTARY:
-                return R.drawable.dr_mascot;
-            case ROSE_ACRES_ELEMENTARY:
-                return R.drawable.ra_mascot;
-            case PARKWOOD_ELEMENTARY:
-                return R.drawable.pw_mascot;
-            case WILLOW_BROOK_ELEMENTARY:
-                return R.drawable.wb_mascot;
-            default:
-                return R.drawable.d_mascot;
-        }
     }
 
     public static DirectoryFragment newInstance() {
