@@ -39,7 +39,6 @@ import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
-import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 
 public class HomeFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private TextView newsSeeMoreTextView, upcomingSeeMoreTextView, pinnedSeeMoreTextView, homeNewsLoadingTextView;
     private NavigationView navigationView;
     private RecyclerView homeNewsRecyclerView, homeCalendarEventRecyclerView;
-    private NewsRecyclerViewAdapter homeNewsAdapter;
+    private FlexibleAdapter<NewsArticle> homeNewsAdapter;
     private PattonvilleApplication pattonvilleApplication;
     private List<NewsArticle> newsArticles;
     private PauseableListener<CalendarParsingUpdateData> calendarListener;
@@ -269,7 +269,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         homeCalendarEventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mHomeCalendarPinnedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        homeNewsAdapter = new NewsRecyclerViewAdapter(null);
+        homeNewsAdapter = new FlexibleAdapter<>(null);
         homeCalendarEventAdapter = new EventAdapter(null);
         homeCalendarPinnedAdapter = new EventAdapter(null);
 
