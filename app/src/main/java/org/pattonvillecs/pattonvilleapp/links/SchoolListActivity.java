@@ -25,14 +25,14 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
  */
 public class SchoolListActivity extends AppCompatActivity {
 
-    private final static String INTENT_PEACHJAR = "peachjar";
+    private final static String INTENT_IS_PEACHJAR = "isPeachjar";
 
-    private boolean peachjar;
+    private boolean isPeachjar;
     private RecyclerView schoolLinksRecyclerView;
     private FlexibleAdapter<SchoolLinkItem> schoolLinksAdapter;
 
     public static Intent newInstance(Context context, boolean peachjar) {
-        return new Intent(context, SchoolListActivity.class).putExtra(INTENT_PEACHJAR, peachjar);
+        return new Intent(context, SchoolListActivity.class).putExtra(INTENT_IS_PEACHJAR, peachjar);
     }
 
     @Override
@@ -40,19 +40,19 @@ public class SchoolListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school_links_list);
 
-        peachjar = getIntent().getBooleanExtra(INTENT_PEACHJAR, false);
+        isPeachjar = getIntent().getBooleanExtra(INTENT_IS_PEACHJAR, false);
 
         // Set title appropriately
-        if (peachjar) {
+        if (isPeachjar) {
             setTitle(R.string.title_activity_peachjar);
         } else {
             setTitle(R.string.title_activity_nutrislice);
         }
 
         List<SchoolLinkItem> schools = Stream.of(DataSource.ALL)
-                .filter(dataSource -> peachjar ? dataSource.peachjarLink.isPresent() : dataSource.nutrisliceLink.isPresent())
+                .filter(dataSource -> isPeachjar ? dataSource.peachjarLink.isPresent() : dataSource.nutrisliceLink.isPresent())
                 .sorted(DataSource.DEFAULT_ORDERING)
-                .map(dataSource -> peachjar ? new PeachjarItem(dataSource) : new NutrisliceItem(dataSource))
+                .map(dataSource -> isPeachjar ? new PeachjarItem(dataSource) : new NutrisliceItem(dataSource))
                 .collect(Collectors.toList());
 
         schoolLinksRecyclerView = (RecyclerView) findViewById(R.id.school_links_recyclerview);
