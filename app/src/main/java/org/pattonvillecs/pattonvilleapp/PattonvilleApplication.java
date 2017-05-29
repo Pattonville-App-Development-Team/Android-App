@@ -218,13 +218,13 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        dataSources.stream()
+        Stream.of(dataSources)
                 .filter(dataSource -> dataSource.newsURL.isPresent())
                 .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource));
     }
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        dataSources.stream()
+        Stream.of(dataSources)
                 .filter(dataSource -> dataSource.calendarURL.isPresent())
                 .forEach(dataSource -> new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource));
     }
