@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -72,12 +71,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private EventAdapter homeCalendarPinnedAdapter;
     private TreeSet<EventFlexibleItem> calendarData = new TreeSet<>();
     private int[] preferenceValues = new int[3];
-    private ImageListener imageListener = new ImageListener() {
-        @Override
-        public void setImageForPosition(int position, ImageView imageView) {
-            Picasso.with(getContext()).load("http://moodle.psdr3.org/psdlogin/backgrounds/bg" + position + ".jpg").into(imageView);
-        }
-    };
+    private ImageListener imageListener = (position, imageView) ->
+            Picasso.with(getContext())
+                    .load("http://moodle.psdr3.org/psdlogin/backgrounds/bg" + position + ".jpg")
+                    .fit()
+                    .centerCrop()
+                    .into(imageView);
     private PauseableListener<NewsParsingUpdateData> homeListener;
     private Set<String> pinnedUIDs = new HashSet<>();
     private LinearLayout homeNewsHeader;
@@ -87,10 +86,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
     private RecyclerView mHomeCalendarPinnedRecyclerView;
 
     public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new HomeFragment();
     }
 
     @Override
