@@ -229,11 +229,11 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
                 .forEach(dataSource -> new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource));
     }
 
-    public synchronized Kryo borrowKryo() {
+    public Kryo borrowKryo() {
         return kryoPool.borrow();
     }
 
-    public synchronized void releaseKryo(Kryo kryo) {
+    public void releaseKryo(Kryo kryo) {
         kryoPool.release(kryo);
     }
 
