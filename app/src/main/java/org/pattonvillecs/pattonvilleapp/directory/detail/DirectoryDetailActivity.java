@@ -18,6 +18,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -43,6 +45,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.utils.Utils;
 
+import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 import static org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -209,6 +212,22 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_directorydetail, menu);
         initSearchView(menu);
+
+        //This terrifies me...
+        final ViewTreeObserver viewTreeObserver = getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = findViewById(R.id.directory_detail_menu_search);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    showSpotlight(DirectoryDetailActivity.this, menuButton, "DirectoryDetailActivity_MenuButtonSearch", "Staff with names, positions, or locations similar to your query will appear after typing", "Search");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
 
         return true;
     }
