@@ -17,7 +17,7 @@ import static com.annimon.stream.Optional.empty;
 import static com.annimon.stream.Optional.of;
 
 public enum DataSource {
-    DISTRICT("Learning Center", "District", 0,
+    DISTRICT("Learning Center", "District",
             false, false, false, false,
             "http://psdr3.org/",
             "11097 St. Charles Rock Road, St. Ann, MO 63074",
@@ -31,7 +31,7 @@ public enum DataSource {
             empty(),
             empty(),
             "District"),
-    HIGH_SCHOOL("Pattonville High School", "High School", 1,
+    HIGH_SCHOOL("Pattonville High School", "High School",
             true, true, false, false,
             "http://phs.psdr3.org/",
             "2497 Creve Coeur Mill Road, Maryland Heights, MO 63043",
@@ -45,7 +45,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94969"),
             of("http://psdr3.nutrislice.com/menu/pattonville-high"),
             "Pattonville-High-School"),
-    HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights", 2,
+    HEIGHTS_MIDDLE_SCHOOL("Heights Middle School", "Heights",
             true, false, true, false,
             "http://ht.psdr3.org/",
             "195 Fee Fee Road, Maryland Heights, MO 63043 ",
@@ -59,7 +59,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94968"),
             of("http://psdr3.nutrislice.com/menu/pattonville-heights"),
             "Heights-Middle-School"),
-    HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman", 3,
+    HOLMAN_MIDDLE_SCHOOL("Holman Middle School", "Holman",
             true, false, true, false,
             "http://ho.psdr3.org/",
             "11055 St. Charles Rock Road, St. Ann, MO 63074",
@@ -73,7 +73,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94975"),
             of("http://psdr3.nutrislice.com/menu/holman"),
             "Holman-Middle-School"),
-    REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington", 4,
+    REMINGTON_TRADITIONAL_SCHOOL("Remington Traditional School", "Remington",
             true, false, true, true,
             "http://remington.psdr3.org/",
             "102 Fee Fee Rd, Maryland Heights, MO 63043",
@@ -87,7 +87,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94971"),
             of("http://psdr3.nutrislice.com/menu/remington-traditional"),
             "Remington-Traditional"),
-    BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway", 5,
+    BRIDGEWAY_ELEMENTARY("Bridgeway Elementary School", "Bridgeway",
             true, false, false, true,
             "http://bridgeway.psdr3.org/",
             "11635 Oakbury Court, Bridgeton, MO 63044",
@@ -101,7 +101,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94979"),
             of("http://psdr3.nutrislice.com/menu/bridgeway"),
             "Bridgeway-Elementary"),
-    DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond", 6,
+    DRUMMOND_ELEMENTARY("Drummond Elementary School", "Drummond",
             true, false, false, true,
             "http://drummond.psdr3.org/",
             "3721 St. Bridget Lane, St Ann, MO 63074",
@@ -115,7 +115,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94976"),
             of("http://psdr3.nutrislice.com/menu/drummond"),
             "Drummond-Elementary"),
-    ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres", 7,
+    ROSE_ACRES_ELEMENTARY("Rose Acres Elementary School", "Rose Acres",
             true, false, false, true,
             "http://roseacres.psdr3.org/",
             "2905 Rose Acres Lane, Maryland Heights, MO 63043",
@@ -129,7 +129,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94970"),
             of("http://psdr3.nutrislice.com/menu/rose-acres"),
             "Rose-Acres-Elementary"),
-    PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood", 8,
+    PARKWOOD_ELEMENTARY("Parkwood Elementary School", "Parkwood",
             true, false, false, true,
             "http://parkwood.psdr3.org/",
             "3199 Parkwood Lane, Maryland Heights, MO 63043",
@@ -143,7 +143,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94967"),
             of("http://psdr3.nutrislice.com/menu/parkwood"),
             "Parkwood-Elementary"),
-    WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook", 9,
+    WILLOW_BROOK_ELEMENTARY("Willow Brook Elementary School", "Willow Brook",
             true, false, false, true,
             "http://willowbrook.psdr3.org/",
             "11022 Schuetz Road, Creve Coeur, MO 63146",
@@ -157,7 +157,7 @@ public enum DataSource {
             of("https://www.peachjar.com/index.php?a=28&b=138&region=94953"),
             of("http://psdr3.nutrislice.com/menu/willow-brook"),
             "Willow-Brook-Elementary"),
-    EARLY_CHILDHOOD("Early Childhood", "Early Childhood", 10,
+    EARLY_CHILDHOOD("Early Childhood", "Early Childhood",
             true, false, false, false,
             "http://ec.psdr3.org/",
             "11097 St. Charles Rock Road, St. Ann, MO 63074",
@@ -209,13 +209,12 @@ public enum DataSource {
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
     public final String name, shortName, websiteURL, address, mainNumber, initialsName, topicName;
-    public final int id, calendarColor;
+    public final int calendarColor;
     public final boolean isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink, newsURL, calendarURL;
 
     DataSource(String name,
                String shortName,
-               int id,
                boolean isDisableable,
                boolean isHighSchool,
                boolean isMiddleSchool,
@@ -234,7 +233,6 @@ public enum DataSource {
                String topicName) {
         this.name = name;
         this.shortName = shortName;
-        this.id = id;
         this.isDisableable = isDisableable;
         this.isHighSchool = isHighSchool;
         this.isMiddleSchool = isMiddleSchool;
