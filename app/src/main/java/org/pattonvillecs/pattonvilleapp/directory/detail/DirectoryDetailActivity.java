@@ -3,6 +3,8 @@ package org.pattonvillecs.pattonvilleapp.directory.detail;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -58,6 +60,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
     private List<Faculty> faculties;
     private DirectoryDetailHeaderItem headerItem;
     private FastScroller fastScroller;
+    private SearchView searchView;
 
     public static Intent createIntent(Context context, Set<DataSource> dataSources) {
         return new Intent(context, DirectoryDetailActivity.class)
@@ -205,6 +208,14 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 })
                 .collect(Collectors.toList());
         directoryAdapter.updateDataSet(new ArrayList<>(faculties), true);
+
+        if (searchView != null) {
+            String query = searchView.getQuery().toString();
+            if (!query.isEmpty()) {
+                directoryAdapter.setSearchText(query);
+                directoryAdapter.filterItems(new ArrayList<>(faculties));
+            }
+        }
     }
 
     @Override
@@ -266,6 +277,13 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     directoryAdapter.removeAllScrollableHeaders();
+
+                    //To lock current orientation
+                    int currentOrientation = getResources().getConfiguration().orientation;
+                    if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE); //locks landscape
+                    else
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT); //locks port
                     return true;
                 }
 
@@ -273,12 +291,13 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     if (headerItem != null)
                         directoryAdapter.addScrollableHeader(headerItem);
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     return true;
                 }
 
             });
 
-            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
             searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
             searchView.setQueryHint(getString(R.string.action_search));

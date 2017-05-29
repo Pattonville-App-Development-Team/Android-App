@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +26,7 @@ public class CallExtensionActivity extends AppCompatActivity {
 
     public static Intent newIntent(Context c, Faculty faculty) {
         Intent intent = new Intent(c, CallExtensionActivity.class);
-        intent.putExtra(EXTRA_FACULTY, faculty);
+        intent.putExtra(EXTRA_FACULTY, (Parcelable) faculty);
         return intent;
     }
 
@@ -40,7 +41,7 @@ public class CallExtensionActivity extends AppCompatActivity {
     }
 
     private void showConfirmCallDialog() {
-        final Faculty faculty = (Faculty) getIntent().getSerializableExtra(EXTRA_FACULTY);
+        final Faculty faculty = getIntent().getParcelableExtra(EXTRA_FACULTY);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure that you want to call " + faculty.getFormattedFullName() + "?")
@@ -60,6 +61,7 @@ public class CallExtensionActivity extends AppCompatActivity {
                     finish();
                 })
                 .setNegativeButton(android.R.string.no, (dialogInterface, i) -> finish())
+                .setOnDismissListener(dialog -> finish())
                 .create()
                 .show();
 

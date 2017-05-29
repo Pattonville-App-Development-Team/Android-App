@@ -3,6 +3,8 @@ package org.pattonvillecs.pattonvilleapp.directory.detail;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,24 +30,54 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder, FacultyHeader> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable {
+public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder, FacultyHeader> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable, Parcelable {
 
-    private String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1,
-            mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
-    private int mRank;
-    private DataSource directoryKey;
+    public static final Creator<Faculty> CREATOR = new Creator<Faculty>() {
+        @Override
+        public Faculty createFromParcel(Parcel in) {
+            return new Faculty(in);
+        }
 
+        @Override
+        public Faculty[] newArray(int size) {
+            return new Faculty[size];
+        }
+    };
+
+    private final String mFirstName, mLastName, mPCN, mLongDesc, mLocation, mEmail, mOffice1, mExtension1, mOffice2, mExtension2, mOffice3, mExtension3;
     //list of phone numbers and extension, location
+    private final int mRank;
+    private final DataSource directoryKey;
 
     public Faculty(String[] facultyMember) {
-        this(facultyMember[0], facultyMember[1], facultyMember[2], facultyMember[3],
-                facultyMember[4], facultyMember[5], facultyMember[6], facultyMember[7],
-                facultyMember[8], facultyMember[9], facultyMember[10], facultyMember[11]);
+        this(
+                facultyMember[0],
+                facultyMember[1],
+                facultyMember[2],
+                facultyMember[3],
+                facultyMember[4],
+                facultyMember[5],
+                facultyMember[6],
+                facultyMember[7],
+                facultyMember[8],
+                facultyMember[9],
+                facultyMember[10],
+                facultyMember[11]
+        );
     }
 
-    public Faculty(String mFirstName, String mLastName, String mPCN, String mLongDesc, String mLocation,
-                   String mEmail, String mOffice1, String mExtension1, String mOffice2,
-                   String mExtension2, String mOffice3, String mExtension3) {
+    public Faculty(String mFirstName,
+                   String mLastName,
+                   String mPCN,
+                   String mLongDesc,
+                   String mLocation,
+                   String mEmail,
+                   String mOffice1,
+                   String mExtension1,
+                   String mOffice2,
+                   String mExtension2,
+                   String mOffice3,
+                   String mExtension3) {
         super(null);
         this.mFirstName = mFirstName;
         this.mLastName = mLastName;
@@ -59,8 +91,76 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
         this.mExtension2 = mExtension2;
         this.mOffice3 = mOffice3;
         this.mExtension3 = mExtension3;
-        setRank();
-        setDirectoryKey();
+        this.mRank = getRank(this);
+        this.directoryKey = getDirectoryKey(this);
+    }
+
+    private Faculty(Parcel in) {
+        this(
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString()
+        );
+    }
+
+    private static DataSource getDirectoryKey(Faculty faculty) {
+        switch (faculty.mLocation.trim().toUpperCase()) {
+            case "BRIDGEWAY ELEMENTARY":
+                return DataSource.BRIDGEWAY_ELEMENTARY;
+            case "ROBERT DRUMMOND ELEMENTARY":
+                return DataSource.DRUMMOND_ELEMENTARY;
+            case "HOLMAN MIDDLE SCHOOL":
+                return DataSource.HOLMAN_MIDDLE_SCHOOL;
+            case "PATTONVILLE HEIGHTS":
+                return DataSource.HEIGHTS_MIDDLE_SCHOOL;
+            case "PARKWOOD ELEMENTARY":
+                return DataSource.PARKWOOD_ELEMENTARY;
+            case "ROSE ACRES ELEMENTARY":
+                return DataSource.ROSE_ACRES_ELEMENTARY;
+            case "REMINGTON TRADITIONAL":
+                return DataSource.REMINGTON_TRADITIONAL_SCHOOL;
+            case "PATTONVILLE HIGH SCHOOL":
+            case "POSITIVE SCHOOL":
+                return DataSource.HIGH_SCHOOL;
+            case "WILLOW BROOK ELEMENTARY":
+                return DataSource.WILLOW_BROOK_ELEMENTARY;
+            case "LEARNING CENTER":
+            default:
+                return DataSource.DISTRICT;
+        }
+    }
+
+    private static int getRank(Faculty faculty) {
+        if (faculty.mPCN.contains("ADMSPR") || faculty.mPCN.contains("ADMPRN")) {
+            return 0;
+        } else if (faculty.mPCN.contains("ASCPRN")) {
+            return 1;
+        } else if (faculty.mPCN.contains("ADMAPR")) {
+            return 2;
+        } else if (faculty.mPCN.contains("TCH")) {
+            return 3;
+        } else if (faculty.mPCN.contains("EXSEC1")) {
+            return 4;
+        } else if (faculty.mPCN.contains("EXSEC2")) {
+            return 5;
+        } else if (faculty.mPCN.contains("GUISEC")) {
+            return 6;
+        } else if (faculty.mPCN.contains("CONSEC")) {
+            return 7;
+        } else if (faculty.mPCN.contains("SECRTY")) {
+            return 8;
+        } else {
+            return 9;
+        }
     }
 
     public String getFirstName() {
@@ -121,68 +221,6 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
 
     public DataSource getDirectoryKey() {
         return directoryKey;
-    }
-
-    private void setDirectoryKey() {
-        DataSource key;
-        switch (mLocation.trim().toUpperCase()) {
-            case "BRIDGEWAY ELEMENTARY":
-                key = DataSource.BRIDGEWAY_ELEMENTARY;
-                break;
-            case "ROBERT DRUMMOND ELEMENTARY":
-                key = DataSource.DRUMMOND_ELEMENTARY;
-                break;
-            case "HOLMAN MIDDLE SCHOOL":
-                key = DataSource.HOLMAN_MIDDLE_SCHOOL;
-                break;
-            case "PATTONVILLE HEIGHTS":
-                key = DataSource.HEIGHTS_MIDDLE_SCHOOL;
-                break;
-            case "PARKWOOD ELEMENTARY":
-                key = DataSource.PARKWOOD_ELEMENTARY;
-                break;
-            case "ROSE ACRES ELEMENTARY":
-                key = DataSource.ROSE_ACRES_ELEMENTARY;
-                break;
-            case "REMINGTON TRADITIONAL":
-                key = DataSource.REMINGTON_TRADITIONAL_SCHOOL;
-                break;
-            case "PATTONVILLE HIGH SCHOOL":
-            case "POSITIVE SCHOOL":
-                key = DataSource.HIGH_SCHOOL;
-                break;
-            case "WILLOW BROOK ELEMENTARY":
-                key = DataSource.WILLOW_BROOK_ELEMENTARY;
-                break;
-            case "LEARNING CENTER":
-            default:
-                key = DataSource.DISTRICT;
-        }
-        directoryKey = key;
-    }
-
-    public void setRank() {
-        if (mPCN.contains("ADMSPR") || mPCN.contains("ADMPRN")) {
-            mRank = 0;
-        } else if (mPCN.contains("ASCPRN")) {
-            mRank = 1;
-        } else if (mPCN.contains("ADMAPR")) {
-            mRank = 2;
-        } else if (mPCN.contains("TCH")) {
-            mRank = 3;
-        } else if (mPCN.contains("EXSEC1")) {
-            mRank = 4;
-        } else if (mPCN.contains("EXSEC2")) {
-            mRank = 5;
-        } else if (mPCN.contains("GUISEC")) {
-            mRank = 6;
-        } else if (mPCN.contains("CONSEC")) {
-            mRank = 7;
-        } else if (mPCN.contains("SECRTY")) {
-            mRank = 8;
-        } else {
-            mRank = 9;
-        }
     }
 
     @Override
@@ -274,6 +312,27 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
     @Override
     public DirectoryViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
         return new DirectoryViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mFirstName);
+        dest.writeString(mLastName);
+        dest.writeString(mPCN);
+        dest.writeString(mLongDesc);
+        dest.writeString(mLocation);
+        dest.writeString(mEmail);
+        dest.writeString(mOffice1);
+        dest.writeString(mExtension1);
+        dest.writeString(mOffice2);
+        dest.writeString(mExtension2);
+        dest.writeString(mOffice3);
+        dest.writeString(mExtension3);
     }
 
     public class DirectoryViewHolder extends FlexibleViewHolder {
