@@ -8,8 +8,8 @@ android {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 11
-        versionName "1.0.0"
+        versionCode 12
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -27,6 +27,7 @@ android {
             minifyEnabled false
             testCoverageEnabled = false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".debug"
         }
     }
     compileOptions {

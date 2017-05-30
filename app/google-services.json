@@ -36,6 +36,37 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180374672702:android:ff7bd637d8608981",
+        "android_client_info": {
+          "package_name": "org.pattonvillecs.pattonvilleapp.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180374672702-4543o9ejllfs092e7snd8fjvnf12pf6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbWDzs2fEFSdJISD9sOkFEXNGMHFupgDM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"
