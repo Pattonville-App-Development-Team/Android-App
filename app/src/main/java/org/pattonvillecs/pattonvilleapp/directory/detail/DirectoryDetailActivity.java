@@ -191,6 +191,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
     private void updateDirectoryData(DirectoryParsingUpdateData data) {
         Map<DataSource, FacultyHeader> headerMap = new HashMap<>();
         faculties = Stream.of(dataSources)
+                .filter(dataSource -> data.getDirectoryData().containsKey(dataSource))
                 .flatMap(dataSource -> Stream.of(data.getDirectoryData().get(dataSource)))
                 .map(faculty -> {
                     if (dataSources.size() != 1) {
@@ -212,6 +213,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
         if (searchView != null) {
             String query = searchView.getQuery().toString();
             if (!query.isEmpty()) {
+                Log.i(TAG, "Re-filtering by query");
                 directoryAdapter.setSearchText(query);
                 directoryAdapter.filterItems(new ArrayList<>(faculties));
             }

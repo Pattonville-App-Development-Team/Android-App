@@ -78,5 +78,8 @@ public class CallExtensionActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
