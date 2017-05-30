@@ -283,46 +283,8 @@ public final class KryoUtil {
             }
         });
         kryo.register(ParameterFactoryImpl.class);
-        kryo.register(DtStart.class/*, new Serializer<DtStart>() {
-            @Override
-            public void write(Kryo kryo, Output output, DtStart object) {
-                kryo.writeObject(output, object.getParameters());
-                kryo.writeObject(output, object.getDate());
-                kryo.writeObjectOrNull(output, object.getTimeZone(), TimeZone.class);
-            }
-
-            @Override
-            public DtStart read(Kryo kryo, Input input, Class<DtStart> type) {
-                DtStart dtStart = new DtStart(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
-                TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
-                if (timeZone != null && !dtStart.isUtc())
-                    try {
-                        dtStart.setTimeZone(timeZone);
-                    } catch (UnsupportedOperationException ignored) {
-                    }
-                return dtStart;
-            }
-        }*/);
-        kryo.register(DtEnd.class/*, new Serializer<DtEnd>() {
-            @Override
-            public void write(Kryo kryo, Output output, DtEnd object) {
-                kryo.writeObject(output, object.getParameters());
-                kryo.writeObject(output, object.getDate());
-                kryo.writeObjectOrNull(output, object.getTimeZone(), TimeZone.class);
-            }
-
-            @Override
-            public DtEnd read(Kryo kryo, Input input, Class<DtEnd> type) {
-                DtEnd dtEnd = new DtEnd(kryo.readObject(input, ParameterList.class), kryo.readObject(input, Date.class));
-                TimeZone timeZone = kryo.readObjectOrNull(input, TimeZone.class);
-                if (timeZone != null && !dtEnd.isUtc())
-                    try {
-                        dtEnd.setTimeZone(timeZone);
-                    } catch (UnsupportedOperationException ignored) {
-                    }
-                return dtEnd;
-            }
-        }*/);
+        kryo.register(DtStart.class);
+        kryo.register(DtEnd.class);
         kryo.register(Duration.class, new Serializer<Duration>() {
             @Override
             public void write(Kryo kryo, Output output, Duration object) {
