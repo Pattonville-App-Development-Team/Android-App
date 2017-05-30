@@ -33,8 +33,12 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.component.XComponent;
 import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.CuType;
+import net.fortuna.ical4j.model.parameter.PartStat;
+import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.parameter.XParameter;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
@@ -45,6 +49,7 @@ import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
@@ -62,6 +67,7 @@ import net.fortuna.ical4j.validate.component.VEventRequestValidator;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -502,6 +508,89 @@ public final class KryoUtil {
         kryo.register(ArrayList.class);
         kryo.register(String[].class);
         kryo.register(Date.class);
+        kryo.register(Status.VEVENT_CONFIRMED.getClass(), new Serializer<Status>() {
+            private final Constructor<? extends Status> immutableStatusConstructor;
+
+            {
+                try {
+                    immutableStatusConstructor = Status.VEVENT_CONFIRMED.getClass().getDeclaredConstructor(String.class);
+                    immutableStatusConstructor.setAccessible(true);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void write(Kryo kryo, Output output, Status object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Status read(Kryo kryo, Input input, Class<Status> type) {
+                try {
+                    return immutableStatusConstructor.newInstance(kryo.readObject(input, String.class));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        kryo.register(Status.class, new Serializer<Status>() {
+            @Override
+            public void write(Kryo kryo, Output output, Status object) {
+                kryo.writeObject(output, object.getParameters());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Status read(Kryo kryo, Input input, Class<Status> type) {
+                return new Status(kryo.readObject(input, ParameterList.class), kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(CuType.class, new Serializer<CuType>() {
+            @Override
+            public void write(Kryo kryo, Output output, CuType object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public CuType read(Kryo kryo, Input input, Class<CuType> type) {
+                return new CuType(kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(Role.class, new Serializer<Role>() {
+            @Override
+            public void write(Kryo kryo, Output output, Role object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public Role read(Kryo kryo, Input input, Class<Role> type) {
+                return new Role(kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(PartStat.class, new Serializer<PartStat>() {
+            @Override
+            public void write(Kryo kryo, Output output, PartStat object) {
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public PartStat read(Kryo kryo, Input input, Class<PartStat> type) {
+                return new PartStat(kryo.readObject(input, String.class));
+            }
+        });
+        kryo.register(XParameter.class, new Serializer<XParameter>() {
+            @Override
+            public void write(Kryo kryo, Output output, XParameter object) {
+                kryo.writeObject(output, object.getName());
+                kryo.writeObject(output, object.getValue());
+            }
+
+            @Override
+            public XParameter read(Kryo kryo, Input input, Class<XParameter> type) {
+                return new XParameter(kryo.readObject(input, String.class), kryo.readObject(input, String.class));
+            }
+        });
 
         return kryo;
     }
