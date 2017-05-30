@@ -22,7 +22,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-import static org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem.getActivity;
+import static org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getActivity;
 
 /**
  * Created by skaggsm on 5/11/17.

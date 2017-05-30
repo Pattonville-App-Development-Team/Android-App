@@ -4,25 +4,24 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.multidex.MultiDexApplication;
+import android.support.v4.os.AsyncTaskCompat;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Consumer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.CalendarParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.KryoUtil;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.events.EventFlexibleItem;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryAsyncTask;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.detail.Faculty;
+import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
+import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask;
+import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
+import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
+import org.pattonvillecs.pattonvilleapp.directory.detail.Faculty;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
@@ -166,28 +165,26 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> nowSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
 
-                for (final DataSource dataSource : loadedCalendarDataSources) {
-                    if (!newSelectedDataSources.contains(dataSource)) {
-                        Stream.of(calendarEvents).forEach(new Consumer<EventFlexibleItem>() {
-                            @Override
-                            public void accept(EventFlexibleItem eventFlexibleItem) {
-                                eventFlexibleItem.dataSources.remove(dataSource);
-                            }
+                Stream.of(loadedCalendarDataSources)
+                        .filter(dataSource -> !nowSelectedDataSources.contains(dataSource))
+                        .forEach(dataSource -> {
+                            Log.i(TAG, "keyChanged: Removing datasource " + dataSource + " from items");
+                            Stream.of(calendarEvents).forEach(eventFlexibleItem -> eventFlexibleItem.dataSources.remove(dataSource));
+                            //noinspection ResultOfMethodCallIgnored
+                            Iterators.removeIf(calendarEvents.iterator(), input -> input != null && input.dataSources.isEmpty());
                         });
-                        Iterators.removeIf(calendarEvents.iterator(), new Predicate<EventFlexibleItem>() {
-                            @Override
-                            public boolean apply(EventFlexibleItem input) {
-                                return input.dataSources.isEmpty();
-                            }
-                        });
-                    }
-                }
 
-                newSelectedDataSources.removeAll(loadedCalendarDataSources); //Remove DataSources that are already present
+                loadedCalendarDataSources.retainAll(nowSelectedDataSources); //Remove any DataSource from loaded list if they aren't present in the now selected ones
 
-                executeCalendarDataTasks(newSelectedDataSources, false);
+                Set<DataSource> neededToExecute = EnumSet.copyOf(nowSelectedDataSources);
+                neededToExecute.removeAll(loadedCalendarDataSources); //Remove DataSources that are already loaded
+
+                if (neededToExecute.size() == 0)
+                    updateCalendarListeners();
+                else
+                    executeCalendarDataTasks(neededToExecute, false);
             }
         });
 
@@ -201,11 +198,9 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
                 Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
 
-                for (DataSource dataSource : newsData.keySet()) {
-                    if (!newSelectedDataSources.contains(dataSource)) {
-                        newsData.remove(dataSource);
-                    }
-                }
+                Stream.of(newsData.keySet())
+                        .filter(dataSource -> !newSelectedDataSources.contains(dataSource))
+                        .forEach(dataSource -> newsData.remove(dataSource));
 
                 newSelectedDataSources.removeAll(newsData.keySet()); //Remove DataSources that are already present
 
@@ -218,22 +213,22 @@ public class PattonvilleApplication extends MultiDexApplication implements Share
     }
 
     private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        for (DataSource dataSource : dataSources) {
-            new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
-        }
+        Stream.of(dataSources)
+                .filter(dataSource -> dataSource.newsURL.isPresent())
+                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
     }
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        for (DataSource dataSource : dataSources) {
-            new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, dataSource);
-        }
+        Stream.of(dataSources)
+                .filter(dataSource -> dataSource.calendarURL.isPresent())
+                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
     }
 
-    public synchronized Kryo borrowKryo() {
+    public Kryo borrowKryo() {
         return kryoPool.borrow();
     }
 
-    public synchronized void releaseKryo(Kryo kryo) {
+    public void releaseKryo(Kryo kryo) {
         kryoPool.release(kryo);
     }
 

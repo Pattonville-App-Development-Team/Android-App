@@ -19,11 +19,12 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.about.AboutActivity;
-import org.pattonvillecs.pattonvilleapp.fragments.HomeFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarPinnedFragment;
-import org.pattonvillecs.pattonvilleapp.fragments.directory.DirectoryFragment;
+import org.pattonvillecs.pattonvilleapp.calendar.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
+import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
+import org.pattonvillecs.pattonvilleapp.links.PowerschoolActivity;
+import org.pattonvillecs.pattonvilleapp.links.SchoolListActivity;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;

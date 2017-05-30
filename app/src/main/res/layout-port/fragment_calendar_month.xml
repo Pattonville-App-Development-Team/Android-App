@@ -7,14 +7,14 @@
     android:fadeScrollbars="false"
     android:overScrollMode="always"
     android:scrollbars="vertical"
-    tools:context="org.pattonvillecs.pattonvilleapp.fragments.calendar.CalendarMonthFragment">
+    tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <org.pattonvillecs.pattonvilleapp.fragments.calendar.fix.FixedMaterialCalendarView
+        <org.pattonvillecs.pattonvilleapp.calendar.fix.FixedMaterialCalendarView
             android:id="@+id/calendar_calendar"
             style="PSD.MaterialCalendarView"
             android:layout_width="match_parent"

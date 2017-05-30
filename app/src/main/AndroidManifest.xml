@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/PSD">
         <provider
-            android:name=".fragments.calendar.pinned.PinnedEventsContentProvider"
-            android:authorities="org.pattonvillecs.pattonvilleapp.fragments.calendar.pinned"
+            android:name=".calendar.pinned.PinnedEventsContentProvider"
+            android:authorities="org.pattonvillecs.pattonvilleapp.calendar.pinned"
             android:exported="false" />
 
         <activity
@@ -49,7 +49,7 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD" />
         <activity
-            android:name=".fragments.calendar.CalendarEventDetailsActivity"
+            android:name=".calendar.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD">
@@ -62,7 +62,7 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
         <activity
-            android:name=".fragments.directory.detail.DirectoryDetailActivity"
+            android:name=".directory.detail.DirectoryDetailActivity"
             android:parentActivityName=".MainActivity" />
 
         <service android:name=".firebase.FBNotificationsService">
@@ -77,16 +77,16 @@
         </service>
 
         <activity
-            android:name=".PowerschoolActivity"
+            android:name=".links.PowerschoolActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".SchoolListActivity"
+            android:name=".links.SchoolListActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".fragments.directory.detail.CallExtensionActivity"
-            android:parentActivityName=".fragments.directory.detail.DirectoryDetailActivity"
+            android:name=".directory.detail.CallExtensionActivity"
+            android:parentActivityName=".directory.detail.DirectoryDetailActivity"
             android:theme="@style/PSD.NoActionBar.Invisible" />
 
         <activity

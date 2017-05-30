@@ -9,7 +9,7 @@ import com.annimon.stream.Stream;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
-import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -94,7 +94,7 @@ public final class PreferenceUtils {
                         default:
                             throw new Error("Invalid school selection value! Was: " + s);
                     }
-                }).collect(() -> EnumSet.of(DataSource.DISTRICT), AbstractCollection::add);
+                }).collect(() -> EnumSet.of(DataSource.DISTRICT), Collection::add);
     }
 
     public static boolean getCarouselVisible(Context context) {

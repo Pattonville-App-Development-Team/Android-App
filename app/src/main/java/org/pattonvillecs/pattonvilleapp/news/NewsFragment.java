@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
@@ -29,14 +30,16 @@ import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
-import org.pattonvillecs.pattonvilleapp.news.articles.NewsRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.DividerItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+
+import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 
 /**
  * Fragment used within MainActivity to display the News tab
@@ -48,7 +51,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     private static final String TAG = NewsFragment.class.getSimpleName();
 
     private SwipeRefreshLayout mRefreshLayout;
-    private NewsRecyclerViewAdapter mAdapter;
+    private FlexibleAdapter<NewsArticle> newsArticleAdapter;
     private PauseableListener<NewsParsingUpdateData> listener;
     private PattonvilleApplication pattonvilleApplication;
 
@@ -138,8 +141,8 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
                 Log.i(TAG, "Loaded news articles from " + data.getNewsData().keySet() + " " + newNewsArticles.size());
                 mNewsArticles = newNewsArticles;
-                mAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
-                mAdapter.getRecyclerView().smoothScrollToPosition(0);
+                newsArticleAdapter.updateDataSet(newNewsArticles, true); // Must be an unused list, copy it if needed
+                newsArticleAdapter.getRecyclerView().smoothScrollToPosition(0);
             }
 
             private void checkRefresh(NewsParsingUpdateData data) {
@@ -161,11 +164,11 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
-        mAdapter = new NewsRecyclerViewAdapter(null);
+        newsArticleAdapter = new FlexibleAdapter<>(null);
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(newsArticleAdapter);
         // Adds item divider between elements
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
@@ -203,6 +206,35 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_news_menu_main, menu);
         initSearchView(menu);
+
+        //This terrifies me...
+        final ViewTreeObserver viewTreeObserver = getActivity().getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = getActivity().findViewById(R.id.news_menu_refresh);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    showSpotlight(getActivity(), menuButton, "NewsFragment_MenuButtonRefresh", "Tap here to manually check for new news articles. The app periodically updates news on its own.", "Refresh");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View menuButton = getActivity().findViewById(R.id.news_menu_search);
+                // This could be called when the button is not there yet, so we must test for null
+                if (menuButton != null) {
+                    // Found it! Do what you need with the button
+                    showSpotlight(getActivity(), menuButton, "NewsFragment_MenuButtonSearch", "Tap here to search news titles and sources similar to your query.", "Search");
+                    // Now you can get rid of this listener
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
     }
 
     @Override
@@ -226,12 +258,12 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (mAdapter.hasNewSearchText(newText)) {
+        if (newsArticleAdapter.hasNewSearchText(newText)) {
             Log.d(TAG, "onQueryTextChange newText: " + newText);
-            mAdapter.setSearchText(newText);
-            mAdapter.filterItems(new ArrayList<>(mNewsArticles), 100L);
+            newsArticleAdapter.setSearchText(newText);
+            newsArticleAdapter.filterItems(new ArrayList<>(mNewsArticles), 100L);
         }
-        mRefreshLayout.setEnabled(!mAdapter.hasSearchText());
+        mRefreshLayout.setEnabled(!newsArticleAdapter.hasSearchText());
         return true;
     }
 

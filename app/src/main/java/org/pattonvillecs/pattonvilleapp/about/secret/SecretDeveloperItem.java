@@ -28,7 +28,10 @@ public class SecretDeveloperItem extends DeveloperItem {
 
         holder.image.setImageDrawable(null);
         holder.image.setBackground(null);
+
         holder.view.setBackground(null);
+        holder.view.setOnClickListener(null);
+
         holder.name.setText(null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
