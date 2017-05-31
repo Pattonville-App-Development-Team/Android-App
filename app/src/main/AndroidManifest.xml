@@ -14,7 +14,7 @@
         android:theme="@style/PSD">
         <provider
             android:name=".calendar.pinned.PinnedEventsContentProvider"
-            android:authorities="org.pattonvillecs.pattonvilleapp.calendar.pinned"
+            android:authorities="${applicationId}.calendar.pinned"
             android:exported="false" />
 
         <activity

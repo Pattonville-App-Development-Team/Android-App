@@ -4,12 +4,14 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import org.pattonvillecs.pattonvilleapp.BuildConfig;
+
 /**
  * Created by Mitchell Skaggs on 2/23/17.
  */
 
 public final class PinnedEventsContract {
-    public static final String AUTHORITY = "org.pattonvillecs.pattonvilleapp.calendar.pinned";
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".calendar.pinned";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
 
