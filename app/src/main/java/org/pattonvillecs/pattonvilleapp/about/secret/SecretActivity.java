@@ -7,9 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -131,10 +131,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 18, getResources().getDisplayMetrics()));
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            paint.setColor(getResources().getColor(R.color.colorPrimary, null));
-        else
-            paint.setColor(getResources().getColor(R.color.colorPrimary));
+        paint.setColor(ActivityCompat.getColor(this, R.color.colorPrimary));
 
         float baseline = -paint.ascent(); // ascent() is negative
         int width = (int) (paint.measureText(text) + 0.5f); // round

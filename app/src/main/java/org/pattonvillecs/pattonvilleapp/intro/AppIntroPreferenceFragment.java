@@ -3,6 +3,7 @@ package org.pattonvillecs.pattonvilleapp.intro;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import org.pattonvillecs.pattonvilleapp.R;
  * Created by Mitchell Skaggs on 1/31/17.
  */
 public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
+    private static final String TAG = AppIntroPreferenceFragment.class.getSimpleName();
     private int drawable;
     private int bgColor;
     private int titleColor;
@@ -43,6 +45,7 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView: Starting!");
         View view = inflater.inflate(getLayoutId(), container, false);
 
         TextView title = (TextView) view.findViewById(com.github.paolorotolo.appintro.R.id.title);
@@ -73,9 +76,10 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             fragment = new InitialPreferenceFragment();
             transaction.replace(R.id.content_frame, fragment);
-            transaction.commit();
+            transaction.commitNow();
         }
 
+        Log.i(TAG, "onCreateView: Finished!");
         return view;
     }
 
