@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by skaggsm on 5/9/17.
@@ -53,10 +55,15 @@ public class CallExtensionActivity extends AppCompatActivity {
                             + PhoneNumberUtils.PAUSE
                             + PhoneNumberUtils.PAUSE
                             + faculty.getExtension1()));
-                    try {
-                        startActivity(intent);
-                    } catch (SecurityException e) {
-                        Log.wtf(TAG, e);
+                    ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    if (resolveInfo != null) {
+                        try {
+                            startActivity(intent);
+                        } catch (SecurityException e) {
+                            Log.wtf(TAG, e);
+                        }
+                    } else {
+                        Toast.makeText(this, "No phone capabilities found, unable to call " + faculty.getFormattedFullName() + ".", Toast.LENGTH_SHORT).show();
                     }
                     finish();
                 })
