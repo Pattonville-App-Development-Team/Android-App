@@ -46,8 +46,8 @@ public class DirectoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_directory, container, false);
+
         directoryRecyclerView = (RecyclerView) layout.findViewById(R.id.directory_recyclerView);
         directoryAdapter = new FlexibleAdapter<>(null);
 
@@ -57,12 +57,12 @@ public class DirectoryFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         directoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
         Stream.of(DataSource.ALL)
                 .filter(dataSource -> dataSource != DataSource.EARLY_CHILDHOOD)
                 .sorted(DataSource.DEFAULT_ORDERING)
                 .map(dataSource -> new DirectoryItem(Collections.singleton(dataSource)))
                 .forEach(directoryItem -> directoryAdapter.addItem(directoryItem));
+        directoryAdapter.addItem(new DirectoryItem(DataSource.ALL));
 
         return layout;
     }
