@@ -139,12 +139,17 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
         }
     }
 
+
     private static int getRank(Faculty faculty) {
-        if (faculty.mPCN.contains("ADMSPR") || faculty.mPCN.contains("ADMPRN")) {
+        if (faculty.mPCN.contains("LCSPT")) {
+            return -2;
+        } else if (faculty.mPCN.contains("LCASTSUP")) {
+            return -1;
+        } else if (faculty.mPCN.contains("ADMSPR") || faculty.mPCN.contains("ADMPRN") || faculty.mPCN.contains("LCCFO")) {
             return 0;
-        } else if (faculty.mPCN.contains("ASCPRN")) {
+        } else if (faculty.mPCN.contains("ASCPRN") || faculty.mPCN.contains("LCDR")) {
             return 1;
-        } else if (faculty.mPCN.contains("ADMAPR")) {
+        } else if (faculty.mPCN.contains("ADMAPR") || faculty.mPCN.contains("DIR")) {
             return 2;
         } else if (faculty.mPCN.contains("TCH")) {
             return 3;
