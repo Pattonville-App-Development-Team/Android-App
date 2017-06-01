@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="4dp"
         android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

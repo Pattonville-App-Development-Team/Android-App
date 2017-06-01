@@ -57,38 +57,36 @@ public class AboutActivity extends AppCompatActivity {
         DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
         DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Instructors");
 
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\n\nCalendar, Intro, Databases, Directory\n\nMissouri University of Science and Technology", R.drawable.face_skaggs,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\n\nUniversity:\n\nMissouri University of Science and Technology", R.drawable.face_skaggs,
                 new LinkItem(R.drawable.github_box, "https://github.com/magneticflux-"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/mitchell-s-16085b13b")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "Directory, Design, Planning\n\nHarvard University", R.drawable.face_gadson,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "University:\n\nHarvard University", R.drawable.face_gadson,
                 new LinkItem(R.drawable.github_box, "https://github.com/gadsonk")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "Home, News, Iconography\n\nTruman State University", R.drawable.face_holtgrieve,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "University:\n\nTruman State University", R.drawable.face_holtgrieve,
                 new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
         ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "News, Preferences, Documentation\n\nMissouri University of Science and Technology", R.drawable.face_skelton,
+        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "University:\n\nMissouri University of Science and Technology", R.drawable.face_skelton,
                 new LinkItem(R.drawable.github_box, "https://github.com/skeltonn"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
         ));
 
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nCalendar, Various Features\n\nUniversity of Miami", R.drawable.face_zahner,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nUniversity:\n\nUniversity of Miami", R.drawable.face_zahner,
                 new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
                 new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "Various Features\n\nWashington University in St. Louis", R.drawable.face_barrie,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "University:\n\nWashington University in St. Louis", R.drawable.face_barrie,
                 new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "Various Features\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "University:\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
                 new LinkItem(R.drawable.github_box, "https://github.com/KevinBowers73")
         ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "Various Features\n\nNorthwestern University", R.drawable.face_thompkins,
+        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "University:\n\nNorthwestern University", R.drawable.face_thompkins,
                 new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
         ));
 
-        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative, Philosopher", R.drawable.face_simmons,
-                new LinkItem(R.drawable.github_box, "https://github.com/jtsimmons108")
-        ));
+        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative, Philosopher", R.drawable.face_simmons));
         aboutAdapter.addItem(new SecretDeveloperItem(teacherHeader, null, null, 0));
     }
 }
