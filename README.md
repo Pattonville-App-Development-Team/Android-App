@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/Pattonville-App-Development-Team/Android-App.svg?token=4vP4j3yZP5sqX6zzGwZA&branch=master)](https://travis-ci.com/Pattonville-App-Development-Team/Android-App)
 # Pattonville School District Android App
 
 ## Developers
@@ -7,5 +8,3 @@
 - Nathan Skelton
 
 Copyright 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, and Nathan Skelton
-
-[![Build Status](https://travis-ci.com/Pattonville-App-Development-Team/Android-App.svg?token=4vP4j3yZP5sqX6zzGwZA&branch=master)](https://travis-ci.com/Pattonville-App-Development-Team/Android-App)
