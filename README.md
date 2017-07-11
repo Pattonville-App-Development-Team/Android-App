@@ -7,4 +7,4 @@
 - Ethan Holtgrieve
 - Nathan Skelton
 
-Copyright 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, and Nathan Skelton
+Copyright 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
