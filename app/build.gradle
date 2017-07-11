@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
@@ -48,24 +47,20 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:support-annotations:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:support-annotations:25.4.0'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:support-v4:25.4.0'
+    compile 'com.android.support:cardview-v7:25.4.0'
+    compile 'com.android.support:recyclerview-v7:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile 'com.google.firebase:firebase-core:10.2.6'
-    compile 'com.google.firebase:firebase-messaging:10.2.6'
-    compile 'com.google.firebase:firebase-crash:10.2.6'
+    compile 'com.google.firebase:firebase-core:11.0.2'
+    compile 'com.google.firebase:firebase-messaging:11.0.2'
+    compile 'com.google.firebase:firebase-crash:11.0.2'
 
-    compile 'com.takisoft.fix:preference-v7:25.3.1.0'
+    compile 'com.takisoft.fix:preference-v7:25.4.0.3'
 
     //Calendar view
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
@@ -83,7 +78,7 @@ dependencies {
     compile 'com.annimon:stream:1.1.7'
 
     //Collections, utilities
-    compile 'com.google.guava:guava:20.0'
+    compile 'com.google.guava:guava:22.0-android'
 
     //Network
     compile 'com.android.volley:volley:1.0.0'
@@ -124,4 +119,19 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-apply plugin: 'com.google.gms.google-services' //Must be at bottom
+apply plugin: 'com.google.gms.google-services' /*
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */ //Must be at bottom
