@@ -6,6 +6,7 @@
     android:layout_alignEnd="@+id/directory_detail_recyclerView"
     android:layout_alignParentEnd="true"
     android:layout_alignParentRight="true"
+    android:layout_alignRight="@+id/directory_detail_recyclerView"
     android:layout_alignTop="@+id/directory_detail_recyclerView"
     android:layout_centerHorizontal="true"
     android:visibility="visible"

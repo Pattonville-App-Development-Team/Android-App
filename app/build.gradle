@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 14
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -47,91 +47,76 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:support-annotations:25.4.0'
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:support-v4:25.4.0'
-    compile 'com.android.support:cardview-v7:25.4.0'
-    compile 'com.android.support:recyclerview-v7:25.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:support-annotations:26.0.1'
+    implementation 'com.android.support:appcompat-v7:26.0.1'
+    implementation 'com.android.support:design:26.0.1'
+    implementation 'com.android.support:support-v4:26.0.1'
+    implementation 'com.android.support:cardview-v7:26.0.1'
+    implementation 'com.android.support:recyclerview-v7:26.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile 'com.google.firebase:firebase-core:11.0.2'
-    compile 'com.google.firebase:firebase-messaging:11.0.2'
-    compile 'com.google.firebase:firebase-crash:11.0.2'
+    implementation 'com.google.firebase:firebase-core:11.0.4'
+    implementation 'com.google.firebase:firebase-messaging:11.0.4'
+    implementation 'com.google.firebase:firebase-crash:11.0.4'
 
-    compile 'com.takisoft.fix:preference-v7:25.4.0.3'
+    implementation 'com.takisoft.fix:preference-v7:26.0.1.0'
 
     //Calendar view
-    compile 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 
     //Home carousel
-    compile 'com.synnapps:carouselview:0.1.3'
+    implementation 'com.synnapps:carouselview:0.1.3'
 
     //Network image download + cache
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     //RecyclerView improvements
-    compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
+    implementation 'eu.davidea:flexible-adapter:5.0.0-rc1'
 
     //Java 8 streams
-    compile 'com.annimon:stream:1.1.7'
+    implementation 'com.annimon:stream:1.1.7'
 
     //Collections, utilities
-    compile 'com.google.guava:guava:22.0-android'
+    implementation 'com.google.guava:guava:22.0-android'
 
     //Network
-    compile 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.0.0'
 
     //All for iCal4j library
-    compile('org.mnode.ical4j:ical4j:2.0.0') {
+    implementation('org.mnode.ical4j:ical4j:2.0.0') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
-    //compile 'backport-util-concurrent:backport-util-concurrent:3.1'
-    compile 'commons-codec:commons-codec:1.10'
-    compile 'commons-lang:commons-lang:2.6'
-    compile 'org.slf4j:slf4j-android:1.7.25'
+    //implementation 'backport-util-concurrent:backport-util-concurrent:3.1'
+    implementation 'commons-codec:commons-codec:1.10'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'org.slf4j:slf4j-android:1.7.25'
 
     //Tutorial
-    compile 'com.github.magneticflux-:Spotlight:-SNAPSHOT'
+    implementation 'com.github.magneticflux-:Spotlight:-SNAPSHOT'
     //App settings
-    compile 'com.github.paolorotolo:appintro:4.1.0'
+    implementation 'com.github.paolorotolo:appintro:4.1.0'
 
     //Serialization
-    compile 'com.esotericsoftware:kryo:4.0.0'
-    compile 'de.javakaffee:kryo-serializers:0.41'
+    implementation 'com.esotericsoftware:kryo:4.0.0'
+    implementation 'de.javakaffee:kryo-serializers:0.41'
 
     //Pin button
-    compile 'com.github.varunest:sparkbutton:1.0.4'
+    implementation 'com.github.varunest:sparkbutton:1.0.4'
 
     //News content parsing is in jsoup jar
-    compile 'org.jsoup:jsoup:1.10.2'
+    implementation 'org.jsoup:jsoup:1.10.2'
 
     //Fuzzy string contains - !!!GPL 3.0!!!
-    compile 'me.xdrop:fuzzywuzzy:1.1.7'
+    implementation 'me.xdrop:fuzzywuzzy:1.1.7'
 
     //Alternative fuzzy string matching
-    compile group: 'org.apache.commons', name: 'commons-text', version: '1.1'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.1'
 
     //Cool Particles
-    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
+    implementation 'com.github.jinatonic.confetti:confetti:1.1.0'
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
-apply plugin: 'com.google.gms.google-services' /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */ //Must be at bottom
+apply plugin: 'com.google.gms.google-services' //Must be at bottom
