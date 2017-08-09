@@ -8,15 +8,19 @@ android:
     - platform-tools
     - build-tools-26.0.1
     - android-26
+    - android-24
     - extra-google-m2repository
+    - sys-img-armeabi-v7a-android-24
 
+# Emulator Management: Create, Start and Wait
 before_script:
-#    Create and start emulator
-#  - echo no | android create avd --force -n test -t android-24 --abi default/armeabi-v7a
-#  - emulator -avd test -no-audio -no-window &
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 script:
-  - ./gradlew test
+  - ./gradlew build connectedCheck
 #  - android-wait-for-emulator
 #  - adb shell input keyevent 82 &
 #  - adb logcat -c
