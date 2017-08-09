@@ -9,7 +9,6 @@ android:
     - tools
     - build-tools-26.0.1
     - android-26
-    - extra-google-gcm
     - extra-google-m2repository
 
 before_script:
