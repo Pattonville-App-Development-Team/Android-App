@@ -11,7 +11,6 @@ android:
     - android-26
     - extra-google-gcm
     - extra-google-google_play_services
-    - extra-android-m2repository
     - extra-google-m2repository
 
 before_script:
