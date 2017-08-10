@@ -96,7 +96,7 @@ dependencies {
     compile 'org.slf4j:slf4j-android:1.7.25'
 
     //Tutorial
-    compile 'com.github.magneticflux-:Spotlight:e3e026d'
+    compile 'com.github.magneticflux-:Spotlight:1.3.2'
     //App settings
     compile 'com.github.paolorotolo:appintro:4.1.0'
 
