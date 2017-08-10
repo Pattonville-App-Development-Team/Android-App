@@ -118,7 +118,7 @@
     <string name="reset">Reset</string>
     <string name="secret_shop_action_title">Shop</string>
     <string name="insert_calendar_event_failure">Sorry, this device does not support inserting calendar events. Please contact the developers through the Play Store if this feature is necessary.</string>
-    <string name="date_time_newline">%s\n%s</string>
+    <string name="date_time_newline">%1$s\n%2$s</string>
     <plurals name="secret_purchase_toast">
         <item quantity="one">Purchased %1$,d item!</item>
         <item quantity="other">Purchased %1$,d items!</item>
