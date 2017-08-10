@@ -75,10 +75,10 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter:5.0.0-rc1'
 
     //Java 8 streams
-    implementation 'com.annimon:stream:1.1.7'
+    implementation 'com.annimon:stream:1.1.8'
 
     //Collections, utilities
-    implementation 'com.google.guava:guava:22.0-android'
+    implementation 'com.google.guava:guava:23.0-android'
 
     //Network
     implementation 'com.android.volley:volley:1.0.0'
@@ -93,22 +93,22 @@ dependencies {
     implementation 'org.slf4j:slf4j-android:1.7.25'
 
     //Tutorial
-    implementation 'com.github.magneticflux-:Spotlight:-SNAPSHOT'
+    implementation 'com.github.magneticflux-:Spotlight:e3e026d'
     //App settings
     implementation 'com.github.paolorotolo:appintro:4.1.0'
 
     //Serialization
-    implementation 'com.esotericsoftware:kryo:4.0.0'
-    implementation 'de.javakaffee:kryo-serializers:0.41'
+    implementation 'com.esotericsoftware:kryo:4.0.1'
+    implementation 'de.javakaffee:kryo-serializers:0.42'
 
     //Pin button
     implementation 'com.github.varunest:sparkbutton:1.0.4'
 
     //News content parsing is in jsoup jar
-    implementation 'org.jsoup:jsoup:1.10.2'
+    implementation 'org.jsoup:jsoup:1.10.3'
 
     //Fuzzy string contains - !!!GPL 3.0!!!
-    implementation 'me.xdrop:fuzzywuzzy:1.1.7'
+    implementation 'me.xdrop:fuzzywuzzy:1.1.8'
 
     //Alternative fuzzy string matching
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.1'
