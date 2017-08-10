@@ -17,6 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.calendar;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,10 +29,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.function.Function;
 
+import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.Location;
 
@@ -81,7 +84,13 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         if (locationString != null)
             intent.putExtra(CalendarContract.Events.EVENT_LOCATION, locationString);
 
-        startActivity(intent);
+        ComponentName resolvedActivity = intent.resolveActivity(getPackageManager());
+
+        if (resolvedActivity != null)
+            startActivity(intent);
+        else
+            Toast.makeText(this, R.string.insert_calendar_event_failure, Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -119,18 +128,13 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         if (event == null)
             throw new Error("Event required!");
 
-        TextView timeDateTextView = (TextView) findViewById(R.id.time_and_date);
+        TextView timeDateTextView = findViewById(R.id.time_and_date);
 
         DateFormat dateFormatter = SimpleDateFormat.getDateInstance(DateFormat.FULL);
         DateFormat timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
         //DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
         Date startDate = event.vEvent.getStartDate().getDate();
-        Date endDate = Optional.ofNullable(event.vEvent.getEndDate(true)).map(new Function<DtEnd, Date>() {
-            @Override
-            public Date apply(DtEnd dtEnd) {
-                return dtEnd.getDate();
-            }
-        }).orElse(startDate);
+        Date endDate = Optional.ofNullable(event.vEvent.getEndDate(true)).map((Function<DtEnd, Date>) DateProperty::getDate).orElse(startDate);
 
         String startDateString = dateFormatter.format(startDate);
         String endDateString = dateFormatter.format(endDate);
@@ -140,28 +144,23 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
         String combinedDateString = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
         String combinedTimeString = startTimeString.equals(endTimeString) ? startTimeString : startTimeString + " - " + endTimeString;
 
-        timeDateTextView.setText(combinedDateString + '\n' + combinedTimeString);
+        timeDateTextView.setText(getString(R.string.date_time_newline, combinedDateString, combinedTimeString));
 
-        TextView locationTextView = (TextView) findViewById(R.id.location);
+        TextView locationTextView = findViewById(R.id.location);
         final Location location = event.vEvent.getLocation();
         final String locationString = location != null && !location.getValue().isEmpty() ? location.getValue() : null;
         if (locationString != null) {
             locationTextView.setText(locationString);
-            locationTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startMapsActivityForPattonvilleLocation(locationString);
-                }
-            });
+            locationTextView.setOnClickListener(v -> startMapsActivityForPattonvilleLocation(locationString));
         } else {
             locationTextView.setText(R.string.no_location);
         }
 
-        TextView extraInfoTextView = (TextView) findViewById(R.id.extra_info);
+        TextView extraInfoTextView = findViewById(R.id.extra_info);
         if (event.vEvent.getSummary() != null)
             extraInfoTextView.setText(event.vEvent.getSummary().getValue());
 
-        TextView dataSourcesTextView = (TextView) findViewById(R.id.datasources);
+        TextView dataSourcesTextView = findViewById(R.id.datasources);
         dataSourcesTextView.setText(event.getDataSourcesSpannableStringBuilder(getApplicationContext().getAssets()));
     }
 
