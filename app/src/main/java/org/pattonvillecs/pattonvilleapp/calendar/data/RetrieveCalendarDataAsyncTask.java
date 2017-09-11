@@ -32,6 +32,7 @@ import com.annimon.stream.Stream;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.google.firebase.crash.FirebaseCrash;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -103,6 +104,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 calendar = calendarBuilder.build(stringReader);
             }
         } catch (IOException | ParserException e) {
+            FirebaseCrash.report(e);
             Log.e(TAG, "Failed to parse calendar for " + dataSource + "!!!", e);
         }
         stopWatch.stop();
