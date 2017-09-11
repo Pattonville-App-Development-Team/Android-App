@@ -7,8 +7,8 @@ android {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 14
-        versionName "1.1.0"
+        versionCode 15
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -47,21 +47,21 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:support-annotations:26.0.1'
-    implementation 'com.android.support:appcompat-v7:26.0.1'
-    implementation 'com.android.support:design:26.0.1'
-    implementation 'com.android.support:support-v4:26.0.1'
-    implementation 'com.android.support:cardview-v7:26.0.1'
-    implementation 'com.android.support:recyclerview-v7:26.0.1'
-    implementation 'com.takisoft.fix:preference-v7:26.0.1.0'
+    implementation "com.android.support:support-annotations:$support_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "com.android.support:support-v4:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.takisoft.fix:preference-v7:$support_version.0"
 
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     implementation 'com.android.support:multidex:1.0.2'
 
-    implementation 'com.google.firebase:firebase-core:11.0.4'
-    implementation 'com.google.firebase:firebase-messaging:11.0.4'
-    implementation 'com.google.firebase:firebase-crash:11.0.4'
+    implementation "com.google.firebase:firebase-core:$firebase_version"
+    implementation "com.google.firebase:firebase-messaging:$firebase_version"
+    implementation "com.google.firebase:firebase-crash:$firebase_version"
 
     //Calendar view
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'

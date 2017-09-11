@@ -32,6 +32,7 @@ import com.annimon.stream.Stream;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.google.firebase.crash.FirebaseCrash;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -80,7 +81,11 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     private static String fixICalStrings(@NonNull String iCalString) {
-        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:").replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
+        return iCalString
+                .replaceAll("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC\\RBEGIN:VEVENT", "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC\\REND:VEVENT\\RBEGIN:VEVENT")
+                .replace("FREQ=;", "FREQ=YEARLY;")
+                .replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:")
+                .replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
     }
 
     private static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
@@ -99,6 +104,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
                 calendar = calendarBuilder.build(stringReader);
             }
         } catch (IOException | ParserException e) {
+            FirebaseCrash.report(e);
             Log.e(TAG, "Failed to parse calendar for " + dataSource + "!!!", e);
         }
         stopWatch.stop();
