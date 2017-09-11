@@ -80,7 +80,11 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
     }
 
     private static String fixICalStrings(@NonNull String iCalString) {
-        return iCalString.replace("FREQ=;", "FREQ=YEARLY;").replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:").replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
+        return iCalString
+                .replaceAll("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC\\RBEGIN:VEVENT", "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC\\REND:VEVENT\\RBEGIN:VEVENT")
+                .replace("FREQ=;", "FREQ=YEARLY;")
+                .replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:")
+                .replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
     }
 
     private static ArrayList<VEvent> parseFile(String iCalFile, DataSource dataSource) {
