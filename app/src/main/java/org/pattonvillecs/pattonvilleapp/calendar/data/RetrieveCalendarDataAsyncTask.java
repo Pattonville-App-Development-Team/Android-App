@@ -70,6 +70,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
     private static final String TAG = RetrieveCalendarDataAsyncTask.class.getSimpleName();
     private static final long CALENDAR_CACHE_EXPIRATION_HOURS = 24 * 7;
+    private static final String LINEBREAK_MATCHER = "(?:\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029])";
     private final boolean skipCacheLoad;
     private PattonvilleApplication pattonvilleApplication;
     private Kryo kryo;
@@ -82,7 +83,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
     private static String fixICalStrings(@NonNull String iCalString) {
         return iCalString
-                .replaceAll("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC\\RBEGIN:VEVENT", "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC\\REND:VEVENT\\RBEGIN:VEVENT")
+                .replaceAll("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC" + LINEBREAK_MATCHER + "BEGIN:VEVENT", "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC" + LINEBREAK_MATCHER + "END:VEVENT" + LINEBREAK_MATCHER + "BEGIN:VEVENT")
                 .replace("FREQ=;", "FREQ=YEARLY;")
                 .replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:")
                 .replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:");
