@@ -22,6 +22,8 @@
 -dontwarn net.fortuna.ical4j.model.**
 -dontwarn net.fortuna.ical4j.groovy.**
 -dontwarn groovy.**
+-keep class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
+-keep class * extends net.fortuna.ical4j.model.Content$Factory
 
 #Retrolambda
 -dontwarn java.lang.invoke.*
@@ -35,7 +37,9 @@
 
 #Kryo
 -dontwarn com.esotericsoftware.kryo.**
--keep com.esotericsoftware.kryo.serializers.**
+-keepclassmembers class * extends com.esotericsoftware.kryo.Serializer {
+    *;
+}
 
 #KryoSerializers
 -dontwarn de.javakaffee.kryoserializers.**
