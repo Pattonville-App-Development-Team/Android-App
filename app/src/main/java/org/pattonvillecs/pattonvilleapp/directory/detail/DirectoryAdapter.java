@@ -19,7 +19,7 @@ package org.pattonvillecs.pattonvilleapp.directory.detail;
 
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.util.List;
 
