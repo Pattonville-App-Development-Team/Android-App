@@ -37,7 +37,6 @@ import com.google.firebase.crash.FirebaseCrash;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ComponentFactoryImpl;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -101,9 +100,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         stopWatch.start();
         try {
             CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-            synchronized (ComponentFactoryImpl.getInstance()) { //Needed because the static instance is accessed from multiple threads inside the build method
-                calendar = calendarBuilder.build(stringReader);
-            }
+            calendar = calendarBuilder.build(stringReader);
         } catch (IOException | ParserException e) {
             FirebaseCrash.report(e);
             Log.e(TAG, "Failed to parse calendar for " + dataSource + "!!!", e);

@@ -18,9 +18,9 @@
 package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.multidex.MultiDexApplication;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.Log;
 
@@ -65,7 +65,7 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Mitchell Skaggs on 12/19/16.
  */
 
-public class PattonvilleApplication extends MultiDexApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
+public class PattonvilleApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
     public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
