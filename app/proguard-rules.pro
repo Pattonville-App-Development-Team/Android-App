@@ -35,6 +35,7 @@
 
 #Kryo
 -dontwarn com.esotericsoftware.kryo.**
+-keep com.esotericsoftware.kryo.serializers.**
 
 #KryoSerializers
 -dontwarn de.javakaffee.kryoserializers.**
