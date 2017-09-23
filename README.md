@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Pattonville-App-Development-Team/Android-App.svg?token=4vP4j3yZP5sqX6zzGwZA&branch=master)](https://travis-ci.com/Pattonville-App-Development-Team/Android-App)
+[![Build Status](https://travis-ci.org/Pattonville-App-Development-Team/Android-App.svg?branch=master)](https://travis-ci.org/Pattonville-App-Development-Team/Android-App)
 # Pattonville School District Android App
 
 ## Developers
