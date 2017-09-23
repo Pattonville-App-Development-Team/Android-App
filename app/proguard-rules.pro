@@ -17,6 +17,7 @@
 #}
 
 -verbose
+-dontobfuscate
 
 #iCal4j
 -dontwarn net.fortuna.ical4j.model.**
@@ -46,3 +47,11 @@
 
 #ErrorProne
 -dontwarn com.google.errorprone.annotations.*
+
+#Support Library Bug
+-keep class android.support.v7.widget.SearchView { *; }
+
+#Spotlight
+-keep class com.wooplr.spotlight.** { *; }
+-keep interface com.wooplr.spotlight.**
+-keep enum com.wooplr.spotlight.**

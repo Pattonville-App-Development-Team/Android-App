@@ -23,7 +23,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -194,7 +193,7 @@ public class CalendarEventsFragment extends Fragment implements SearchView.OnQue
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         if (searchItem != null) {
 
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
@@ -212,7 +211,7 @@ public class CalendarEventsFragment extends Fragment implements SearchView.OnQue
                 }
             });
 
-            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            SearchView searchView = (SearchView) searchItem.getActionView();
             searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
             searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
             searchView.setQueryHint(getString(R.string.action_search));
