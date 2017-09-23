@@ -1,18 +1,24 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
+def hasKeystore = file('../psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream('psd.keystore.properties'))
+if (hasKeystore)
+    keystoreProperties.load(file('../psd.keystore.properties').newInputStream())
+else
+    println 'Keystore properties file missing! An unsigned release build will be generated.'
+
 
 android {
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+    if (hasKeystore)
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
-    }
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
     defaultConfig {
@@ -31,7 +37,8 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (hasKeystore)
+                signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled true
