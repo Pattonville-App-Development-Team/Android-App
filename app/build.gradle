@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
-def hasKeystore = file('../psd.keystore.properties').exists()
+def hasKeystore = file('psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
 if (hasKeystore)
-    keystoreProperties.load(file('../psd.keystore.properties').newInputStream())
+    keystoreProperties.load(file('psd.keystore.properties').newInputStream())
 else
     println 'Keystore properties file missing! An unsigned release build will be generated.'
 
@@ -49,10 +49,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    // Run lint checks but don't abort build
-    lintOptions {
-        abortOnError false
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
