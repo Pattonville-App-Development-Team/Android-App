@@ -106,5 +106,5 @@ captures/
 !gradle/wrapper/gradle-wrapper.jar
 
 #Security concerns
-/psd.keystore.properties
+/app/psd.keystore.properties
 /app/psd.keystore
