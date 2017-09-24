@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-def hasKeystore = file('../psd.keystore.properties').exists()
+def hasKeystore = file('psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
 if (hasKeystore)
-    keystoreProperties.load(file('../psd.keystore.properties').newInputStream())
+    keystoreProperties.load(file('psd.keystore.properties').newInputStream())
 else
     println 'Keystore properties file missing! An unsigned release build will be generated.'
 
