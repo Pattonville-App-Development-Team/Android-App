@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: "net.ltgt.errorprone"
 
 def hasKeystore = file('psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
@@ -79,7 +80,6 @@ dependencies {
     //Android Architecture Components
     compile "android.arch.lifecycle:extensions:$arch_version"
     annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
-    compile "android.arch.lifecycle:common-java8:$arch_version"
     testCompile "android.arch.core:core-testing:$arch_version"
     compile "android.arch.persistence.room:runtime:$arch_version"
     annotationProcessor "android.arch.persistence.room:compiler:$arch_version"

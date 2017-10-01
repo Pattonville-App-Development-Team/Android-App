@@ -80,14 +80,10 @@ public class CalendarFragment extends Fragment {
             case R.id.action_refresh:
                 if (swipeRefreshLayout != null) {
                     swipeRefreshLayout.setRefreshing(true);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            onRefresh();
-                        }
-                    }, 500);
+                    new Handler().postDelayed(this::onRefresh, 500);
                     return true;
                 }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

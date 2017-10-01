@@ -86,6 +86,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         switch (item.getItemId()) {
             case R.id.secret_shop:
                 startActivity(new Intent(this, SecretShopActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -163,7 +164,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
     private void showReset() {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to reset everything?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> resetSecret())
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> resetSecret())
                 .setCancelable(true)
                 .show();
     }
