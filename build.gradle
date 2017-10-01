@@ -3,6 +3,7 @@
 buildscript {
     ext.support_version = '26.1.0'
     ext.firebase_version = '11.4.0'
+    ext.arch_version = '1.0.0-beta1'
 
     repositories {
         maven { url 'https://maven.google.com' }
