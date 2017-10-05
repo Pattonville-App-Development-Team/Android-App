@@ -19,6 +19,12 @@
 -verbose
 -dontobfuscate
 
+#Pattonville App
+-keepclassmembers class org.pattonvillecs.pattonvilleapp.** {
+    *;
+}
+-keep class org.pattonvillecs.pattonvilleapp.**
+
 #iCal4j
 -dontwarn net.fortuna.ical4j.model.**
 -dontwarn net.fortuna.ical4j.groovy.**
@@ -55,3 +61,13 @@
 -keep class com.wooplr.spotlight.** { *; }
 -keep interface com.wooplr.spotlight.**
 -keep enum com.wooplr.spotlight.**
+
+#Tests
+-keepclassmembers class android.arch.persistence.room.** {
+    *;
+}
+-keep class android.arch.persistence.room.**
+-keepclassmembers class android.arch.lifecycle.** {
+    *;
+}
+-keep class android.arch.lifecycle.**

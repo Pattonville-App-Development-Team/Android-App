@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
@@ -36,6 +35,7 @@ import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.directory.detail.Faculty;
@@ -61,11 +61,14 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
+
 /**
  * Created by Mitchell Skaggs on 12/19/16.
  */
 
-public class PattonvilleApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
+public class PattonvilleApplication extends DaggerApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
     public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
@@ -122,6 +125,11 @@ public class PattonvilleApplication extends Application implements SharedPrefere
         setUpNewsParsing();
         setUpDirectoryParsing();
         enableHttpResponseCache();
+    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().application(this).build();
     }
 
     /**

@@ -9,6 +9,10 @@ if (hasKeystore)
 else
     println 'Keystore properties file missing! An unsigned release build will be generated.'
 
+//Disable ErrorProne checks for generated code (Dagger 2, Room, etc.)
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-XepDisableWarningsInGeneratedCode']
+}
 
 android {
     if (hasKeystore)
@@ -38,6 +42,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
             if (hasKeystore)
                 signingConfig signingConfigs.release
         }
@@ -45,6 +50,7 @@ android {
             minifyEnabled true
             //useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
             applicationIdSuffix ".debug"
         }
     }
@@ -84,6 +90,12 @@ dependencies {
     compile "android.arch.persistence.room:runtime:$arch_version"
     annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
     compile "android.arch.paging:runtime:1.0.0-alpha2"
+
+    //Dagger 2
+    compile "com.google.dagger:dagger-android:$dagger_version"
+    compile "com.google.dagger:dagger-android-support:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
     //Calendar view
     compile 'com.prolificinteractive:material-calendarview:1.4.3'

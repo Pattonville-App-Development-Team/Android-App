@@ -45,6 +45,7 @@ import org.pattonvillecs.pattonvilleapp.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEventDao;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,9 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
 import static org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
@@ -63,11 +67,15 @@ import static org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpda
  * Use the {@link CalendarPinnedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarPinnedFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CalendarPinnedFragment extends DaggerFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int PINNED_EVENTS_LOADER_ID = 1;
     private static final String TAG = CalendarPinnedFragment.class.getSimpleName();
     private static final String KEY_PINNED_UIDS = "pinned_uids";
+
+    @Inject
+    protected CalendarEventDao calendarEventDao;
+
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private TextView noItemsTextView;
