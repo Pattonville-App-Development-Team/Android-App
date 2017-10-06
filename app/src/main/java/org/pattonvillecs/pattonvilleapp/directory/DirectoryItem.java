@@ -101,7 +101,7 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
         return dataSources != null ? dataSources.hashCode() : 0;
     }
 
-    class DirectoryItemViewHolder extends FlexibleViewHolder {
+    static class DirectoryItemViewHolder extends FlexibleViewHolder {
         final View view;
         final TextView name;
         final ImageView icon;

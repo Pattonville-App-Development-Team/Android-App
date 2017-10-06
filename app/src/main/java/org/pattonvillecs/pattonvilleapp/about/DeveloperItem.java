@@ -114,7 +114,7 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
         return result;
     }
 
-    protected class DeveloperViewHolder extends FlexibleViewHolder {
+    protected static class DeveloperViewHolder extends FlexibleViewHolder {
         public final View view;
         public final TextView name;
         public final ImageView image;

@@ -62,10 +62,12 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     //Required CREATOR for the Parcelable implementation
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
         public NewsArticle createFromParcel(Parcel in) {
             return new NewsArticle(in);
         }
 
+        @Override
         public NewsArticle[] newArray(int size) {
             return new NewsArticle[size];
         }

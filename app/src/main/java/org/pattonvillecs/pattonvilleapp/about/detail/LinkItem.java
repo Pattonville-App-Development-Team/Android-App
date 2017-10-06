@@ -122,7 +122,7 @@ public class LinkItem extends AbstractFlexibleItem<LinkItem.LinkViewHolder> impl
         dest.writeString(link);
     }
 
-    class LinkViewHolder extends FlexibleViewHolder {
+    static class LinkViewHolder extends FlexibleViewHolder {
         final ImageView imageView;
 
         LinkViewHolder(View view, FlexibleAdapter adapter) {

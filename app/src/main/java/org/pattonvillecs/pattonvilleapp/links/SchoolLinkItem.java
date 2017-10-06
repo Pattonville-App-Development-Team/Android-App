@@ -90,7 +90,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
         return dataSource != null ? dataSource.hashCode() : 0;
     }
 
-    class SchoolLinkItemViewHolder extends FlexibleViewHolder {
+    static class SchoolLinkItemViewHolder extends FlexibleViewHolder {
         final ImageView schoolMascot;
         final TextView schoolName;
         final View view;

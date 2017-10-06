@@ -73,7 +73,7 @@ public class FacultyHeader extends AbstractHeaderItem<FacultyHeader.FacultyHeade
         return dataSource != null ? dataSource.hashCode() : 0;
     }
 
-    class FacultyHeaderViewHolder extends FlexibleViewHolder {
+    static class FacultyHeaderViewHolder extends FlexibleViewHolder {
         final TextView headerText;
 
         public FacultyHeaderViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {

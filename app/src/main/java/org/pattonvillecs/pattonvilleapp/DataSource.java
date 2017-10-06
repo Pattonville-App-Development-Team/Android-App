@@ -35,6 +35,7 @@ import static android.graphics.Color.parseColor;
 import static com.annimon.stream.Optional.empty;
 import static com.annimon.stream.Optional.of;
 
+@SuppressWarnings("ImmutableEnumChecker") // Optional<E> types are immutable
 public enum DataSource {
     DISTRICT("Learning Center", "District",
             false, false, false, false,

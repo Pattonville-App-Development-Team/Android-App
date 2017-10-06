@@ -336,6 +336,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         return view;
     }
 
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }

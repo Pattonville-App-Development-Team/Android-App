@@ -45,6 +45,7 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Activity for displaying a news article's content
@@ -89,7 +90,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         // Add listener to close the refresh layout when content loaded
         mWebView.setWebViewClient(new WebViewClient() {
-
+            @Override
             public void onPageFinished(WebView view, String url) {
                 mRefreshLayout.setRefreshing(false);
                 mRefreshLayout.setEnabled(false);
@@ -112,7 +113,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // When content found, load
-                        response = new String(response.getBytes());
+                        response = new String(response.getBytes(Charset.defaultCharset()), Charset.defaultCharset());
                         mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
                     }
                 },
@@ -136,7 +137,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             try {
                 cachedData = new String(cacheEntry.data, DEFAULT_ENCODING);
             } catch (UnsupportedEncodingException e) {
-                cachedData = new String(cacheEntry.data);
+                cachedData = new String(cacheEntry.data, Charset.defaultCharset());
             }
             mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(cachedData), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
         } else {
@@ -189,7 +190,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             try {
                 parsed = new String(response.data, DEFAULT_ENCODING);
             } catch (UnsupportedEncodingException e) {
-                parsed = new String(response.data);
+                parsed = new String(response.data, Charset.defaultCharset());
             }
             return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
         }

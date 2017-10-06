@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
+    @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
 

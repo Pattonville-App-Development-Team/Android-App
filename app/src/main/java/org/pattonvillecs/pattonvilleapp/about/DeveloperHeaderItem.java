@@ -72,7 +72,7 @@ public class DeveloperHeaderItem extends AbstractHeaderItem<DeveloperHeaderItem.
         return new DeveloperHeaderItemViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
-    class DeveloperHeaderItemViewHolder extends FlexibleViewHolder {
+    static class DeveloperHeaderItemViewHolder extends FlexibleViewHolder {
         final TextView text;
 
         public DeveloperHeaderItemViewHolder(View view, FlexibleAdapter adapter) {

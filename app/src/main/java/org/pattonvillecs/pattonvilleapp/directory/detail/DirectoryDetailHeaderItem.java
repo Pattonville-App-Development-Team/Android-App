@@ -154,7 +154,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
         return new DirectoryDetailHeaderViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
-    class DirectoryDetailHeaderViewHolder extends FlexibleViewHolder {
+    static class DirectoryDetailHeaderViewHolder extends FlexibleViewHolder {
         final TextView schoolName, schoolAddress, schoolPhoneNumber, schoolAttendanceNumber, schoolFaxNumber, schoolWebsite;
         final ImageView schoolImage;
 
