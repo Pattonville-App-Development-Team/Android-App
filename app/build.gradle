@@ -37,6 +37,14 @@ android {
             useSupportLibrary true
         }
         setProperty("archivesBaseName", "pattonvilleapp-v$versionName")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
     buildTypes {
         release {
