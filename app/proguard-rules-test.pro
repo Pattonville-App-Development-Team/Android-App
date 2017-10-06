@@ -16,7 +16,7 @@
 #   public *;
 #}
 
--verbose
+#-verbose
 -dontobfuscate
 
 #Tests

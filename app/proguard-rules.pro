@@ -16,21 +16,21 @@
 #   public *;
 #}
 
--verbose
+#-verbose
 -dontobfuscate
 
 #Pattonville App
--keepclassmembers class org.pattonvillecs.pattonvilleapp.** {
+-keepclassmembers,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.** {
     *;
 }
--keep class org.pattonvillecs.pattonvilleapp.**
+-keep,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.**
 
 #iCal4j
 -dontwarn net.fortuna.ical4j.model.**
 -dontwarn net.fortuna.ical4j.groovy.**
 -dontwarn groovy.**
--keep class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
--keep class * extends net.fortuna.ical4j.model.Content$Factory
+-keep,includedescriptorclasses class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
+-keep,includedescriptorclasses class * extends net.fortuna.ical4j.model.Content$Factory
 
 #Retrolambda
 -dontwarn java.lang.invoke.*
@@ -44,7 +44,7 @@
 
 #Kryo
 -dontwarn com.esotericsoftware.kryo.**
--keepclassmembers class * extends com.esotericsoftware.kryo.Serializer {
+-keepclassmembers,includedescriptorclasses class * extends com.esotericsoftware.kryo.Serializer {
     *;
 }
 
@@ -55,19 +55,19 @@
 -dontwarn com.google.errorprone.annotations.*
 
 #Support Library Bug
--keep class android.support.v7.widget.SearchView { *; }
+-keep,includedescriptorclasses class android.support.v7.widget.SearchView { *; }
 
 #Spotlight
--keep class com.wooplr.spotlight.** { *; }
--keep interface com.wooplr.spotlight.**
--keep enum com.wooplr.spotlight.**
+-keep,includedescriptorclasses class com.wooplr.spotlight.** { *; }
+-keep,includedescriptorclasses interface com.wooplr.spotlight.**
+-keep,includedescriptorclasses enum com.wooplr.spotlight.**
 
 #Tests
--keepclassmembers class android.arch.persistence.room.** {
+-keepclassmembers,includedescriptorclasses class android.arch.persistence.room.** {
     *;
 }
--keep class android.arch.persistence.room.**
--keepclassmembers class android.arch.lifecycle.** {
+-keep,includedescriptorclasses class android.arch.persistence.room.**
+-keepclassmembers,includedescriptorclasses class android.arch.lifecycle.** {
     *;
 }
--keep class android.arch.lifecycle.**
+-keep,includedescriptorclasses class android.arch.lifecycle.**
