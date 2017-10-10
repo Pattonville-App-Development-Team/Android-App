@@ -51,4 +51,28 @@ public class CalendarEvent {
     public Date getEndDate() {
         return (Date) endDate.clone();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CalendarEvent that = (CalendarEvent) o;
+
+        return uid.equals(that.uid)
+                && summary.equals(that.summary)
+                && location.equals(that.location)
+                && startDate.equals(that.startDate)
+                && endDate.equals(that.endDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uid.hashCode();
+        result = 31 * result + summary.hashCode();
+        result = 31 * result + location.hashCode();
+        result = 31 * result + startDate.hashCode();
+        result = 31 * result + endDate.hashCode();
+        return result;
+    }
 }

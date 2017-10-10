@@ -17,21 +17,25 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.getValue;
+import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pinned;
 
 /**
  * Created by Mitchell on 10/5/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class CalendarEventDaoTest {
-    private CalendarEventDao calendarEventDao;
+public class CalendarDaoTest {
+    private CalendarDao calendarDao;
     private AppDatabase appDatabase;
+
+    private static CalendarEvent testEvent() {
+        return new CalendarEvent("test_uid", "summary", "location", new Date(), new Date());
+    }
 
     @Before
     public void createDb() throws Exception {
         Context context = InstrumentationRegistry.getTargetContext();
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).build();
-        calendarEventDao = appDatabase.calendarEventDao();
-
+        calendarDao = appDatabase.calendarEventDao();
     }
 
     @After
@@ -40,24 +44,12 @@ public class CalendarEventDaoTest {
     }
 
     @Test
-    public void writeEventAndReadInList() throws Exception {
-        CalendarEvent calendarEvent = new CalendarEvent("test_uid", "summary", "location", new Date(), new Date());
-
-        calendarEventDao.insertAll(calendarEvent);
-
-        List<CalendarEvent> calendarEvents = getValue(calendarEventDao.getEventByUid("test_uid"));
-
-        assertThat(calendarEvents.size(), is(1));
-        assertThat(calendarEvents.get(0).summary, is("summary"));
-    }
-
-    @Test
     public void writeUnpinnedEventAndReadInList() throws Exception {
-        CalendarEvent calendarEvent = new CalendarEvent("test_uid", "summary", "location", new Date(), new Date());
+        CalendarEvent calendarEvent = testEvent();
 
-        calendarEventDao.insertAll(calendarEvent);
+        calendarDao.insert(calendarEvent);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarEventDao.getEvents());
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarDao.getEvents());
 
         assertThat(calendarEvents.size(), is(1));
         assertThat(calendarEvents.get(0).calendarEvent.summary, is("summary"));
@@ -66,12 +58,11 @@ public class CalendarEventDaoTest {
 
     @Test
     public void writePinnedEventAndReadInList() throws Exception {
-        CalendarEvent calendarEvent = new CalendarEvent("test_uid", "summary", "location", new Date(), new Date());
+        CalendarEvent calendarEvent = testEvent();
 
-        calendarEventDao.insertAll(calendarEvent);
-        calendarEventDao.pinEvent(new PinnedEventMarker("test_uid"));
+        calendarDao.insert(calendarEvent, pinned(calendarEvent));
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarEventDao.getEvents());
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarDao.getEvents());
 
         assertThat(calendarEvents.size(), is(1));
         assertThat(calendarEvents.get(0).calendarEvent.summary, is("summary"));

@@ -45,7 +45,7 @@ import org.pattonvillecs.pattonvilleapp.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
-import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEventDao;
+import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarDao;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +74,7 @@ public class CalendarPinnedFragment extends DaggerFragment implements LoaderMana
     private static final String KEY_PINNED_UIDS = "pinned_uids";
 
     @Inject
-    protected CalendarEventDao calendarEventDao;
+    protected CalendarDao calendarDao;
 
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "420aa30d270bee937cd6da7f2b7bbec0",
+    "identityHash": "51db10b1be57e9490e5f2c0b0dfe657b",
     "entities": [
       {
         "tableName": "events",
@@ -59,7 +59,7 @@
       },
       {
         "tableName": "pinned_event_markers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`), FOREIGN KEY(`uid`) REFERENCES `events`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -84,12 +84,68 @@
             "createSql": "CREATE  INDEX `index_pinned_event_markers_uid` ON `${TABLE_NAME}` (`uid`)"
           }
         ],
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "uid"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "datasource_markers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, `datasource` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`, `datasource`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "datasource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid",
+            "datasource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_datasource_markers_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE  INDEX `index_datasource_markers_uid` ON `${TABLE_NAME}` (`uid`)"
+          },
+          {
+            "name": "index_datasource_markers_datasource",
+            "unique": false,
+            "columnNames": [
+              "datasource"
+            ],
+            "createSql": "CREATE  INDEX `index_datasource_markers_datasource` ON `${TABLE_NAME}` (`datasource`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"420aa30d270bee937cd6da7f2b7bbec0\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"51db10b1be57e9490e5f2c0b0dfe657b\")"
     ]
   }
 }

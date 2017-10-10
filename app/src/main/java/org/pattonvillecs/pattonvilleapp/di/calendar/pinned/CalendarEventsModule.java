@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
-import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEventDao;
+import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarDao;
 
 import javax.inject.Singleton;
 
@@ -19,7 +19,7 @@ import dagger.Provides;
 public class CalendarEventsModule {
     @Provides
     @Singleton
-    static CalendarEventDao provideCalendarEventDao(AppDatabase appDatabase) {
+    static CalendarDao provideCalendarEventDao(AppDatabase appDatabase) {
         Log.i("AppModule", "Pinned Event DAO provided!");
         return appDatabase.calendarEventDao();
     }
