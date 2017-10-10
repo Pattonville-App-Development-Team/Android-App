@@ -20,10 +20,9 @@
 -dontobfuscate
 
 #Pattonville App
--keepclassmembers,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.** {
+-keep,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.** {
     *;
 }
--keep,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.**
 
 #iCal4j
 -dontwarn net.fortuna.ical4j.model.**

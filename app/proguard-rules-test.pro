@@ -27,3 +27,5 @@
 -dontwarn com.squareup.javawriter.JavaWriter
 -dontwarn org.junit.**
 -dontwarn org.xmlpull.v1.**
+-dontwarn net.bytebuddy.**
+-dontwarn org.mockito.internal.creation.bytebuddy.**

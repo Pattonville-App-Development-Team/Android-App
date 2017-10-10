@@ -1,4 +1,4 @@
-package org.pattonvillecs.pattonvilleapp.model;
+package org.pattonvillecs.pattonvilleapp.model.typeconverters;
 
 import android.arch.persistence.room.TypeConverter;
 

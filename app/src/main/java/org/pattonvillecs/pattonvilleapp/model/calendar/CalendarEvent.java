@@ -75,4 +75,15 @@ public class CalendarEvent {
         result = 31 * result + endDate.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "CalendarEvent{" +
+                "uid='" + uid + '\'' +
+                ", summary='" + summary + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }

@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+
 /**
  * Created by Mitchell on 10/4/2017.
  */
@@ -19,7 +21,6 @@ public class AppDatabaseModule {
     @Provides
     @Singleton
     static AppDatabase provideAppDatabase(Application application) {
-        return Room.databaseBuilder(application, AppDatabase.class, "app_database")
-                .build();
+        return init(Room.databaseBuilder(application, AppDatabase.class, "app_database")).build();
     }
 }

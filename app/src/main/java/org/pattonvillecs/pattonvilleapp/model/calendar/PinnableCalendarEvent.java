@@ -38,4 +38,12 @@ public class PinnableCalendarEvent {
         result = 31 * result + (pinned ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PinnableCalendarEvent{" +
+                "calendarEvent=" + calendarEvent +
+                ", pinned=" + pinned +
+                '}';
+    }
 }

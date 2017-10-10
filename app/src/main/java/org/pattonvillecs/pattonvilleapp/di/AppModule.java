@@ -1,6 +1,6 @@
 package org.pattonvillecs.pattonvilleapp.di;
 
-import org.pattonvillecs.pattonvilleapp.di.calendar.pinned.CalendarEventsModule;
+import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
 
 import dagger.Module;
 
@@ -8,6 +8,6 @@ import dagger.Module;
  * Created by Mitchell on 10/3/2017.
  */
 
-@Module(includes = {CalendarEventsModule.class})
+@Module(includes = {AppDatabaseModule.class})
 public class AppModule {
 }

@@ -162,7 +162,11 @@ dependencies {
 
     //Overrides Guava and Espresso's differing older versions
     compile 'com.google.code.findbugs:jsr305:3.0.2'
+
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-android:2.10.0'
+    testCompile 'com.github.fabioCollini.daggermock:daggermock:0.8.1'
+
     androidTestCompile('com.android.support.test:runner:1.0.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -170,7 +174,8 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    testCompile 'org.mockito:mockito-android:2.10.0'
+    androidTestCompile 'org.mockito:mockito-android:2.10.0'
+    androidTestCompile 'com.github.fabioCollini.daggermock:daggermock:0.8.1'
 }
 
 apply plugin: 'com.google.gms.google-services' //Must be at bottom

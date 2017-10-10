@@ -25,4 +25,8 @@ public class DataSourceMarker {
         this.uid = uid;
         this.dataSource = dataSource;
     }
+
+    public static DataSourceMarker dataSource(CalendarEvent calendarEvent, DataSource dataSource) {
+        return new DataSourceMarker(calendarEvent.uid, dataSource);
+    }
 }

@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 
 import java.util.Date;
@@ -16,16 +17,16 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.getValue;
-import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pinned;
 
 /**
  * Created by Mitchell on 10/5/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class CalendarDaoTest {
-    private CalendarDao calendarDao;
+public class CalendarRepositoryTest {
     private AppDatabase appDatabase;
+    private CalendarRepository calendarRepository;
 
     private static CalendarEvent testEvent() {
         return new CalendarEvent("test_uid", "summary", "location", new Date(), new Date());
@@ -34,8 +35,8 @@ public class CalendarDaoTest {
     @Before
     public void createDb() throws Exception {
         Context context = InstrumentationRegistry.getTargetContext();
-        appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).build();
-        calendarDao = appDatabase.calendarEventDao();
+        appDatabase = init(Room.inMemoryDatabaseBuilder(context, AppDatabase.class)).build();
+        calendarRepository = new CalendarRepository(appDatabase);
     }
 
     @After
@@ -47,25 +48,27 @@ public class CalendarDaoTest {
     public void writeUnpinnedEventAndReadInList() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
-        calendarDao.insert(calendarEvent);
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarDao.getEvents());
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEvents(DataSource.DISTRICT));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
         assertThat(calendarEvents.size(), is(1));
-        assertThat(calendarEvents.get(0).calendarEvent.summary, is("summary"));
-        assertThat(calendarEvents.get(0).pinned, is(false));
+        assertThat(calendarEvents.get(0), is(expectedCalendarEvent));
     }
 
     @Test
     public void writePinnedEventAndReadInList() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
-        calendarDao.insert(calendarEvent, pinned(calendarEvent));
+        calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarDao.getEvents());
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEvents(DataSource.DISTRICT));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
         assertThat(calendarEvents.size(), is(1));
-        assertThat(calendarEvents.get(0).calendarEvent.summary, is("summary"));
-        assertThat(calendarEvents.get(0).pinned, is(true));
+        assertThat(calendarEvents.get(0), is(expectedCalendarEvent));
     }
 }
