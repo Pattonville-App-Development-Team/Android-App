@@ -1,6 +1,7 @@
 package org.pattonvillecs.pattonvilleapp.model.calendar;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
 import com.annimon.stream.Stream;
@@ -8,7 +9,9 @@ import com.annimon.stream.Stream;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,6 +51,16 @@ public class CalendarRepository {
     @NonNull
     public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull String uid) {
         return calendarDao.getEventsByUid(uid);
+    }
+
+    @NonNull
+    public LiveData<Set<DataSource>> getDataSources(@NonNull List<String> uids) {
+        return Transformations.map(calendarDao.getDataSources(uids), EnumSet::copyOf);
+    }
+
+    @NonNull
+    public LiveData<Set<DataSource>> getDataSources(@NonNull String uid) {
+        return Transformations.map(calendarDao.getDataSources(uid), EnumSet::copyOf);
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {

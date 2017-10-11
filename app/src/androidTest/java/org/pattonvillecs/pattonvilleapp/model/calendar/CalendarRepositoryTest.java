@@ -14,9 +14,11 @@ import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.getValue;
 
@@ -94,5 +96,16 @@ public class CalendarRepositoryTest {
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
         assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEvent_When_GetDataSourcesCalled_Return_SameDataSources() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources("test_uid"));
+
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT));
     }
 }

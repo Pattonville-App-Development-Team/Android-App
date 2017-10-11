@@ -43,6 +43,11 @@ public interface CalendarDao {
 
     @Query("SELECT datasource"
             + " FROM datasource_markers"
+            + " WHERE uid IN (:uids)")
+    LiveData<List<DataSource>> getDataSources(@NonNull List<String> uids);
+
+    @Query("SELECT datasource"
+            + " FROM datasource_markers"
             + " WHERE uid = :uid")
     LiveData<List<DataSource>> getDataSources(@NonNull String uid);
 
