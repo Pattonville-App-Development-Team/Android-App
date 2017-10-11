@@ -13,7 +13,7 @@ public class PinnableCalendarEvent {
     @NonNull
     public final CalendarEvent calendarEvent;
 
-    @ColumnInfo
+    @ColumnInfo(name = "pinned")
     public final boolean pinned;
 
     public PinnableCalendarEvent(@NonNull CalendarEvent calendarEvent, boolean pinned) {

@@ -31,13 +31,23 @@ public class CalendarRepository {
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEvents(@NonNull List<DataSource> dataSources) {
-        return calendarDao.getEvents(dataSources);
+    public LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull List<DataSource> dataSources) {
+        return calendarDao.getEventsByDataSource(dataSources);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEvents(@NonNull DataSource dataSource) {
-        return calendarDao.getEvents(dataSource);
+    public LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull DataSource dataSource) {
+        return calendarDao.getEventsByDataSource(dataSource);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull List<String> uids) {
+        return calendarDao.getEventsByUid(uids);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull String uid) {
+        return calendarDao.getEventsByUid(uid);
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {

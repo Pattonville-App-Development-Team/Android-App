@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.contains;
 import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.getValue;
 
@@ -45,30 +45,54 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void writeUnpinnedEventAndReadInList() throws Exception {
+    public void Given_UnpinnedCalendarEvent_When_GetEventsByDataSourceCalled_Return_SameUnpinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEvents(DataSource.DISTRICT));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByDataSource(DataSource.DISTRICT));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
-        assertThat(calendarEvents.size(), is(1));
-        assertThat(calendarEvents.get(0), is(expectedCalendarEvent));
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
     }
 
     @Test
-    public void writePinnedEventAndReadInList() throws Exception {
+    public void Given_PinnedCalendarEvent_When_GetEventsByDataSourceCalled_Return_SamePinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEvents(DataSource.DISTRICT));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByDataSource(DataSource.DISTRICT));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
-        assertThat(calendarEvents.size(), is(1));
-        assertThat(calendarEvents.get(0), is(expectedCalendarEvent));
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEvent_When_GetEventsByUidCalled_Return_SameUnpinnedEvent() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid("test_uid"));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_PinnedCalendarEvent_When_GetEventsByUidCalled_Return_SamePinnedEvent() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid("test_uid"));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
     }
 }
