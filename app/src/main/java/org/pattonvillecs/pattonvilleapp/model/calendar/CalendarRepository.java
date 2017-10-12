@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.dataSource;
-import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pinned;
+import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pin;
 
 /**
  * Created by Mitchell on 10/3/2017.
@@ -82,7 +82,7 @@ public class CalendarRepository {
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {
         if (pinned) {
-            calendarDao.insert(calendarEvent, Stream.of(dataSources).map(dataSource -> dataSource(calendarEvent, dataSource)).toList(), pinned(calendarEvent));
+            calendarDao.insert(calendarEvent, Stream.of(dataSources).map(dataSource -> dataSource(calendarEvent, dataSource)).toList(), pin(calendarEvent));
         } else {
             calendarDao.insert(calendarEvent, Stream.of(dataSources).map(dataSource -> dataSource(calendarEvent, dataSource)).toList());
         }
@@ -90,7 +90,7 @@ public class CalendarRepository {
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, DataSource dataSource) {
         if (pinned) {
-            calendarDao.insert(calendarEvent, dataSource(calendarEvent, dataSource), pinned(calendarEvent));
+            calendarDao.insert(calendarEvent, dataSource(calendarEvent, dataSource), pin(calendarEvent));
         } else {
             calendarDao.insert(calendarEvent, dataSource(calendarEvent, dataSource));
         }
@@ -102,5 +102,13 @@ public class CalendarRepository {
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, DataSource dataSource) {
         insertEvent(calendarEvent, false, dataSource);
+    }
+
+    public void pinEvent(@NonNull CalendarEvent calendarEvent) {
+        calendarDao.insertPin(pin(calendarEvent));
+    }
+
+    public void unpinEvent(@NonNull CalendarEvent calendarEvent) {
+        calendarDao.deletePin(pin(calendarEvent));
     }
 }

@@ -20,6 +20,7 @@ package org.pattonvillecs.pattonvilleapp.model.calendar;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
@@ -44,6 +45,7 @@ import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.g
  * Created by Mitchell on 10/5/2017.
  */
 @RunWith(AndroidJUnit4.class)
+@MediumTest
 public class CalendarRepositoryTest {
     private AppDatabase appDatabase;
     private CalendarRepository calendarRepository;
@@ -185,8 +187,36 @@ public class CalendarRepositoryTest {
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources("test_uid"));
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
 
         assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEvent_When_PinEventCalled_And_GetEventsByDataSourceCalled_Then_ReturnPinnedEvent() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+        calendarRepository.pinEvent(calendarEvent);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByDataSource(DataSource.DISTRICT));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_PinnedCalendarEvent_When_UnpinEventCalled_And_GetEventsByDataSourceCalled_Then_ReturnUnpinnedEvent() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
+        calendarRepository.unpinEvent(calendarEvent);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByDataSource(DataSource.DISTRICT));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
     }
 }

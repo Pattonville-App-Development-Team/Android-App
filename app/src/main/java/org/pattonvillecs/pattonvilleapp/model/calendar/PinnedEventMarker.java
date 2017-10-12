@@ -50,7 +50,7 @@ public class PinnedEventMarker {
         this(calendarEvent.uid);
     }
 
-    public static PinnedEventMarker pinned(CalendarEvent calendarEvent) {
+    public static PinnedEventMarker pin(CalendarEvent calendarEvent) {
         return new PinnedEventMarker(calendarEvent);
     }
 

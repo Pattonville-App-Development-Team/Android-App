@@ -87,8 +87,8 @@ public interface CalendarDao {
     void updateAll(@NonNull CalendarEvent... calendarEvent);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void pinEvent(@NonNull PinnedEventMarker pinnedEventMarker);
+    void insertPin(@NonNull PinnedEventMarker pinnedEventMarker);
 
     @Delete
-    void unPinEvent(@NonNull PinnedEventMarker pinnedEventMarker);
+    void deletePin(@NonNull PinnedEventMarker pinnedEventMarker);
 }
