@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,47 +39,42 @@ import java.util.List;
 //Due to nullable annotations not being overridden in "_Impl" classes
 @Dao
 public interface CalendarDao {
+
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
             + " WHERE (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
-    LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull List<DataSource> dataSources);
+    LiveData<List<PinnableCalendarEvent>> getEventsByDataSources(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource = :dataSource LIMIT 1))")
-    LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull DataSource dataSource);
+            + " WHERE uid IN (:uids) AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+    LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE uid IN (:uids)")
-    LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull List<String> uids);
+            + " WHERE end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+    LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Date lastDate);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE uid = :uid")
-    LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull String uid);
+            + " WHERE start_date >= :firstDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+    LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Date firstDate);
+
+    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+            + " FROM events"
+            + " WHERE start_date >= :firstDate AND end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+    LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Date firstDate, @NonNull Date lastDate);
 
     @Query("SELECT datasource"
             + " FROM datasource_markers"
             + " WHERE uid IN (:uids)")
     LiveData<List<DataSource>> getDataSources(@NonNull List<String> uids);
 
-    @Query("SELECT datasource"
-            + " FROM datasource_markers"
-            + " WHERE uid = :uid")
-    LiveData<List<DataSource>> getDataSources(@NonNull String uid);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers, @NonNull PinnedEventMarker pinnedEventMarker);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(@NonNull CalendarEvent calendarEvent, @NonNull DataSourceMarker dataSourceMarker, @NonNull PinnedEventMarker pinnedEventMarker);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(@NonNull CalendarEvent calendarEvent, @NonNull DataSourceMarker dataSourceMarker);
 
     @Delete
     void deleteAll(@NonNull CalendarEvent... calendarEvent);

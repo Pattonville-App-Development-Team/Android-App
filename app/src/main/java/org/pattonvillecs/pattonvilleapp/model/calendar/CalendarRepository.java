@@ -26,6 +26,7 @@ import com.annimon.stream.Stream;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static java.util.Collections.singletonList;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.dataSource;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pin;
 
@@ -52,22 +54,32 @@ public class CalendarRepository {
 
     @NonNull
     public LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull List<DataSource> dataSources) {
-        return calendarDao.getEventsByDataSource(dataSources);
+        return calendarDao.getEventsByDataSources(dataSources);
     }
 
     @NonNull
     public LiveData<List<PinnableCalendarEvent>> getEventsByDataSource(@NonNull DataSource dataSource) {
-        return calendarDao.getEventsByDataSource(dataSource);
+        return calendarDao.getEventsByDataSources(singletonList(dataSource));
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull List<String> uids) {
-        return calendarDao.getEventsByUid(uids);
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids) {
+        return calendarDao.getEventsByUids(dataSources, uids);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull String uid) {
-        return calendarDao.getEventsByUid(uid);
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull DataSource dataSource, @NonNull List<String> uids) {
+        return calendarDao.getEventsByUids(singletonList(dataSource), uids);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull List<DataSource> dataSources, @NonNull String uid) {
+        return calendarDao.getEventsByUids(dataSources, singletonList(uid));
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull DataSource dataSource, @NonNull String uid) {
+        return calendarDao.getEventsByUids(singletonList(dataSource), singletonList(uid));
     }
 
     @NonNull
@@ -77,7 +89,37 @@ public class CalendarRepository {
 
     @NonNull
     public LiveData<Set<DataSource>> getDataSources(@NonNull String uid) {
-        return Transformations.map(calendarDao.getDataSources(uid), EnumSet::copyOf);
+        return Transformations.map(calendarDao.getDataSources(singletonList(uid)), EnumSet::copyOf);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Date lastDate) {
+        return calendarDao.getEventsBeforeDate(dataSources, lastDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull DataSource dataSource, @NonNull Date lastDate) {
+        return calendarDao.getEventsBeforeDate(singletonList(dataSource), lastDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Date firstDate) {
+        return calendarDao.getEventsAfterDate(dataSources, firstDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull DataSource dataSource, @NonNull Date firstDate) {
+        return calendarDao.getEventsAfterDate(singletonList(dataSource), firstDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Date firstDate, @NonNull Date lastDate) {
+        return calendarDao.getEventsBetweenDates(dataSources, firstDate, lastDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull DataSource dataSource, @NonNull Date firstDate, @NonNull Date lastDate) {
+        return calendarDao.getEventsBetweenDates(singletonList(dataSource), firstDate, lastDate);
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {
@@ -89,11 +131,7 @@ public class CalendarRepository {
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, DataSource dataSource) {
-        if (pinned) {
-            calendarDao.insert(calendarEvent, dataSource(calendarEvent, dataSource), pin(calendarEvent));
-        } else {
-            calendarDao.insert(calendarEvent, dataSource(calendarEvent, dataSource));
-        }
+        insertEvent(calendarEvent, pinned, singletonList(dataSource));
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, List<DataSource> dataSources) {
