@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +65,7 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void Given_UnpinnedCalendarEvent_When_GetEventsByDataSourceCalled_Return_SameUnpinnedEvent() throws Exception {
+    public void Given_UnpinnedCalendarEvent_When_GetEventsByDataSourceCalled_Then_ReturnSameUnpinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
@@ -77,7 +78,7 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void Given_PinnedCalendarEvent_When_GetEventsByDataSourceCalled_Return_SamePinnedEvent() throws Exception {
+    public void Given_PinnedCalendarEvent_When_GetEventsByDataSourceCalled_Then_ReturnSamePinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
@@ -90,12 +91,12 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void Given_UnpinnedCalendarEvent_When_GetEventsByUidCalled_Return_SameUnpinnedEvent() throws Exception {
+    public void Given_UnpinnedCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSameUnpinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid("test_uid"));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(calendarEvent.uid));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -103,12 +104,26 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void Given_PinnedCalendarEvent_When_GetEventsByUidCalled_Return_SamePinnedEvent() throws Exception {
+    public void Given_UnpinnedDuplicateCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSameUnpinnedEvent() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(calendarEvent.uid));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_PinnedCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSamePinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid("test_uid"));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(calendarEvent.uid));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
@@ -116,9 +131,58 @@ public class CalendarRepositoryTest {
     }
 
     @Test
-    public void Given_UnpinnedCalendarEvent_When_GetDataSourcesCalled_Return_SameDataSources() throws Exception {
+    public void Given_PinnedDuplicateCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSamePinnedEvent() throws Exception {
         CalendarEvent calendarEvent = testEvent();
 
+        calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
+        calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(calendarEvent.uid));
+
+        PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
+
+        assertThat(calendarEvents, contains(expectedCalendarEvent));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEvent_When_GetDataSourcesCalled_Then_ReturnSameDataSource() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEventMultipleDataSources_When_GetDataSourcesCalled_Then_ReturnSameDataSources() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, Arrays.asList(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
+
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
+    }
+
+    @Test
+    public void Given_UnpinnedDuplicateCalendarEventMultipleDataSources_When_GetDataSourcesCalled_Then_ReturnSameDataSources() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+        calendarRepository.insertEvent(calendarEvent, DataSource.HIGH_SCHOOL);
+
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
+    }
+
+    @Test
+    public void Given_UnpinnedCalendarEventDuplicateDataSource_When_GetDataSourcesCalled_Then_ReturnSameDataSource() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
         Set<DataSource> dataSources = getValue(calendarRepository.getDataSources("test_uid"));
