@@ -17,6 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.calendar.fix;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -392,6 +393,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
             LayoutParams p = (LayoutParams) child.getLayoutParams();
 
+            @SuppressLint("Range")
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
                     DEFAULT_DAYS_IN_WEEK * measureTileWidth,
                     MeasureSpec.EXACTLY
