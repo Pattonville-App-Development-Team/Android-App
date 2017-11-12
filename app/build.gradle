@@ -23,11 +23,11 @@ android {
                 storePassword keystoreProperties['storePassword']
             }
         }
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 18
         versionName "1.1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
