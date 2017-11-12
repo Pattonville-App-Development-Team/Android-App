@@ -19,8 +19,6 @@ package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.support.v4.os.AsyncTaskCompat;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -63,6 +61,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+
+import static android.os.AsyncTask.THREAD_POOL_EXECUTOR;
 
 /**
  * Created by Mitchell Skaggs on 12/19/16.
@@ -183,7 +183,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     }
 
     private void executeDirectoryDataTasks() {
-        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(THREAD_POOL_EXECUTOR);
     }
 
     private void setUpCalendarParsing() {
@@ -240,13 +240,13 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
         Stream.of(dataSources)
                 .filter(dataSource -> dataSource.newsURL.isPresent())
-                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
+                .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
     }
 
     private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
         Stream.of(dataSources)
                 .filter(dataSource -> dataSource.calendarURL.isPresent())
-                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
+                .forEach(dataSource -> new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
     }
 
     public Kryo borrowKryo() {
