@@ -165,7 +165,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-android:2.10.0'
-    testImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.1'
 
     androidTestImplementation('com.android.support.test:runner:1.0.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -175,7 +174,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestImplementation 'org.mockito:mockito-android:2.10.0'
-    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.1'
 }
 
 apply plugin: 'com.google.gms.google-services' //Must be at bottom
