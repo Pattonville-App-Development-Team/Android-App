@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: "net.ltgt.errorprone"
 
 def hasKeystore = file('psd.keystore.properties').exists()
@@ -74,6 +75,9 @@ android {
 }
 
 dependencies {
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     //Android Support Libraries
     implementation "com.android.support:support-annotations:$support_version"
     implementation "com.android.support:appcompat-v7:$support_version"
@@ -176,4 +180,7 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-android:2.10.0'
 }
 
-apply plugin: 'com.google.gms.google-services' //Must be at bottom
+apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+} //Must be at bottom
