@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: "net.ltgt.errorprone"
 
 def hasKeystore = file('psd.keystore.properties').exists()
@@ -13,6 +14,9 @@ else
 //Disable ErrorProne checks for generated code (Dagger 2, Room, etc.)
 tasks.withType(JavaCompile) {
     options.compilerArgs += ['-XepDisableWarningsInGeneratedCode']
+}
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions.freeCompilerArgs += ['-XepDisableWarningsInGeneratedCode']
 }
 
 android {
