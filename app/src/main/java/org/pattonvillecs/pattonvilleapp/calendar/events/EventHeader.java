@@ -18,9 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.calendar.events;
 
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -57,8 +55,8 @@ public class EventHeader extends AbstractHeaderItem<EventHeader.EventHeaderViewH
     }
 
     @Override
-    public EventHeaderViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new EventHeaderViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter, true);
+    public EventHeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new EventHeaderViewHolder(view, adapter, true);
     }
 
     @Override

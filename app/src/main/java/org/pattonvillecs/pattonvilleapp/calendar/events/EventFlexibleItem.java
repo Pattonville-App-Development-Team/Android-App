@@ -39,9 +39,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -207,8 +205,8 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
     }
 
     @Override
-    public EventViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new EventViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public EventViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new EventViewHolder(view, adapter);
     }
 
     @Override

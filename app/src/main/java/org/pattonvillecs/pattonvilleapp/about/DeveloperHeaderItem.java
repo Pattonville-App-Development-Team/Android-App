@@ -17,9 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.about;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.R;
@@ -68,8 +66,8 @@ public class DeveloperHeaderItem extends AbstractHeaderItem<DeveloperHeaderItem.
     }
 
     @Override
-    public DeveloperHeaderItemViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DeveloperHeaderItemViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DeveloperHeaderItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DeveloperHeaderItemViewHolder(view, adapter);
     }
 
     static class DeveloperHeaderItemViewHolder extends FlexibleViewHolder {

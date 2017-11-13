@@ -18,9 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.links;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,8 +68,8 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
     }
 
     @Override
-    public SchoolLinkItemViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new SchoolLinkItemViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public SchoolLinkItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new SchoolLinkItemViewHolder(view, adapter);
     }
 
     @Override

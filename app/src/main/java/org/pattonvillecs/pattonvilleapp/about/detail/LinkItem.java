@@ -23,9 +23,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -87,8 +85,8 @@ public class LinkItem extends AbstractFlexibleItem<LinkItem.LinkViewHolder> impl
     }
 
     @Override
-    public LinkViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new LinkViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public LinkViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new LinkViewHolder(view, adapter);
     }
 
     @SuppressWarnings("SimplifiableIfStatement")

@@ -22,9 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -93,7 +91,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
 
     @Override
     public int hashCode() {
-        return dataSource != null ? dataSource.hashCode() : 0;
+        return dataSource.hashCode();
     }
 
     @Override
@@ -150,8 +148,8 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
     }
 
     @Override
-    public DirectoryDetailHeaderViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryDetailHeaderViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryDetailHeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryDetailHeaderViewHolder(view, adapter);
     }
 
     static class DirectoryDetailHeaderViewHolder extends FlexibleViewHolder {

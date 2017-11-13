@@ -23,9 +23,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -230,8 +228,8 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
     }
 
     @Override
-    public NewsArticleViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new NewsArticleViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public NewsArticleViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new NewsArticleViewHolder(view, adapter);
     }
 
     /**

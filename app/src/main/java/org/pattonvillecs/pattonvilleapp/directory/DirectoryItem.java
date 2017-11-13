@@ -18,9 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.directory;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -76,8 +74,8 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
     }
 
     @Override
-    public DirectoryItemViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryItemViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryItemViewHolder(view, adapter);
     }
 
     @Override

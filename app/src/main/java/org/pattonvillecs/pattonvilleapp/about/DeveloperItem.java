@@ -21,9 +21,7 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -91,8 +89,8 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
     }
 
     @Override
-    public DeveloperViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DeveloperViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DeveloperViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DeveloperViewHolder(view, adapter);
     }
 
     @Override

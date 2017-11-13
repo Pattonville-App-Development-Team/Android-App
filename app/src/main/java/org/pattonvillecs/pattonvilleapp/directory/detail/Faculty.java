@@ -23,9 +23,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -332,8 +330,8 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
     }
 
     @Override
-    public DirectoryViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryViewHolder(view, adapter);
     }
 
     @Override

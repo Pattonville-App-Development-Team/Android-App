@@ -61,9 +61,6 @@
 -keep,includedescriptorclasses interface com.wooplr.spotlight.**
 -keep,includedescriptorclasses enum com.wooplr.spotlight.**
 
-#Lifecycles LiveData bug (Remove after 1.0.0 releases)
--keep class * implements android.arch.lifecycle.GeneratedAdapter { <init>(...); }
-
 #Lifecycles/Pagination
 -dontwarn android.arch.paging.LivePagedListProvider*
 

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: "net.ltgt.errorprone"
 
 def hasKeystore = file('psd.keystore.properties').exists()
@@ -96,17 +97,17 @@ dependencies {
 
     //Android Architecture Components
     implementation "android.arch.lifecycle:extensions:$arch_version"
-    annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
+    kapt "android.arch.lifecycle:compiler:$arch_version"
     testImplementation "android.arch.core:core-testing:$arch_version"
     implementation "android.arch.persistence.room:runtime:$arch_version"
-    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
+    kapt "android.arch.persistence.room:compiler:$arch_version"
     implementation "android.arch.paging:runtime:1.0.0-alpha3"
 
     //Dagger 2
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     //Calendar view
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
@@ -118,7 +119,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
     //RecyclerView improvements
-    implementation 'eu.davidea:flexible-adapter:5.0.0-rc1'
+    implementation 'eu.davidea:flexible-adapter:5.0.0-rc3'
 
     //Java 8 streams
     implementation 'com.annimon:stream:1.1.8'
@@ -179,8 +180,5 @@ dependencies {
     }
     androidTestImplementation 'org.mockito:mockito-android:2.10.0'
 }
-
+//Must be at bottom
 apply plugin: 'com.google.gms.google-services'
-repositories {
-    mavenCentral()
-} //Must be at bottom

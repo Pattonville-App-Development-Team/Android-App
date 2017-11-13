@@ -67,7 +67,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.DividerItemDecoration;
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
+
 
 public class HomeFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -298,9 +299,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Load
         homeCalendarEventRecyclerView.setAdapter(homeCalendarEventAdapter);
         mHomeCalendarPinnedRecyclerView.setAdapter(homeCalendarPinnedAdapter);
 
-        homeNewsRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
-        homeCalendarEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
-        mHomeCalendarPinnedRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        homeNewsRecyclerView.addItemDecoration(new FlexibleItemDecoration(getContext()));
+        homeCalendarEventRecyclerView.addItemDecoration(new FlexibleItemDecoration(getContext()));
+        mHomeCalendarPinnedRecyclerView.addItemDecoration(new FlexibleItemDecoration(getContext()));
 
         carouselView = (CarouselView) view.findViewById(R.id.carouselView);
         carouselView.setPageCount(8);

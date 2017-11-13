@@ -20,10 +20,8 @@ package org.pattonvillecs.pattonvilleapp.calendar;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -53,8 +51,8 @@ import java.util.TreeSet;
 
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.utils.Utils;
 
 import static org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData.CALENDAR_LISTENER_ID;
 
@@ -241,10 +239,10 @@ public class CalendarEventsFragment extends Fragment implements SearchView.OnQue
         });
 
         fastScroller = (FastScroller) layout.findViewById(R.id.fast_scroller);
-        eventAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(getContext(), Color.RED)); // Default red to show an error
+        eventAdapter.setFastScroller(fastScroller);//, FlexibleUtils.fetchAccentColor(getContext(), Color.RED)); // Default red to show an error
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        FlexibleItemDecoration flexibleItemDecoration = new FlexibleItemDecoration(recyclerView.getContext());
+        recyclerView.addItemDecoration(flexibleItemDecoration);
 
         //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
         eventAdapter.addListener(new FlexibleAdapter.OnUpdateListener() {
