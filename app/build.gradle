@@ -12,11 +12,12 @@ else
     println 'Keystore properties file missing! An unsigned release build will be generated.'
 
 //Disable ErrorProne checks for generated code (Dagger 2, Room, etc.)
+def args = ['-XepDisableWarningsInGeneratedCode']
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-XepDisableWarningsInGeneratedCode']
+    options.compilerArgs += args
 }
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions.freeCompilerArgs += ['-XepDisableWarningsInGeneratedCode']
+    kotlinOptions.freeCompilerArgs += args
 }
 
 android {
@@ -115,6 +116,8 @@ dependencies {
 
     //Calendar view
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    //Alternative
+    implementation 'com.applandeo:material-calendar-view:1.2.0'
 
     //Home carousel
     implementation 'com.synnapps:carouselview:0.1.3'
