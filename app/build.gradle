@@ -175,6 +175,9 @@ dependencies {
     //Overrides Guava and Espresso's differing older versions
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
+    //java.time backport
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-android:2.10.0'
 

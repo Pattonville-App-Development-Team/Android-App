@@ -64,6 +64,9 @@
 #Lifecycles/Pagination
 -dontwarn android.arch.paging.LivePagedListProvider*
 
+#java.time JSR310
+-keep class org.threeten.bp.** { *; }
+
 #Tests
 -keepclassmembers,includedescriptorclasses class android.arch.persistence.room.** {
     *;

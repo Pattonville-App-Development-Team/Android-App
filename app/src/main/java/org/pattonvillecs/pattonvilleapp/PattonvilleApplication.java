@@ -28,6 +28,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.google.common.collect.Iterators;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
@@ -101,6 +102,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void onCreate() {
         super.onCreate();
+        AndroidThreeTen.init(this);
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new ArrayList<>();
         pauseableListeners = new ArrayList<>();
