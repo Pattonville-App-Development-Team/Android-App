@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.support.annotation.MainThread;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -43,10 +44,12 @@ public final class SpotlightHelper {
     private SpotlightHelper() {
     }
 
+    @MainThread
     public static void showSpotlight(Activity activity, final View target, String uniqueID, String subText, String mainText) {
         showSpotlight(activity, target, 20, uniqueID, subText, mainText);
     }
 
+    @MainThread
     public static void showSpotlight(Activity activity, final View target, int targetPadding, String uniqueID, String subText, String mainText) {
 
         // Get the colors to use. Pattonville green for highlights, white for text on dark background
