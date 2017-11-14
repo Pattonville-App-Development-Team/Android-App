@@ -26,7 +26,8 @@ import android.view.View;
 import com.wooplr.spotlight.SpotlightView;
 import com.wooplr.spotlight.utils.SpotlightListener;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Created by Mitchell Skaggs on 12/22/2016.
@@ -35,7 +36,7 @@ import java.util.LinkedList;
 public final class SpotlightHelper {
 
     private static final boolean DEBUG_MODE_ENABLED = false;
-    private static final LinkedList<SpotlightView.Builder> builders = new LinkedList<>();
+    private static final Deque<SpotlightView.Builder> builders = new ArrayDeque<>();
     private static final String TAG = "SpotlightHelper";
     private static volatile boolean spotlightCurrentlyOpen = false;
 
@@ -53,8 +54,7 @@ public final class SpotlightHelper {
         int accentColor = ContextCompat.getColor(activity, R.color.colorAccent);
 
         // Initialize the builder for the eventual Spotlight
-        @SuppressWarnings("ConstantConditions")
-        final SpotlightView.Builder builder = new SpotlightView.Builder(activity)
+        @SuppressWarnings("ConstantConditions") final SpotlightView.Builder builder = new SpotlightView.Builder(activity)
                 .introAnimationDuration(400)
                 .enableRevealAnimation(true)
                 .performClick(false)
@@ -97,7 +97,7 @@ public final class SpotlightHelper {
             @Override
             public void onViewDetachedFromWindow(View v) {
                 //Used to cut down on virtual method calls
-                LinkedList<SpotlightView.Builder> tempBuilders = builders;
+                Deque<SpotlightView.Builder> tempBuilders = builders;
                 Log.d(TAG, "onDetach of " + builder);
                 Log.i(TAG, "ToPop: " + tempBuilders);
                 //Try to remove it
