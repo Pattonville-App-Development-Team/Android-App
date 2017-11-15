@@ -30,6 +30,8 @@
 -dontwarn groovy.**
 -keep,includedescriptorclasses class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
 -keep,includedescriptorclasses class * extends net.fortuna.ical4j.model.Content$Factory
+-keep,includedescriptorclasses class net.fortuna.ical4j.util.MapTimeZoneCache
+-dontwarn net.fortuna.ical4j.util.JCacheTimeZoneCache
 
 #Retrolambda
 -dontwarn java.lang.invoke.*
@@ -40,6 +42,7 @@
 
 #Guava
 -dontwarn java.lang.ClassValue
+-dontwarn com.google.common.collect.EnumMultiset
 
 #Kryo
 -dontwarn com.esotericsoftware.kryo.**
