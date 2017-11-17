@@ -22,6 +22,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
@@ -43,12 +44,8 @@ data class CalendarEvent(@field:PrimaryKey
                          val endDate: Instant) {
 
     @delegate:Ignore
-    val startDay by lazy {
-        LocalDateTime.ofInstant(startDate, ZoneId.systemDefault()).toLocalDate()
-    }
+    val startDay: LocalDate by lazy { LocalDateTime.ofInstant(startDate, ZoneId.systemDefault()).toLocalDate() }
 
     @delegate:Ignore
-    val endDay by lazy {
-        LocalDateTime.ofInstant(endDate, ZoneId.systemDefault()).toLocalDate()
-    }
+    val endDay: LocalDate by lazy { LocalDateTime.ofInstant(endDate, ZoneId.systemDefault()).toLocalDate() }
 }

@@ -141,7 +141,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.getUid()));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -155,7 +155,7 @@ public class CalendarRepositoryTest {
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.getUid()));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -168,7 +168,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.getUid()));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
@@ -182,7 +182,7 @@ public class CalendarRepositoryTest {
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, true, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.getUid()));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, true);
 
@@ -195,7 +195,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.getUid()));
 
         assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT));
     }
@@ -206,7 +206,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, Arrays.asList(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
 
-        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.getUid()));
 
         assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
     }
@@ -218,7 +218,7 @@ public class CalendarRepositoryTest {
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, DataSource.HIGH_SCHOOL);
 
-        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.getUid()));
 
         assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL));
     }
@@ -230,7 +230,7 @@ public class CalendarRepositoryTest {
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.uid));
+        Set<DataSource> dataSources = getValue(calendarRepository.getDataSources(calendarEvent.getUid()));
 
         assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT));
     }
