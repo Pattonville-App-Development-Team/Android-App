@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class LiveDataTestUtil {
+    @SuppressWarnings("unchecked")
     public static <T> T getValue(LiveData<T> liveData) throws InterruptedException {
         final Object[] data = new Object[1];
         CountDownLatch latch = new CountDownLatch(1);
@@ -42,7 +43,6 @@ public class LiveDataTestUtil {
         };
         liveData.observeForever(observer);
         latch.await(2, TimeUnit.SECONDS);
-        //noinspection unchecked
         return (T) data[0];
     }
 }

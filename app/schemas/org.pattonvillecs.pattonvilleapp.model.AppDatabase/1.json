@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "51db10b1be57e9490e5f2c0b0dfe657b",
+    "identityHash": "7c41a12a9ce0b9a1a09c4a4e57cb66cd",
     "entities": [
       {
         "tableName": "events",
@@ -53,6 +53,22 @@
               "uid"
             ],
             "createSql": "CREATE  INDEX `index_events_uid` ON `${TABLE_NAME}` (`uid`)"
+          },
+          {
+            "name": "index_events_start_date",
+            "unique": false,
+            "columnNames": [
+              "start_date"
+            ],
+            "createSql": "CREATE  INDEX `index_events_start_date` ON `${TABLE_NAME}` (`start_date`)"
+          },
+          {
+            "name": "index_events_end_date",
+            "unique": false,
+            "columnNames": [
+              "end_date"
+            ],
+            "createSql": "CREATE  INDEX `index_events_end_date` ON `${TABLE_NAME}` (`end_date`)"
           }
         ],
         "foreignKeys": []
@@ -145,7 +161,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"51db10b1be57e9490e5f2c0b0dfe657b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7c41a12a9ce0b9a1a09c4a4e57cb66cd\")"
     ]
   }
 }

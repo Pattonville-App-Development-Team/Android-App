@@ -21,12 +21,18 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
+import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
 
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -93,33 +99,47 @@ public class CalendarRepository {
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Date lastDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate) {
         return calendarDao.getEventsBeforeDate(dataSources, lastDate);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull DataSource dataSource, @NonNull Date lastDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull DataSource dataSource, @NonNull Instant lastDate) {
         return calendarDao.getEventsBeforeDate(singletonList(dataSource), lastDate);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Date firstDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate) {
         return calendarDao.getEventsAfterDate(dataSources, firstDate);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull DataSource dataSource, @NonNull Date firstDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull DataSource dataSource, @NonNull Instant firstDate) {
         return calendarDao.getEventsAfterDate(singletonList(dataSource), firstDate);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Date firstDate, @NonNull Date lastDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate) {
         return calendarDao.getEventsBetweenDates(dataSources, firstDate, lastDate);
     }
 
     @NonNull
-    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull DataSource dataSource, @NonNull Date firstDate, @NonNull Date lastDate) {
+    public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull DataSource dataSource, @NonNull Instant firstDate, @NonNull Instant lastDate) {
         return calendarDao.getEventsBetweenDates(singletonList(dataSource), firstDate, lastDate);
+    }
+
+    @NonNull
+    public LiveData<Multiset<LocalDate>> getCountOnDays(@NonNull DataSource dataSource) {
+        return getCountOnDays(singletonList(dataSource));
+    }
+
+    @NonNull
+    public LiveData<Multiset<LocalDate>> getCountOnDays(@NonNull List<DataSource> dataSources) {
+        return Transformations.map(
+                calendarDao.getAllInstantsByDataSource(dataSources),
+                input -> Stream.of(input)
+                        .map(instant -> LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate())
+                        .collect(Collectors.toCollection(HashMultiset::create)));
     }
 
     public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {

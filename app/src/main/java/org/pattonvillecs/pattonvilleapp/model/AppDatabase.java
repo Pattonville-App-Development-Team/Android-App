@@ -28,6 +28,7 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.model.typeconverters.DataSourceTypeConverter;
 import org.pattonvillecs.pattonvilleapp.model.typeconverters.DateTypeConverter;
+import org.pattonvillecs.pattonvilleapp.model.typeconverters.InstantTypeConverter;
 
 /**
  * Created by Mitchell on 10/1/2017.
@@ -36,7 +37,8 @@ import org.pattonvillecs.pattonvilleapp.model.typeconverters.DateTypeConverter;
 @Database(entities = {CalendarEvent.class, PinnedEventMarker.class, DataSourceMarker.class}, version = 1)
 @TypeConverters({
         DateTypeConverter.class,
-        DataSourceTypeConverter.class
+        DataSourceTypeConverter.class,
+        InstantTypeConverter.class
 })
 public abstract class AppDatabase extends RoomDatabase {
     @NonNull

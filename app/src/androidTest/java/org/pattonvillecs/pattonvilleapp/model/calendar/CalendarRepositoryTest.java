@@ -24,15 +24,18 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.common.collect.Multiset;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
 import static org.pattonvillecs.pattonvilleapp.model.calendar.LiveDataTestUtil.getValue;
@@ -59,7 +63,7 @@ public class CalendarRepositoryTest {
      * @return A test event occurring at 10,000ms UTC and ending at 20,000ms UTC
      */
     private static CalendarEvent testEvent() {
-        return testEvent(new Date(10000));
+        return testEvent(Instant.ofEpochMilli(10000));
     }
 
     /**
@@ -67,8 +71,8 @@ public class CalendarRepositoryTest {
      *
      * @return A test event occurring at the given date and ending 10,000ms later
      */
-    private static CalendarEvent testEvent(@NonNull Date startDate) {
-        return new CalendarEvent("test_uid", "summary", "location", startDate, new Date(startDate.getTime() + 10000));
+    private static CalendarEvent testEvent(@NonNull Instant startDate) {
+        return new CalendarEvent("test_uid", "summary", "location", startDate, startDate.plusMillis(10000));
     }
 
     @Before
@@ -243,7 +247,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, new Date(25000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, Instant.ofEpochMilli(25000)));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -256,7 +260,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, new Date(5000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, Instant.ofEpochMilli(5000)));
 
         assertThat(calendarEvents, is(empty()));
     }
@@ -267,7 +271,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsAfterDate(DataSource.DISTRICT, new Date(5000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsAfterDate(DataSource.DISTRICT, Instant.ofEpochMilli(5000)));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -280,7 +284,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsAfterDate(DataSource.DISTRICT, new Date(25000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsAfterDate(DataSource.DISTRICT, Instant.ofEpochMilli(25000)));
 
         assertThat(calendarEvents, is(empty()));
     }
@@ -291,7 +295,7 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, new Date(5000), new Date(25000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(5000), Instant.ofEpochMilli(25000)));
 
         PinnableCalendarEvent expectedCalendarEvent = new PinnableCalendarEvent(calendarEvent, false);
 
@@ -304,8 +308,19 @@ public class CalendarRepositoryTest {
 
         calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
 
-        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, new Date(25000), new Date(45000)));
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(25000), Instant.ofEpochMilli(45000)));
 
         assertThat(calendarEvents, is(empty()));
+    }
+
+    @Test
+    public void Given_CalendarEvent_When_GetCountOnDaysCalled_Then_OneEntry() throws Exception {
+        CalendarEvent calendarEvent = testEvent();
+
+        calendarRepository.insertEvent(calendarEvent, DataSource.DISTRICT);
+
+        Multiset<LocalDate> dates = getValue(calendarRepository.getCountOnDays(DataSource.DISTRICT));
+
+        assertThat(dates, hasSize(1));
     }
 }

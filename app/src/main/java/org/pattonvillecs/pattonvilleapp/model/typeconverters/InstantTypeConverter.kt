@@ -15,29 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.calendar.pinned;
+package org.pattonvillecs.pattonvilleapp.model.typeconverters
 
-import android.util.Log;
+import android.arch.persistence.room.TypeConverter
 
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
-import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarDao;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+import org.threeten.bp.Instant
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * Created by Mitchell Skaggs on 11/14/2017.
  */
 
-@Module
-@Deprecated
-public class CalendarDaoModule {
-    @Provides
-    @Singleton
-    static CalendarDao provideCalendarEventDao(AppDatabase appDatabase) {
-        Log.i("AppModule", "Pinned Event DAO provided!");
-        return appDatabase.calendarDao();
-    }
+object InstantTypeConverter {
+    @TypeConverter
+    @JvmStatic
+    fun timestampToInstant(value: Long): Instant = Instant.ofEpochMilli(value)
+
+    @TypeConverter
+    @JvmStatic
+    fun instantToTimestamp(date: Instant): Long = date.toEpochMilli()
 }

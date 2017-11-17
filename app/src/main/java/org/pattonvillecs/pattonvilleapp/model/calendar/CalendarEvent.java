@@ -22,7 +22,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import java.util.Date;
+import org.threeten.bp.Instant;
 
 /**
  * Created by Mitchell on 10/1/2017.
@@ -43,30 +43,20 @@ public class CalendarEvent {
     @NonNull
     public final String location;
 
-    @ColumnInfo(name = "start_date")
+    @ColumnInfo(name = "start_date", index = true)
     @NonNull
-    private final Date startDate;
+    public final Instant startDate;
 
-    @ColumnInfo(name = "end_date")
+    @ColumnInfo(name = "end_date", index = true)
     @NonNull
-    private final Date endDate;
+    public final Instant endDate;
 
-    public CalendarEvent(@NonNull String uid, @NonNull String summary, @NonNull String location, @NonNull Date startDate, @NonNull Date endDate) {
+    public CalendarEvent(@NonNull String uid, @NonNull String summary, @NonNull String location, @NonNull Instant startDate, @NonNull Instant endDate) {
         this.uid = uid;
         this.summary = summary;
         this.location = location;
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-
-    @NonNull
-    public Date getStartDate() {
-        return (Date) startDate.clone();
-    }
-
-    @NonNull
-    public Date getEndDate() {
-        return (Date) endDate.clone();
     }
 
     @Override

@@ -27,8 +27,8 @@ import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.threeten.bp.Instant;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,17 +53,22 @@ public interface CalendarDao {
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
             + " WHERE end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
-    LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Date lastDate);
+    LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
             + " WHERE start_date >= :firstDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
-    LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Date firstDate);
+    LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
             + " WHERE start_date >= :firstDate AND end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
-    LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Date firstDate, @NonNull Date lastDate);
+    LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
+
+    @Query("SELECT events.start_date"
+            + " FROM events"
+            + " WHERE (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+    LiveData<List<Instant>> getAllInstantsByDataSource(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT datasource"
             + " FROM datasource_markers"
