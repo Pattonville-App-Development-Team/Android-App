@@ -30,17 +30,17 @@ import org.threeten.bp.ZoneId
  */
 
 @Entity(tableName = "events")
-class CalendarEvent(@field:PrimaryKey
-                    @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
-                    val uid: String,
-                    @field:ColumnInfo(name = "summary")
-                    val summary: String,
-                    @field:ColumnInfo(name = "location")
-                    val location: String,
-                    @field:ColumnInfo(name = "start_date", index = true)
-                    val startDate: Instant,
-                    @field:ColumnInfo(name = "end_date", index = true)
-                    val endDate: Instant) {
+data class CalendarEvent(@field:PrimaryKey
+                         @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
+                         val uid: String,
+                         @field:ColumnInfo(name = "summary")
+                         val summary: String,
+                         @field:ColumnInfo(name = "location")
+                         val location: String,
+                         @field:ColumnInfo(name = "start_date", index = true)
+                         val startDate: Instant,
+                         @field:ColumnInfo(name = "end_date", index = true)
+                         val endDate: Instant) {
 
     @delegate:Ignore
     val startDay by lazy {
@@ -50,37 +50,5 @@ class CalendarEvent(@field:PrimaryKey
     @delegate:Ignore
     val endDay by lazy {
         LocalDateTime.ofInstant(endDate, ZoneId.systemDefault()).toLocalDate()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-
-        val that = other as CalendarEvent?
-
-        return (uid == that!!.uid
-                && summary == that.summary
-                && location == that.location
-                && startDate == that.startDate
-                && endDate == that.endDate)
-    }
-
-    override fun hashCode(): Int {
-        var result = uid.hashCode()
-        result = 31 * result + summary.hashCode()
-        result = 31 * result + location.hashCode()
-        result = 31 * result + startDate.hashCode()
-        result = 31 * result + endDate.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "CalendarEvent{" +
-                "uid='" + uid + '\'' +
-                ", summary='" + summary + '\'' +
-                ", location='" + location + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                '}'
     }
 }
