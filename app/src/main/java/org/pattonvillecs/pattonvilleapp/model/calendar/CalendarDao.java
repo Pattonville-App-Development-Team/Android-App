@@ -40,34 +40,42 @@ import java.util.List;
 @Dao
 public interface CalendarDao {
 
+    String DEFAULT_ORDER_BY = " ORDER BY events.start_date ASC";
+    String DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))";
+
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE " + DATASOURCE_MARKER_EXISTS
+            + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsByDataSources(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE uid IN (:uids) AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE uid IN (:uids) AND " + DATASOURCE_MARKER_EXISTS
+            + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE end_date <= :lastDate AND " + DATASOURCE_MARKER_EXISTS
+            + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE start_date >= :firstDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE start_date >= :firstDate AND " + DATASOURCE_MARKER_EXISTS
+            + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
 
     @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
             + " FROM events"
-            + " WHERE start_date >= :firstDate AND end_date <= :lastDate AND (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE (start_date >= :firstDate) AND (end_date <= :lastDate) AND " + DATASOURCE_MARKER_EXISTS
+            + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
 
     @Query("SELECT events.start_date"
             + " FROM events"
-            + " WHERE (EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))")
+            + " WHERE " + DATASOURCE_MARKER_EXISTS)
     LiveData<List<Instant>> getAllInstantsByDataSource(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT datasource"

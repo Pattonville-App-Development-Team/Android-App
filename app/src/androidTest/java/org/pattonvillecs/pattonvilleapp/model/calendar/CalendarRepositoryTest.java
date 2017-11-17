@@ -69,10 +69,32 @@ public class CalendarRepositoryTest {
     /**
      * Gets a test event.
      *
+     * @param startDate the start date
      * @return A test event occurring at the given date and ending 10,000ms later
      */
     private static CalendarEvent testEvent(@NonNull Instant startDate) {
-        return new CalendarEvent("test_uid", "summary", "location", startDate, startDate.plusMillis(10000));
+        return testEvent(startDate, "test_uid");
+    }
+
+    /**
+     * Gets a test event
+     *
+     * @param startDate the start date
+     * @param uid       the uid
+     * @return A test event occurring at the given date and ending 10,000ms later, with the given UID
+     */
+    private static CalendarEvent testEvent(@NonNull Instant startDate, @NonNull String uid) {
+        return new CalendarEvent(uid, "summary", "location", startDate, startDate.plusMillis(10000));
+    }
+
+    /**
+     * Gets a test event
+     *
+     * @param uid the uid
+     * @return A test event with the given UID
+     */
+    private static CalendarEvent testEvent(@NonNull String uid) {
+        return testEvent(Instant.ofEpochMilli(10000), uid);
     }
 
     @Before
@@ -311,6 +333,23 @@ public class CalendarRepositoryTest {
         List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(25000), Instant.ofEpochMilli(45000)));
 
         assertThat(calendarEvents, is(empty()));
+    }
+
+    @Test
+    public void Given_TwoUnpinnedCalendarEvents_When_GetEventsBetweenDatesCalled_And_EventsAreBetweenDates_Then_ReturnBothSorted() throws Exception {
+        CalendarEvent calendarEventFirst = testEvent("test_uid_1");
+        CalendarEvent calendarEventSecond = testEvent(Instant.ofEpochMilli(30000), "test_uid_2");
+
+        calendarRepository.insertEvent(calendarEventSecond, DataSource.DISTRICT);
+        calendarRepository.insertEvent(calendarEventFirst, DataSource.DISTRICT);
+
+        List<PinnableCalendarEvent> calendarEvents = getValue(calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(10000), Instant.ofEpochMilli(40000)));
+
+        PinnableCalendarEvent pinnableCalendarEventFirst = new PinnableCalendarEvent(calendarEventFirst, false);
+        PinnableCalendarEvent pinnableCalendarEventSecond = new PinnableCalendarEvent(calendarEventSecond, false);
+
+        assertThat(calendarEvents, hasSize(2));
+        assertThat(calendarEvents, contains(pinnableCalendarEventFirst, pinnableCalendarEventSecond));
     }
 
     @Test
