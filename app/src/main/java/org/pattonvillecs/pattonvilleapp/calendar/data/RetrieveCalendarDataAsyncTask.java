@@ -39,7 +39,6 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -80,7 +79,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
         this.skipCacheLoad = skipCacheLoad;
     }
 
-    private static String fixICalStrings(@NonNull String iCalString) {
+    public static String fixICalStrings(@NonNull String iCalString) {
         return iCalString
                 .replaceAll("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC" + LINEBREAK_MATCHER + "BEGIN:VEVENT", "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC" + LINEBREAK_MATCHER + "END:VEVENT" + LINEBREAK_MATCHER + "BEGIN:VEVENT")
                 .replace("FREQ=;", "FREQ=YEARLY;")
@@ -99,7 +98,6 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
 
         stopWatch.start();
         try {
-            CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
             calendar = calendarBuilder.build(stringReader);
         } catch (IOException | ParserException e) {
             FirebaseCrash.report(e);
