@@ -21,6 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import net.fortuna.ical4j.model.component.VEvent
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -42,6 +43,12 @@ data class CalendarEvent(@field:PrimaryKey
                          val startDate: Instant,
                          @field:ColumnInfo(name = "end_date", index = true)
                          val endDate: Instant) {
+    constructor(vEvent: VEvent) : this(
+            vEvent.uid.value,
+            vEvent.summary.value,
+            vEvent.location.value,
+            Instant.ofEpochMilli(vEvent.startDate.date.time),
+            Instant.ofEpochMilli(vEvent.endDate.date.time))
 
     @delegate:Ignore
     val startDay: LocalDate by lazy { LocalDateTime.ofInstant(startDate, ZoneId.systemDefault()).toLocalDate() }

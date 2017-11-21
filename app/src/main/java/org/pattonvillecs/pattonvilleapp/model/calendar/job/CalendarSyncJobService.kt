@@ -25,15 +25,15 @@ import com.google.common.base.Function
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.*
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.firebase.crash.FirebaseCrash
 import dagger.android.AndroidInjection
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker
+import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.Companion.dataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.SourcedCalendar
-import org.threeten.bp.Instant
 import javax.inject.Inject
 
 /**
@@ -75,9 +75,8 @@ class CalendarSyncJobService : JobService() {
             Log.i(TAG, "Successful download!")
             result?.forEach {
                 it?.let { sourcedCalendar ->
-                    val vEvents = sourcedCalendar.calendar.components.filter { it is VEvent }.map { it as VEvent }
-                    val events = vEvents.map { CalendarEvent(it.uid.value, it.summary.value, it.location.value, Instant.ofEpochMilli(it.startDate.date.time), Instant.ofEpochMilli(it.endDate.date.time)) }
-                    val dataSourceMarkers = vEvents.map { DataSourceMarker(it.uid.value, sourcedCalendar.dataSource) }
+                    val events = sourcedCalendar.calendar.components.filter { it is VEvent }.map { it as VEvent }.map { CalendarEvent(it) }
+                    val dataSourceMarkers = events.map { dataSource(it, sourcedCalendar.dataSource) }
 
                     calendarRepository.insertEventsAndDataSourceMarkers(events, dataSourceMarkers)
                     Log.i(TAG, "Inserted ${events.size} items into ${sourcedCalendar.dataSource}")
@@ -87,7 +86,8 @@ class CalendarSyncJobService : JobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            Log.i(TAG, "Download failed!", t)
+            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
+            FirebaseCrash.report(t)
             calendarSyncJobService.jobFinished(job, true)
         }
     }

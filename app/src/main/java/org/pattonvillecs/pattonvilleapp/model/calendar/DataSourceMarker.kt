@@ -19,7 +19,6 @@ package org.pattonvillecs.pattonvilleapp.model.calendar
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
-
 import org.pattonvillecs.pattonvilleapp.DataSource
 
 /**
