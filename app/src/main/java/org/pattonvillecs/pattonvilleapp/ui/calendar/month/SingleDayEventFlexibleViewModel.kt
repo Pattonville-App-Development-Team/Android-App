@@ -52,4 +52,6 @@ class SingleDayEventFlexibleViewModel : FlexibleViewModel<List<PinnableCalendarE
         if (identifier.value?.dataSources != dataSources)
             identifier.value = identifier.value?.copy(dataSources = dataSources)
     }
+
+    fun getDate(): LocalDate = identifier.value!!.localDate
 }

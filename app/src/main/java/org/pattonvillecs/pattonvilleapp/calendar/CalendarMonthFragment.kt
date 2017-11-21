@@ -128,6 +128,7 @@ class CalendarMonthFragment : Fragment() {
                         .withDrawDividerOnLastItem(true))
         event_recycler_view.adapter = eventAdapter
 
+        calendarView.selectedDate = adapterViewModel.getDate().toCalendarDay()
         calendarView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             Log.d(TAG, "MCV New layout: $left $top $right $bottom; Old layout: $oldLeft $oldTop $oldRight $oldBottom")
             Log.d(TAG, "MCV tile height: ${calendarView.tileHeight}")
@@ -258,3 +259,6 @@ private fun CalendarDay.toLocalDate(): LocalDate {
         LocalDate.of(year, month, day)
     }
 }
+
+private fun LocalDate.toCalendarDay(): CalendarDay =
+        CalendarDay.from(this.year, this.monthValue - 1, this.dayOfMonth)
