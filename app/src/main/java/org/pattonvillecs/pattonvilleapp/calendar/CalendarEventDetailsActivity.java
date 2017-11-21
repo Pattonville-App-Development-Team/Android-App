@@ -46,6 +46,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder;
+
 public class CalendarEventDetailsActivity extends AppCompatActivity {
 
     public static final String CALENDAR_EVENT_KEY = "calendar_event";
@@ -161,7 +163,7 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
             extraInfoTextView.setText(event.vEvent.getSummary().getValue());
 
         TextView dataSourcesTextView = findViewById(R.id.datasources);
-        dataSourcesTextView.setText(event.getDataSourcesSpannableStringBuilder(getApplicationContext().getAssets()));
+        dataSourcesTextView.setText(getDataSourcesSpannableStringBuilder(event.dataSources, getApplicationContext()));
     }
 
     private void startMapsActivityForPattonvilleLocation(String location) {

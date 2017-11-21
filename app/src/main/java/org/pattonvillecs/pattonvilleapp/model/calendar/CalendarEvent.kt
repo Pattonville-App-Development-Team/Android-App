@@ -21,6 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import com.google.errorprone.annotations.Immutable
 import net.fortuna.ical4j.model.component.VEvent
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
@@ -31,6 +32,7 @@ import org.threeten.bp.ZoneId
  * Created by Mitchell on 10/1/2017.
  */
 
+@Immutable
 @Entity(tableName = "events")
 data class CalendarEvent(@field:PrimaryKey
                          @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)

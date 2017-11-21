@@ -19,12 +19,42 @@ package org.pattonvillecs.pattonvilleapp.model.calendar
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Relation
+import com.google.errorprone.annotations.Immutable
+import org.pattonvillecs.pattonvilleapp.DataSource
 
 /**
  * Created by Mitchell on 10/5/2017.
  */
 
-data class PinnableCalendarEvent(@field:Embedded
+@Immutable
+class PinnableCalendarEvent(@field:Embedded
                                  val calendarEvent: CalendarEvent,
                                  @field:ColumnInfo(name = "pinned")
-                                 val pinned: Boolean)
+                            val pinned: Boolean) {
+
+    @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
+    lateinit var dataSourceMarkers: Set<DataSourceMarker>
+
+    @delegate:Ignore
+    val dataSources: Set<DataSource> by lazy { dataSourceMarkers.mapTo(mutableSetOf(), { it.dataSource }) }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PinnableCalendarEvent
+
+        if (calendarEvent != other.calendarEvent) return false
+        if (dataSourceMarkers != other.dataSourceMarkers) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = calendarEvent.hashCode()
+        result = 31 * result + dataSourceMarkers.hashCode()
+        return result
+    }
+}

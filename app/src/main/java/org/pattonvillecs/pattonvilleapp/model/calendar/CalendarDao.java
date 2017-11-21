@@ -23,6 +23,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
@@ -40,37 +41,45 @@ import java.util.List;
 @Dao
 public interface CalendarDao {
 
-    String DEFAULT_ORDER_BY = " ORDER BY events.start_date ASC";
+    //TODO make sensible @Transaction methods to keep database consistent when updating events
+
+    String SELECT_PINNABLE_EVENTS = "events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned";
+    String DEFAULT_ORDER_BY = "events.start_date ASC";
     String DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))";
 
-    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE " + DATASOURCE_MARKER_EXISTS
-            + DEFAULT_ORDER_BY)
+            + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsByDataSources(@NonNull List<DataSource> dataSources);
 
-    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE uid IN (:uids) AND " + DATASOURCE_MARKER_EXISTS
-            + DEFAULT_ORDER_BY)
+            + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids);
 
-    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE end_date <= :lastDate AND " + DATASOURCE_MARKER_EXISTS
-            + DEFAULT_ORDER_BY)
+            + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);
 
-    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE start_date >= :firstDate AND " + DATASOURCE_MARKER_EXISTS
-            + DEFAULT_ORDER_BY)
+            + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
 
-    @Query("SELECT events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned"
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE (start_date >= :firstDate) AND (end_date <= :lastDate) AND " + DATASOURCE_MARKER_EXISTS
-            + DEFAULT_ORDER_BY)
+            + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
 
     @Query("SELECT events.start_date"

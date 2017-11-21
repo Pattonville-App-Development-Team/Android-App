@@ -17,6 +17,8 @@
 
 package org.pattonvillecs.pattonvilleapp.preferences;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -38,12 +40,12 @@ import java.util.Set;
  */
 public final class PreferenceUtils {
     public static final String APP_INTRO_FIRST_START_PREFERENCE_KEY = "first_start";
-    static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
-    private static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
-    private static final String NUTRISLICE_INTENT_PREFERENCE_KEY = "nutrislice_intent";
-    private static final String HOME_NEWS_AMOUNT_KEY = "home_news_amount";
-    private static final String HOME_EVENTS_AMOUNT_KEY = "home_events_amount";
-    private static final String HOME_PINNED_AMOUNT_KEY = "home_pinned_amount";
+    public static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
+    public static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
+    public static final String NUTRISLICE_INTENT_PREFERENCE_KEY = "nutrislice_intent";
+    public static final String HOME_NEWS_AMOUNT_KEY = "home_news_amount";
+    public static final String HOME_EVENTS_AMOUNT_KEY = "home_events_amount";
+    public static final String HOME_PINNED_AMOUNT_KEY = "home_pinned_amount";
 
     /**
      * Private constructor to prevent the creation of objects of this class
@@ -84,8 +86,8 @@ public final class PreferenceUtils {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
-    public static Set<DataSource> getSelectedSchoolsSet(SharedPreferences sharedPreferences) {
-        return Stream.of(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()))
+    public static Set<DataSource> convertStringsToDataSources(Set<String> strings) {
+        return Stream.of(strings)
                 .map(s -> {
                     switch (s) {
                         case "High School":
@@ -112,6 +114,20 @@ public final class PreferenceUtils {
                             throw new Error("Invalid school selection value! Was: " + s);
                     }
                 }).collect(() -> EnumSet.of(DataSource.DISTRICT), Collection::add);
+    }
+
+    public static Set<DataSource> getSelectedSchoolsSet(SharedPreferences sharedPreferences) {
+        return convertStringsToDataSources(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()));
+    }
+
+    public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(SharedPreferences sharedPreferences) {
+        return Transformations.map(
+                SharedPreferenceLiveDataKt.stringSetLiveData(sharedPreferences, SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()),
+                PreferenceUtils::convertStringsToDataSources);
+    }
+
+    public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(Context context) {
+        return getSelectedSchoolsLiveData(getSharedPreferences(context));
     }
 
     public static boolean getCarouselVisible(Context context) {

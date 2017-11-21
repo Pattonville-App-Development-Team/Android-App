@@ -32,19 +32,24 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import dagger.android.support.AndroidSupportInjection
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_month.*
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.SpotlightHelper
 import org.pattonvillecs.pattonvilleapp.SpotlightUtils
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment.Companion.TAG
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.ui.calendar.CalendarMonthFragmentViewModel
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarEventFlexibleAdapter
+import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarMonthFragmentViewModel
+import org.pattonvillecs.pattonvilleapp.ui.calendar.month.PinnableCalendarEventItem
+import org.pattonvillecs.pattonvilleapp.ui.calendar.month.SingleDayEventFlexibleViewModel
 import org.threeten.bp.DateTimeException
 import org.threeten.bp.LocalDate
 import org.threeten.bp.Month
 import org.threeten.bp.chrono.IsoChronology
-import java.util.*
 import javax.inject.Inject
 
 
@@ -58,9 +63,12 @@ class CalendarMonthFragment : Fragment() {
     @Inject
     lateinit var calendarRepository: CalendarRepository
 
-    private val calendarData = TreeSet<EventFlexibleItem>()
     private var nestedScrollView: NestedScrollView? = null
+
     private lateinit var viewModel: CalendarMonthFragmentViewModel
+    private lateinit var adapterViewModel: SingleDayEventFlexibleViewModel
+
+    private lateinit var eventAdapter: FlexibleAdapter<PinnableCalendarEventItem>
 
     //Minimum radius of 5
     private val dotRadius: Float
@@ -83,7 +91,10 @@ class CalendarMonthFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = ViewModelProviders.of(this).get(CalendarMonthFragmentViewModel::class.java)
+        adapterViewModel = ViewModelProviders.of(this).get(SingleDayEventFlexibleViewModel::class.java)
+
         viewModel.calendarRepository = calendarRepository
+        adapterViewModel.calendarRepository = calendarRepository
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -102,43 +113,20 @@ class CalendarMonthFragment : Fragment() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun containsEventsOnDate(calendarDay: CalendarDay, toFind: Int, useGreaterThan: Boolean): Boolean {
-        var numPresent = 0
-        calendarData
-                .asSequence()
-                .filterNot { calendarDay.isAfter(it.calendarDay) }
-                .forEach {
-                    if (calendarDay == it.calendarDay) {
-                        numPresent += it.dataSources.size
-                        if (numPresent > toFind)
-                            return useGreaterThan
-                    } else if (calendarDay.isBefore(it.calendarDay)) {
-                    }
-                }
-        return if (useGreaterThan)
-            numPresent > toFind
-        else
-            numPresent == toFind
-    }
-
-    private fun setUpMaterialCalendarView() {
-        Log.d(TAG, "Starting MCV setup")
-
-        calendarView!!.setOnMonthChangedListener { _, _ ->
-            if (nestedScrollView != null) {
-                nestedScrollView!!.post { nestedScrollView!!.fullScroll(View.FOCUS_UP) }
-            }
-        }
-        Log.d(TAG, "Finished MCV setup")
-    }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.fragment_calendar_month, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showSpotlight()
+
+        eventAdapter = CalendarEventFlexibleAdapter(stableIds = true, calendarRepository = calendarRepository)
+        event_recycler_view.layoutManager = SmoothScrollLinearLayoutManager(context!!)
+        event_recycler_view.addItemDecoration(
+                FlexibleItemDecoration(context!!)
+                        .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
+                        .withDrawDividerOnLastItem(true))
+        event_recycler_view.adapter = eventAdapter
 
         calendarView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             Log.d(TAG, "MCV New layout: $left $top $right $bottom; Old layout: $oldLeft $oldTop $oldRight $oldBottom")
@@ -165,14 +153,29 @@ class CalendarMonthFragment : Fragment() {
                         view.addSpan(triple.third)
                     }
                 })
-        viewModel.eventMultiset.observe(this::getLifecycle) { dates ->
+        calendarView.setOnDateChangedListener { _, date, _ ->
+            adapterViewModel.setDate(date.toLocalDate())
+        }
+
+        PreferenceUtils.getSelectedSchoolsLiveData(context!!).observe(this::getLifecycle) {
+            if (it != null)
+                adapterViewModel.setDataSources(it.toList())
+        }
+
+        viewModel.getDateMultiset(PreferenceUtils.getSharedPreferences(context!!)).observe(this::getLifecycle) { dates ->
             if (dates != null) {
                 calendarView.removeDecorators()
-                calendarView.addDecorators(DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.SINGLE))
-                calendarView.addDecorators(DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.DOUBLE))
-                calendarView.addDecorators(DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.TRIPLE))
-                calendarView.addDecorators(DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.TRIPLE_PLUS))
+                calendarView.addDecorators(
+                        DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.SINGLE),
+                        DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.DOUBLE),
+                        DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.TRIPLE),
+                        DotDayDecorator(dates, dotRadius, dotColor, EnhancedDotSpan.DotType.TRIPLE_PLUS))
             }
+        }
+
+        adapterViewModel.liveItems.observe(this::getLifecycle) {
+            if (it != null)
+                eventAdapter.updateDataSet(it, true)
         }
     }
 

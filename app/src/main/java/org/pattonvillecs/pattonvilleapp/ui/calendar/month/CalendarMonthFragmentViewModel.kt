@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.ui.calendar
+package org.pattonvillecs.pattonvilleapp.ui.calendar.month
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Transformations
+import android.content.SharedPreferences
 import com.google.common.collect.Multiset
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
@@ -31,6 +33,9 @@ import org.threeten.bp.LocalDate
 class CalendarMonthFragmentViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var calendarRepository: CalendarRepository
 
-    val eventMultiset: LiveData<Multiset<LocalDate>>
-        get() = calendarRepository.getCountOnDays(PreferenceUtils.getSelectedSchoolsSet(this.getApplication<Application>()).toList())
+    fun getDateMultiset(sharedPreferences: SharedPreferences): LiveData<Multiset<LocalDate>> {
+        return Transformations.switchMap(
+                PreferenceUtils.getSelectedSchoolsLiveData(sharedPreferences),
+                { calendarRepository.getCountOnDays(it.toList()) })
+    }
 }

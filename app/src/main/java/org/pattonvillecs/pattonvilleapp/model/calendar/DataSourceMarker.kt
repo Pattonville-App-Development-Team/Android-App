@@ -19,12 +19,14 @@ package org.pattonvillecs.pattonvilleapp.model.calendar
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
 
 /**
  * Created by Mitchell on 10/9/2017.
  */
 
+@Immutable
 @Entity(tableName = "datasource_markers", primaryKeys = arrayOf("uid", "datasource"))
 data class DataSourceMarker(@field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
                             val uid: String,
