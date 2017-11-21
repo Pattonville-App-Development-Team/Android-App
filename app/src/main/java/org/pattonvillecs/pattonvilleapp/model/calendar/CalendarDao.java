@@ -89,6 +89,9 @@ public interface CalendarDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
+
     @Delete
     void deleteAll(@NonNull CalendarEvent... calendarEvent);
 

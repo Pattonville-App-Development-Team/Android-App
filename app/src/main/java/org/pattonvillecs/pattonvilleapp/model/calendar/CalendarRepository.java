@@ -26,6 +26,7 @@ import com.annimon.stream.Stream;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
+import org.jetbrains.annotations.NotNull;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
 import org.threeten.bp.Instant;
@@ -168,5 +169,9 @@ public class CalendarRepository {
 
     public void unpinEvent(@NonNull CalendarEvent calendarEvent) {
         calendarDao.deletePin(pin(calendarEvent));
+    }
+
+    public void insertEventsAndDataSourceMarkers(@NotNull List<CalendarEvent> calendarEvents, @NotNull List<DataSourceMarker> dataSourceMarkers) {
+        calendarDao.insertAll(calendarEvents, dataSourceMarkers);
     }
 }

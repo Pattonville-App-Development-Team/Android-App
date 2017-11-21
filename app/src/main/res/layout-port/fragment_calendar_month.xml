@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:fadeScrollbars="false"
+    android:fillViewport="true"
     android:overScrollMode="always"
     android:scrollbars="vertical"
     tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment">
@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <org.pattonvillecs.pattonvilleapp.calendar.fix.FixedMaterialCalendarView
-            android:id="@+id/calendar_calendar"
+            android:id="@+id/calendarView"
             style="PSD.MaterialCalendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,8 +29,8 @@
             android:layout_margin="2dp"
             android:background="?android:attr/dividerHorizontal" />
 
-        <include
-            layout="@layout/calendar_event_recyclerview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/event_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

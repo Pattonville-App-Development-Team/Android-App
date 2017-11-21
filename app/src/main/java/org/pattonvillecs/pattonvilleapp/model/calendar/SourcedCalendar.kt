@@ -15,30 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.database;
+package org.pattonvillecs.pattonvilleapp.model.calendar
 
-import android.app.Application;
-import android.arch.persistence.room.Room;
-
-import org.pattonvillecs.pattonvilleapp.di.AppModule;
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+import net.fortuna.ical4j.model.Calendar
+import org.pattonvillecs.pattonvilleapp.DataSource
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * Created by Mitchell Skaggs on 11/20/2017.
  */
-
-@Module(includes = AppModule.class)
-public class AppDatabaseModule {
-    @Provides
-    @Singleton
-    static AppDatabase provideAppDatabase(Application application) {
-        return init(Room.databaseBuilder(application, AppDatabase.class, "app_database")).build();
-    }
-}
+data class SourcedCalendar(val dataSource: DataSource, val calendar: Calendar)

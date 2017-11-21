@@ -187,7 +187,7 @@ public class RetrieveCalendarDataAsyncTask extends AsyncTask<DataSource, Double,
             //Add a request
             RequestFuture<String> requestFuture = RequestFuture.newFuture();
             StringRequest request = new StringRequest(
-                    dataSource.calendarURL.orElseThrow(() -> new IllegalStateException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?")),
+                    dataSource.calendarURL.map(s -> "http://drummond.psdr3.org/ical/" + s).orElseThrow(() -> new IllegalStateException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?")),
                     requestFuture,
                     requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(3000, 10, 1.3f));

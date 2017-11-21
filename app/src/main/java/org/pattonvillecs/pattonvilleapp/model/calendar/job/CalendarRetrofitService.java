@@ -15,30 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.database;
+package org.pattonvillecs.pattonvilleapp.model.calendar.job;
 
-import android.app.Application;
-import android.arch.persistence.room.Room;
+import com.google.common.util.concurrent.ListenableFuture;
 
-import org.pattonvillecs.pattonvilleapp.di.AppModule;
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import net.fortuna.ical4j.model.Calendar;
 
-import javax.inject.Singleton;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
-import dagger.Module;
-import dagger.Provides;
-
-import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * Created by Mitchell Skaggs on 11/20/2017.
  */
 
-@Module(includes = AppModule.class)
-public class AppDatabaseModule {
-    @Provides
-    @Singleton
-    static AppDatabase provideAppDatabase(Application application) {
-        return init(Room.databaseBuilder(application, AppDatabase.class, "app_database")).build();
-    }
+public interface CalendarRetrofitService {
+    @GET("ical/{datasource}")
+    ListenableFuture<Calendar> getCalendar(@Path(value = "datasource", encoded = true) DataSource dataSource);
 }

@@ -17,7 +17,9 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
+import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment;
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
+import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerChildFragment;
 
 import dagger.Module;
@@ -29,7 +31,11 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentBuilderModule {
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = AppDatabaseModule.class)
     @PerChildFragment
     abstract CalendarPinnedFragment contributeCalendarPinnedFragment();
+
+    @ContributesAndroidInjector(modules = AppDatabaseModule.class)
+    @PerChildFragment
+    abstract CalendarMonthFragment contributeCalendarMonthFragment();
 }

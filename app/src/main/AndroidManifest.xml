@@ -99,7 +99,7 @@
 
         <activity
             android:name=".about.detail.AboutDetailActivity"
-            android:parentActivityName=".about.AboutActivity"/>
+            android:parentActivityName=".about.AboutActivity" />
 
         <activity
             android:name=".about.secret.SecretActivity"
@@ -112,6 +112,14 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notification_icon" />
+
+        <service
+            android:name=".model.calendar.job.CalendarSyncJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
 
     </application>
 

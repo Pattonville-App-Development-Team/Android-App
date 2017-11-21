@@ -23,10 +23,9 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.text.style.LineBackgroundSpan;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
+import kotlin.Pair;
+import kotlin.Triple;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Created by Mitchell Skaggs on 12/29/16.
@@ -56,16 +55,21 @@ public class EnhancedDotSpan implements LineBackgroundSpan {
         return new EnhancedDotSpan(radius, 0, color1);
     }
 
-    public static Pair<EnhancedDotSpan, EnhancedDotSpan> createPair(float radius, int color1, int color2) {
-        return new ImmutablePair<>(new EnhancedDotSpan(radius, -radius * 1.1f, color1), new EnhancedDotSpan(radius, radius * 1.1f, color2));
+    public static Pair<EnhancedDotSpan, EnhancedDotSpan> createDouble(float radius, int color1, int color2) {
+        return new Pair<>(new EnhancedDotSpan(radius, -radius * 1.1f, color1),
+                new EnhancedDotSpan(radius, radius * 1.1f, color2));
     }
 
     public static Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> createTriple(float radius, int color1, int color2, int color3) {
-        return new ImmutableTriple<>(new EnhancedDotSpan(radius, -2 * radius * 1.1f, color1), new EnhancedDotSpan(radius, 0, color2), new EnhancedDotSpan(radius, 2 * radius * 1.1f, color3));
+        return new Triple<>(new EnhancedDotSpan(radius, -2 * radius * 1.1f, color1),
+                new EnhancedDotSpan(radius, 0, color2),
+                new EnhancedDotSpan(radius, 2 * radius * 1.1f, color3));
     }
 
     public static Triple<EnhancedDotSpan, EnhancedDotSpan, EnhancedDotSpan> createTripleWithPlus(float radius, int color1, int color2, int color3) {
-        return new ImmutableTriple<>(new EnhancedDotSpan(radius, -2 * radius * 1.1f, color1), new EnhancedDotSpan(radius, 0, color2), new EnhancedDotSpan(radius, 2 * radius * 1.1f, color3, true));
+        return new Triple<>(new EnhancedDotSpan(radius, -2 * radius * 1.1f, color1),
+                new EnhancedDotSpan(radius, 0, color2),
+                new EnhancedDotSpan(radius, 2 * radius * 1.1f, color3, true));
     }
 
     @Override
@@ -94,5 +98,19 @@ public class EnhancedDotSpan implements LineBackgroundSpan {
         }
 
         paint.setColor(oldColor);
+    }
+
+    public enum DotType {
+        SINGLE(integer -> integer == 1),
+        DOUBLE(integer -> integer == 2),
+        TRIPLE(integer -> integer == 3),
+        TRIPLE_PLUS(integer -> integer > 3);
+
+        @SuppressWarnings("ImmutableEnumChecker")
+        public final Function1<Integer, Boolean> defaultTestFunction;
+
+        DotType(Function1<Integer, Boolean> defaultTestFunction) {
+            this.defaultTestFunction = defaultTestFunction;
+        }
     }
 }

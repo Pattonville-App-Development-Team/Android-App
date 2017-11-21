@@ -20,11 +20,9 @@ package org.pattonvillecs.pattonvilleapp.calendar.fix;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
-import android.support.v4.view.BetterViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -33,11 +31,10 @@ import android.view.View;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.R;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Calendar;
 
 
 /**
@@ -70,10 +67,8 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             adapterField.setAccessible(true);
             calendarModeField.setAccessible(true);
             pagerField.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new NoSuchMethodError(e.getLocalizedMessage());
-        } catch (NoSuchFieldException e) {
-            throw new NoSuchFieldError(e.getLocalizedMessage());
+        } catch (NoSuchMethodException | NoSuchFieldException e) {
+            throw new Error(e);
         }
     }
 
@@ -82,19 +77,19 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
         Log.d(TAG, "Constructor called");
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MaterialCalendarView, 0, 0);
         try {
-            final int tileSize = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileSize, INVALID_TILE_DIMENSION);
+            final int tileSize = a.getLayoutDimension(R.styleable.MaterialCalendarView_mcv_tileSize, INVALID_TILE_DIMENSION);
             if (tileSize > INVALID_TILE_DIMENSION) {
                 setTileSize(tileSize);
             }
 
-            final int tileWidth = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileWidth, INVALID_TILE_DIMENSION);
+            final int tileWidth = a.getLayoutDimension(R.styleable.MaterialCalendarView_mcv_tileWidth, INVALID_TILE_DIMENSION);
             if (tileWidth > INVALID_TILE_DIMENSION) {
                 setTileWidth(tileWidth);
             }
 
-            final int tileHeight = a.getLayoutDimension(com.prolificinteractive.materialcalendarview.R.styleable.MaterialCalendarView_mcv_tileHeight, INVALID_TILE_DIMENSION);
+            final int tileHeight = a.getLayoutDimension(R.styleable.MaterialCalendarView_mcv_tileHeight, INVALID_TILE_DIMENSION);
             if (tileHeight > INVALID_TILE_DIMENSION) {
                 setTileHeight(tileHeight);
             }
@@ -105,15 +100,11 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             a.recycle();
         }
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                requestLayout();
-            }
-        });
+        post(this::requestLayout);
 
         Log.d(TAG, "Tile height: " + getTileHeight());
         Log.d(TAG, "Tile width: " + getTileWidth());
+        //noinspection deprecation
         Log.d(TAG, "Tile size: " + getTileSize());
     }
 
@@ -209,67 +200,19 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
     /**
      * This method undoes the undoing of the requested tile height and width. The values should come from the XML attributes of the layout, but instead they are overwritten by the saved state.
      *
-     * @param state
+     * @param state The frozen state that had previously been returned by {@link #onSaveInstanceState}.
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         Log.d(TAG, "Restoring instance state");
 
-        SavedState savedState = (SavedState) state;
-
         int tileWidth = getTileWidth();
         int tileHeight = getTileHeight();
 
-        super.onRestoreInstanceState(savedState);
+        super.onRestoreInstanceState(state);
 
         setTileWidth(tileWidth);
         setTileHeight(tileHeight);
-    }
-
-    /**
-     * This is abhorrent...
-     *
-     * @return
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     */
-    @Deprecated
-    private int getWeekCountBasedOnMode() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        Field calendarModeField = MaterialCalendarView.class.getDeclaredField("calendarMode");
-        calendarModeField.setAccessible(true);
-        CalendarMode calendarMode = (CalendarMode) calendarModeField.get(this);
-
-        Field mDynamicHeightEnabledField = MaterialCalendarView.class.getDeclaredField("mDynamicHeightEnabled");
-        mDynamicHeightEnabledField.setAccessible(true);
-        boolean mDynamicHeightEnabled = (boolean) mDynamicHeightEnabledField.get(this);
-
-        Field adapterField = MaterialCalendarView.class.getDeclaredField("adapter");
-        adapterField.setAccessible(true);
-        Object adapter = adapterField.get(this);
-
-        Field pagerField = MaterialCalendarView.class.getDeclaredField("pager");
-        pagerField.setAccessible(true);
-        BetterViewPager pager = (BetterViewPager) pagerField.get(this);
-
-        Field weekCountField = CalendarMode.class.getDeclaredField("visibleWeeksCount");
-        weekCountField.setAccessible(true);
-        int weekCount = (int) weekCountField.get(calendarMode);
-
-        boolean isInMonthsMode = calendarMode.equals(CalendarMode.MONTHS);
-        if (isInMonthsMode && mDynamicHeightEnabled && adapter != null && pager != null) {
-            Method getItemMethod = adapter.getClass().getDeclaredMethod("getItem", CalendarDay.class);
-            Object currentItem = getItemMethod.invoke(adapter, pager.getClass().getMethod("getCurrentItem").invoke(pager));
-            Calendar cal = (Calendar) currentItem.getClass().getMethod("getCalendar").invoke(currentItem);
-            cal = (Calendar) cal.clone();
-            //(Calendar) adapter.getItem(pager.getCurrentItem()).getCalendar().clone();
-            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-            //noinspection ResourceType
-            cal.setFirstDayOfWeek(getFirstDayOfWeek());
-            weekCount = cal.get(Calendar.WEEK_OF_MONTH);
-        }
-        return weekCount + DAY_NAMES_ROW;
     }
 
     @Override
@@ -281,7 +224,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             throw new Error(e);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !isInLayout())
+        if (!isInLayout())
             requestLayout();
     }
 
@@ -294,7 +237,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
             throw new Error(e);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !isInLayout())
+        if (!isInLayout())
             requestLayout();
     }
 
@@ -314,7 +257,7 @@ public class FixedMaterialCalendarView extends MaterialCalendarView {
 
         final int weekCount;
         try {
-            weekCount = (int) getWeekCountBasedOnModeMethod.invoke(this);//getWeekCountBasedOnMode();
+            weekCount = (int) getWeekCountBasedOnModeMethod.invoke(this);
         } catch (Exception e) {
             throw new Error(e);
         }

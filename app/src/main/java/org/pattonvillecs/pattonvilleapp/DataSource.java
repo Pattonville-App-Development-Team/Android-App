@@ -44,7 +44,7 @@ public enum DataSource {
             "(314) 213-8500",
             empty(),
             empty(),
-            of("http://drummond.psdr3.org/ical/Learning%20Center.ics"),
+            of("Learning%20Center.ics"),
             of("http://fccms.psdr3.org/District/news/?plugin=xml&leaves"),
             "PSD",
             parseColor("#007a33"),
@@ -59,7 +59,7 @@ public enum DataSource {
             "(314) 213-8500",
             of("(314) 213-8351"),
             of("(314) 213-8696"),
-            of("http://drummond.psdr3.org/ical/High%20School.ics"),
+            of("High%20School.ics"),
             of("http://fccms.psdr3.org/HighSchool/news/?plugin=xml&leaves"),
             "HS",
             parseColor("#02d4c4"),
@@ -74,7 +74,7 @@ public enum DataSource {
             "(314) 213-8500",
             of("(314) 213-8333"),
             of("(314) 213-8633"),
-            of("http://drummond.psdr3.org/ical/Heights.ics"),
+            of("Heights.ics"),
             of("http://fccms.psdr3.org/Heights/news/?plugin=xml&leaves"),
             "HT",
             parseColor("#ddd739"),
@@ -89,7 +89,7 @@ public enum DataSource {
             "(314) 213-8032",
             of("(314) 213-8332"),
             of("(314) 213-8632"),
-            of("http://drummond.psdr3.org/ical/Holman.ics"),
+            of("Holman.ics"),
             of("http://fccms.psdr3.org/Holman/news/?plugin=xml&leaves"),
             "HO",
             parseColor("#ff8d00"),
@@ -104,7 +104,7 @@ public enum DataSource {
             "(314) 213-8016",
             of("(314) 213-8116"),
             of("(314) 213-8616"),
-            of("http://drummond.psdr3.org/ical/Remington.ics"),
+            of("Remington.ics"),
             of("http://fccms.psdr3.org/Remington/news/?plugin=xml&leaves"),
             "RT",
             parseColor("#e50b00"),
@@ -119,7 +119,7 @@ public enum DataSource {
             "(314) 213-8012",
             of("(314) 213-8112"),
             of("(314) 213-8612"),
-            of("http://drummond.psdr3.org/ical/Bridgeway.ics"),
+            of("Bridgeway.ics"),
             of("http://fccms.psdr3.org/Bridgeway/news/?plugin=xml&leaves"),
             "BW",
             parseColor("#724338"),
@@ -134,7 +134,7 @@ public enum DataSource {
             "(314) 213-8419",
             of("(314) 213-8519"),
             of("(314) 213-8619"),
-            of("http://drummond.psdr3.org/ical/Drummond.ics"),
+            of("Drummond.ics"),
             of("http://fccms.psdr3.org/Drummond/news/?plugin=xml&leaves"),
             "DR",
             parseColor("#73c300"),
@@ -149,7 +149,7 @@ public enum DataSource {
             "(314) 213-8017",
             of("(314) 213-8117"),
             of("(314) 213-8617"),
-            of("http://drummond.psdr3.org/ical/Rose%20Acres.ics"),
+            of("Rose%20Acres.ics"),
             of("http://fccms.psdr3.org/RoseAcres/news/?plugin=xml&leaves"),
             "RA",
             parseColor("#f6258e"),
@@ -164,7 +164,7 @@ public enum DataSource {
             "(314) 213-8015",
             of("(314) 213-8115"),
             of("(314) 213-8615"),
-            of("http://drummond.psdr3.org/ical/Parkwood.ics"),
+            of("Parkwood.ics"),
             of("http://fccms.psdr3.org/Parkwood/news/?plugin=xml&leaves"),
             "PW",
             parseColor("#a300ff"),
@@ -179,7 +179,7 @@ public enum DataSource {
             "(314) 213-8018",
             of("(314) 213-8118"),
             of("(314) 213-8618"),
-            of("http://drummond.psdr3.org/ical/Willow%20Brook.ics"),
+            of("Willow%20Brook.ics"),
             of("http://fccms.psdr3.org/WillowBrook/news/?plugin=xml&leaves"),
             "WB",
             parseColor("#000178"),
@@ -194,7 +194,7 @@ public enum DataSource {
             "(314) 213-8105",
             empty(),
             of("(314) 213-8696"),
-            of("http://ec.psdr3.org/ical/Early%20Childhood.ics"),
+            of("Early%20Childhood.ics"),
             empty(),
             "EC",
             parseColor("#000000"),
@@ -237,6 +237,10 @@ public enum DataSource {
 
     public static final Set<DataSource> NUTRISLICE = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
             .filter(d -> d.nutrisliceLink.isPresent())
+            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+
+    public static final Set<DataSource> CALENDARS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
+            .filter(d -> d.calendarURL.isPresent())
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
     public final String name, shortName, websiteURL, address, mainNumber, initialsName, topicName;

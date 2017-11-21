@@ -15,30 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.database;
+package org.pattonvillecs.pattonvilleapp.ui.calendar
 
-import android.app.Application;
-import android.arch.persistence.room.Room;
-
-import org.pattonvillecs.pattonvilleapp.di.AppModule;
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
+import com.google.common.collect.Multiset
+import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.threeten.bp.LocalDate
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * Created by Mitchell Skaggs on 11/13/2017.
  */
+class CalendarMonthFragmentViewModel(application: Application) : AndroidViewModel(application) {
+    lateinit var calendarRepository: CalendarRepository
 
-@Module(includes = AppModule.class)
-public class AppDatabaseModule {
-    @Provides
-    @Singleton
-    static AppDatabase provideAppDatabase(Application application) {
-        return init(Room.databaseBuilder(application, AppDatabase.class, "app_database")).build();
-    }
+    val eventMultiset: LiveData<Multiset<LocalDate>>
+        get() = calendarRepository.getCountOnDays(PreferenceUtils.getSelectedSchoolsSet(this.getApplication<Application>()).toList())
 }

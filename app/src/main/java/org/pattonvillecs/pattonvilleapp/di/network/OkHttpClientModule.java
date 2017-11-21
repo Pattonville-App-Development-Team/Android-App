@@ -15,30 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.database;
-
-import android.app.Application;
-import android.arch.persistence.room.Room;
-
-import org.pattonvillecs.pattonvilleapp.di.AppModule;
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+package org.pattonvillecs.pattonvilleapp.di.network;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
-import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+import okhttp3.OkHttpClient;
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * Created by Mitchell Skaggs on 11/20/2017.
  */
 
-@Module(includes = AppModule.class)
-public class AppDatabaseModule {
+@Module
+public class OkHttpClientModule {
     @Provides
     @Singleton
-    static AppDatabase provideAppDatabase(Application application) {
-        return init(Room.databaseBuilder(application, AppDatabase.class, "app_database")).build();
+    static OkHttpClient provideOkHttpClient() {
+        return new OkHttpClient.Builder()
+                .build();
     }
 }
