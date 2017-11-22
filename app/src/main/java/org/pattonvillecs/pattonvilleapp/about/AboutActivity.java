@@ -27,20 +27,24 @@ import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.about.detail.LinkItem;
 import org.pattonvillecs.pattonvilleapp.about.secret.SecretDeveloperItem;
 
+import java.util.Arrays;
+import java.util.List;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.FlexibleItemAnimator;
 import eu.davidea.flexibleadapter.common.SmoothScrollGridLayoutManager;
+import eu.davidea.flexibleadapter.items.IFlexible;
 
 /**
- * Created by skaggsm on 5/11/17.
+ * This Activity displays a grid of the developers who worked on the project, organized by team. The blank space at the end of the list may be long-pressed to reveal an easter egg.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
 public class AboutActivity extends AppCompatActivity {
 
-    private static final String TAG = AboutActivity.class.getSimpleName();
-
-    private RecyclerView aboutRecyclerView;
-    private FlexibleAdapter<DeveloperItem> aboutAdapter;
+    private FlexibleAdapter<IFlexible> aboutAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,9 +52,45 @@ public class AboutActivity extends AppCompatActivity {
         setTitle("About Us");
         setContentView(R.layout.activity_about);
 
-        aboutRecyclerView = (RecyclerView) findViewById(R.id.about_us_recyclerview);
-        aboutAdapter = new FlexibleAdapter<>(null);
+        DeveloperHeaderItem androidHeader = new DeveloperHeaderItem("Android Team");
+        DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
+        DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Instructors");
 
+        List<IFlexible> items = Arrays.asList(
+                new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\n\nUniversity:\n\nMissouri University of Science and Technology", R.drawable.face_skaggs,
+                        new LinkItem(R.drawable.github_box, "https://github.com/magneticflux-"),
+                        new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/mitchell-s-16085b13b")
+                ),
+                new DeveloperItem(androidHeader, "Keturah Gadson", "University:\n\nHarvard University", R.drawable.face_gadson,
+                        new LinkItem(R.drawable.github_box, "https://github.com/gadsonk")
+                ),
+                new DeveloperItem(androidHeader, "Ethan Holtgrieve", "University:\n\nTruman State University", R.drawable.face_holtgrieve,
+                        new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
+                ),
+                new DeveloperItem(androidHeader, "Nathan Skelton", "University:\n\nMissouri University of Science and Technology", R.drawable.face_skelton,
+                        new LinkItem(R.drawable.github_box, "https://github.com/skeltonn"),
+                        new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
+                ),
+                new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nUniversity:\n\nUniversity of Miami", R.drawable.face_zahner,
+                        new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
+                        new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
+                ),
+                new DeveloperItem(iOSHeader, "Mustapha Barrie", "University:\n\nWashington University in St. Louis", R.drawable.face_barrie,
+                        new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
+                ),
+                new DeveloperItem(iOSHeader, "Kevin Bowers", "University:\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
+                        new LinkItem(R.drawable.github_box, "https://github.com/KevinBowers73")
+                ),
+                new DeveloperItem(iOSHeader, "Micah Thompkins", "University:\n\nNorthwestern University", R.drawable.face_thompkins,
+                        new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
+                ),
+                new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative, Philosopher", R.drawable.face_simmons),
+                new SecretDeveloperItem(teacherHeader, null, null, 0));
+
+        aboutAdapter = new FlexibleAdapter<>(items);
+        aboutAdapter.setDisplayHeadersAtStartUp(true);
+
+        RecyclerView aboutRecyclerView = findViewById(R.id.about_us_recyclerview);
         GridLayoutManager manager = new SmoothScrollGridLayoutManager(this, 2);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -65,45 +105,8 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
         aboutRecyclerView.setLayoutManager(manager);
-        aboutRecyclerView.setAdapter(aboutAdapter);
         aboutRecyclerView.setItemAnimator(new FlexibleItemAnimator());
 
-        aboutAdapter.setDisplayHeadersAtStartUp(true);
-
-        DeveloperHeaderItem androidHeader = new DeveloperHeaderItem("Android Team");
-        DeveloperHeaderItem iOSHeader = new DeveloperHeaderItem("iOS Team");
-        DeveloperHeaderItem teacherHeader = new DeveloperHeaderItem("Instructors");
-
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Mitchell Skaggs", "Android Team Lead\n\nUniversity:\n\nMissouri University of Science and Technology", R.drawable.face_skaggs,
-                new LinkItem(R.drawable.github_box, "https://github.com/magneticflux-"),
-                new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/mitchell-s-16085b13b")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Keturah Gadson", "University:\n\nHarvard University", R.drawable.face_gadson,
-                new LinkItem(R.drawable.github_box, "https://github.com/gadsonk")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Ethan Holtgrieve", "University:\n\nTruman State University", R.drawable.face_holtgrieve,
-                new LinkItem(R.drawable.github_box, "https://github.com/holtgrie")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(androidHeader, "Nathan Skelton", "University:\n\nMissouri University of Science and Technology", R.drawable.face_skelton,
-                new LinkItem(R.drawable.github_box, "https://github.com/skeltonn"),
-                new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/nathaniel-skelton-8815a413b/")
-        ));
-
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Joshua Zahner", "iOS Team Lead\n\nUniversity:\n\nUniversity of Miami", R.drawable.face_zahner,
-                new LinkItem(R.drawable.github_box, "https://github.com/Ovec8hkin"),
-                new LinkItem(R.drawable.linkedin_box, "https://www.linkedin.com/in/joshuazahner/")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Mustapha Barrie", "University:\n\nWashington University in St. Louis", R.drawable.face_barrie,
-                new LinkItem(R.drawable.github_box, "https://github.com/MustaphaB")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Kevin Bowers", "University:\n\nUniversity of Missouri - Columbia", R.drawable.face_bowers,
-                new LinkItem(R.drawable.github_box, "https://github.com/KevinBowers73")
-        ));
-        aboutAdapter.addItem(new DeveloperItem(iOSHeader, "Micah Thompkins", "University:\n\nNorthwestern University", R.drawable.face_thompkins,
-                new LinkItem(R.drawable.github_box, "https://github.com/MicahThompkins")
-        ));
-
-        aboutAdapter.addItem(new DeveloperItem(teacherHeader, "Mr. Simmons", "Supervisor, Representative, Philosopher", R.drawable.face_simmons));
-        aboutAdapter.addItem(new SecretDeveloperItem(teacherHeader, null, null, 0));
+        aboutRecyclerView.setAdapter(aboutAdapter);
     }
 }
