@@ -32,7 +32,7 @@ import com.google.firebase.crash.FirebaseCrash
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
-import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerFragment
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -49,6 +49,7 @@ import org.pattonvillecs.pattonvilleapp.ui.calendar.month.PinnableCalendarEventI
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.SingleDayEventFlexibleViewModel
 import org.threeten.bp.DateTimeException
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.Month
 import org.threeten.bp.chrono.IsoChronology
 import javax.inject.Inject
@@ -59,7 +60,7 @@ import javax.inject.Inject
  * Use the [CalendarMonthFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CalendarMonthFragment : Fragment() {
+class CalendarMonthFragment : DaggerFragment() {
 
     @Inject
     lateinit var calendarRepository: CalendarRepository
@@ -88,7 +89,6 @@ class CalendarMonthFragment : Fragment() {
     private val dotColor: Int by lazy { ContextCompat.getColor(context!!, R.color.colorPrimary) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = ViewModelProviders.of(this).get(CalendarMonthFragmentViewModel::class.java)
@@ -110,7 +110,10 @@ class CalendarMonthFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.action_goto_today -> true
+        R.id.action_goto_today -> {
+            calendarView.onDateClickedMoveMonth(LocalDateTime.now().toLocalDate().toCalendarDay(), true)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 

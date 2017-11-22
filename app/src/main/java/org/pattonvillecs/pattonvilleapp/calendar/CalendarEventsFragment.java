@@ -173,8 +173,8 @@ public class CalendarEventsFragment extends Fragment implements SearchView.OnQue
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu);
         inflater.inflate(R.menu.search_icon_menu, menu);
+        inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu);
         initSearchView(menu);
     }
 
