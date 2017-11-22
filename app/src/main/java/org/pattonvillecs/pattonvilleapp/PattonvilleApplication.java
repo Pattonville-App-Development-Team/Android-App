@@ -148,7 +148,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
                 .addConstraint(Constraint.ON_UNMETERED_NETWORK)
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(0, (int) TimeUnit.HOURS.toSeconds(6)))
+                .setTrigger(Trigger.executionWindow((int) TimeUnit.HOURS.toSeconds(6), (int) TimeUnit.HOURS.toSeconds(12)))
                 .build());
     }
 
