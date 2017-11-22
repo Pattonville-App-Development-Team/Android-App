@@ -25,28 +25,33 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.*
+import com.firebase.jobdispatcher.FirebaseJobDispatcher
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import org.pattonvillecs.pattonvilleapp.MainActivity
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.ui.calendar.CalendarFragmentViewModel
+import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * This Fragment manages the three calendar views and their connection to the tab bar. It also contains the common refresh menu functionality.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
-class CalendarFragment : Fragment() {
+class CalendarFragment : DaggerFragment() {
     private var tabLayout: TabLayout? = null
     private lateinit var viewModel: CalendarFragmentViewModel
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_refresh -> {
-                this.onRefresh()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    @field:Inject
+    lateinit var firebaseJobDispatcher: FirebaseJobDispatcher
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_refresh -> {
+            viewModel.refreshCalendar()
+            true
         }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -69,6 +74,8 @@ class CalendarFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this).get(CalendarFragmentViewModel::class.java)
 
+        viewModel.firebaseJobDispatcher = firebaseJobDispatcher
+
         viewModel.currentPage.observe(this::getLifecycle) { page -> page?.let { pager_calendar.setCurrentItem(it, false) } }
     }
 
@@ -80,9 +87,8 @@ class CalendarFragment : Fragment() {
         tabLayout?.setupWithViewPager(pager_calendar)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.fragment_calendar, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,22 +101,16 @@ class CalendarFragment : Fragment() {
                     CalendarPinnedFragment.newInstance()
             )
 
-            override fun getItem(position: Int): Fragment {
-                return fragments[position]
+            override fun getItem(position: Int): Fragment = fragments[position]
+
+            override fun getPageTitle(position: Int): CharSequence = when (position) {
+                0 -> "Month"
+                1 -> "Events"
+                2 -> "Pinned"
+                else -> throw IllegalStateException("Invalid position!")
             }
 
-            override fun getPageTitle(position: Int): CharSequence {
-                return when (position) {
-                    0 -> "Month"
-                    1 -> "Events"
-                    2 -> "Pinned"
-                    else -> throw IllegalStateException("Invalid position!")
-                }
-            }
-
-            override fun getCount(): Int {
-                return fragments.size
-            }
+            override fun getCount(): Int = fragments.size
         }
 
         pager_calendar.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
@@ -118,9 +118,6 @@ class CalendarFragment : Fragment() {
                 viewModel.setCurrentPage(position)
             }
         })
-    }
-
-    private fun onRefresh() {
     }
 
     override fun onStop() {
@@ -142,8 +139,6 @@ class CalendarFragment : Fragment() {
          * @return A new instance of fragment CalendarFragment.
          */
         @JvmStatic
-        fun newInstance(): CalendarFragment {
-            return CalendarFragment()
-        }
+        fun newInstance(): CalendarFragment = CalendarFragment()
     }
 }

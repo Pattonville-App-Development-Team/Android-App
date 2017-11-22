@@ -26,10 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.annimon.stream.Stream;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 import com.google.common.collect.Iterators;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -64,7 +61,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -82,7 +78,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
-    private static final String CALENDAR_SYNC_JOB_TAG = "calendar_sync_job";
 
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
@@ -140,16 +135,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     @Inject
     protected void createCalendarSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
-        firebaseJobDispatcher.schedule(firebaseJobDispatcher.newJobBuilder()
-                .setReplaceCurrent(true)
-                .setTag(CALENDAR_SYNC_JOB_TAG)
-                .setService(CalendarSyncJobService.class)
-                .addConstraint(Constraint.DEVICE_CHARGING)
-                .addConstraint(Constraint.ON_UNMETERED_NETWORK)
-                .setLifetime(Lifetime.FOREVER)
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow((int) TimeUnit.HOURS.toSeconds(6), (int) TimeUnit.HOURS.toSeconds(12)))
-                .build());
+        firebaseJobDispatcher.schedule(CalendarSyncJobService.getRecurringCalendarSyncJob(firebaseJobDispatcher));
     }
 
     @Override

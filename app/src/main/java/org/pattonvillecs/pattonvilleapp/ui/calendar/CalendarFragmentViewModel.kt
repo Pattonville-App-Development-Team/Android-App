@@ -21,19 +21,28 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import com.firebase.jobdispatcher.FirebaseJobDispatcher
+import org.pattonvillecs.pattonvilleapp.model.calendar.job.CalendarSyncJobService
 
 /**
  * Created by Mitchell on 10/22/2017.
  */
 
 class CalendarFragmentViewModel(application: Application) : AndroidViewModel(application) {
+    /**
+     * Used to expose the real type of [currentPage] internally.
+     */
     private val _currentPage: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
 
-
-    //Hides the true type of _currentPage from accessors
     val currentPage: LiveData<Int> = _currentPage
+
+    lateinit var firebaseJobDispatcher: FirebaseJobDispatcher
 
     fun setCurrentPage(page: Int) {
         _currentPage.value = page
+    }
+
+    fun refreshCalendar() {
+        firebaseJobDispatcher.schedule(CalendarSyncJobService.getInstantCalendarSyncJob(firebaseJobDispatcher))
     }
 }

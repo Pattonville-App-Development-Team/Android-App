@@ -29,10 +29,10 @@ import org.pattonvillecs.pattonvilleapp.DataSource
  */
 
 @Immutable
-class PinnableCalendarEvent(@field:Embedded
+data class PinnableCalendarEvent(@field:Embedded
                                  val calendarEvent: CalendarEvent,
                                  @field:ColumnInfo(name = "pinned")
-                            val pinned: Boolean) {
+                                 val pinned: Boolean) {
 
     @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
     lateinit var dataSourceMarkers: Set<DataSourceMarker>

@@ -19,8 +19,7 @@ package org.pattonvillecs.pattonvilleapp.model.calendar.job
 
 import android.os.AsyncTask.THREAD_POOL_EXECUTOR
 import android.util.Log
-import com.firebase.jobdispatcher.JobParameters
-import com.firebase.jobdispatcher.JobService
+import com.firebase.jobdispatcher.*
 import com.google.common.base.Function
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.*
@@ -34,6 +33,7 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.Companion.dataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.SourcedCalendar
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -94,5 +94,28 @@ class CalendarSyncJobService : JobService() {
 
     companion object {
         private const val TAG = "CalendarSyncJobService"
+
+        @JvmStatic
+        fun getRecurringCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher) =
+                firebaseJobDispatcher.newJobBuilder()
+                        .setReplaceCurrent(true)
+                        .setTag("calendar_sync_job")
+                        .setService(CalendarSyncJobService::class.java)
+                        .addConstraint(Constraint.DEVICE_CHARGING)
+                        .addConstraint(Constraint.ON_UNMETERED_NETWORK)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setRecurring(true)
+                        .setTrigger(Trigger.executionWindow(TimeUnit.HOURS.toSeconds(6).toInt(), TimeUnit.HOURS.toSeconds(12).toInt()))
+                        .build()
+
+        @JvmStatic
+        fun getInstantCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher) =
+                firebaseJobDispatcher.newJobBuilder()
+                        .setReplaceCurrent(true)
+                        .setTag("instant_calendar_sync_job")
+                        .setService(CalendarSyncJobService::class.java)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setTrigger(Trigger.NOW)
+                        .build()
     }
 }
