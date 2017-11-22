@@ -25,9 +25,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_margin="2dp"
-            android:background="?android:attr/dividerHorizontal" />
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/event_recycler_view"
