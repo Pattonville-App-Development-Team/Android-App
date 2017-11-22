@@ -160,6 +160,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     /**
      * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
      */
+    @Deprecated
     private void enableHttpResponseCache() {
         try {
             long httpCacheSize = 10 * 1024 * 1024; // 10 MiB

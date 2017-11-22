@@ -17,10 +17,13 @@
 
 package org.pattonvillecs.pattonvilleapp.di.network;
 
+import android.app.Application;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 /**
@@ -31,8 +34,9 @@ import okhttp3.OkHttpClient;
 public class OkHttpClientModule {
     @Provides
     @Singleton
-    static OkHttpClient provideOkHttpClient() {
+    static OkHttpClient provideOkHttpClient(Application application) {
         return new OkHttpClient.Builder()
+                .cache(new Cache(application.getCacheDir(), 16 * 1024 * 1024 /* 16 MiB (Mebibytes) */))
                 .build();
     }
 }
