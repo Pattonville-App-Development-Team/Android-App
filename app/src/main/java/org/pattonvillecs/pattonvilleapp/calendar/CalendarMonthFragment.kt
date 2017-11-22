@@ -21,6 +21,7 @@ package org.pattonvillecs.pattonvilleapp.calendar
 import android.arch.lifecycle.ViewModelProviders
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.annotation.ColorInt
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
@@ -83,8 +84,8 @@ class CalendarMonthFragment : Fragment() {
                 10f
             }
         }
-    private val dotColor: Int
-        get() = ContextCompat.getColor(context!!, R.color.colorPrimary)
+    @delegate:ColorInt
+    private val dotColor: Int by lazy { ContextCompat.getColor(context!!, R.color.colorPrimary) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
