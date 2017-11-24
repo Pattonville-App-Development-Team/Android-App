@@ -22,6 +22,7 @@ import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 
@@ -82,6 +83,7 @@ public final class PreferenceUtils {
         return sharedPrefs.getBoolean(NUTRISLICE_INTENT_PREFERENCE_KEY, false);
     }
 
+    @NonNull
     public static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
@@ -120,12 +122,14 @@ public final class PreferenceUtils {
         return convertStringsToDataSources(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()));
     }
 
+    @NonNull
     public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(SharedPreferences sharedPreferences) {
         return Transformations.map(
                 SharedPreferenceLiveDataKt.stringSetLiveData(sharedPreferences, SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()),
                 PreferenceUtils::convertStringsToDataSources);
     }
 
+    @NonNull
     public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(Context context) {
         return getSelectedSchoolsLiveData(getSharedPreferences(context));
     }
