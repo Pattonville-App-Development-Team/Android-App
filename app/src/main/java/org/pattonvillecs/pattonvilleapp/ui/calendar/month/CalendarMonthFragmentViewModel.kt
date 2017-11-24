@@ -21,7 +21,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Transformations
-import android.content.SharedPreferences
+import android.content.Context
 import com.google.common.collect.Multiset
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
@@ -33,9 +33,9 @@ import org.threeten.bp.LocalDate
 class CalendarMonthFragmentViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var calendarRepository: CalendarRepository
 
-    fun getDateMultiset(sharedPreferences: SharedPreferences): LiveData<Multiset<LocalDate>> {
+    fun getDateMultiset(context: Context): LiveData<Multiset<LocalDate>> {
         return Transformations.switchMap(
-                PreferenceUtils.getSelectedSchoolsLiveData(sharedPreferences),
+                PreferenceUtils.getSelectedSchoolsLiveData(context),
                 { calendarRepository.getCountOnDays(it.toList()) })
     }
 }

@@ -43,9 +43,9 @@ import org.pattonvillecs.pattonvilleapp.SpotlightUtils
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment.Companion.TAG
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarMonthFragmentViewModel
-import org.pattonvillecs.pattonvilleapp.ui.calendar.month.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.SingleDayEventFlexibleViewModel
 import org.threeten.bp.DateTimeException
 import org.threeten.bp.LocalDate
@@ -164,10 +164,10 @@ class CalendarMonthFragment : DaggerFragment() {
 
         PreferenceUtils.getSelectedSchoolsLiveData(context!!).observe(this::getLifecycle) {
             if (it != null)
-                adapterViewModel.setDataSources(it.toList())
+                adapterViewModel.setDataSources(it)
         }
 
-        viewModel.getDateMultiset(PreferenceUtils.getSharedPreferences(context!!)).observe(this::getLifecycle) { dates ->
+        viewModel.getDateMultiset(context!!).observe(this::getLifecycle) { dates ->
             if (dates != null) {
                 calendarView.removeDecorators()
                 calendarView.addDecorators(
