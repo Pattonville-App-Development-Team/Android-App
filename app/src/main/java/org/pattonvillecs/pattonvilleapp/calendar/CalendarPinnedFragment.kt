@@ -33,8 +33,8 @@ import kotlinx.android.synthetic.main.fragment_calendar_pinned.*
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
-import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.ui.calendar.pinned.CalendarPinnedFragmentViewModel
 import javax.inject.Inject
 

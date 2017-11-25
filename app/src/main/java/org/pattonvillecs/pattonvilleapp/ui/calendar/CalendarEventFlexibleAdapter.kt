@@ -1,9 +1,7 @@
-package org.pattonvillecs.pattonvilleapp.ui.calendar.month
+package org.pattonvillecs.pattonvilleapp.ui.calendar
 
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.ui.calendar.HasCalendarRepository
-import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
 
 /**
  * Created by Mitchell Skaggs on 11/21/2017.
