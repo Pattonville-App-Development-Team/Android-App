@@ -4,10 +4,14 @@
     android:layout_height="match_parent"
     tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment">
 
-    <include layout="@layout/calendar_pinned_tab_no_items_background" />
+    <TextSwitcher
+        android:id="@+id/no_pinned_items_textswitcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp" />
 
-    <include
-        layout="@layout/calendar_event_recyclerview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/event_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

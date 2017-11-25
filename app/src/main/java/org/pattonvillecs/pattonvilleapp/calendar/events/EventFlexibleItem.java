@@ -180,6 +180,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
             return 0;
     }
 
+    @NonNull
     public static SpannableStringBuilder getDataSourcesSpannableStringBuilder(final Collection<DataSource> dataSources, final Context context) {
         return Stream.of(dataSources).map(dataSource -> {
             // \uf111 is a circle in Font Awesome. Supported on all devices

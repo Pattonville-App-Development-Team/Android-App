@@ -46,9 +46,13 @@ import static org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.d
 import static org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker.pin;
 
 /**
- * Created by Mitchell on 10/3/2017.
+ * This class is a repository for the calendar information. It provides access to and helper overloads for the [CalendarDao] object.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 @Singleton
 public class CalendarRepository {
     @NonNull
@@ -127,6 +131,16 @@ public class CalendarRepository {
     @NonNull
     public LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull DataSource dataSource, @NonNull Instant firstDate, @NonNull Instant lastDate) {
         return calendarDao.getEventsBetweenDates(singletonList(dataSource), firstDate, lastDate);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getPinnedEvents(@NonNull DataSource dataSource) {
+        return calendarDao.getPinnedEvents(singletonList(dataSource));
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getPinnedEvents(@NonNull List<DataSource> dataSources) {
+        return calendarDao.getPinnedEvents(dataSources);
     }
 
     @NonNull

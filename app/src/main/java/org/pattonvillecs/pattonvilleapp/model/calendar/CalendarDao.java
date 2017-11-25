@@ -43,7 +43,8 @@ public interface CalendarDao {
 
     //TODO make sensible @Transaction methods to keep database consistent when updating events
 
-    String SELECT_PINNABLE_EVENTS = "events.*, EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1) AS pinned";
+    String IS_PINNED = "(EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1))";
+    String SELECT_PINNABLE_EVENTS = "events.*, " + IS_PINNED + " AS pinned";
     String DEFAULT_ORDER_BY = "events.start_date ASC";
     String DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))";
 
@@ -81,6 +82,13 @@ public interface CalendarDao {
             + " WHERE (start_date >= :firstDate) AND (end_date <= :lastDate) AND " + DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
+
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
+            + " FROM events"
+            + " WHERE " + IS_PINNED + " AND " + DATASOURCE_MARKER_EXISTS
+            + " ORDER BY " + DEFAULT_ORDER_BY)
+    LiveData<List<PinnableCalendarEvent>> getPinnedEvents(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT events.start_date"
             + " FROM events"
