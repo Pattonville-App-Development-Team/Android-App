@@ -21,6 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
 
 /**
  * Created by Mitchell on 10/9/2017.

@@ -29,6 +29,8 @@ import com.google.common.collect.Multiset;
 import org.jetbrains.annotations.NotNull;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;

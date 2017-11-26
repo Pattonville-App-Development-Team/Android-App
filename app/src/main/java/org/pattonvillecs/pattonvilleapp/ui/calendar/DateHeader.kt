@@ -8,6 +8,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import org.jetbrains.anko.find
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.ui.calendar.DateHeader.DateHeaderViewHolder
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -15,7 +16,10 @@ import org.threeten.bp.format.FormatStyle
 /**
  * Created by Mitchell Skaggs on 11/23/2017.
  */
-class DateHeader(private val localDate: LocalDate) : AbstractHeaderItem<DateHeader.DateHeaderViewHolder>() {
+class DateHeader(private val localDate: LocalDate) : AbstractHeaderItem<DateHeaderViewHolder>(), IFlexibleHasStartDateHasEndDate<DateHeaderViewHolder> {
+    override val endDate: LocalDate get() = localDate
+    override val startDate: LocalDate get() = localDate
+
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DateHeaderViewHolder =
             DateHeaderViewHolder(view, adapter, true)
 

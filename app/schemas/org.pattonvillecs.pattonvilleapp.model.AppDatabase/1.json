@@ -27,13 +27,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "startDate",
+            "fieldPath": "startDateTime",
             "columnName": "start_date",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "endDate",
+            "fieldPath": "endDateTime",
             "columnName": "end_date",
             "affinity": "INTEGER",
             "notNull": true

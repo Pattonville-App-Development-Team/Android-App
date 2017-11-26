@@ -33,7 +33,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import dagger.android.support.DaggerFragment
-import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_month.*
@@ -44,7 +43,7 @@ import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment.Companion
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.ui.calendar.CalendarEventFlexibleAdapter
-import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
+import org.pattonvillecs.pattonvilleapp.ui.calendar.IFlexibleHasStartDateHasEndDate
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.CalendarMonthFragmentViewModel
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.SingleDayEventFlexibleViewModel
 import org.threeten.bp.DateTimeException
@@ -59,6 +58,9 @@ import javax.inject.Inject
  * A simple [Fragment] subclass.
  * Use the [CalendarMonthFragment.newInstance] factory method to
  * create an instance of this fragment.
+ *
+ * @since 1.0.0
+ * @author Mitchell Skaggs
  */
 class CalendarMonthFragment : DaggerFragment() {
 
@@ -70,7 +72,7 @@ class CalendarMonthFragment : DaggerFragment() {
     private lateinit var viewModel: CalendarMonthFragmentViewModel
     private lateinit var adapterViewModel: SingleDayEventFlexibleViewModel
 
-    private lateinit var eventAdapter: FlexibleAdapter<PinnableCalendarEventItem>
+    private lateinit var eventAdapter: CalendarEventFlexibleAdapter
 
     //Minimum radius of 5
     private val dotRadius: Float
@@ -180,7 +182,7 @@ class CalendarMonthFragment : DaggerFragment() {
 
         adapterViewModel.liveItems.observe(this::getLifecycle) {
             if (it != null)
-                eventAdapter.updateDataSet(it, true)
+                eventAdapter.updateDataSet(it.map { it as IFlexibleHasStartDateHasEndDate<*> }, true)
         }
     }
 

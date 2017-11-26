@@ -32,6 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 

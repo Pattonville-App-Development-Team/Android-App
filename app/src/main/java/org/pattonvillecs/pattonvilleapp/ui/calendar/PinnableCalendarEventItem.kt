@@ -5,15 +5,19 @@ import android.widget.TextView
 import com.varunest.sparkbutton.SparkButton
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem
+import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.items.IHolder
 import eu.davidea.viewholders.FlexibleViewHolder
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.find
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder
-import org.pattonvillecs.pattonvilleapp.model.calendar.PinnableCalendarEvent
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasEndDate
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasStartDate
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem.PinnableCalendarEventItemViewHolder
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -27,7 +31,17 @@ import java.util.*
  * @since 1.2.0
  */
 
-class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent> {
+class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, HasStartDate by pinnableCalendarEvent, HasEndDate by pinnableCalendarEvent, IFlexibleHasStartDateHasEndDate<PinnableCalendarEventItemViewHolder> {
+    override fun filter(constraint: String?): Boolean {
+        if (constraint == null || constraint.isBlank())
+            return true
+
+        val lowerCaseConstraint = constraint.toLowerCase()
+        val summaryRatio = FuzzySearch.partialRatio(lowerCaseConstraint, pinnableCalendarEvent.calendarEvent.summary.toLowerCase())
+        val dataSourceRatio = FuzzySearch.partialRatio(lowerCaseConstraint, pinnableCalendarEvent.dataSources.toString().toLowerCase())
+        return summaryRatio > 80 || dataSourceRatio > 80
+    }
+
     override fun getModel(): PinnableCalendarEvent = pinnableCalendarEvent
 
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): PinnableCalendarEventItemViewHolder =
@@ -39,7 +53,7 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
 
         holder.topText.text = pinnableCalendarEvent.calendarEvent.summary
 
-        holder.bottomText.text = FORMATTER.format(pinnableCalendarEvent.calendarEvent.startDate)
+        holder.bottomText.text = FORMATTER.format(pinnableCalendarEvent.calendarEvent.startDateTime)
 
         holder.shortSchoolName.text = getDataSourcesSpannableStringBuilder(pinnableCalendarEvent.dataSources.sortedWith(DataSource.DEFAULT_ORDERING), adapter.recyclerView.context)
 

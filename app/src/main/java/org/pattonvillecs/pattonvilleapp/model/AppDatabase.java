@@ -23,9 +23,9 @@ import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarDao;
-import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.model.calendar.PinnedEventMarker;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.model.typeconverters.DataSourceTypeConverter;
 import org.pattonvillecs.pattonvilleapp.model.typeconverters.DateTypeConverter;
 import org.pattonvillecs.pattonvilleapp.model.typeconverters.InstantTypeConverter;

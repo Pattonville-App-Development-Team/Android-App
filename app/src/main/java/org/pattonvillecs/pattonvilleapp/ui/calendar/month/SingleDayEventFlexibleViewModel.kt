@@ -6,7 +6,7 @@ import eu.davidea.flexibleadapter.livedata.FlexibleItemProvider
 import eu.davidea.flexibleadapter.livedata.FlexibleViewModel
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.model.calendar.PinnableCalendarEvent
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.ui.calendar.month.SingleDayEventFlexibleViewModel.SingleDayIdentifier
 import org.threeten.bp.LocalDate

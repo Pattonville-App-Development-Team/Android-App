@@ -107,7 +107,7 @@ public class EventFlexibleItem extends AbstractSectionableItem<EventFlexibleItem
     }
 
     public EventFlexibleItem(Set<DataSource> dataSource, VEvent vEvent) {
-        //super(new EventHeader(CalendarDay.from(pair.getValue().getStartDate().getDate())));
+        //super(new EventHeader(CalendarDay.from(pair.getValue().getStartDateTime().getDate())));
         super(null);
         this.dataSources = dataSource;
         this.vEvent = vEvent;

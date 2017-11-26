@@ -6,12 +6,11 @@
 
     <include layout="@layout/calendar_event_tab_no_items_background" />
 
-    <include
-        layout="@layout/calendar_event_recyclerview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/event_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="7dp"
-        android:layout_marginRight="7dp" />
+        tools:listitem="@layout/calendar_dateless_event_list_item" />
 
     <include layout="@layout/calendar_event_tab_fast_scroller" />
 

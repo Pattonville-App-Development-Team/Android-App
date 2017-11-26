@@ -29,10 +29,10 @@ import dagger.android.AndroidInjection
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import org.pattonvillecs.pattonvilleapp.DataSource
-import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.Companion.dataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.SourcedCalendar
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

@@ -17,6 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
+import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventsFragment;
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment;
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerChildFragment;
@@ -36,4 +37,8 @@ public abstract class ChildFragmentBuilderModule {
     @ContributesAndroidInjector
     @PerChildFragment
     abstract CalendarMonthFragment contributeCalendarMonthFragment();
+
+    @ContributesAndroidInjector
+    @PerChildFragment
+    abstract CalendarEventsFragment contributeCalendarEventsFragment();
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.model.calendar
+package org.pattonvillecs.pattonvilleapp.model.calendar.event
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
@@ -42,9 +42,9 @@ data class CalendarEvent(@field:PrimaryKey
                          @field:ColumnInfo(name = "location")
                          val location: String,
                          @field:ColumnInfo(name = "start_date", index = true)
-                         val startDate: Instant,
+                         val startDateTime: Instant,
                          @field:ColumnInfo(name = "end_date", index = true)
-                         val endDate: Instant) {
+                         val endDateTime: Instant) : HasStartDate, HasEndDate {
     constructor(vEvent: VEvent) : this(
             vEvent.uid.value,
             vEvent.summary.value,
@@ -53,8 +53,8 @@ data class CalendarEvent(@field:PrimaryKey
             Instant.ofEpochMilli(vEvent.endDate.date.time))
 
     @delegate:Ignore
-    val startDay: LocalDate by lazy { LocalDateTime.ofInstant(startDate, ZoneId.systemDefault()).toLocalDate() }
+    override val startDate: LocalDate by lazy { LocalDateTime.ofInstant(startDateTime, ZoneId.systemDefault()).toLocalDate() }
 
     @delegate:Ignore
-    val endDay: LocalDate by lazy { LocalDateTime.ofInstant(endDate, ZoneId.systemDefault()).toLocalDate() }
+    override val endDate: LocalDate by lazy { LocalDateTime.ofInstant(endDateTime, ZoneId.systemDefault()).toLocalDate() }
 }

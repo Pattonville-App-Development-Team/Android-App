@@ -28,6 +28,8 @@ import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent;
 import org.threeten.bp.Instant;
 
 import java.util.List;

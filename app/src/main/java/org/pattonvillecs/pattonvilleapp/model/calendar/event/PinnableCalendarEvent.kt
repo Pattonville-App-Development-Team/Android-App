@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.model.calendar
+package org.pattonvillecs.pattonvilleapp.model.calendar.event
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
@@ -23,6 +23,7 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.Relation
 import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker
 
 /**
  * Created by Mitchell on 10/5/2017.
@@ -32,7 +33,7 @@ import org.pattonvillecs.pattonvilleapp.DataSource
 data class PinnableCalendarEvent(@field:Embedded
                                  val calendarEvent: CalendarEvent,
                                  @field:ColumnInfo(name = "pinned")
-                                 val pinned: Boolean) {
+                                 val pinned: Boolean) : HasStartDate by calendarEvent, HasEndDate by calendarEvent {
 
     @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
     lateinit var dataSourceMarkers: Set<DataSourceMarker>

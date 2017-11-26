@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import dagger.android.support.DaggerFragment
-import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_pinned.*
@@ -34,7 +33,6 @@ import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.ui.calendar.CalendarEventFlexibleAdapter
-import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.ui.calendar.pinned.CalendarPinnedFragmentViewModel
 import javax.inject.Inject
 
@@ -51,7 +49,7 @@ class CalendarPinnedFragment : DaggerFragment() {
 
     private lateinit var viewModel: CalendarPinnedFragmentViewModel
 
-    private lateinit var eventAdapter: FlexibleAdapter<PinnableCalendarEventItem>
+    private lateinit var eventAdapter: CalendarEventFlexibleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +72,7 @@ class CalendarPinnedFragment : DaggerFragment() {
 
         eventAdapter = CalendarEventFlexibleAdapter(stableIds = true, calendarRepository = calendarRepository)
         eventAdapter.setDisplayHeadersAtStartUp(true)
+        eventAdapter.setStickyHeaders(true)
         event_recycler_view.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         event_recycler_view.addItemDecoration(
                 FlexibleItemDecoration(context!!)

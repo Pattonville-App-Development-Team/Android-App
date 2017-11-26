@@ -21,6 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
 
 /**
  * Created by Mitchell on 10/4/2017.
