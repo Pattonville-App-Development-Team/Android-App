@@ -19,6 +19,8 @@ package org.pattonvillecs.pattonvilleapp.model.calendar
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
@@ -32,9 +34,30 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
 data class DataSourceMarker(@field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
                             val uid: String,
                             @field:ColumnInfo(name = "datasource", index = true, collate = ColumnInfo.BINARY)
-                            val dataSource: DataSource) {
-    companion object {
+                            val dataSource: DataSource) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readSerializable() as DataSource)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(uid)
+        parcel.writeSerializable(dataSource)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<DataSourceMarker> {
         @JvmStatic
         fun dataSource(calendarEvent: CalendarEvent, dataSource: DataSource): DataSourceMarker = DataSourceMarker(calendarEvent.uid, dataSource)
+
+        override fun createFromParcel(parcel: Parcel): DataSourceMarker {
+            return DataSourceMarker(parcel)
+        }
+
+        override fun newArray(size: Int): Array<DataSourceMarker?> {
+            return arrayOfNulls(size)
+        }
     }
 }

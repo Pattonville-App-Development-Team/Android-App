@@ -21,6 +21,8 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.Relation
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker
@@ -33,13 +35,19 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker
 data class PinnableCalendarEvent(@field:Embedded
                                  val calendarEvent: CalendarEvent,
                                  @field:ColumnInfo(name = "pinned")
-                                 val pinned: Boolean) : HasStartDate by calendarEvent, HasEndDate by calendarEvent {
+                                 val pinned: Boolean) : HasStartDate by calendarEvent, HasEndDate by calendarEvent, Parcelable {
 
     @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
     lateinit var dataSourceMarkers: Set<DataSourceMarker>
 
     @delegate:Ignore
     val dataSources: Set<DataSource> by lazy { dataSourceMarkers.mapTo(mutableSetOf(), { it.dataSource }) }
+
+    constructor(parcel: Parcel) : this(
+            parcel.readParcelable(CalendarEvent::class.java.classLoader),
+            parcel.readByte() != 0.toByte()) {
+        dataSourceMarkers = parcel.readParcelableArray(DataSourceMarker::class.java.classLoader).mapTo(mutableSetOf(), { it as DataSourceMarker })
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -57,5 +65,25 @@ data class PinnableCalendarEvent(@field:Embedded
         var result = calendarEvent.hashCode()
         result = 31 * result + dataSourceMarkers.hashCode()
         return result
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(calendarEvent, flags)
+        parcel.writeByte(if (pinned) 1 else 0)
+        parcel.writeParcelableArray(dataSourceMarkers.toTypedArray(), flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<PinnableCalendarEvent> {
+        override fun createFromParcel(parcel: Parcel): PinnableCalendarEvent {
+            return PinnableCalendarEvent(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PinnableCalendarEvent?> {
+            return arrayOfNulls(size)
+        }
     }
 }

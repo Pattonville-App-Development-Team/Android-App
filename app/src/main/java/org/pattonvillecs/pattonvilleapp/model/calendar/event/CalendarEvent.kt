@@ -21,6 +21,8 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.errorprone.annotations.Immutable
 import net.fortuna.ical4j.model.component.VEvent
 import org.threeten.bp.Instant
@@ -44,7 +46,7 @@ data class CalendarEvent(@field:PrimaryKey
                          @field:ColumnInfo(name = "start_date", index = true)
                          val startDateTime: Instant,
                          @field:ColumnInfo(name = "end_date", index = true)
-                         val endDateTime: Instant) : HasStartDate, HasEndDate {
+                         val endDateTime: Instant) : HasStartDate, HasEndDate, Parcelable {
     constructor(vEvent: VEvent) : this(
             vEvent.uid.value,
             vEvent.summary.value,
@@ -57,4 +59,33 @@ data class CalendarEvent(@field:PrimaryKey
 
     @delegate:Ignore
     override val endDate: LocalDate by lazy { LocalDateTime.ofInstant(endDateTime, ZoneId.systemDefault()).toLocalDate() }
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readSerializable() as Instant,
+            parcel.readSerializable() as Instant)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(uid)
+        parcel.writeString(summary)
+        parcel.writeString(location)
+        parcel.writeSerializable(startDateTime)
+        parcel.writeSerializable(endDateTime)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CalendarEvent> {
+        override fun createFromParcel(parcel: Parcel): CalendarEvent {
+            return CalendarEvent(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CalendarEvent?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

@@ -29,8 +29,11 @@ import eu.davidea.viewholders.FlexibleViewHolder
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.find
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity
+import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getActivity
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasEndDate
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasStartDate
@@ -79,6 +82,11 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
             if (buttonState) bg { holder.calendarRepository.pinEvent(pinnableCalendarEvent.calendarEvent) }
             else bg { holder.calendarRepository.unpinEvent(pinnableCalendarEvent.calendarEvent) }
         })
+
+        holder.view.onClick {
+            val activity = getActivity(it)
+            activity.startActivity(CalendarEventDetailsActivity.createIntent(activity, pinnableCalendarEvent))
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -100,7 +108,7 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
                 .withZone(ZoneId.systemDefault())
     }
 
-    class PinnableCalendarEventItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader), HasCalendarRepository by adapter as HasCalendarRepository {
+    class PinnableCalendarEventItemViewHolder(val view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader), HasCalendarRepository by adapter as HasCalendarRepository {
         val topText = view.find<TextView>(R.id.text_top)
         val bottomText = view.find<TextView>(R.id.text_bottom)
         val shortSchoolName = view.find<TextView>(R.id.school_short_names)

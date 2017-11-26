@@ -30,14 +30,17 @@ import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.Companion.dataSource
+import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker.CREATOR.dataSource
 import org.pattonvillecs.pattonvilleapp.model.calendar.SourcedCalendar
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.CalendarEvent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * This class is a [JobService] that runs periodically. It downloads all school calendars and updates the local database with information.
+ *
+ * @since 1.2.0
+ * @author Mitchell Skaggs
  */
 class CalendarSyncJobService : JobService() {
     @field:Inject

@@ -18,6 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.calendar;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,25 +27,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.annimon.stream.Optional;
-import com.annimon.stream.function.Function;
-
-import net.fortuna.ical4j.model.property.DateProperty;
-import net.fortuna.ical4j.model.property.DtEnd;
-import net.fortuna.ical4j.model.property.Location;
-
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.SpotlightHelper;
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.pattonvillecs.pattonvilleapp.SpotlightUtils;
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
 
 import static org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder;
 
@@ -53,7 +46,14 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
     public static final String CALENDAR_EVENT_KEY = "calendar_event";
     public static final String PATTONVILLE_COORDINATES = "38.733249,-90.420162";
     private static final String TAG = CalendarEventDetailsActivity.class.getSimpleName();
-    private EventFlexibleItem event;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+
+    private PinnableCalendarEvent event;
+
+    public static Intent createIntent(Context context, PinnableCalendarEvent pinnableCalendarEvent) {
+        return new Intent(context, CalendarEventDetailsActivity.class)
+                .putExtra(CalendarEventDetailsActivity.CALENDAR_EVENT_KEY, pinnableCalendarEvent);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -70,20 +70,19 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
     }
 
     private void addToCalendar() {
-        Log.i(TAG, "addToCalendar: " + event.vEvent);
-        Date startDate = event.vEvent.getStartDate().getDate();
-        Date endDate = event.vEvent.getEndDate(true).getDate();
+        Log.i(TAG, "addToCalendar: " + event);
+        Instant startDate = event.getCalendarEvent().getStartDateTime();
+        Instant endDate = event.getCalendarEvent().getEndDateTime();
 
-        Location location = event.vEvent.getLocation();
-        String locationString = location != null && !location.getValue().isEmpty() ? location.getValue() : null;
+        String locationString = event.getCalendarEvent().getLocation();
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startDate.getTime())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endDate.getTime())
-                .putExtra(CalendarContract.Events.TITLE, event.vEvent.getSummary().getValue());
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startDate.toEpochMilli())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endDate.toEpochMilli())
+                .putExtra(CalendarContract.Events.TITLE, event.getCalendarEvent().getSummary());
 
-        if (locationString != null)
+        if (!locationString.isEmpty())
             intent.putExtra(CalendarContract.Events.EVENT_LOCATION, locationString);
 
         ComponentName resolvedActivity = intent.resolveActivity(getPackageManager());
@@ -99,22 +98,7 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_calendar_detail, menu);
-
-        //This terrifies me...
-        final ViewTreeObserver viewTreeObserver = getWindow().getDecorView().getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                View menuButton = findViewById(R.id.action_add_to_calendar);
-                // This could be called when the button is not there yet, so we must test for null
-                if (menuButton != null) {
-                    // Found it! Do what you need with the button
-                    SpotlightHelper.showSpotlight(CalendarEventDetailsActivity.this, menuButton, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
-                    // Now you can get rid of this listener
-                    viewTreeObserver.removeOnGlobalLayoutListener(this);
-                }
-            }
-        });
+        SpotlightUtils.showSpotlightOnMenuItem(this, R.id.action_add_to_calendar, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar");
         return true;
     }
 
@@ -132,38 +116,26 @@ public class CalendarEventDetailsActivity extends AppCompatActivity {
 
         TextView timeDateTextView = findViewById(R.id.time_and_date);
 
-        DateFormat dateFormatter = SimpleDateFormat.getDateInstance(DateFormat.FULL);
-        DateFormat timeFormatter = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
-        //DateFormat dateTimeFormatter = SimpleDateFormat.getDateTimeInstance();
-        Date startDate = event.vEvent.getStartDate().getDate();
-        Date endDate = Optional.ofNullable(event.vEvent.getEndDate(true)).map((Function<DtEnd, Date>) DateProperty::getDate).orElse(startDate);
+        LocalDateTime startDate = LocalDateTime.ofInstant(event.getCalendarEvent().getStartDateTime(), ZoneId.systemDefault());
+        LocalDateTime endDate = LocalDateTime.ofInstant(event.getCalendarEvent().getEndDateTime(), ZoneId.systemDefault());
 
-        String startDateString = dateFormatter.format(startDate);
-        String endDateString = dateFormatter.format(endDate);
-        String startTimeString = timeFormatter.format(startDate);
-        String endTimeString = timeFormatter.format(endDate);
-
-        String combinedDateString = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
-        String combinedTimeString = startTimeString.equals(endTimeString) ? startTimeString : startTimeString + " - " + endTimeString;
-
-        timeDateTextView.setText(getString(R.string.date_time_newline, combinedDateString, combinedTimeString));
+        timeDateTextView.setText(getString(R.string.date_time_newline, FORMATTER.format(startDate), FORMATTER.format(endDate)));
 
         TextView locationTextView = findViewById(R.id.location);
-        final Location location = event.vEvent.getLocation();
-        final String locationString = location != null && !location.getValue().isEmpty() ? location.getValue() : null;
-        if (locationString != null) {
-            locationTextView.setText(locationString);
-            locationTextView.setOnClickListener(v -> startMapsActivityForPattonvilleLocation(locationString));
+        final String location = event.getCalendarEvent().getLocation();
+        if (!location.isEmpty()) {
+            locationTextView.setText(location);
+            locationTextView.setOnClickListener(v -> startMapsActivityForPattonvilleLocation(location));
         } else {
             locationTextView.setText(R.string.no_location);
         }
 
         TextView extraInfoTextView = findViewById(R.id.extra_info);
-        if (event.vEvent.getSummary() != null)
-            extraInfoTextView.setText(event.vEvent.getSummary().getValue());
+
+        extraInfoTextView.setText(event.getCalendarEvent().getSummary());
 
         TextView dataSourcesTextView = findViewById(R.id.datasources);
-        dataSourcesTextView.setText(getDataSourcesSpannableStringBuilder(event.dataSources, getApplicationContext()));
+        dataSourcesTextView.setText(getDataSourcesSpannableStringBuilder(event.getDataSources(), getApplicationContext()));
     }
 
     private void startMapsActivityForPattonvilleLocation(String location) {

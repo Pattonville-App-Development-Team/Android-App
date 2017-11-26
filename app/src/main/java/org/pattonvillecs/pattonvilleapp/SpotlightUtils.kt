@@ -26,6 +26,7 @@ import android.view.ViewTreeObserver
  * Created by Mitchell Skaggs on 11/13/2017.
  */
 object SpotlightUtils {
+    @JvmStatic
     fun showSpotlightOnMenuItem(activity: Activity, @IdRes menuItem: Int, uniqueId: String, subText: String, mainText: String) {
         //This terrifies me...
         val viewTreeObserver = activity.window.decorView.viewTreeObserver
