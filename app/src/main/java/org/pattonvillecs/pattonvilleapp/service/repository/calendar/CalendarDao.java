@@ -43,92 +43,112 @@ import java.util.List;
 @SuppressWarnings("NullableProblems")
 //Due to nullable annotations not being overridden in "_Impl" classes
 @Dao
-public interface CalendarDao {
+public abstract class CalendarDao {
 
     //TODO make sensible @Transaction methods to keep database consistent when deleting events that were removed from calendars
 
-    String WHERE_EVENT_IS_PINNED = "(EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1))";
-    String SELECT_PINNABLE_EVENTS = "events.*, " + WHERE_EVENT_IS_PINNED + " AS pinned";
-    String ORDER_BY_DEFAULT = "events.start_date ASC";
-    String WHERE_DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))";
+    private static final String WHERE_EVENT_IS_PINNED = "(EXISTS (SELECT * FROM pinned_event_markers WHERE events.uid = pinned_event_markers.uid LIMIT 1))";
+    private static final String SELECT_PINNABLE_EVENTS = "events.*, " + WHERE_EVENT_IS_PINNED + " AS pinned";
+    private static final String ORDER_BY_DEFAULT = "events.start_date ASC";
+    private static final String WHERE_DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM datasource_markers WHERE datasource_markers.uid = events.uid AND datasource_markers.datasource IN (:dataSources) LIMIT 1))";
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsByDataSources(@NonNull List<DataSource> dataSources);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsByDataSources(@NonNull List<DataSource> dataSources);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE uid IN (:uids) AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<DataSource> dataSources, @NonNull List<String> uids);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE uid IN (:uids)"
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<String> uids);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<String> uids);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE end_date <= :lastDate AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE start_date >= :firstDate AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE (start_date >= :firstDate) AND (end_date <= :lastDate) AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
+    abstract LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);
 
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
             + " WHERE " + WHERE_EVENT_IS_PINNED + " AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
-    LiveData<List<PinnableCalendarEvent>> getPinnedEvents(@NonNull List<DataSource> dataSources);
+    abstract LiveData<List<PinnableCalendarEvent>> getPinnedEvents(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT events.start_date"
             + " FROM events"
             + " WHERE " + WHERE_DATASOURCE_MARKER_EXISTS)
-    LiveData<List<Instant>> getAllInstantsByDataSource(@NonNull List<DataSource> dataSources);
+    abstract LiveData<List<Instant>> getAllInstantsByDataSource(@NonNull List<DataSource> dataSources);
 
     @Query("SELECT datasource"
             + " FROM datasource_markers"
             + " WHERE uid IN (:uids)")
-    LiveData<List<DataSource>> getDataSources(@NonNull List<String> uids);
+    abstract LiveData<List<DataSource>> getDataSources(@NonNull List<String> uids);
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers, @NonNull PinnedEventMarker pinnedEventMarker);
+    abstract void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers, @NonNull PinnedEventMarker pinnedEventMarker);
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers);
+    abstract void insert(@NonNull CalendarEvent calendarEvent, @NonNull List<DataSourceMarker> dataSourceMarkers);
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
+    abstract void insertAll(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract void insertAllIgnore(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
+
+    @Transaction
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    abstract void updateAllIgnore(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
+
+    /**
+     * @see <a href="https://en.wiktionary.org/wiki/upsert">Upsert</a>
+     */
+    @Transaction
+    void upsertAll(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers) {
+        updateAllIgnore(calendarEvents, dataSourceMarkers);
+        insertAllIgnore(calendarEvents, dataSourceMarkers);
+    }
 
     @Delete
-    void deleteAll(@NonNull CalendarEvent... calendarEvent);
+    abstract void deleteAll(@NonNull CalendarEvent... calendarEvent);
 
     @Update
-    void updateAll(@NonNull CalendarEvent... calendarEvent);
+    abstract void updateAll(@NonNull CalendarEvent... calendarEvent);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPin(@NonNull PinnedEventMarker pinnedEventMarker);
+    abstract void insertPin(@NonNull PinnedEventMarker pinnedEventMarker);
 
     @Delete
-    void deletePin(@NonNull PinnedEventMarker pinnedEventMarker);
+    abstract void deletePin(@NonNull PinnedEventMarker pinnedEventMarker);
 }

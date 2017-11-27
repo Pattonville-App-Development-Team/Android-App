@@ -80,7 +80,7 @@ class CalendarSyncJobService : JobService() {
                     val events = sourcedCalendar.calendar.components.filter { it is VEvent }.map { it as VEvent }.map { CalendarEvent(it) }
                     val dataSourceMarkers = events.map { dataSource(it, sourcedCalendar.dataSource) }
 
-                    calendarRepository.insertEventsAndDataSourceMarkers(events, dataSourceMarkers)
+                    calendarRepository.updateEventsAndDataSourceMarkers(events, dataSourceMarkers)
                     Log.i(TAG, "Inserted ${events.size} items into ${sourcedCalendar.dataSource}")
                 }
             }

@@ -198,7 +198,7 @@ public class CalendarRepository {
         calendarDao.deletePin(pin(calendarEvent));
     }
 
-    public void insertEventsAndDataSourceMarkers(@NotNull List<CalendarEvent> calendarEvents, @NotNull List<DataSourceMarker> dataSourceMarkers) {
-        calendarDao.insertAll(calendarEvents, dataSourceMarkers);
+    public void updateEventsAndDataSourceMarkers(@NotNull List<CalendarEvent> calendarEvents, @NotNull List<DataSourceMarker> dataSourceMarkers) {
+        calendarDao.upsertAll(calendarEvents, dataSourceMarkers);
     }
 }
