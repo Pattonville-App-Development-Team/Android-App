@@ -98,7 +98,7 @@ class CalendarSyncJobService : JobService() {
         private const val TAG = "CalendarSyncJobService"
 
         @JvmStatic
-        fun getRecurringCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher) =
+        fun getRecurringCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher): Job =
                 firebaseJobDispatcher.newJobBuilder()
                         .setReplaceCurrent(true)
                         .setTag("calendar_sync_job")
@@ -111,7 +111,7 @@ class CalendarSyncJobService : JobService() {
                         .build()
 
         @JvmStatic
-        fun getInstantCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher) =
+        fun getInstantCalendarSyncJob(firebaseJobDispatcher: FirebaseJobDispatcher): Job =
                 firebaseJobDispatcher.newJobBuilder()
                         .setReplaceCurrent(true)
                         .setTag("instant_calendar_sync_job")
