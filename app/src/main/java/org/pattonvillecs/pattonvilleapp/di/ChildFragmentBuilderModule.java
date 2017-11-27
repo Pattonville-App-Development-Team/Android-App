@@ -17,10 +17,10 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventsFragment;
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment;
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerChildFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.events.CalendarEventsFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.month.CalendarMonthFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

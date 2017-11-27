@@ -17,7 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
-import org.pattonvillecs.pattonvilleapp.model.calendar.job.CalendarSyncJobService;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

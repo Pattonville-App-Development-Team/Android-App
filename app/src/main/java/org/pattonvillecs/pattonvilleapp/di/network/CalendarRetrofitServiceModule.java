@@ -19,8 +19,8 @@ package org.pattonvillecs.pattonvilleapp.di.network;
 
 import android.os.AsyncTask;
 
-import org.pattonvillecs.pattonvilleapp.model.calendar.job.CalendarConverters;
-import org.pattonvillecs.pattonvilleapp.model.calendar.job.CalendarRetrofitService;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarConverters;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRetrofitService;
 
 import javax.inject.Singleton;
 

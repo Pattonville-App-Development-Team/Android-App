@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:orientation="horizontal"
-    tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment">
+    tools:context=".view.ui.calendar.month.CalendarMonthFragment">
 
-    <org.pattonvillecs.pattonvilleapp.calendar.fix.FixedMaterialCalendarView
+    <org.pattonvillecs.pattonvilleapp.view.ui.calendar.fix.FixedMaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

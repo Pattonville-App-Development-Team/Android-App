@@ -58,9 +58,9 @@ import net.fortuna.ical4j.model.property.Summary;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity;
-import org.pattonvillecs.pattonvilleapp.calendar.fix.CustomTypefaceSpan;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.fix.CustomTypefaceSpan;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

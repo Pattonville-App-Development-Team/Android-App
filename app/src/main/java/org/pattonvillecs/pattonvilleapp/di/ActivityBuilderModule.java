@@ -17,8 +17,8 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

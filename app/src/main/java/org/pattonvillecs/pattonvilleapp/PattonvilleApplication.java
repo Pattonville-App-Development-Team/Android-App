@@ -41,13 +41,13 @@ import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.directory.detail.Faculty;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
-import org.pattonvillecs.pattonvilleapp.model.calendar.job.CalendarSyncJobService;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 
 import java.io.File;
 import java.util.ArrayList;

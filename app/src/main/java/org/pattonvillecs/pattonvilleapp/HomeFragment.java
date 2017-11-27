@@ -45,8 +45,6 @@ import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarFragment;
-import org.pattonvillecs.pattonvilleapp.calendar.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventAdapter;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
@@ -57,6 +55,8 @@ import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
 
 import java.util.ArrayList;
 import java.util.HashSet;

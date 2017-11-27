@@ -21,14 +21,14 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 
 import org.pattonvillecs.pattonvilleapp.di.AppModule;
-import org.pattonvillecs.pattonvilleapp.model.AppDatabase;
+import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-import static org.pattonvillecs.pattonvilleapp.model.AppDatabase.init;
+import static org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase.init;
 
 /**
  * Created by Mitchell on 10/4/2017.
