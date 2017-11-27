@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     android:orientation="horizontal"
     tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment">
 
@@ -28,6 +29,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_weight="0"
+        android:clipChildren="false"
         android:minWidth="300dp" />
 
 </LinearLayout>

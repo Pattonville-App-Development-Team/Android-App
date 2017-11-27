@@ -25,7 +25,7 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.ui.calendar.DateHeader
 import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem
-import org.pattonvillecs.pattonvilleapp.ui.calendar.zipLiveData
+import org.pattonvillecs.pattonvilleapp.ui.calendar.zip
 import org.threeten.bp.LocalDate
 
 /**
@@ -42,7 +42,7 @@ class CalendarEventsFragmentViewModel : FlexibleViewModel<List<PinnableCalendarE
 
     fun getSearchTextString(): String? = searchText.value
 
-    fun getEventsAndSearch() = zipLiveData(searchText, liveItems)
+    fun getEventsAndSearch() = searchText.zip(liveItems)
 
     override fun getSource(identifier: Set<DataSource>): LiveData<List<PinnableCalendarEvent>> {
         return calendarRepository.getEventsByDataSource(identifier.toList())

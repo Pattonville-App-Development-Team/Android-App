@@ -10,6 +10,7 @@
         android:id="@+id/event_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
         tools:listitem="@layout/calendar_dateless_event_list_item" />
 
     <include layout="@layout/calendar_event_tab_fast_scroller" />

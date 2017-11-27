@@ -96,6 +96,16 @@ public class CalendarRepository {
     }
 
     @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<String> uids) {
+        return calendarDao.getEventsByUids(uids);
+    }
+
+    @NonNull
+    public LiveData<List<PinnableCalendarEvent>> getEventsByUid(@NonNull String uid) {
+        return calendarDao.getEventsByUids(singletonList(uid));
+    }
+
+    @NonNull
     public LiveData<Set<DataSource>> getDataSources(@NonNull List<String> uids) {
         return Transformations.map(calendarDao.getDataSources(uids), EnumSet::copyOf);
     }

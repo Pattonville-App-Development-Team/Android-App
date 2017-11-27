@@ -40,6 +40,7 @@ import dagger.android.AndroidInjector;
         AppDatabaseModule.class,
         CalendarRetrofitServiceModule.class,
         FirebaseJobDispatcherModule.class,
+        ActivityBuilderModule.class,
         FragmentBuilderModule.class,
         ChildFragmentBuilderModule.class,
         ServiceBuilderModule.class,

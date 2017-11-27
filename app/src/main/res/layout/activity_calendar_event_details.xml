@@ -1,114 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity">
+    android:clipChildren="false"
+    tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity"
+    tools:ignore="UnusedAttribute,ContentDescription">
 
     <ImageView
         android:id="@+id/calendar_text_icon"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:alpha=".54"
         android:padding="16dp"
         android:tint="@android:color/black"
-        app:srcCompat="@drawable/calendar_text"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/calendar_text" />
 
     <TextView
         android:id="@+id/extra_info"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/calendar_text_icon"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/calendar_text_icon"
-        android:layout_toRightOf="@id/calendar_text_icon"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:padding="16dp"
-        android:text="@string/extra_info_placeholder"
-        android:transitionName="@string/text_top_transition_name" />
+        android:transitionName="@string/text_top_transition_name"
+        app:layout_constraintBottom_toBottomOf="@id/calendar_text_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/calendar_text_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Summary" />
 
     <ImageView
         android:id="@+id/calendar_clock_icon"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/calendar_text_icon"
         android:alpha=".54"
         android:padding="16dp"
         android:tint="@android:color/black"
-        app:srcCompat="@drawable/calendar_clock"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_text_icon"
+        app:srcCompat="@drawable/calendar_clock" />
 
     <TextView
         android:id="@+id/time_and_date"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/calendar_clock_icon"
-        android:layout_below="@id/extra_info"
-        android:layout_toEndOf="@id/calendar_clock_icon"
-        android:layout_toRightOf="@id/calendar_clock_icon"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:padding="16dp"
-        android:text="@string/date_time_placeholder" />
+        app:layout_constraintBottom_toBottomOf="@id/calendar_clock_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/calendar_clock_icon"
+        app:layout_constraintTop_toBottomOf="@id/extra_info"
+        tools:text="Start\nEnd" />
 
     <ImageView
         android:id="@+id/map_marker_icon"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/calendar_clock_icon"
         android:alpha=".54"
         android:padding="16dp"
         android:tint="@android:color/black"
-        app:srcCompat="@drawable/map_marker"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_clock_icon"
+        app:srcCompat="@drawable/map_marker" />
 
     <TextView
         android:id="@+id/location"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/map_marker_icon"
-        android:layout_below="@id/time_and_date"
-        android:layout_toEndOf="@id/map_marker_icon"
-        android:layout_toRightOf="@id/map_marker_icon"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:padding="16dp"
-        android:text="@string/location_placeholder"
-        android:transitionName="@string/text_bottom_transition_name" />
+        android:transitionName="@string/text_bottom_transition_name"
+        app:layout_constraintBottom_toBottomOf="@id/map_marker_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/map_marker_icon"
+        app:layout_constraintTop_toBottomOf="@id/time_and_date"
+        tools:text="Location" />
 
     <ImageView
         android:id="@+id/school_icon"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/map_marker_icon"
         android:alpha=".54"
         android:padding="16dp"
         android:tint="@android:color/black"
-        app:srcCompat="@drawable/school"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/map_marker_icon"
+        app:srcCompat="@drawable/school" />
 
     <TextView
         android:id="@+id/datasources"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/location"
-        android:layout_toEndOf="@id/school_icon"
-        android:layout_toRightOf="@id/school_icon"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:padding="16dp"
-        android:text="@string/location_placeholder" />
+        app:layout_constraintBottom_toBottomOf="@id/school_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/school_icon"
+        app:layout_constraintTop_toBottomOf="@id/location"
+        tools:text="Datasources" />
 
-</RelativeLayout>
+    <com.varunest.sparkbutton.SparkButton
+        android:id="@+id/pinned_button"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/datasources"
+        app:sparkbutton_activeImage="@drawable/pin_active"
+        app:sparkbutton_animationSpeed="2"
+        app:sparkbutton_iconSize="36dp"
+        app:sparkbutton_inActiveImage="@drawable/pin_inactive"
+        app:sparkbutton_primaryColor="@color/colorPrimary"
+        app:sparkbutton_secondaryColor="@color/colorPrimaryDark" />
+
+</android.support.constraint.ConstraintLayout>

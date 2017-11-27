@@ -15,25 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.ui.calendar.month
+package org.pattonvillecs.pattonvilleapp.ui.calendar.details
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import android.content.Context
-import com.google.common.collect.Multiset
+import android.arch.lifecycle.ViewModel
 import org.pattonvillecs.pattonvilleapp.model.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
-import org.pattonvillecs.pattonvilleapp.ui.calendar.switchMap
-import org.threeten.bp.LocalDate
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent
+import org.pattonvillecs.pattonvilleapp.ui.calendar.map
 
 /**
- * Created by Mitchell Skaggs on 11/13/2017.
+ * Created by Mitchell Skaggs on 11/26/2017.
  */
-class CalendarMonthFragmentViewModel(application: Application) : AndroidViewModel(application) {
+class CalendarEventDetailsActivityViewModel : ViewModel() {
     lateinit var calendarRepository: CalendarRepository
 
-    fun getDateMultiset(context: Context): LiveData<Multiset<LocalDate>> {
-        return PreferenceUtils.getSelectedSchoolsLiveData(context).switchMap { calendarRepository.getCountOnDays(it.toList()) }
+    fun getCalendarEvent(uid: String): LiveData<PinnableCalendarEvent?> {
+        return calendarRepository.getEventsByUid(uid).map { it.firstOrNull() }
     }
 }

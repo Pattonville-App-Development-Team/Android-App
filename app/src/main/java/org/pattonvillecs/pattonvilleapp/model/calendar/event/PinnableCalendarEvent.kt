@@ -35,7 +35,7 @@ import org.pattonvillecs.pattonvilleapp.model.calendar.DataSourceMarker
 data class PinnableCalendarEvent(@field:Embedded
                                  val calendarEvent: CalendarEvent,
                                  @field:ColumnInfo(name = "pinned")
-                                 val pinned: Boolean) : HasStartDate by calendarEvent, HasEndDate by calendarEvent, Parcelable {
+                                 val pinned: Boolean) : ICalendarEvent by calendarEvent, Parcelable {
 
     @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
     lateinit var dataSourceMarkers: Set<DataSourceMarker>

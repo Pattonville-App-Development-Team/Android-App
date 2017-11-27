@@ -67,6 +67,13 @@ public interface CalendarDao {
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
+            + " WHERE uid IN (:uids)"
+            + " ORDER BY " + DEFAULT_ORDER_BY)
+    LiveData<List<PinnableCalendarEvent>> getEventsByUids(@NonNull List<String> uids);
+
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
+            + " FROM events"
             + " WHERE end_date <= :lastDate AND " + DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + DEFAULT_ORDER_BY)
     LiveData<List<PinnableCalendarEvent>> getEventsBeforeDate(@NonNull List<DataSource> dataSources, @NonNull Instant lastDate);

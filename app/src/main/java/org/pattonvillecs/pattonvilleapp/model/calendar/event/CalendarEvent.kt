@@ -38,15 +38,15 @@ import org.threeten.bp.ZoneId
 @Entity(tableName = "events")
 data class CalendarEvent(@field:PrimaryKey
                          @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
-                         val uid: String,
+                         override val uid: String,
                          @field:ColumnInfo(name = "summary")
-                         val summary: String,
+                         override val summary: String,
                          @field:ColumnInfo(name = "location")
-                         val location: String,
+                         override val location: String,
                          @field:ColumnInfo(name = "start_date", index = true)
-                         val startDateTime: Instant,
+                         override val startDateTime: Instant,
                          @field:ColumnInfo(name = "end_date", index = true)
-                         val endDateTime: Instant) : HasStartDate, HasEndDate, Parcelable {
+                         override val endDateTime: Instant) : HasStartDate, HasEndDate, Parcelable, ICalendarEvent {
     constructor(vEvent: VEvent) : this(
             vEvent.uid.value,
             vEvent.summary.value,

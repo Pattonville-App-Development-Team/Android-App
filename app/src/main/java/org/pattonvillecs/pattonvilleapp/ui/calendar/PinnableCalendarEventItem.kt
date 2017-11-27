@@ -35,8 +35,7 @@ import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getActivity
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder
-import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasEndDate
-import org.pattonvillecs.pattonvilleapp.model.calendar.event.HasStartDate
+import org.pattonvillecs.pattonvilleapp.model.calendar.event.ICalendarEvent
 import org.pattonvillecs.pattonvilleapp.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.ui.calendar.PinnableCalendarEventItem.PinnableCalendarEventItemViewHolder
 import org.threeten.bp.ZoneId
@@ -51,7 +50,7 @@ import java.util.*
  * @since 1.2.0
  */
 
-class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, HasStartDate by pinnableCalendarEvent, HasEndDate by pinnableCalendarEvent, IFlexibleHasStartDateHasEndDate<PinnableCalendarEventItemViewHolder> {
+class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, ICalendarEvent by pinnableCalendarEvent, IFlexibleHasStartDateHasEndDate<PinnableCalendarEventItemViewHolder> {
     override fun filter(constraint: String?): Boolean {
         if (constraint == null || constraint.isBlank())
             return true
@@ -85,7 +84,7 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
 
         holder.view.onClick {
             val activity = getActivity(it)
-            activity.startActivity(CalendarEventDetailsActivity.createIntent(activity, pinnableCalendarEvent))
+            activity.startActivity(CalendarEventDetailsActivity.createIntent(activity, uid))
         }
     }
 
