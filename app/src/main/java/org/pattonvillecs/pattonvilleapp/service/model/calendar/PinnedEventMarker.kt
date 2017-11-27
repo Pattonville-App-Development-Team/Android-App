@@ -24,7 +24,10 @@ import android.arch.persistence.room.PrimaryKey
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * This class is a database row that contains the UID of a calendar event. If an event has a corresponding [PinnedEventMarker], that event is considered pinned.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Entity(tableName = "pinned_event_markers",
@@ -41,7 +44,13 @@ data class PinnedEventMarker(@field:PrimaryKey
     constructor(calendarEvent: CalendarEvent) : this(calendarEvent.uid)
 
     companion object {
+        /**
+         * A utility method to create a marker for an event.
+         *
+         * @receiver the [CalendarEvent] from which to take a UID
+         * @return a [PinnedEventMarker] using this [CalendarEvent]'s UID
+         */
         @JvmStatic
-        fun pin(calendarEvent: CalendarEvent): PinnedEventMarker = PinnedEventMarker(calendarEvent)
+        fun CalendarEvent.pin(): PinnedEventMarker = PinnedEventMarker(this)
     }
 }
