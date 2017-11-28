@@ -95,10 +95,10 @@ public class AboutDetailActivity extends AppCompatActivity {
         developerImage = getIntent().getIntExtra(KEY_IMAGE, 0);
         developerLinks = Stream.of(getIntent().getParcelableArrayExtra(KEY_LINK_ITEMS)).map(parcelable -> (LinkItem) parcelable).collect(Collectors.toList());
 
-        name = (TextView) findViewById(R.id.developer_name);
-        text = (TextView) findViewById(R.id.developer_text);
-        image = (ImageView) findViewById(R.id.developer_image);
-        links = (RecyclerView) findViewById(R.id.developer_links);
+        name = findViewById(R.id.developer_name);
+        text = findViewById(R.id.developer_text);
+        image = findViewById(R.id.developer_image);
+        links = findViewById(R.id.developer_links);
         linksAdapter = new FlexibleAdapter<>(developerLinks);
 
         name.setText(developerName);
@@ -108,7 +108,7 @@ public class AboutDetailActivity extends AppCompatActivity {
         links.setLayoutManager(new SmoothScrollLinearLayoutManager(this, SmoothScrollLinearLayoutManager.HORIZONTAL, false));
 
         supportPostponeEnterTransition();
-        Picasso.with(this)
+        Picasso.with()
                 .load(developerImage)
                 .fit()
                 .centerCrop()
@@ -120,7 +120,7 @@ public class AboutDetailActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
                         supportStartPostponedEnterTransition();
                     }
                 });

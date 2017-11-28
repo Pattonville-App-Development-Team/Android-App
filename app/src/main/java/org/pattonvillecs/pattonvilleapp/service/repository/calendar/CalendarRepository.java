@@ -159,6 +159,11 @@ public class CalendarRepository {
         return calendarDao.getPinnedEvents(dataSources);
     }
 
+    @NotNull
+    public LiveData<List<PinnableCalendarEvent>> getPinnedEventsAfterDate(@NotNull Collection<DataSource> dataSources, @NotNull Instant startDate) {
+        return calendarDao.getPinnedEventsAfterDate(new ArrayList<>(dataSources), startDate);
+    }
+
     @NonNull
     public LiveData<Multiset<LocalDate>> getCountOnDays(@NonNull DataSource dataSource) {
         return getCountOnDays(singletonList(dataSource));

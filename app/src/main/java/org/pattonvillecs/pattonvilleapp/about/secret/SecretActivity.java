@@ -33,7 +33,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -101,11 +100,11 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
 
         sharedPreferences = PreferenceUtils.getSharedPreferences(SecretActivity.this);
 
-        wellButton = (ImageButton) findViewById(R.id.well_button);
-        text = (TextView) findViewById(R.id.well_text);
-        resetButton = (Button) findViewById(R.id.well_reset);
+        wellButton = findViewById(R.id.well_button);
+        text = findViewById(R.id.well_text);
+        resetButton = findViewById(R.id.well_reset);
 
-        Picasso.with(this)
+        Picasso.with()
                 .load(R.drawable.well)
                 .fit()
                 .centerInside()
@@ -128,7 +127,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
                         SecretActivity.this,
                         random -> bitmapConfetto,
                         new ConfettiSource(Math.round(event.getX()), Math.round(event.getY())),
-                        (ViewGroup) findViewById(android.R.id.content))
+                        findViewById(android.R.id.content))
                         .setVelocityX(0, 500)
                         .setVelocityY(0, 500)
                         .setEmissionDuration(0)

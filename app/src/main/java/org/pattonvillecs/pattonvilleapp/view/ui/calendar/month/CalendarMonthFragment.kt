@@ -124,6 +124,7 @@ class CalendarMonthFragment : DaggerFragment() {
                 FlexibleItemDecoration(context!!)
                         .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
                         .withDrawDividerOnLastItem(true))
+        event_recycler_view.isNestedScrollingEnabled = false
         event_recycler_view.adapter = eventAdapter
 
         calendarView.selectedDate = viewModel.getDate().toCalendarDay()

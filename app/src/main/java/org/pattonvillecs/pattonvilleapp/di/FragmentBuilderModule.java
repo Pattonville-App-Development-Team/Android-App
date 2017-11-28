@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp.di;
 
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -32,4 +33,8 @@ public abstract class FragmentBuilderModule {
     @ContributesAndroidInjector
     @PerFragment
     abstract CalendarFragment contributeCalendarFragment();
+
+    @ContributesAndroidInjector
+    @PerFragment
+    abstract HomeFragment contributeHomeFragment();
 }

@@ -65,7 +65,7 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
 
         holder.name.setText(this.name);
 
-        Picasso.with(context)
+        Picasso.with()
                 .load(imageRes)
                 .error(imageRes)
                 .fit()

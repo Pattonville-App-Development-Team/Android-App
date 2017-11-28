@@ -21,6 +21,7 @@ import android.app.Application;
 
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
+import org.pattonvillecs.pattonvilleapp.di.image.PicassoModule;
 import org.pattonvillecs.pattonvilleapp.di.job.FirebaseJobDispatcherModule;
 import org.pattonvillecs.pattonvilleapp.di.network.CalendarRetrofitServiceModule;
 
@@ -40,6 +41,8 @@ import dagger.android.AndroidInjector;
         AppDatabaseModule.class,
         CalendarRetrofitServiceModule.class,
         FirebaseJobDispatcherModule.class,
+        PicassoModule.class,
+
         ActivityBuilderModule.class,
         FragmentBuilderModule.class,
         ChildFragmentBuilderModule.class,

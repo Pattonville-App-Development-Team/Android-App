@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
 
@@ -33,6 +34,10 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.pattonvillecs.pattonvilleapp.preferences.SharedPreferenceLiveDataKt.booleanLiveData;
+import static org.pattonvillecs.pattonvilleapp.preferences.SharedPreferenceLiveDataKt.intLiveData;
+import static org.pattonvillecs.pattonvilleapp.preferences.SharedPreferenceLiveDataKt.stringSetLiveData;
 
 /**
  * Final class to handle retrieving saved preference values
@@ -76,6 +81,18 @@ public final class PreferenceUtils {
     public static int getHomePinnedAmount(Context context) {
         SharedPreferences sharedPrefs = getSharedPreferences(context);
         return sharedPrefs.getInt(HOME_PINNED_AMOUNT_KEY, 3);
+    }
+
+    public static LiveData<Integer> getHomeNewsLiveData(Context context) {
+        return intLiveData(getSharedPreferences(context), HOME_NEWS_AMOUNT_KEY, 3);
+    }
+
+    public static LiveData<Integer> getHomeEventsLiveData(Context context) {
+        return intLiveData(getSharedPreferences(context), HOME_EVENTS_AMOUNT_KEY, 3);
+    }
+
+    public static LiveData<Integer> getHomePinnedLiveData(Context context) {
+        return intLiveData(getSharedPreferences(context), HOME_PINNED_AMOUNT_KEY, 3);
     }
 
     public static boolean getNutrisliceIntent(Context context) {
@@ -123,18 +140,18 @@ public final class PreferenceUtils {
     }
 
     @NonNull
-    public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(SharedPreferences sharedPreferences) {
-        return Transformations.map(
-                SharedPreferenceLiveDataKt.stringSetLiveData(sharedPreferences, SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()),
-                PreferenceUtils::convertStringsToDataSources);
-    }
-
-    @NonNull
     public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(Context context) {
-        return getSelectedSchoolsLiveData(getSharedPreferences(context));
+        return Transformations.map(
+                stringSetLiveData(getSharedPreferences(context), SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()),
+                PreferenceUtils::convertStringsToDataSources);
     }
 
     public static boolean getCarouselVisible(Context context) {
         return getSharedPreferences(context).getBoolean(context.getString(R.string.key_carousel_visibility), true);
+    }
+
+    @NotNull
+    public static LiveData<Boolean> getCarouselVisibleLiveData(@NotNull Context context) {
+        return booleanLiveData(getSharedPreferences(context), context.getString(R.string.key_carousel_visibility), true);
     }
 }

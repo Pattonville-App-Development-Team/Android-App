@@ -90,6 +90,13 @@ public abstract class CalendarDao {
     @Transaction
     @Query("SELECT " + SELECT_PINNABLE_EVENTS
             + " FROM events"
+            + " WHERE start_date >= :firstDate AND " + WHERE_DATASOURCE_MARKER_EXISTS + " AND " + WHERE_EVENT_IS_PINNED
+            + " ORDER BY " + ORDER_BY_DEFAULT)
+    abstract LiveData<List<PinnableCalendarEvent>> getPinnedEventsAfterDate(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate);
+
+    @Transaction
+    @Query("SELECT " + SELECT_PINNABLE_EVENTS
+            + " FROM events"
             + " WHERE (start_date >= :firstDate) AND (end_date <= :lastDate) AND " + WHERE_DATASOURCE_MARKER_EXISTS
             + " ORDER BY " + ORDER_BY_DEFAULT)
     abstract LiveData<List<PinnableCalendarEvent>> getEventsBetweenDates(@NonNull List<DataSource> dataSources, @NonNull Instant firstDate, @NonNull Instant lastDate);

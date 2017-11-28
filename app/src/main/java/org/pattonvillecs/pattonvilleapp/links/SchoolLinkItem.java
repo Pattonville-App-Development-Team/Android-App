@@ -48,7 +48,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
     public void bindViewHolder(FlexibleAdapter adapter, SchoolLinkItemViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
 
-        Picasso.with(context)
+        Picasso.with()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes)
                 .fit()

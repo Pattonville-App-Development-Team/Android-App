@@ -45,16 +45,15 @@ import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
 
 /**
  * Activity that handles navigation through each fragment and accessible activities
  *
  * @author Nathan Skelton
  */
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
     private TabLayout mTabLayout;
     private NavigationView mNavigationView;
@@ -71,18 +70,18 @@ public class MainActivity extends AppCompatActivity
 
         checkAppIntro();
 
-        mTabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        mTabLayout = findViewById(R.id.main_tab_layout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) { // First run
             mNavigationView.setCheckedItem(R.id.nav_home);
@@ -244,7 +243,7 @@ public class MainActivity extends AppCompatActivity
         else if (fragment instanceof CalendarFragment) id = R.id.nav_calendar;
         else if (fragment instanceof CalendarPinnedFragment) id = R.id.nav_calendar;
         else return;
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         if (navigationView != null) {
             navigationView.setCheckedItem(id);
