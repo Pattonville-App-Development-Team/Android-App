@@ -84,7 +84,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByDataSource(DataSource.DISTRICT).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -96,7 +96,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByDataSource(DataSource.DISTRICT).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -108,7 +108,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -121,7 +121,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -133,7 +133,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -146,7 +146,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsByUid(DataSource.DISTRICT, calendarEvent.uid).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -158,7 +158,7 @@ class CalendarRepositoryTest {
 
         val dataSources = calendarRepository.getDataSources(calendarEvent.uid).awaitValue()
 
-        assertThat<Set<DataSource>>(dataSources, containsInAnyOrder(DataSource.DISTRICT))
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT))
     }
 
     @Test
@@ -170,7 +170,7 @@ class CalendarRepositoryTest {
 
         val dataSources = calendarRepository.getDataSources(calendarEvent.uid).awaitValue()
 
-        assertThat<Set<DataSource>>(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL))
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL))
     }
 
     @Test
@@ -184,7 +184,7 @@ class CalendarRepositoryTest {
 
         val dataSources = calendarRepository.getDataSources(calendarEvent1.uid).awaitValue()
 
-        assertThat<Set<DataSource>>(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL))
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT, DataSource.HIGH_SCHOOL))
     }
 
     @Test
@@ -197,7 +197,7 @@ class CalendarRepositoryTest {
 
         val dataSources = calendarRepository.getDataSources(calendarEvent.uid).awaitValue()
 
-        assertThat<Set<DataSource>>(dataSources, containsInAnyOrder(DataSource.DISTRICT))
+        assertThat(dataSources, containsInAnyOrder(DataSource.DISTRICT))
     }
 
     @Test
@@ -212,7 +212,7 @@ class CalendarRepositoryTest {
 
         val expectedCalendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(expectedCalendarEvent))
+        assertThat(calendarEvents, contains(expectedCalendarEvent))
     }
 
     @Test
@@ -227,7 +227,7 @@ class CalendarRepositoryTest {
 
         val expectedCalendarEvent = testEvent(pinned = false, dataSources = DataSource.DISTRICT)
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(expectedCalendarEvent))
+        assertThat(calendarEvents, contains(expectedCalendarEvent))
     }
 
     @Test
@@ -239,7 +239,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, Instant.ofEpochMilli(25000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -251,7 +251,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsBeforeDate(DataSource.DISTRICT, Instant.ofEpochMilli(5000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, `is`(empty()))
+        assertThat(calendarEvents, `is`(empty()))
     }
 
     @Test
@@ -263,7 +263,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsAfterDate(DataSource.DISTRICT, Instant.ofEpochMilli(5000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -275,7 +275,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsAfterDate(DataSource.DISTRICT, Instant.ofEpochMilli(25000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, `is`(empty()))
+        assertThat(calendarEvents, `is`(empty()))
     }
 
     @Test
@@ -287,7 +287,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(5000), Instant.ofEpochMilli(25000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEvent))
+        assertThat(calendarEvents, contains(calendarEvent))
     }
 
     @Test
@@ -299,7 +299,7 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(25000), Instant.ofEpochMilli(45000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, `is`(empty()))
+        assertThat(calendarEvents, `is`(empty()))
     }
 
     @Test
@@ -313,8 +313,8 @@ class CalendarRepositoryTest {
 
         val calendarEvents = calendarRepository.getEventsBetweenDates(DataSource.DISTRICT, Instant.ofEpochMilli(10000), Instant.ofEpochMilli(40000)).awaitValue()
 
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, hasSize(2))
-        assertThat<List<PinnableCalendarEvent>>(calendarEvents, contains(calendarEventFirst, calendarEventSecond))
+        assertThat(calendarEvents, hasSize(2))
+        assertThat(calendarEvents, contains(calendarEventFirst, calendarEventSecond))
     }
 
     @Test
