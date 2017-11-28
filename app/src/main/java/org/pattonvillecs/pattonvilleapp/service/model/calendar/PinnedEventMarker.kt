@@ -22,6 +22,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.ICalendarEvent
 
 /**
  * This class is a database row that contains the UID of a calendar event. If an event has a corresponding [PinnedEventMarker], that event is considered pinned.
@@ -41,7 +42,7 @@ data class PinnedEventMarker(@field:PrimaryKey
                              @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
                              val uid: String) {
 
-    constructor(calendarEvent: CalendarEvent) : this(calendarEvent.uid)
+    constructor(calendarEvent: ICalendarEvent) : this(calendarEvent.uid)
 
     companion object {
         /**
@@ -51,6 +52,6 @@ data class PinnedEventMarker(@field:PrimaryKey
          * @return a [PinnedEventMarker] using this [CalendarEvent]'s UID
          */
         @JvmStatic
-        fun CalendarEvent.pin(): PinnedEventMarker = PinnedEventMarker(this)
+        fun ICalendarEvent.pin(): PinnedEventMarker = PinnedEventMarker(this)
     }
 }

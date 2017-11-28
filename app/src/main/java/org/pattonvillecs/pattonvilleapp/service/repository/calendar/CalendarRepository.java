@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.ICalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase;
 import org.threeten.bp.Instant;
@@ -37,6 +38,8 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -170,7 +173,7 @@ public class CalendarRepository {
                         .collect(Collectors.toCollection(HashMultiset::create)));
     }
 
-    public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, List<DataSource> dataSources) {
+    public void insertEvent(@NonNull CalendarEvent calendarEvent, boolean pinned, Collection<DataSource> dataSources) {
         if (pinned) {
             calendarDao.insert(calendarEvent, Stream.of(dataSources).map(dataSource -> dataSource(calendarEvent, dataSource)).toList(), pin(calendarEvent));
         } else {
@@ -190,11 +193,18 @@ public class CalendarRepository {
         insertEvent(calendarEvent, false, dataSource);
     }
 
-    public void pinEvent(@NonNull CalendarEvent calendarEvent) {
+    public void insertEvent(@NonNull PinnableCalendarEvent pinnableCalendarEvent) {
+        if (pinnableCalendarEvent.getPinned())
+            calendarDao.insert(pinnableCalendarEvent.getCalendarEvent(), new ArrayList<>(pinnableCalendarEvent.getDataSourceMarkers()), pin(pinnableCalendarEvent.getCalendarEvent()));
+        else
+            calendarDao.insert(pinnableCalendarEvent.getCalendarEvent(), new ArrayList<>(pinnableCalendarEvent.getDataSourceMarkers()));
+    }
+
+    public void pinEvent(@NonNull ICalendarEvent calendarEvent) {
         calendarDao.insertPin(pin(calendarEvent));
     }
 
-    public void unpinEvent(@NonNull CalendarEvent calendarEvent) {
+    public void unpinEvent(@NonNull ICalendarEvent calendarEvent) {
         calendarDao.deletePin(pin(calendarEvent));
     }
 

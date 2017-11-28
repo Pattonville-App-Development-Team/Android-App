@@ -75,10 +75,8 @@
     *;
 }
 -keep,includedescriptorclasses class android.arch.persistence.room.**
--keepclassmembers,includedescriptorclasses class android.arch.lifecycle.** {
-    *;
-}
 -keep,includedescriptorclasses class android.arch.lifecycle.**
+-keep,includedescriptorclasses class kotlin.collections.** { *; }
 
 #Okio
 -dontwarn okio.**

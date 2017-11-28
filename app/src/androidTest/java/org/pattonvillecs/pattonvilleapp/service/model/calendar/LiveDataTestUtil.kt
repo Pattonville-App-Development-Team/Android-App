@@ -30,20 +30,17 @@ import java.util.concurrent.atomic.AtomicReference
  * @since 1.2.0
  */
 
-object LiveDataTestUtil {
-    @Throws(InterruptedException::class)
-    @JvmStatic
-    fun <T> LiveData<T>.awaitValue(): T {
-        val data = AtomicReference<T>()
-        val latch = CountDownLatch(1)
-        this.observeForever(object : Observer<T> {
-            override fun onChanged(t: T?) {
-                data.set(t)
-                latch.countDown()
-                this@awaitValue.removeObserver(this)
-            }
-        })
-        latch.await(2, TimeUnit.SECONDS)
-        return data.get()
-    }
+@Throws(InterruptedException::class)
+fun <T> LiveData<T>.awaitValue(): T {
+    val data = AtomicReference<T>()
+    val latch = CountDownLatch(1)
+    this.observeForever(object : Observer<T> {
+        override fun onChanged(t: T?) {
+            data.set(t)
+            latch.countDown()
+            this@awaitValue.removeObserver(this)
+        }
+    })
+    latch.await(2, TimeUnit.SECONDS)
+    return data.get()
 }

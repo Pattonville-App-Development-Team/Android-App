@@ -32,22 +32,20 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker
  */
 
 @Immutable
-data class PinnableCalendarEvent(@field:Embedded
-                                 val calendarEvent: CalendarEvent,
-                                 @field:ColumnInfo(name = "pinned")
-                                 val pinned: Boolean) : ICalendarEvent by calendarEvent, Parcelable {
-
-    @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
-    lateinit var dataSourceMarkers: Set<DataSourceMarker>
+data class PinnableCalendarEvent @JvmOverloads constructor(@field:Embedded
+                                                           val calendarEvent: CalendarEvent,
+                                                           @field:ColumnInfo(name = "pinned")
+                                                           val pinned: Boolean,
+                                                           @field:Relation(parentColumn = "uid", entityColumn = "uid", entity = DataSourceMarker::class)
+                                                           var dataSourceMarkers: Set<DataSourceMarker> = setOf()) : ICalendarEvent by calendarEvent, Parcelable {
 
     @delegate:Ignore
     val dataSources: Set<DataSource> by lazy { dataSourceMarkers.mapTo(mutableSetOf(), { it.dataSource }) }
 
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(CalendarEvent::class.java.classLoader),
-            parcel.readByte() != 0.toByte()) {
-        dataSourceMarkers = parcel.readParcelableArray(DataSourceMarker::class.java.classLoader).mapTo(mutableSetOf(), { it as DataSourceMarker })
-    }
+            parcel.readByte() != 0.toByte(),
+            parcel.readParcelableArray(DataSourceMarker::class.java.classLoader).mapTo(mutableSetOf(), { it as DataSourceMarker }))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
