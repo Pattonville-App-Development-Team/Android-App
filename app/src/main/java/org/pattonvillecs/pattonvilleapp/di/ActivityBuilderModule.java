@@ -17,6 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
+import org.pattonvillecs.pattonvilleapp.MainActivity;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
 
@@ -32,4 +33,8 @@ public abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     @PerActivity
     abstract CalendarEventDetailsActivity contributeCalendarEventDetailsActivity();
+
+    @ContributesAndroidInjector
+    @PerActivity
+    abstract MainActivity contributeMainActivity();
 }

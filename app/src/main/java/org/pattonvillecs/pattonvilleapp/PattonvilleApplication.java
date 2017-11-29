@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -35,6 +36,7 @@ import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask;
 import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
@@ -47,6 +49,8 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 
 import java.io.File;
@@ -66,11 +70,18 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+import kotlin.Unit;
+import kotlinx.coroutines.experimental.CommonPool;
+import kotlinx.coroutines.experimental.CoroutineStart;
 
 import static android.os.AsyncTask.THREAD_POOL_EXECUTOR;
+import static kotlinx.coroutines.experimental.DeferredKt.async;
 
 /**
- * Created by Mitchell Skaggs on 12/19/16.
+ * The main {@link android.app.Application} class of the Pattonville App.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
 public class PattonvilleApplication extends DaggerApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
@@ -136,6 +147,46 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Inject
     protected void createCalendarSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
         firebaseJobDispatcher.schedule(CalendarSyncJobService.getRecurringCalendarSyncJob(firebaseJobDispatcher));
+    }
+
+    /**
+     * This method transfers pinned events from the Content Provider database to the new Room Database.
+     *
+     * @since 1.2.0
+     */
+    @Inject
+    public void transferOldPinnedEvents(CalendarRepository calendarRepository) {
+        async(CommonPool.INSTANCE, CoroutineStart.DEFAULT, (coroutineScope, continuation) -> {
+
+            Cursor cursor = getContentResolver().query(PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+            Log.d(TAG, "Loaded old pinned events!");
+            Set<String> uids = new HashSet<>();
+            while (cursor != null && cursor.moveToNext()) {
+                uids.add(cursor.getString(1));
+            }
+            if (cursor != null)
+                cursor.close();
+            Log.d(TAG, "Old pinned events: " + uids);
+
+            calendarRepository.insertPins(Stream.of(uids).map(PinnedEventMarker::new).toList());
+            Log.d(TAG, "Inserted old pins into new database!");
+
+            Stream.of(uids).forEach(
+                    uid -> {
+                        Log.d(TAG, "Deleting pin \"" + uid + "\" from old database!");
+                        getContentResolver().delete(
+                                PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
+                                PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID + "=?",
+                                new String[]{uid});
+                    }
+            );
+
+            return Unit.INSTANCE;
+        });
     }
 
     @Override

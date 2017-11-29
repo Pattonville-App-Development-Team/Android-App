@@ -29,6 +29,7 @@ import com.google.common.collect.Multiset;
 import org.jetbrains.annotations.NotNull;
 import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.ICalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent;
@@ -203,6 +204,10 @@ public class CalendarRepository {
             calendarDao.insert(pinnableCalendarEvent.getCalendarEvent(), new ArrayList<>(pinnableCalendarEvent.getDataSourceMarkers()), pin(pinnableCalendarEvent.getCalendarEvent()));
         else
             calendarDao.insert(pinnableCalendarEvent.getCalendarEvent(), new ArrayList<>(pinnableCalendarEvent.getDataSourceMarkers()));
+    }
+
+    public void insertPins(@NonNull Collection<PinnedEventMarker> pinnedEventMarkers) {
+        calendarDao.insertPins(new ArrayList<>(pinnedEventMarkers));
     }
 
     public void pinEvent(@NonNull ICalendarEvent calendarEvent) {

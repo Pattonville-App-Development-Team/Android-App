@@ -30,7 +30,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -47,13 +46,16 @@ import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
 
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Activity that handles navigation through each fragment and accessible activities
  *
  * @author Nathan Skelton
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends DaggerAppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
     private TabLayout mTabLayout;
     private NavigationView mNavigationView;

@@ -156,6 +156,9 @@ public abstract class CalendarDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insertPin(@NonNull PinnedEventMarker pinnedEventMarker);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract void insertPins(@NonNull List<PinnedEventMarker> pinnedEventMarkers);
+
     @Delete
     abstract void deletePin(@NonNull PinnedEventMarker pinnedEventMarker);
 }
