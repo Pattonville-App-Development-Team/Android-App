@@ -37,7 +37,8 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-import static org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getActivity;
+import static org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.getActivity;
+
 
 /**
  * Created by skaggsm on 5/11/17.
@@ -75,7 +76,7 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
 
         holder.view.setOnClickListener(v -> {
             @SuppressWarnings("unchecked")
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(context),
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(v),
                     Pair.create(holder.image, "developer_image"),
                     Pair.create(holder.name, "developer_name"));
 

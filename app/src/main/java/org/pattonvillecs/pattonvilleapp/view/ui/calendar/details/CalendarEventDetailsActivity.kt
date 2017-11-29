@@ -33,9 +33,9 @@ import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.SpotlightUtils
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.Companion.getDataSourcesSpannableStringBuilder
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.details.CalendarEventDetailsActivityViewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId

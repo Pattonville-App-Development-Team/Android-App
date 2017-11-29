@@ -21,7 +21,6 @@ import net.fortuna.ical4j.data.CalendarBuilder
 import net.fortuna.ical4j.model.Calendar
 import okhttp3.ResponseBody
 import org.pattonvillecs.pattonvilleapp.DataSource
-import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask.fixICalStrings
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.io.StringReader
@@ -55,5 +54,15 @@ object CalendarConverters {
                     DataSource::class.java -> DataSourceConverter()
                     else -> null
                 }
+    }
+
+    private const val LINEBREAK_MATCHER = "(?:\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029])"
+
+    private fun fixICalStrings(iCalString: String): String {
+        return iCalString
+                .replace(("X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=(\\d+)T(\\d+)Z:AUTOMATIC" + LINEBREAK_MATCHER + "BEGIN:VEVENT").toRegex(), "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR;ACKNOWLEDGED=$1T$2Z:AUTOMATIC" + LINEBREAK_MATCHER + "END:VEVENT" + LINEBREAK_MATCHER + "BEGIN:VEVENT")
+                .replace("FREQ=;", "FREQ=YEARLY;")
+                .replace("DTSTART;VALUE=DATE-TIME:", "DTSTART;TZID=US/Central:")
+                .replace("DTEND;VALUE=DATE-TIME:", "DTEND;TZID=US/Central:")
     }
 }

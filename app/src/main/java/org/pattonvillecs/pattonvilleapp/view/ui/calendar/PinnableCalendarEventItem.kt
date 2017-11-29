@@ -17,8 +17,22 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.support.v4.content.res.ResourcesCompat
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.view.View
 import android.widget.TextView
+import com.annimon.stream.Collector
+import com.annimon.stream.Stream
+import com.annimon.stream.function.BiConsumer
+import com.annimon.stream.function.Function
+import com.annimon.stream.function.Supplier
 import com.varunest.sparkbutton.SparkButton
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem
@@ -32,12 +46,11 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getActivity
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem.getDataSourcesSpannableStringBuilder
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.ICalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.PinnableCalendarEventItemViewHolder
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.fix.CustomTypefaceSpan
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -83,8 +96,10 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
         })
 
         holder.view.onClick {
-            val activity = getActivity(it)
-            activity.startActivity(CalendarEventDetailsActivity.createIntent(activity, uid))
+            it?.let {
+                val activity = getActivity(it)
+                activity.startActivity(CalendarEventDetailsActivity.createIntent(activity, uid))
+            }
         }
     }
 
@@ -105,6 +120,50 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
         val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT)
                 .withLocale(Locale.getDefault())
                 .withZone(ZoneId.systemDefault())
+
+        @JvmStatic
+        fun getActivity(view: View): Activity {
+            return getActivity(view.context)
+        }
+
+        @JvmStatic
+        fun getActivity(context: Context): Activity {
+            var c = context
+            while (c is ContextWrapper) {
+                if (c is Activity) {
+                    return c
+                }
+                c = c.baseContext
+            }
+            throw IllegalStateException("Activity not found!")
+        }
+
+        @JvmStatic
+        fun getDataSourcesSpannableStringBuilder(dataSources: Collection<DataSource>, context: Context): SpannableStringBuilder {
+            return Stream.of(dataSources).map { dataSource ->
+                // \uf111 is a circle in Font Awesome. Supported on all devices
+                // \u00A0 is a non-breaking space, which prevents word wrap between the circle and name
+                val spannableString = SpannableString(("\uf111 " + dataSource.shortName).replace(' ', '\u00A0'))
+
+                spannableString.apply {
+                    setSpan(ForegroundColorSpan(dataSource.calendarColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(RelativeSizeSpan(1.25f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(CustomTypefaceSpan(ResourcesCompat.getFont(context, R.font.fontawesome_webfont)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            }.collect(object : Collector<SpannableString, SpannableStringBuilder, SpannableStringBuilder> {
+                override fun supplier(): Supplier<SpannableStringBuilder> {
+                    return Supplier { SpannableStringBuilder() }
+                }
+
+                override fun accumulator(): BiConsumer<SpannableStringBuilder, SpannableString> {
+                    return BiConsumer { value1, value2 -> value1.append(value2).append(", ") }
+                }
+
+                override fun finisher(): Function<SpannableStringBuilder, SpannableStringBuilder> {
+                    return Function { spannableStringBuilder -> spannableStringBuilder.delete(spannableStringBuilder.length - 2, spannableStringBuilder.length) }
+                }
+            })
+        }
     }
 
     class PinnableCalendarEventItemViewHolder(val view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader), HasCalendarRepository by adapter as HasCalendarRepository {

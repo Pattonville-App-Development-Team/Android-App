@@ -28,14 +28,10 @@ import com.annimon.stream.Stream;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.google.common.collect.Iterators;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
-import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
@@ -56,13 +52,11 @@ import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSync
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -94,10 +88,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
 
-    private TreeSet<EventFlexibleItem> calendarEvents;
-    private Set<DataSource> loadedCalendarDataSources;
-    private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
-
     private ConcurrentMap<DataSource, List<Faculty>> directoryData;
     private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
 
@@ -124,10 +114,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
 
-        calendarEvents = new TreeSet<>();
-        loadedCalendarDataSources = EnumSet.noneOf(DataSource.class);
-        runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
-
         directoryData = new ConcurrentHashMap<>();
         runningDirectoryAsyncTasks = Collections.synchronizedSet(new HashSet<DirectoryAsyncTask>());
 
@@ -138,7 +124,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setupFirebaseTopics();
-        setUpCalendarParsing();
         setUpNewsParsing();
         setUpDirectoryParsing();
         enableHttpResponseCache();
@@ -249,37 +234,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(THREAD_POOL_EXECUTOR);
     }
 
-    private void setUpCalendarParsing() {
-        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
-            @Override
-            public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> nowSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
-
-                Stream.of(loadedCalendarDataSources)
-                        .filter(dataSource -> !nowSelectedDataSources.contains(dataSource))
-                        .forEach(dataSource -> {
-                            Log.i(TAG, "keyChanged: Removing datasource " + dataSource + " from items");
-                            Stream.of(calendarEvents).forEach(eventFlexibleItem -> eventFlexibleItem.dataSources.remove(dataSource));
-                            //noinspection ResultOfMethodCallIgnored
-                            Iterators.removeIf(calendarEvents.iterator(), input -> input != null && input.dataSources.isEmpty());
-                        });
-
-                loadedCalendarDataSources.retainAll(nowSelectedDataSources); //Remove any DataSource from loaded list if they aren't present in the now selected ones
-
-                Set<DataSource> neededToExecute = EnumSet.copyOf(nowSelectedDataSources);
-                neededToExecute.removeAll(loadedCalendarDataSources); //Remove DataSources that are already loaded
-
-                if (neededToExecute.size() == 0)
-                    updateCalendarListeners();
-                else
-                    executeCalendarDataTasks(neededToExecute, false);
-            }
-        });
-
-        //Initial download of calendar
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), false);
-    }
-
     private void setUpNewsParsing() {
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
@@ -304,12 +258,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         Stream.of(dataSources)
                 .filter(dataSource -> dataSource.newsURL.isPresent())
                 .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
-    }
-
-    private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        Stream.of(dataSources)
-                .filter(dataSource -> dataSource.calendarURL.isPresent())
-                .forEach(dataSource -> new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
     }
 
     public Kryo borrowKryo() {
@@ -343,22 +291,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         onSharedPreferenceKeyChangedListeners.remove(onSharedPreferenceKeyChangedListener);
     }
 
-    private void updateCalendarListeners(CalendarParsingUpdateData data) {
-        Log.d(TAG, "Updating calendar listeners");
-        for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
-                if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
-                    Log.d(TAG, "Updating calendar listener " + pauseableListener);
-                    //noinspection unchecked
-                    ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
-                }
-            } else {
-                Log.d(TAG, "Skipping paused listener");
-            }
-        }
-    }
-
     private void updateDirectoryListeners(DirectoryParsingUpdateData data) {
         Log.d(TAG, "Updating directory listeners");
 
@@ -376,13 +308,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
                 Log.d(TAG, "Skipping paused listener");
             }
         }
-    }
-
-    /**
-     * Calls {@link PattonvilleApplication#updateCalendarListeners(CalendarParsingUpdateData)} with {@link PattonvilleApplication#getCurrentCalendarParsingUpdateData()} as the argument
-     */
-    public void updateCalendarListeners() {
-        updateCalendarListeners(getCurrentCalendarParsingUpdateData());
     }
 
     public void updateDirectoryListeners() {
@@ -412,10 +337,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "Calendar update listener paused!");
-                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
-                break;
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener paused!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
@@ -433,10 +354,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "Calendar update listener resumed!");
-                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
-                break;
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener resumed!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
@@ -458,22 +375,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void unregisterPauseableListener(PauseableListener<?> pauseableListener) {
         pauseableListeners.remove(pauseableListener);
-    }
-
-    private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
-        return new CalendarParsingUpdateData(calendarEvents, runningCalendarAsyncTasks);
-    }
-
-    public TreeSet<EventFlexibleItem> getCalendarEvents() {
-        return calendarEvents;
-    }
-
-    public Set<RetrieveCalendarDataAsyncTask> getRunningCalendarAsyncTasks() {
-        return runningCalendarAsyncTasks;
-    }
-
-    public void hardRefreshCalendarData() {
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
     }
 
     public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
@@ -515,10 +416,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
         return directoryData;
-    }
-
-    public Set<DataSource> getLoadedCalendarDataSources() {
-        return loadedCalendarDataSources;
     }
 
     public Set<DirectoryAsyncTask> getRunningDirectoryAsyncTasks() {
