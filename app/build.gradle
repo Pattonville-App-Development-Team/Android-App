@@ -60,6 +60,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+
+        //Needed to run instrumentation tests on API 19
+        testInstrumentationRunnerArguments.notClass = 'com.android.dex.DexIndexOverflowException'
     }
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
