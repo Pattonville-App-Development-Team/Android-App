@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about.detail;
+package org.pattonvillecs.pattonvilleapp.view.ui.about.detail;
 
 import android.content.Context;
 import android.content.Intent;

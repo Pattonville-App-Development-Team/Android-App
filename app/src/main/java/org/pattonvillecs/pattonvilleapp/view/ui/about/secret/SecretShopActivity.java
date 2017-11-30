@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about.secret;
+package org.pattonvillecs.pattonvilleapp.view.ui.about.secret;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import android.widget.Toast;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 
-import static org.pattonvillecs.pattonvilleapp.about.secret.SecretActivity.KEY_GP;
+import static org.pattonvillecs.pattonvilleapp.view.ui.about.secret.SecretActivity.KEY_GP;
 
 /**
  * Created by Mitchell on 5/13/2017.

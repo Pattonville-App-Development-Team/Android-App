@@ -94,20 +94,20 @@
             android:theme="@style/PSD.NoActionBar.Invisible" />
 
         <activity
-            android:name=".about.AboutActivity"
+            android:name=".view.ui.about.AboutActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".about.detail.AboutDetailActivity"
-            android:parentActivityName=".about.AboutActivity" />
+            android:name=".view.ui.about.detail.AboutDetailActivity"
+            android:parentActivityName=".view.ui.about.AboutActivity" />
 
         <activity
-            android:name=".about.secret.SecretActivity"
-            android:parentActivityName=".about.AboutActivity" />
+            android:name=".view.ui.about.secret.SecretActivity"
+            android:parentActivityName=".view.ui.about.AboutActivity" />
 
         <activity
-            android:name=".about.secret.SecretShopActivity"
-            android:parentActivityName=".about.secret.SecretActivity" />
+            android:name=".view.ui.about.secret.SecretShopActivity"
+            android:parentActivityName=".view.ui.about.secret.SecretActivity" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

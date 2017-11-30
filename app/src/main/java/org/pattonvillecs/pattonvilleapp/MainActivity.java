@@ -34,7 +34,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import org.pattonvillecs.pattonvilleapp.about.AboutActivity;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.links.PowerschoolActivity;
@@ -42,6 +41,7 @@ import org.pattonvillecs.pattonvilleapp.links.SchoolListActivity;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.AboutActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;

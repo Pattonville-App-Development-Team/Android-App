@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about;
+package org.pattonvillecs.pattonvilleapp.view.ui.about;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.view.View;
@@ -28,12 +30,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.about.detail.AboutDetailActivity;
-import org.pattonvillecs.pattonvilleapp.about.detail.LinkItem;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.detail.AboutDetailActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.detail.LinkItem;
 
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
@@ -41,12 +44,11 @@ import static org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendar
 
 
 /**
- * Created by skaggsm on 5/11/17.
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
 public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.DeveloperViewHolder, DeveloperHeaderItem> {
-    private static final String TAG = DeveloperItem.class.getSimpleName();
-
     private final String name;
     private final String text;
     private final int imageRes;
@@ -71,10 +73,10 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
                 .error(imageRes)
                 .fit()
                 .centerCrop()
-                .transform(new CircleTransformation())
+                .transform(CircleTransformation.INSTANCE)
                 .into(holder.image);
 
-        holder.view.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(v -> {
             @SuppressWarnings("unchecked")
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(v),
                     Pair.create(holder.image, "developer_image"),
@@ -101,8 +103,7 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
 
         DeveloperItem that = (DeveloperItem) o;
 
-        if (imageRes != that.imageRes) return false;
-        return text != null ? text.equals(that.text) : that.text == null;
+        return imageRes == that.imageRes && (text != null ? text.equals(that.text) : that.text == null);
 
     }
 
@@ -114,15 +115,21 @@ public class DeveloperItem extends AbstractSectionableItem<DeveloperItem.Develop
     }
 
     protected static class DeveloperViewHolder extends FlexibleViewHolder {
-        public final View view;
         public final TextView name;
         public final ImageView image;
 
         public DeveloperViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            this.view = view;
-            this.name = (TextView) view.findViewById(R.id.developer_name);
-            this.image = (ImageView) view.findViewById(R.id.developer_image);
+            this.name = view.findViewById(R.id.developer_name);
+            this.image = view.findViewById(R.id.developer_image);
+        }
+
+        @Override
+        public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
+            if (isForward)
+                AnimatorHelper.slideInFromBottomAnimator(animators, itemView, mAdapter.getRecyclerView());
+            else
+                AnimatorHelper.slideInFromTopAnimator(animators, itemView, mAdapter.getRecyclerView());
         }
     }
 }

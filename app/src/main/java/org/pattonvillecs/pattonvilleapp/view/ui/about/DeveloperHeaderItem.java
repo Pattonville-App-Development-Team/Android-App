@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about;
+package org.pattonvillecs.pattonvilleapp.view.ui.about;
 
+import android.animation.Animator;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,11 +27,13 @@ import org.pattonvillecs.pattonvilleapp.R;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
- * Created by skaggsm on 5/12/17.
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
 public class DeveloperHeaderItem extends AbstractHeaderItem<DeveloperHeaderItem.DeveloperHeaderItemViewHolder> {
@@ -75,7 +79,15 @@ public class DeveloperHeaderItem extends AbstractHeaderItem<DeveloperHeaderItem.
 
         public DeveloperHeaderItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            text = (TextView) view.findViewById(R.id.about_us_header_text);
+            text = view.findViewById(R.id.about_us_header_text);
+        }
+
+        @Override
+        public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
+            if (isForward)
+                AnimatorHelper.slideInFromBottomAnimator(animators, itemView, mAdapter.getRecyclerView());
+            else
+                AnimatorHelper.slideInFromTopAnimator(animators, itemView, mAdapter.getRecyclerView());
         }
     }
 }

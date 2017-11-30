@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp.di;
 
 import org.pattonvillecs.pattonvilleapp.MainActivity;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.detail.AboutDetailActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
 
 import dagger.Module;
@@ -37,4 +38,8 @@ public abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     @PerActivity
     abstract MainActivity contributeMainActivity();
+
+    @ContributesAndroidInjector
+    @PerActivity
+    abstract AboutDetailActivity contributeAboutDetailActivity();
 }

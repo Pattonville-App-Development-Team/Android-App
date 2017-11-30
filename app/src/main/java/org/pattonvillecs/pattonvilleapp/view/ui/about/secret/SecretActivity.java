@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about.secret;
+package org.pattonvillecs.pattonvilleapp.view.ui.about.secret;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -51,9 +52,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.pattonvillecs.pattonvilleapp.about.secret.SecretShopActivity.KEY_4K_CAMERAS;
-import static org.pattonvillecs.pattonvilleapp.about.secret.SecretShopActivity.KEY_HD_CAMERAS;
-import static org.pattonvillecs.pattonvilleapp.about.secret.SecretShopActivity.KEY_SD_CAMERAS;
+import static org.pattonvillecs.pattonvilleapp.view.ui.about.secret.SecretShopActivity.KEY_4K_CAMERAS;
+import static org.pattonvillecs.pattonvilleapp.view.ui.about.secret.SecretShopActivity.KEY_HD_CAMERAS;
+import static org.pattonvillecs.pattonvilleapp.view.ui.about.secret.SecretShopActivity.KEY_SD_CAMERAS;
 
 /**
  * Created by skaggsm on 5/12/17.
@@ -91,6 +92,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

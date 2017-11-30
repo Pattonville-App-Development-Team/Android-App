@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.about.secret;
+package org.pattonvillecs.pattonvilleapp.view.ui.about.secret;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +23,8 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 
 import org.pattonvillecs.pattonvilleapp.R;
-import org.pattonvillecs.pattonvilleapp.about.DeveloperHeaderItem;
-import org.pattonvillecs.pattonvilleapp.about.DeveloperItem;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.DeveloperHeaderItem;
+import org.pattonvillecs.pattonvilleapp.view.ui.about.DeveloperItem;
 
 import java.util.List;
 
@@ -46,18 +46,18 @@ public class SecretDeveloperItem extends DeveloperItem {
         holder.image.setImageDrawable(null);
         holder.image.setBackground(null);
 
-        holder.view.setBackground(null);
-        holder.view.setOnClickListener(null);
+        holder.itemView.setBackground(null);
+        holder.itemView.setOnClickListener(null);
 
         holder.name.setText(null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.view.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless}).getResourceId(0, -1));
+            holder.itemView.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackgroundBorderless}).getResourceId(0, -1));
         } else {
-            holder.view.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackground}).getResourceId(0, -1));
+            holder.itemView.setBackgroundResource(context.obtainStyledAttributes(new int[]{R.attr.selectableItemBackground}).getResourceId(0, -1));
         }
 
-        holder.view.setOnLongClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             context.startActivity(new Intent(context, SecretActivity.class));
             return true;
         });
