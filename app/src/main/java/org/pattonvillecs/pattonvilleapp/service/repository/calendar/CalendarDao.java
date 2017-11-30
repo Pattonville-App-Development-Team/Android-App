@@ -139,6 +139,8 @@ public abstract class CalendarDao {
     abstract void updateAllIgnore(@NonNull List<CalendarEvent> calendarEvents, @NonNull List<DataSourceMarker> dataSourceMarkers);
 
     /**
+     * Needed because {@link OnConflictStrategy#REPLACE} deletes first, which causes pinned events to be cascade deleted.
+     *
      * @see <a href="https://en.wiktionary.org/wiki/upsert">Upsert</a>
      */
     @Transaction
