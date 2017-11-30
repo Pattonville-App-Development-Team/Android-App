@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -33,6 +32,7 @@ import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.events.CalendarEventsFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.month.CalendarMonthFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import javax.inject.Inject
 
 /**
@@ -74,7 +74,7 @@ class CalendarFragment : DaggerFragment() {
         Log.i(TAG, "onCreate called")
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProviders.of(this).get(CalendarFragmentViewModel::class.java)
+        viewModel = getViewModel()
 
         viewModel.firebaseJobDispatcher = firebaseJobDispatcher
 

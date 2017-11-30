@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.about.detail
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_about_detail.*
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.view.ui.about.CircleTransformation
 import org.pattonvillecs.pattonvilleapp.viewmodel.about.detail.AboutDetailActivityViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import javax.inject.Inject
 
 /**
@@ -67,7 +67,7 @@ class AboutDetailActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_detail)
 
-        val viewModel = ViewModelProviders.of(this).get(AboutDetailActivityViewModel::class.java)
+        val viewModel = getViewModel<AboutDetailActivityViewModel>()
 
         viewModel.setDeveloperName(intent.getStringExtra(KEY_NAME))
         viewModel.setDeveloperText(intent.getStringExtra(KEY_TEXT))

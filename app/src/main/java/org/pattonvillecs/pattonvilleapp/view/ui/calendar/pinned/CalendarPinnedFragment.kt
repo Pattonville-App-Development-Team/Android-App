@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned
 
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +33,7 @@ import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.pinned.CalendarPinnedFragmentViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import javax.inject.Inject
 
 /**
@@ -54,7 +54,7 @@ class CalendarPinnedFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(CalendarPinnedFragmentViewModel::class.java)
+        viewModel = getViewModel()
         viewModel.calendarRepository = calendarRepository
     }
 

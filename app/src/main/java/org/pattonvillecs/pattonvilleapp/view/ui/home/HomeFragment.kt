@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.home
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
@@ -36,6 +35,7 @@ import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepo
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.home.HomeFragmentViewModel
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ class HomeFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel::class.java)
+        viewModel = getViewModel()
 
         viewModel.calendarRepository = calendarRepository
     }

@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar.details
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -37,6 +36,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCal
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.Companion.getDataSourcesSpannableStringBuilder
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.details.CalendarEventDetailsActivityViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -110,7 +110,7 @@ class CalendarEventDetailsActivity : DaggerAppCompatActivity() {
 
         eventUid = intent.getStringExtra(CALENDAR_EVENT_KEY)
 
-        viewModel = ViewModelProviders.of(this).get(CalendarEventDetailsActivityViewModel::class.java)
+        viewModel = getViewModel()
         viewModel.calendarRepository = calendarRepository
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

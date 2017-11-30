@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar.events
 
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
@@ -38,6 +37,7 @@ import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.events.CalendarEventsFragmentViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -65,7 +65,7 @@ class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener 
         setHasOptionsMenu(true)
         firstInflationAfterCreation = savedInstanceState == null
 
-        viewModel = ViewModelProviders.of(this).get(CalendarEventsFragmentViewModel::class.java)
+        viewModel = getViewModel()
         viewModel.calendarRepository = calendarRepository
     }
 

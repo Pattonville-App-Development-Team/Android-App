@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar.month
 
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.annotation.ColorInt
@@ -44,6 +43,7 @@ import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepo
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.IFlexibleHasStartDateHasEndDate
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.month.CalendarMonthFragmentViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
@@ -87,7 +87,7 @@ class CalendarMonthFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProviders.of(this).get(CalendarMonthFragmentViewModel::class.java)
+        viewModel = getViewModel()
 
         viewModel.calendarRepository = calendarRepository
     }

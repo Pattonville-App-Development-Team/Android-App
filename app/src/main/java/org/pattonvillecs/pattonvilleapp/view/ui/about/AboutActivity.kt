@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.about
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -28,6 +27,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import kotlinx.android.synthetic.main.activity_about.*
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.viewmodel.about.AboutActivityViewModel
+import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 
 /**
  * This Activity displays a grid of the developers who worked on the project, organized by team. The blank space at the end of the list may be long-pressed to reveal an easter egg.
@@ -38,24 +38,14 @@ import org.pattonvillecs.pattonvilleapp.viewmodel.about.AboutActivityViewModel
 
 class AboutActivity : AppCompatActivity() {
 
-    private lateinit var aboutAdapter: FlexibleAdapter<IFlexible<*>>
-
-    private lateinit var viewModel: AboutActivityViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "About Us"
         setContentView(R.layout.activity_about)
 
-        viewModel = ViewModelProviders.of(this).get(AboutActivityViewModel::class.java)
+        val viewModel = getViewModel<AboutActivityViewModel>()
 
-        viewModel.developers.observe(this::getLifecycle) {
-            it?.let {
-                aboutAdapter.updateDataSet(it, true)
-            }
-        }
-
-        aboutAdapter = FlexibleAdapter(null)
+        val aboutAdapter = FlexibleAdapter<IFlexible<*>>(null)
         aboutAdapter.setDisplayHeadersAtStartUp(true)
                 .setAnimationEntryStep(false)
                 .setAnimationOnScrolling(true)
@@ -63,17 +53,17 @@ class AboutActivity : AppCompatActivity() {
 
         val manager = SmoothScrollGridLayoutManager(this, 2)
         manager.spanSizeLookup = FunctionalSpanSizeLookup {
-            if (aboutAdapter.isHeader(aboutAdapter.getItem(it))) {
-                //Headers occupy 2 spans, which is the entire grid
-                2
-            } else {
-                //Normally occupy 1 span
-                1
-            }
+            if (aboutAdapter.isHeader(aboutAdapter.getItem(it))) 2 else 1
         }
         about_us_recyclerview.layoutManager = manager
         about_us_recyclerview.itemAnimator = FlexibleItemAnimator()
         about_us_recyclerview.adapter = aboutAdapter
+
+        viewModel.developers.observe(this::getLifecycle) {
+            it?.let {
+                aboutAdapter.updateDataSet(it, true)
+            }
+        }
     }
 
     private class FunctionalSpanSizeLookup(val lookup: (position: Int) -> Int) : GridLayoutManager.SpanSizeLookup() {
