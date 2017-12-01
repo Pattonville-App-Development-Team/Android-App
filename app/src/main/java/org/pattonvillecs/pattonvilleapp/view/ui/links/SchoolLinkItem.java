@@ -47,8 +47,6 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, SchoolLinkItemViewHolder holder, int position, List payloads) {
-        Context context = adapter.getRecyclerView().getContext();
-
         Picasso.with()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes)
@@ -58,7 +56,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
 
         holder.schoolName.setText(dataSource.name);
 
-        holder.itemView.setOnClickListener(v -> onClick(context));
+        holder.itemView.setOnClickListener(v -> onClick(v.getContext()));
     }
 
     protected abstract void onClick(Context context);
@@ -89,7 +87,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
         return dataSource != null ? dataSource.hashCode() : 0;
     }
 
-    static class SchoolLinkItemViewHolder extends FlexibleViewHolder {
+    class SchoolLinkItemViewHolder extends FlexibleViewHolder {
         final ImageView schoolMascot;
         final TextView schoolName;
 

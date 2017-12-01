@@ -64,8 +64,8 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 
-import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
 import static org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
+import static org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper.showSpotlight;
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public static final String KEY_DATASOURCES = "dataSources";

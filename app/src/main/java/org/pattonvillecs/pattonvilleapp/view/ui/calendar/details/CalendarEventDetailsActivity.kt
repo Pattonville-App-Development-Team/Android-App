@@ -31,10 +31,10 @@ import kotlinx.android.synthetic.main.activity_calendar_event_details.*
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.SpotlightUtils
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.Companion.getDataSourcesSpannableStringBuilder
+import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.showSpotlightOnMenuItem
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.details.CalendarEventDetailsActivityViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDateTime
@@ -99,7 +99,7 @@ class CalendarEventDetailsActivity : DaggerAppCompatActivity() {
         menuInflater.inflate(R.menu.activity_calendar_detail, menu)
         addToCalendarItem = menu.findItem(R.id.action_add_to_calendar)
 
-        SpotlightUtils.showSpotlightOnMenuItem(this, R.id.action_add_to_calendar, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar")
+        showSpotlightOnMenuItem(R.id.action_add_to_calendar, "CalendarEventDetailsActivity_FABAddToCalendar", "Want to keep track of this event?\nAdd it to your personal calendar.", "Add To Calendar")
 
         return true
     }

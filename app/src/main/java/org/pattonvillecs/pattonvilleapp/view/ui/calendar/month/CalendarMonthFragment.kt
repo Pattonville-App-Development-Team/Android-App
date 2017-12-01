@@ -36,12 +36,12 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_month.*
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.SpotlightHelper
-import org.pattonvillecs.pattonvilleapp.SpotlightUtils
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.IFlexibleHasStartDateHasEndDate
+import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper
+import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.showSpotlightOnMenuItem
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.month.CalendarMonthFragmentViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDate
@@ -95,9 +95,7 @@ class CalendarMonthFragment : DaggerFragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_calendar_action_bar_menu_goto_today, menu)
-
-        SpotlightUtils.showSpotlightOnMenuItem(activity!!,
-                R.id.action_goto_today,
+        activity?.showSpotlightOnMenuItem(R.id.action_goto_today,
                 "CalendarMonthFragment_MenuButtonGoToCurrentDay",
                 "Tap here to return to the current day.",
                 "Today")

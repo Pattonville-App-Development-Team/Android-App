@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.view.ui.spotlight;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -26,6 +26,8 @@ import android.view.View;
 
 import com.wooplr.spotlight.SpotlightView;
 import com.wooplr.spotlight.utils.SpotlightListener;
+
+import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
