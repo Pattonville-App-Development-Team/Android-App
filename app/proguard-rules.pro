@@ -90,3 +90,7 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+
+#CheckerFramework
+-dontwarn afu.org.checkerframework.**
+-dontwarn org.checkerframework.**

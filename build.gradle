@@ -19,7 +19,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.0'
-    ext.support_version = '27.0.1'
+    ext.support_version = '27.0.2'
     ext.firebase_version = '11.6.2'
     ext.arch_version = '1.0.0'
     ext.dagger_version = '2.13'
@@ -35,6 +35,7 @@ buildscript {
         classpath 'com.google.gms:google-services:3.1.1'
         classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.13"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

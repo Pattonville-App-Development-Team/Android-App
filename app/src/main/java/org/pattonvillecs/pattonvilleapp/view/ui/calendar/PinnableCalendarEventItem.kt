@@ -27,6 +27,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.annimon.stream.Collector
 import com.annimon.stream.Stream
@@ -90,7 +91,7 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
         holder.shortSchoolName.text = getDataSourcesSpannableStringBuilder(pinnableCalendarEvent.dataSources.sortedWith(DataSource.DEFAULT_ORDERING), adapter.recyclerView.context)
 
         holder.sparkButton.isChecked = pinnableCalendarEvent.pinned
-        holder.sparkButton.setEventListener({ _, buttonState ->
+        holder.sparkButton.setEventListener(FunctionalSparkButtonEventListener { _: ImageView?, buttonState: Boolean ->
             if (buttonState) bg { holder.calendarRepository.pinEvent(pinnableCalendarEvent.calendarEvent) }
             else bg { holder.calendarRepository.unpinEvent(pinnableCalendarEvent.calendarEvent) }
         })
