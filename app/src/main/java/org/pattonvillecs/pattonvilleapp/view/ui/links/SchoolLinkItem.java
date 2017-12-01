@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.links;
+package org.pattonvillecs.pattonvilleapp.view.ui.links;
 
 import android.content.Context;
 import android.view.View;
@@ -34,7 +34,8 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 /**
- * Created by Mitchell on 5/28/2017.
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
 public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem.SchoolLinkItemViewHolder> {
@@ -57,7 +58,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
 
         holder.schoolName.setText(dataSource.name);
 
-        holder.view.setOnClickListener(v -> SchoolLinkItem.this.onClick(context));
+        holder.itemView.setOnClickListener(v -> onClick(context));
     }
 
     protected abstract void onClick(Context context);
@@ -91,14 +92,11 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
     static class SchoolLinkItemViewHolder extends FlexibleViewHolder {
         final ImageView schoolMascot;
         final TextView schoolName;
-        final View view;
 
         public SchoolLinkItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-
-            this.view = view;
-            this.schoolMascot = (ImageView) view.findViewById(R.id.school_mascot);
-            this.schoolName = (TextView) view.findViewById(R.id.school_name);
+            this.schoolMascot = view.findViewById(R.id.school_mascot);
+            this.schoolName = view.findViewById(R.id.school_name);
         }
     }
 }

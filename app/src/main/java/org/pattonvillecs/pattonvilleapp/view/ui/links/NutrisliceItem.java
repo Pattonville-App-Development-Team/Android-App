@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.links;
+package org.pattonvillecs.pattonvilleapp.view.ui.links;
 
 import android.content.Context;
 import android.content.Intent;

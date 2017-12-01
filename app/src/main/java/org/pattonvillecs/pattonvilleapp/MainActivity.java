@@ -17,9 +17,9 @@
 
 package org.pattonvillecs.pattonvilleapp;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,15 +36,16 @@ import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
-import org.pattonvillecs.pattonvilleapp.links.PowerschoolActivity;
-import org.pattonvillecs.pattonvilleapp.links.SchoolListActivity;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
+import org.pattonvillecs.pattonvilleapp.service.model.links.SchoolListType;
 import org.pattonvillecs.pattonvilleapp.view.ui.about.AboutActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.links.PowerschoolActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.links.SchoolListActivity;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
@@ -158,7 +159,7 @@ public class MainActivity extends DaggerAppCompatActivity implements NavigationV
                 break;
 
             case R.id.nav_peachjar:
-                startActivity(SchoolListActivity.newInstance(this, true));
+                startActivity(SchoolListActivity.newInstance(this, SchoolListType.PEACHJAR));
                 break;
 
             case R.id.nav_settings:
@@ -207,26 +208,20 @@ public class MainActivity extends DaggerAppCompatActivity implements NavigationV
     }
 
     private void launchNutrislice() {
-
         if (PreferenceUtils.getNutrisliceIntent(getApplicationContext())) {
+            PackageManager packageManager = getPackageManager();
+            String nutrisliceId = getString(R.string.package_name_nutrislice);
 
-            // If app installed, launch, if not, open play store to it
-            if (getPackageManager().getLaunchIntentForPackage(
-                    getString(R.string.package_name_nutrislice)) != null) {
-                startActivity(getPackageManager().getLaunchIntentForPackage(
-                        getString(R.string.package_name_nutrislice)));
+            // If app is installed, launch it
+            Intent nutrisliceIntent = packageManager.getLaunchIntentForPackage(nutrisliceId);
+            if (nutrisliceIntent != null) {
+                startActivity(nutrisliceIntent);
             } else {
-
-                // Open store app if there, if not open in browser
-                try {
-                    launchWebsite("market://details?id=" + getString(R.string.package_name_nutrislice));
-                } catch (ActivityNotFoundException e) {
-                    launchWebsite("https://play.google.com/store/apps/details?id="
-                            + getString(R.string.package_name_nutrislice));
-                }
+                // Else launch the store page
+                launchWebsite("https://play.google.com/store/apps/details?id=" + nutrisliceId);
             }
         } else {
-            startActivity(SchoolListActivity.newInstance(this, false));
+            startActivity(SchoolListActivity.newInstance(this, SchoolListType.NUTRISLICE));
         }
     }
 

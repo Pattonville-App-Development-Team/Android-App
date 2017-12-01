@@ -154,7 +154,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
 
     //RecyclerView improvements
-    implementation 'eu.davidea:flexible-adapter:5.0.0-rc3'
+    implementation 'eu.davidea:flexible-adapter:5.0.0-SNAPSHOT'
     implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b1'
 
     //Java 8 streams

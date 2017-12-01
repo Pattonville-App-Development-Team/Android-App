@@ -15,24 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.preferences;
+package org.pattonvillecs.pattonvilleapp.view.ui.links;
 
-import java.util.Collections;
-import java.util.Set;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
 /**
- * Created by Mitchell Skaggs on 1/26/17.
+ * Created by Mitchell on 5/28/2017.
  */
 
-public abstract class SchoolSelectionPreferenceListener implements OnSharedPreferenceKeyChangedListener {
-    private static final Set<String> keys;
-
-    static {
-        keys = Collections.singleton(PreferenceUtils.SCHOOL_SELECTION_PREFERENCE_KEY);
+public class PeachjarItem extends SchoolLinkItem {
+    public PeachjarItem(DataSource dataSource) {
+        super(dataSource);
     }
 
     @Override
-    public Set<String> getListenedKeys() {
-        return keys;
+    protected void onClick(Context context) {
+        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(dataSource.peachjarLink.get())));
     }
 }

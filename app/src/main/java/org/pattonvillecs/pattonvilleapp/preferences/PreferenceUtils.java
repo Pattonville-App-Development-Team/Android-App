@@ -47,11 +47,6 @@ import static org.pattonvillecs.pattonvilleapp.preferences.SharedPreferenceLiveD
 public final class PreferenceUtils {
     public static final String APP_INTRO_FIRST_START_PREFERENCE_KEY = "first_start";
     public static final String SCHOOL_SELECTION_PREFERENCE_KEY = "school_selection";
-    public static final String POWERSCHOOL_INTENT_PREFERENCE_KEY = "powerschool_intent";
-    public static final String NUTRISLICE_INTENT_PREFERENCE_KEY = "nutrislice_intent";
-    public static final String HOME_NEWS_AMOUNT_KEY = "home_news_amount";
-    public static final String HOME_EVENTS_AMOUNT_KEY = "home_events_amount";
-    public static final String HOME_PINNED_AMOUNT_KEY = "home_pinned_amount";
 
     /**
      * Private constructor to prevent the creation of objects of this class
@@ -60,44 +55,29 @@ public final class PreferenceUtils {
     }
 
     public static Set<DataSource> getSelectedSchoolsSet(Context context) {
-        return getSelectedSchoolsSet(getSharedPreferences(context));
+        return convertStringsToDataSources(getSharedPreferences(context).getStringSet(context.getString(R.string.key_school_selection), new HashSet<>()));
     }
 
     public static boolean getPowerSchoolIntent(Context context) {
         SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getBoolean(POWERSCHOOL_INTENT_PREFERENCE_KEY, false);
-    }
-
-    public static int getHomeNewsAmount(Context context) {
-        SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getInt(HOME_NEWS_AMOUNT_KEY, 3);
-    }
-
-    public static int getHomeEventsAmount(Context context) {
-        SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getInt(HOME_EVENTS_AMOUNT_KEY, 3);
-    }
-
-    public static int getHomePinnedAmount(Context context) {
-        SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getInt(HOME_PINNED_AMOUNT_KEY, 3);
+        return sharedPrefs.getBoolean(context.getString(R.string.key_powerschool_intent), false);
     }
 
     public static LiveData<Integer> getHomeNewsLiveData(Context context) {
-        return intLiveData(getSharedPreferences(context), HOME_NEWS_AMOUNT_KEY, 3);
+        return intLiveData(getSharedPreferences(context), context.getString(R.string.key_home_newsamount), 3);
     }
 
     public static LiveData<Integer> getHomeEventsLiveData(Context context) {
-        return intLiveData(getSharedPreferences(context), HOME_EVENTS_AMOUNT_KEY, 3);
+        return intLiveData(getSharedPreferences(context), context.getString(R.string.key_home_eventsamount), 3);
     }
 
     public static LiveData<Integer> getHomePinnedLiveData(Context context) {
-        return intLiveData(getSharedPreferences(context), HOME_PINNED_AMOUNT_KEY, 3);
+        return intLiveData(getSharedPreferences(context), context.getString(R.string.key_home_pinnedamount), 3);
     }
 
     public static boolean getNutrisliceIntent(Context context) {
         SharedPreferences sharedPrefs = getSharedPreferences(context);
-        return sharedPrefs.getBoolean(NUTRISLICE_INTENT_PREFERENCE_KEY, false);
+        return sharedPrefs.getBoolean(context.getString(R.string.key_nutrislice_intent), false);
     }
 
     @NonNull
@@ -105,7 +85,7 @@ public final class PreferenceUtils {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
-    public static Set<DataSource> convertStringsToDataSources(Set<String> strings) {
+    private static Set<DataSource> convertStringsToDataSources(Set<String> strings) {
         return Stream.of(strings)
                 .map(s -> {
                     switch (s) {
@@ -135,19 +115,11 @@ public final class PreferenceUtils {
                 }).collect(() -> EnumSet.of(DataSource.DISTRICT), Collection::add);
     }
 
-    public static Set<DataSource> getSelectedSchoolsSet(SharedPreferences sharedPreferences) {
-        return convertStringsToDataSources(sharedPreferences.getStringSet(SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()));
-    }
-
     @NonNull
     public static LiveData<Set<DataSource>> getSelectedSchoolsLiveData(Context context) {
         return Transformations.map(
-                stringSetLiveData(getSharedPreferences(context), SCHOOL_SELECTION_PREFERENCE_KEY, new HashSet<>()),
+                stringSetLiveData(getSharedPreferences(context), context.getString(R.string.key_school_selection), new HashSet<>()),
                 PreferenceUtils::convertStringsToDataSources);
-    }
-
-    public static boolean getCarouselVisible(Context context) {
-        return getSharedPreferences(context).getBoolean(context.getString(R.string.key_carousel_visibility), true);
     }
 
     @NotNull

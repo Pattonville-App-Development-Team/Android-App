@@ -15,25 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.links;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-
-import org.pattonvillecs.pattonvilleapp.DataSource;
+package org.pattonvillecs.pattonvilleapp.service.model.links
 
 /**
- * Created by Mitchell on 5/28/2017.
+ * Created by Mitchell Skaggs on 11/30/2017.
  */
-
-public class PeachjarItem extends SchoolLinkItem {
-    public PeachjarItem(DataSource dataSource) {
-        super(dataSource);
-    }
-
-    @Override
-    protected void onClick(Context context) {
-        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(dataSource.peachjarLink.get())));
-    }
+enum class SchoolListType {
+    PEACHJAR,
+    NUTRISLICE
 }

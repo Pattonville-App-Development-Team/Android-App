@@ -203,7 +203,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
 
                 FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
@@ -238,7 +238,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
 
                 Stream.of(newsData.keySet())
                         .filter(dataSource -> !newSelectedDataSources.contains(dataSource))
