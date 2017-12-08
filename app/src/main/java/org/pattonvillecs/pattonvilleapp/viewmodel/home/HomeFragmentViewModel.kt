@@ -29,7 +29,7 @@ import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepo
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.switchMap
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.zip
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.zipTo
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 
@@ -46,28 +46,32 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
     val homeNewsAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomeNewsLiveData(getApplication()) }
     val homeCalendarAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomeEventsLiveData(getApplication()) }
     val homePinnedAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomePinnedLiveData(getApplication()) }
-    val selectedDatasources: LiveData<Set<DataSource>> by lazy { PreferenceUtils.getSelectedSchoolsLiveData(getApplication()) }
+    private val selectedDataSources: LiveData<Set<DataSource>> by lazy { PreferenceUtils.getSelectedSchoolsLiveData(getApplication()) }
 
     val newsArticles: LiveData<List<NewsArticle>> by lazy {
         homeNewsAmountPreference.switchMap { amount ->
-            PauseableListenerLiveData<NewsParsingUpdateData>(NewsParsingUpdateData.NEWS_LISTENER_ID, getApplication<PattonvilleApplication>()).map {
-                it.newsData.values.flatMap { it }.sortedByDescending { it.publishDate }.take(amount)
+            PauseableListenerLiveData<NewsParsingUpdateData>(NewsParsingUpdateData.NEWS_LISTENER_ID, getApplication<PattonvilleApplication>()).map { articleList ->
+                articleList.newsData.values.flatMap { it }.sortedByDescending { it.publishDate }.take<NewsArticle>(amount)
             }
         }
 
     }
 
     val recentCalendarEvents: LiveData<List<PinnableCalendarEventItem>> by lazy {
-        homeCalendarAmountPreference.zip(selectedDatasources).switchMap { pair ->
+        homeCalendarAmountPreference.zipTo(selectedDataSources).switchMap { pair ->
             calendarRepository.getEventsAfterDate(pair.second.toList(), LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
-                    .map { it.take(pair.first).map { PinnableCalendarEventItem(it) } }
+                    .map { eventList ->
+                        eventList.take(pair.first).map { PinnableCalendarEventItem(it) }
+                    }
         }
     }
 
     val recentPinnedCalendarEvents: LiveData<List<PinnableCalendarEventItem>> by lazy {
-        homeCalendarAmountPreference.zip(selectedDatasources).switchMap { pair ->
+        homeCalendarAmountPreference.zipTo(selectedDataSources).switchMap { pair ->
             calendarRepository.getPinnedEventsAfterDate(pair.second.toList(), LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
-                    .map { it.take(pair.first).map { PinnableCalendarEventItem(it) } }
+                    .map { pinnedEventList ->
+                        pinnedEventList.take(pair.first).map { PinnableCalendarEventItem(it) }
+                    }
         }
     }
 }

@@ -61,22 +61,44 @@ fun <A, B> zipLiveData(a: LiveData<A>, b: LiveData<B>): LiveData<Pair<A, B>> {
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.zip(b: LiveData<B>): LiveData<Pair<A, B>> = zipLiveData(this, b)
+fun <A, B> LiveData<A>.zipTo(b: LiveData<B>): LiveData<Pair<A, B>> = zipLiveData(this, b)
 
 /**
- * This is an extension function that calls to [Transformations.map].
+ * This is an extension function that calls to [Transformations.map]. If null is received, null is returned instead of calling the provided function.
  *
  * @see Transformations.map
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.map(function: (A) -> B): LiveData<B> = Transformations.map(this, function)
+fun <A, B> LiveData<A>.map(function: (A) -> B): LiveData<B> = Transformations.map(this) { it: A? ->
+    if (it == null) null else function(it)
+}
 
 /**
- * This is an extension function that calls to [Transformations.switchMap].
+ * This is an extension function that calls to [Transformations.map]. It exposes the possibilities of receiving and returning null.
+ *
+ * @see Transformations.map
+ * @since 1.2.0
+ * @author Mitchell Skaggs
+ */
+fun <A, B> LiveData<A>.mapNullable(function: (A?) -> B?): LiveData<B> = Transformations.map(this, function)
+
+/**
+ * This is an extension function that calls to [Transformations.switchMap]. If null is received, null is returned instead of calling the provided function.
  *
  * @see Transformations.switchMap
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.switchMap(function: (A) -> LiveData<B>): LiveData<B> = Transformations.switchMap(this, function)
+fun <A, B> LiveData<A>.switchMap(function: (A) -> LiveData<B>): LiveData<B> = Transformations.switchMap(this) {
+    if (it == null) null else function(it)
+}
+
+/**
+ * This is an extension function that calls to [Transformations.switchMap]. It exposes the possibilities of receiving and returning null.
+ *
+ * @see Transformations.switchMap
+ * @since 1.2.0
+ * @author Mitchell Skaggs
+ */
+fun <A, B> LiveData<A>.switchMapNullable(function: (A?) -> LiveData<B>?): LiveData<B> = Transformations.switchMap(this, function)

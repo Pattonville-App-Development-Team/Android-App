@@ -32,10 +32,10 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.calendar_event_tab_fast_scroller.*
 import kotlinx.android.synthetic.main.calendar_event_tab_no_items_background.*
 import kotlinx.android.synthetic.main.fragment_calendar_events.*
+import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextListener
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
+import org.pattonvillecs.pattonvilleapp.view.adapter.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.events.CalendarEventsFragmentViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.threeten.bp.LocalDateTime
@@ -51,14 +51,15 @@ import javax.inject.Inject
  * @author Mitchell Skaggs
  * @since 1.0.0
  */
-class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
-    private lateinit var eventAdapter: CalendarEventFlexibleAdapter
-    private var firstInflationAfterCreation: Boolean = false
-
+class CalendarEventsFragment : DaggerFragment() {
     @Inject
     lateinit var calendarRepository: CalendarRepository
 
+    private var firstInflationAfterCreation: Boolean = false
+
     private lateinit var viewModel: CalendarEventsFragmentViewModel
+
+    private lateinit var eventAdapter: CalendarEventFlexibleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,33 +114,20 @@ class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener 
      * @param menu Menu object of current options menu
      */
     private fun initSearchView(menu: Menu) {
-        // Associate searchable configuration with the SearchView
-        //val searchManager = context!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu.findItem(R.id.menu_search)
         if (searchItem != null) {
-
-            searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    val listTypeItem = menu.findItem(R.id.news_menu_refresh)
-                    if (listTypeItem != null)
-                        listTypeItem.isVisible = false
-                    return true
-                }
-
-                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    val listTypeItem = menu.findItem(R.id.news_menu_refresh)
-                    if (listTypeItem != null)
-                        listTypeItem.isVisible = true
-                    return true
-                }
-            })
-
             val searchView = searchItem.actionView as SearchView
             searchView.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             searchView.imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
             searchView.queryHint = getString(R.string.action_search)
-            //searchView.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-            searchView.setOnQueryTextListener(this)
+            searchView.onQueryTextListener {
+                onQueryTextChange {
+                    Log.d(TAG, "Search text: '$it'")
+                    if (it != null)
+                        viewModel.setSearchText(it)
+                    true
+                }
+            }
         }
     }
 
@@ -149,16 +137,12 @@ class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        PreferenceUtils.getSelectedSchoolsLiveData(context!!).observe(this::getLifecycle) {
-            viewModel.loadSource(it.orEmpty())
-        }
-
         eventAdapter = CalendarEventFlexibleAdapter(stableIds = true, calendarRepository = calendarRepository)
         eventAdapter.setDisplayHeadersAtStartUp(true)
         event_recycler_view.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         event_recycler_view.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
+                        .withDefaultDivider()
                         .withDrawDividerOnLastItem(true))
         eventAdapter.setStickyHeaders(true)
 
@@ -166,21 +150,23 @@ class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener 
         eventAdapter.fastScroller = fast_scroller
         fast_scroller.post { fast_scroller.bringToFront() }
 
-        viewModel.liveItems.observe(this::getLifecycle) {
+        viewModel.eventItems.observe(this::getLifecycle) {
             if (it != null) {
                 eventAdapter.updateDataSet(it.toList())
-                eventAdapter.filterItems()
-
-                no_events_textview.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                eventAdapter.filterItems(100)
             }
         }
-        viewModel.getSearchText().observe(this::getLifecycle) {
+        viewModel.searchText.observe(this::getLifecycle) {
+            Log.i(TAG, "Filtering based on '$it'")
             if (it != null) {
                 eventAdapter.searchText = it
-                eventAdapter.filterItems(200L)
+                eventAdapter.filterItems(100)
             }
         }
-
+        viewModel.backgroundTextVisibility.observe(this::getLifecycle) {
+            if (it != null)
+                no_events_textview.visibility = it
+        }
 
         //This is used to move to the current day ONCE, and never activate again during the life of the fragment. It must wait until the first update of data before running.
         eventAdapter.addListener(object : FlexibleAdapter.OnUpdateListener {
@@ -190,20 +176,11 @@ class CalendarEventsFragment : DaggerFragment(), SearchView.OnQueryTextListener 
                 if (firstRun && size > 0 && firstInflationAfterCreation) {
                     firstRun = false
                     event_recycler_view.post { goToCurrentDay() }
+                    eventAdapter.removeListener(FlexibleAdapter.OnUpdateListener::class.java)
+                    Log.d(TAG, "Updated with initial data of size $size. Now removing this listener.")
                 }
-                Log.i(TAG, "Updated with size: " + size)
             }
         })
-    }
-
-    override fun onQueryTextSubmit(query: String): Boolean {
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-        Log.d(TAG, "onQueryTextChange newText: " + newText)
-        viewModel.setSearchText(newText)
-        return true
     }
 
     companion object {

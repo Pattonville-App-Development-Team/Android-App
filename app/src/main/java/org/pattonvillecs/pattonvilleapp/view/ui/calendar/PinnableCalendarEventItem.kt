@@ -64,15 +64,14 @@ import java.util.*
  * @since 1.2.0
  */
 
-class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, ICalendarEvent by pinnableCalendarEvent, IFlexibleHasStartDateHasEndDate<PinnableCalendarEventItemViewHolder> {
+class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, ICalendarEvent by pinnableCalendarEvent, IFlexibleHasStartDate<PinnableCalendarEventItemViewHolder> {
     override fun filter(constraint: String?): Boolean {
         if (constraint == null || constraint.isBlank())
             return true
 
-        val lowerCaseConstraint = constraint.toLowerCase()
-        val summaryRatio = FuzzySearch.partialRatio(lowerCaseConstraint, pinnableCalendarEvent.calendarEvent.summary.toLowerCase())
-        val dataSourceRatio = FuzzySearch.partialRatio(lowerCaseConstraint, pinnableCalendarEvent.dataSources.toString().toLowerCase())
-        return summaryRatio > 80 || dataSourceRatio > 80
+        val summaryRatio = FuzzySearch.weightedRatio(constraint, pinnableCalendarEvent.calendarEvent.summary.toLowerCase())
+        val dataSourceRatio = FuzzySearch.weightedRatio(constraint, pinnableCalendarEvent.dataSources.toString().toLowerCase())
+        return summaryRatio > 70 || dataSourceRatio > 70
     }
 
     override fun getModel(): PinnableCalendarEvent = pinnableCalendarEvent
@@ -91,7 +90,7 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
         holder.shortSchoolName.text = getDataSourcesSpannableStringBuilder(pinnableCalendarEvent.dataSources.sortedWith(DataSource.DEFAULT_ORDERING), adapter.recyclerView.context)
 
         holder.sparkButton.isChecked = pinnableCalendarEvent.pinned
-        holder.sparkButton.setEventListener(FunctionalSparkButtonEventListener { _: ImageView?, buttonState: Boolean ->
+        holder.sparkButton.setEventListener(SimpleSparkButtonEventListener { _: ImageView?, buttonState: Boolean ->
             if (buttonState) bg { holder.calendarRepository.pinEvent(pinnableCalendarEvent.calendarEvent) }
             else bg { holder.calendarRepository.unpinEvent(pinnableCalendarEvent.calendarEvent) }
         })

@@ -33,8 +33,7 @@ import org.threeten.bp.format.FormatStyle
 /**
  * Created by Mitchell Skaggs on 11/23/2017.
  */
-class DateHeader(private val localDate: LocalDate) : AbstractHeaderItem<DateHeaderViewHolder>(), IFlexibleHasStartDateHasEndDate<DateHeaderViewHolder> {
-    override val endDate: LocalDate get() = localDate
+class DateHeader(private val localDate: LocalDate) : AbstractHeaderItem<DateHeaderViewHolder>(), IFlexibleHasStartDate<DateHeaderViewHolder> {
     override val startDate: LocalDate get() = localDate
 
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DateHeaderViewHolder =

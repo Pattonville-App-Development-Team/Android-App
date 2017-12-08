@@ -36,10 +36,9 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_month.*
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.IFlexibleHasStartDateHasEndDate
+import org.pattonvillecs.pattonvilleapp.view.adapter.calendar.CalendarEventFlexibleAdapter
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.IFlexibleHasStartDate
 import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper
 import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.showSpotlightOnMenuItem
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.month.CalendarMonthFragmentViewModel
@@ -125,7 +124,7 @@ class CalendarMonthFragment : DaggerFragment() {
         event_recycler_view.isNestedScrollingEnabled = false
         event_recycler_view.adapter = eventAdapter
 
-        calendarView.selectedDate = viewModel.getDate().toCalendarDay()
+        calendarView.selectedDate = LocalDateTime.now().toLocalDate().toCalendarDay()
         calendarView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             Log.d(TAG, "MCV New layout: $left $top $right $bottom; Old layout: $oldLeft $oldTop $oldRight $oldBottom")
             Log.d(TAG, "MCV tile height: ${calendarView.tileHeight}")
@@ -140,12 +139,7 @@ class CalendarMonthFragment : DaggerFragment() {
             viewModel.setDate(date.toLocalDate())
         }
 
-        PreferenceUtils.getSelectedSchoolsLiveData(context!!).observe(this::getLifecycle) {
-            if (it != null)
-                viewModel.setDataSources(it)
-        }
-
-        viewModel.getDateMultiset(context!!).observe(this::getLifecycle) { dates ->
+        viewModel.dateMultiset.observe(this::getLifecycle) { dates ->
             if (dates != null) {
                 calendarView.removeDecorators()
                 calendarView.addDecorators(
@@ -156,9 +150,9 @@ class CalendarMonthFragment : DaggerFragment() {
             }
         }
 
-        viewModel.liveItems.observe(this::getLifecycle) {
+        viewModel.currentDateEventItems.observe(this::getLifecycle) {
             if (it != null)
-                eventAdapter.updateDataSet(it.map { it as IFlexibleHasStartDateHasEndDate<*> }, true)
+                eventAdapter.updateDataSet(it.map { it as IFlexibleHasStartDate<*> }, true)
         }
     }
 
