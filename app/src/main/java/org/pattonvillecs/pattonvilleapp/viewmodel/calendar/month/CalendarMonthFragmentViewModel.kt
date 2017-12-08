@@ -17,21 +17,22 @@
 
 package org.pattonvillecs.pattonvilleapp.viewmodel.calendar.month
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import android.content.Context
+import android.arch.lifecycle.MutableLiveData
 import com.google.common.collect.Multiset
-import eu.davidea.flexibleadapter.livedata.FlexibleFactory
-import eu.davidea.flexibleadapter.livedata.FlexibleItemProvider
-import eu.davidea.flexibleadapter.livedata.FlexibleViewModel
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
-import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.switchMap
-import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.month.CalendarMonthFragmentViewModel.SingleDayIdentifier
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.zipTo
+import org.pattonvillecs.pattonvilleapp.viewmodel.app
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.Period
 import org.threeten.bp.ZoneId
 
 /**
@@ -40,9 +41,43 @@ import org.threeten.bp.ZoneId
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-class CalendarMonthFragmentViewModel : FlexibleViewModel<List<PinnableCalendarEvent>, PinnableCalendarEventItem, SingleDayIdentifier>() {
+class CalendarMonthFragmentViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var calendarRepository: CalendarRepository
+
+    private val _selectedDate: MutableLiveData<LocalDate> = MutableLiveData<LocalDate>().apply { LocalDateTime.now().toLocalDate() }
+    val selectedDate: LiveData<LocalDate> = _selectedDate
+
+    private val selectedDataSources: LiveData<Set<DataSource>> by lazy { PreferenceUtils.getSelectedSchoolsLiveData(app) }
+
+    val dateMultiset: LiveData<Multiset<LocalDate>> by lazy {
+        selectedDataSources.switchMap {
+            calendarRepository.getCountOnDays(it.toList())
+        }
+    }
+
+    val currentDateEventItems: LiveData<List<PinnableCalendarEventItem>> by lazy {
+        selectedDate.zipTo(selectedDataSources)
+                .switchMap {
+                    val startOfDay = it.first.atStartOfDay(ZoneId.systemDefault()).toInstant()
+                    val endOfDay = startOfDay + Period.ofDays(1)
+
+                    calendarRepository.getEventsBetweenDates(
+                            it.second.toList(),
+                            startOfDay,
+                            endOfDay)
+                }
+                .map {
+                    it.map { PinnableCalendarEventItem(it) }
+                }
+    }
+
+    fun setDate(localDate: LocalDate) {
+        _selectedDate.value = localDate
+    }
+
+    /*
     private val factory = PinnableCalendarEventItemFactory()
+
 
     init {
         identifier.value = SingleDayIdentifier(LocalDateTime.now().toLocalDate(), setOf())
@@ -60,6 +95,7 @@ class CalendarMonthFragmentViewModel : FlexibleViewModel<List<PinnableCalendarEv
             calendarRepository.getEventsBetweenDates(identifier.dataSources.toList(),
                     identifier.localDate.atStartOfDay(ZoneId.systemDefault()).toInstant(),
                     identifier.localDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+
 
     class PinnableCalendarEventItemFactory : FlexibleItemProvider.Factory<PinnableCalendarEvent, PinnableCalendarEventItem> {
         override fun create(model: PinnableCalendarEvent): PinnableCalendarEventItem =
@@ -82,5 +118,5 @@ class CalendarMonthFragmentViewModel : FlexibleViewModel<List<PinnableCalendarEv
 
     fun getDateMultiset(context: Context): LiveData<Multiset<LocalDate>> {
         return PreferenceUtils.getSelectedSchoolsLiveData(context).switchMap { calendarRepository.getCountOnDays(it.toList()) }
-    }
+    }*/
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.view.ui.calendar
+package org.pattonvillecs.pattonvilleapp.viewmodel.calendar
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel

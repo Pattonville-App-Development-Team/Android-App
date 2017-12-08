@@ -27,7 +27,7 @@ import com.varunest.sparkbutton.SparkEventListener
  * @author Mitchell Skaggs
  * @since 1.2.0
  */
-class FunctionalSparkButtonEventListener(private val onEventFunction: (button: ImageView?, buttonState: Boolean) -> Unit) : SparkEventListener {
+class SimpleSparkButtonEventListener(private val onEventFunction: (button: ImageView?, buttonState: Boolean) -> Unit) : SparkEventListener {
     override fun onEventAnimationEnd(button: ImageView?, buttonState: Boolean) {}
 
     override fun onEvent(button: ImageView?, buttonState: Boolean) {

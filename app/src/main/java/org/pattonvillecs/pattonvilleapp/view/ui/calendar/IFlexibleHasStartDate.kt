@@ -19,13 +19,12 @@ package org.pattonvillecs.pattonvilleapp.view.ui.calendar
 
 import android.support.v7.widget.RecyclerView
 import eu.davidea.flexibleadapter.items.IFlexible
-import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.HasEndDate
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.HasStartDate
 
 /**
- * This interface serves to provide a concrete type of something that implements [IFlexible], [HasStartDate], and [HasEndDate]
+ * This interface serves to provide a concrete type of something that implements [IFlexible] and [HasStartDate]
  *
  * @author Mitchell Skaggs
  * @since 1.2.0
  */
-interface IFlexibleHasStartDateHasEndDate<VH : RecyclerView.ViewHolder> : IFlexible<VH>, HasStartDate, HasEndDate
+interface IFlexibleHasStartDate<VH : RecyclerView.ViewHolder> : IFlexible<VH>, HasStartDate

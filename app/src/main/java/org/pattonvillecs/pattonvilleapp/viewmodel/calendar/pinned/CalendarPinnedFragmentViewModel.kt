@@ -17,13 +17,16 @@
 
 package org.pattonvillecs.pattonvilleapp.viewmodel.calendar.pinned
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import eu.davidea.flexibleadapter.livedata.FlexibleViewModel
 import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.DateHeader
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.*
+import org.pattonvillecs.pattonvilleapp.viewmodel.app
 import org.threeten.bp.LocalDate
 
 /**
@@ -32,21 +35,27 @@ import org.threeten.bp.LocalDate
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-class CalendarPinnedFragmentViewModel : FlexibleViewModel<List<PinnableCalendarEvent>, PinnableCalendarEventItem, Set<DataSource>>() {
+class CalendarPinnedFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     lateinit var calendarRepository: CalendarRepository
 
-    override fun getSource(identifier: Set<DataSource>): LiveData<List<PinnableCalendarEvent>> {
-        return calendarRepository.getPinnedEvents(identifier.toList())
+    private val selectedDataSources: LiveData<Set<DataSource>> = PreferenceUtils.getSelectedSchoolsLiveData(app)
+
+    private val pinnedEvents: LiveData<List<PinnableCalendarEvent>> by lazy { selectedDataSources.switchMap { calendarRepository.getPinnedEvents(it.toList()) } }
+
+    val backgroundText: LiveData<String> by lazy {
+        pinnedEvents.mapNullable {
+            when {
+                it == null || it.isEmpty() -> app.getString(R.string.no_pinned_events_provided_message)
+                else -> ""
+            }
+        }
     }
 
-    override fun isSourceValid(source: List<PinnableCalendarEvent>?): Boolean {
-        return source != null
-    }
-
-    override fun map(source: List<PinnableCalendarEvent>): MutableList<PinnableCalendarEventItem> {
-        val headerMap = mutableMapOf<LocalDate, DateHeader>()
-
-        return source.map { PinnableCalendarEventItem(it, headerMap.getOrPut(it.calendarEvent.startDate, { DateHeader(it.calendarEvent.startDate) })) }.toMutableList()
+    val pinnedEventItems: LiveData<List<PinnableCalendarEventItem>> by lazy {
+        pinnedEvents.map {
+            val headerMap = mutableMapOf<LocalDate, DateHeader>()
+            it.map { PinnableCalendarEventItem(it, headerMap.getOrPut(it.calendarEvent.startDate, { DateHeader(it.calendarEvent.startDate) })) }
+        }
     }
 }

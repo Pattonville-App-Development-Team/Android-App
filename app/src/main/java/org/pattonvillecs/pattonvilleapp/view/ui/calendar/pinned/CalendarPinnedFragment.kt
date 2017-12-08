@@ -29,9 +29,8 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_calendar_pinned.*
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarEventFlexibleAdapter
+import org.pattonvillecs.pattonvilleapp.view.adapter.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.pinned.CalendarPinnedFragmentViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import javax.inject.Inject
@@ -49,8 +48,6 @@ class CalendarPinnedFragment : DaggerFragment() {
 
     private lateinit var viewModel: CalendarPinnedFragmentViewModel
 
-    private lateinit var eventAdapter: CalendarEventFlexibleAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -66,31 +63,26 @@ class CalendarPinnedFragment : DaggerFragment() {
 
         no_pinned_items_textswitcher.apply {
             setFactory { TextView(context).apply { textAlignment = TextView.TEXT_ALIGNMENT_CENTER } }
-            inAnimation = AnimationUtils.loadAnimation(context!!, android.R.anim.fade_in)
-            outAnimation = AnimationUtils.loadAnimation(context!!, android.R.anim.fade_out)
+            inAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+            outAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
         }
 
-        eventAdapter = CalendarEventFlexibleAdapter(stableIds = true, calendarRepository = calendarRepository)
+        val eventAdapter = CalendarEventFlexibleAdapter(stableIds = true, calendarRepository = calendarRepository)
         eventAdapter.setDisplayHeadersAtStartUp(true)
         eventAdapter.setStickyHeaders(true)
         event_recycler_view.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         event_recycler_view.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
+                        .withDefaultDivider()
                         .withDrawDividerOnLastItem(true))
         event_recycler_view.adapter = eventAdapter
 
-        PreferenceUtils.getSelectedSchoolsLiveData(context!!).observe(this::getLifecycle) {
-            viewModel.loadSource(it.orEmpty())
+        viewModel.backgroundText.observe(this::getLifecycle) {
+            no_pinned_items_textswitcher.setText(it)
         }
 
-        viewModel.liveItems.observe(this::getLifecycle) {
-            if (it.isEmptyOrNull()) {
-                no_pinned_items_textswitcher.setText(getString(R.string.no_pinned_events_provided_message))
-            } else
-                no_pinned_items_textswitcher.setText("")
-
-            eventAdapter.updateDataSet(it.orEmpty())
+        viewModel.pinnedEventItems.observe(this::getLifecycle) {
+            eventAdapter.updateDataSet(it)
         }
     }
 
@@ -104,10 +96,6 @@ class CalendarPinnedFragment : DaggerFragment() {
          */
         @JvmStatic
         fun newInstance(): CalendarPinnedFragment = CalendarPinnedFragment()
-    }
-
-    private fun <E> Collection<E>?.isEmptyOrNull(): Boolean {
-        return this?.isEmpty() ?: true
     }
 }
 

@@ -15,14 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.view.ui.calendar
+package org.pattonvillecs.pattonvilleapp.view.adapter.calendar
 
-import android.support.v7.widget.RecyclerView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.HasEndDate
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.HasStartDate
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.HasCalendarRepository
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.IFlexibleHasStartDate
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
@@ -32,7 +34,7 @@ import org.threeten.bp.format.FormatStyle
  * @author Mitchell Skaggs
  * @since 1.2.0
  */
-class CalendarEventFlexibleAdapter(items: List<PinnableCalendarEventItem>? = null, listeners: Any? = null, stableIds: Boolean = false, override val calendarRepository: CalendarRepository) : FlexibleAdapter<IFlexibleHasStartDateHasEndDate<out RecyclerView.ViewHolder>>(items, listeners, stableIds), HasCalendarRepository {
+class CalendarEventFlexibleAdapter(items: List<PinnableCalendarEventItem>? = null, listeners: Any? = null, stableIds: Boolean = false, override val calendarRepository: CalendarRepository) : FlexibleAdapter<IFlexibleHasStartDate<*>>(items, listeners, stableIds), HasCalendarRepository {
     override fun onCreateBubbleText(position: Int): String {
         val item = getItem(position) ?: return ""
         return FORMATTER.format(item.startDate)

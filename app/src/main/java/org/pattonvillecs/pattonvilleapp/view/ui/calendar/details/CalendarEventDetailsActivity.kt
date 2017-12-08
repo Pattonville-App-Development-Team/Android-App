@@ -33,8 +33,8 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
-import org.pattonvillecs.pattonvilleapp.view.ui.calendar.FunctionalSparkButtonEventListener
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem.Companion.getDataSourcesSpannableStringBuilder
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.SimpleSparkButtonEventListener
 import org.pattonvillecs.pattonvilleapp.view.ui.spotlight.showSpotlightOnMenuItem
 import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.details.CalendarEventDetailsActivityViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
@@ -141,7 +141,7 @@ class CalendarEventDetailsActivity : DaggerAppCompatActivity() {
                 datasources.text = getDataSourcesSpannableStringBuilder(it.dataSources, this)
 
                 pinned_button.isChecked = it.pinned
-                pinned_button.setEventListener(FunctionalSparkButtonEventListener { _, buttonState ->
+                pinned_button.setEventListener(SimpleSparkButtonEventListener { _, buttonState ->
                     if (buttonState) bg { calendarRepository.pinEvent(it.calendarEvent) }
                     else bg { calendarRepository.unpinEvent(it.calendarEvent) }
                 })

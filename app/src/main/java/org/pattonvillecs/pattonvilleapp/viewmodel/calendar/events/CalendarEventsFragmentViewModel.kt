@@ -17,14 +17,20 @@
 
 package org.pattonvillecs.pattonvilleapp.viewmodel.calendar.events
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import eu.davidea.flexibleadapter.livedata.FlexibleViewModel
+import android.view.View
 import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.DateHeader
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
+import org.pattonvillecs.pattonvilleapp.view.ui.calendar.switchMap
+import org.pattonvillecs.pattonvilleapp.viewmodel.app
 import org.threeten.bp.LocalDate
 
 /**
@@ -33,28 +39,26 @@ import org.threeten.bp.LocalDate
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-class CalendarEventsFragmentViewModel : FlexibleViewModel<List<PinnableCalendarEvent>, PinnableCalendarEventItem, Set<DataSource>>() {
+class CalendarEventsFragmentViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var calendarRepository: CalendarRepository
 
-    private val searchText: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
+    private val _searchText: MutableLiveData<String> = MutableLiveData()
+    val searchText: LiveData<String> = _searchText
+
+    private val selectedDataSources: LiveData<Set<DataSource>> = PreferenceUtils.getSelectedSchoolsLiveData(app)
+
+    private val events: LiveData<List<PinnableCalendarEvent>> by lazy { selectedDataSources.switchMap { calendarRepository.getEventsByDataSource(it.toList()) } }
+
+    val eventItems: LiveData<List<PinnableCalendarEventItem>> by lazy {
+        events.map {
+            val headerMap = mutableMapOf<LocalDate, DateHeader>()
+            it.map { PinnableCalendarEventItem(it, headerMap.getOrPut(it.calendarEvent.startDate, { DateHeader(it.calendarEvent.startDate) })) }
+        }
+    }
 
     fun setSearchText(text: String) {
-        searchText.value = text
+        _searchText.value = text
     }
 
-    override fun getSource(identifier: Set<DataSource>): LiveData<List<PinnableCalendarEvent>> {
-        return calendarRepository.getEventsByDataSource(identifier.toList())
-    }
-
-    override fun isSourceValid(source: List<PinnableCalendarEvent>?): Boolean {
-        return source != null
-    }
-
-    override fun map(source: List<PinnableCalendarEvent>): MutableList<PinnableCalendarEventItem> {
-        val headerMap = mutableMapOf<LocalDate, DateHeader>()
-
-        return source.map { PinnableCalendarEventItem(it, headerMap.getOrPut(it.calendarEvent.startDate, { DateHeader(it.calendarEvent.startDate) })) }.toMutableList()
-    }
-
-    fun getSearchText(): LiveData<String> = searchText
+    val backgroundTextVisibility: LiveData<Int> by lazy { eventItems.map { if (it.isEmpty()) View.VISIBLE else View.INVISIBLE } }
 }

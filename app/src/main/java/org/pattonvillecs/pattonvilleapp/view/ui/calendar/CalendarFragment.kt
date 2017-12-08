@@ -32,6 +32,7 @@ import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.events.CalendarEventsFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.month.CalendarMonthFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment
+import org.pattonvillecs.pattonvilleapp.viewmodel.calendar.CalendarFragmentViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import javax.inject.Inject
 

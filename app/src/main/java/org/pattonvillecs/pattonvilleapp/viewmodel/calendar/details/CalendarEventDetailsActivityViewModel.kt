@@ -30,6 +30,6 @@ class CalendarEventDetailsActivityViewModel : ViewModel() {
     lateinit var calendarRepository: CalendarRepository
 
     fun getCalendarEvent(uid: String): LiveData<PinnableCalendarEvent?> {
-        return calendarRepository.getEventsByUid(uid).map { it.firstOrNull() }
+        return calendarRepository.getEventsByUid(uid).map { it?.firstOrNull() }
     }
 }
