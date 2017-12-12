@@ -54,7 +54,7 @@ class CalendarRepositoryTest {
      * @param uid       the uid
      * @return A test event occurring at the given date and ending 10,000ms later, with the given UID
      */
-    private fun testEvent(startEpochMilli: Long = 10000, endEpochMilli: Long = startEpochMilli + 10000, uid: String = "test_uid", pinned: Boolean = false, vararg dataSources: DataSource): PinnableCalendarEvent {
+    private fun testEvent(startEpochMilli: Long = 10000, endEpochMilli: Long = startEpochMilli + 10000, uid: String = "test_uid", pinned: Boolean = false, vararg dataSources: DataSource = arrayOf(DataSource.DISTRICT)): PinnableCalendarEvent {
         return PinnableCalendarEvent(
                 CalendarEvent(uid, "summary", "location", Instant.ofEpochMilli(startEpochMilli), Instant.ofEpochMilli(endEpochMilli)),
                 pinned,
@@ -62,7 +62,6 @@ class CalendarRepositoryTest {
     }
 
     @Before
-    @Throws(Exception::class)
     fun createDb() {
         val context = InstrumentationRegistry.getTargetContext()
         appDatabase = AppDatabase.init(Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)).build()
@@ -70,15 +69,13 @@ class CalendarRepositoryTest {
     }
 
     @After
-    @Throws(Exception::class)
     fun closeDb() {
         appDatabase.close()
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsByDataSourceCalled_Then_ReturnSameUnpinnedEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent(dataSources = *arrayOf(DataSource.DISTRICT))
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -88,9 +85,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_PinnedCalendarEvent_When_GetEventsByDataSourceCalled_Then_ReturnSamePinnedEvent() {
-        val calendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent(pinned = true, dataSources = *arrayOf(DataSource.DISTRICT))
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -100,9 +96,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSameUnpinnedEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -112,9 +107,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedDuplicateCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSameUnpinnedEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
         calendarRepository.insertEvent(calendarEvent)
@@ -125,9 +119,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_PinnedCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSamePinnedEvent() {
-        val calendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent(pinned = true)
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -137,9 +130,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_PinnedDuplicateCalendarEvent_When_GetEventsByUidCalled_Then_ReturnSamePinnedEvent() {
-        val calendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent(pinned = true)
 
         calendarRepository.insertEvent(calendarEvent)
         calendarRepository.insertEvent(calendarEvent)
@@ -150,9 +142,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetDataSourcesCalled_Then_ReturnSameDataSource() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -162,7 +153,6 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEventMultipleDataSources_When_GetDataSourcesCalled_Then_ReturnSameDataSources() {
         val calendarEvent = testEvent(dataSources = *arrayOf(DataSource.DISTRICT, DataSource.HIGH_SCHOOL))
 
@@ -174,10 +164,9 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedDuplicateCalendarEventMultipleDataSources_When_GetDataSourcesCalled_Then_ReturnSameDataSources() {
-        val calendarEvent1 = testEvent(dataSources = DataSource.DISTRICT)
-        val calendarEvent2 = testEvent(dataSources = DataSource.HIGH_SCHOOL)
+        val calendarEvent1 = testEvent()
+        val calendarEvent2 = testEvent(dataSources = *arrayOf(DataSource.HIGH_SCHOOL))
 
         calendarRepository.insertEvent(calendarEvent1)
         calendarRepository.insertEvent(calendarEvent2)
@@ -188,9 +177,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEventDuplicateDataSource_When_GetDataSourcesCalled_Then_ReturnSameDataSource() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
         calendarRepository.insertEvent(calendarEvent)
@@ -201,39 +189,36 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_PinEventCalled_And_GetEventsByDataSourceCalled_Then_ReturnPinnedEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
         calendarRepository.pinEvent(calendarEvent)
 
         val calendarEvents = calendarRepository.getEventsByDataSource(DataSource.DISTRICT).awaitValue()
 
-        val expectedCalendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
+        val expectedCalendarEvent = testEvent(pinned = true)
 
         assertThat(calendarEvents, contains(expectedCalendarEvent))
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_PinnedCalendarEvent_When_UnpinEventCalled_And_GetEventsByDataSourceCalled_Then_ReturnUnpinnedEvent() {
-        val calendarEvent = testEvent(pinned = true, dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent(pinned = true)
 
         calendarRepository.insertEvent(calendarEvent)
         calendarRepository.unpinEvent(calendarEvent)
 
         val calendarEvents = calendarRepository.getEventsByDataSource(DataSource.DISTRICT).awaitValue()
 
-        val expectedCalendarEvent = testEvent(pinned = false, dataSources = DataSource.DISTRICT)
+        val expectedCalendarEvent = testEvent(pinned = false)
 
         assertThat(calendarEvents, contains(expectedCalendarEvent))
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsBeforeDateCalled_And_EventIsBeforeDate_Then_ReturnSameEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -243,9 +228,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsBeforeDateCalled_And_EventIsNotBeforeDate_Then_ReturnNothing() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -255,9 +239,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsAfterDateCalled_And_EventIsAfterDate_Then_ReturnSameEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -267,9 +250,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsAfterDateCalled_And_EventIsNotAfterDate_Then_ReturnNothing() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -279,9 +261,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsBetweenDatesCalled_And_EventIsBetweenDates_Then_ReturnSameEvent() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -291,9 +272,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_UnpinnedCalendarEvent_When_GetEventsBetweenDatesCalled_And_EventIsNotBetweenDates_Then_ReturnNothing() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 
@@ -303,10 +283,9 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_TwoUnpinnedCalendarEvents_When_GetEventsBetweenDatesCalled_And_EventsAreBetweenDates_Then_ReturnBothSorted() {
-        val calendarEventFirst = testEvent(uid = "test_uid_1", dataSources = DataSource.DISTRICT)
-        val calendarEventSecond = testEvent(startEpochMilli = 30000, uid = "test_uid_2", dataSources = DataSource.DISTRICT)
+        val calendarEventFirst = testEvent(uid = "test_uid_1")
+        val calendarEventSecond = testEvent(startEpochMilli = 30000, uid = "test_uid_2")
 
         calendarRepository.insertEvent(calendarEventSecond)
         calendarRepository.insertEvent(calendarEventFirst)
@@ -318,9 +297,8 @@ class CalendarRepositoryTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun Given_CalendarEvent_When_GetCountOnDaysCalled_Then_OneEntry() {
-        val calendarEvent = testEvent(dataSources = DataSource.DISTRICT)
+        val calendarEvent = testEvent()
 
         calendarRepository.insertEvent(calendarEvent)
 

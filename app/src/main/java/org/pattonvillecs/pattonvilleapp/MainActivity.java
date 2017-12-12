@@ -34,7 +34,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import org.pattonvillecs.pattonvilleapp.directory.DirectoryFragment;
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
 import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
@@ -43,6 +42,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.links.SchoolListType;
 import org.pattonvillecs.pattonvilleapp.view.ui.about.AboutActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.directory.DirectoryListFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.links.PowerschoolActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.links.SchoolListActivity;
@@ -151,7 +151,7 @@ public class MainActivity extends DaggerAppCompatActivity implements NavigationV
                 break;
 
             case R.id.nav_directory:
-                fragment = DirectoryFragment.newInstance();
+                fragment = DirectoryListFragment.newInstance();
                 break;
 
             case R.id.nav_nutrislice:
@@ -236,7 +236,7 @@ public class MainActivity extends DaggerAppCompatActivity implements NavigationV
         //Handles proper nav drawer item clicked
         int id;
         if (fragment instanceof NewsFragment) id = R.id.nav_news;
-        else if (fragment instanceof DirectoryFragment) id = R.id.nav_directory;
+        else if (fragment instanceof DirectoryListFragment) id = R.id.nav_directory;
         else if (fragment instanceof CalendarFragment) id = R.id.nav_calendar;
         else if (fragment instanceof CalendarPinnedFragment) id = R.id.nav_calendar;
         else return;

@@ -31,7 +31,10 @@ import dagger.Provides;
 import static org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase.init;
 
 /**
- * Created by Mitchell on 10/4/2017.
+ * This provides an initialized AppDatabase for the repositories to be injected with.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Module(includes = AppModule.class)

@@ -26,6 +26,7 @@ import java.util.Date;
  * Created by Mitchell on 10/4/2017.
  */
 
+@Deprecated
 public class DateTypeConverter {
     @TypeConverter
     public static Date fromTimestamp(Long value) {
