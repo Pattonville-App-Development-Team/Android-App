@@ -18,12 +18,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.10'
     ext.support_version = '27.0.2'
     ext.firebase_version = '11.6.2'
     ext.arch_version = '1.0.0'
     ext.dagger_version = '2.13'
     ext.anko_version = '0.10.3'
+    ext.retrofit_version = '2.3.0'
+    ext.mockito_version = '2.13.0'
 
     repositories {
         google()
