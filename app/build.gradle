@@ -105,7 +105,7 @@ kotlin {
 
 dependencies {
     //Fixed errorprone version
-    errorprone 'com.google.errorprone:error_prone_core:2.1.3'
+    errorprone 'com.google.errorprone:error_prone_core:2.2.0'
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -119,7 +119,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.takisoft.fix:preference-v7:$support_version.0"
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
 
     //Anko
     implementation "org.jetbrains.anko:anko:$anko_version"
@@ -145,7 +145,7 @@ dependencies {
     //Calendar view
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
     //Alternative
-    implementation 'com.applandeo:material-calendar-view:1.3.2'
+    implementation 'com.applandeo:material-calendar-view:1.4.0'
 
     //Home carousel
     implementation 'com.synnapps:carouselview:0.1.4'
@@ -161,7 +161,7 @@ dependencies {
     implementation 'com.annimon:stream:1.1.9'
 
     //Collections, utilities
-    implementation 'com.google.guava:guava:23.5-android'
+    implementation 'com.google.guava:guava:23.6-android'
 
     //Network
     implementation 'com.android.volley:volley:1.1.0'
@@ -173,10 +173,13 @@ dependencies {
 
     //XML parsing
     implementation 'org.simpleframework:simple-xml:2.7.1'
+    implementation 'com.github.magneticflux:kotlin-simplexml-rss:1.1.0', {
+        exclude group: 'org.threeten', module: 'threetenbp'
+    }
 
     //All for iCal4j library
     implementation 'org.mnode.ical4j:ical4j:2.1.5', {
-        exclude group: 'org.threeten'
+        exclude group: 'org.threeten', module: 'threetenbp'
     }
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.apache.commons:commons-lang3:3.7'
@@ -225,8 +228,8 @@ dependencies {
     testImplementation "org.mockito:mockito-android:$mockito_version"
     testImplementation "android.arch.core:core-testing:$arch_version"
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2-alpha1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1'
     androidTestImplementation "org.mockito:mockito-android:$mockito_version"
     androidTestImplementation "android.arch.persistence.room:testing:$arch_version"
     androidTestImplementation 'com.natpryce:hamkrest:1.4.2.2'

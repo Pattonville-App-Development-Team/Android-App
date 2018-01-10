@@ -49,7 +49,7 @@ object CalendarConverterFactory : Converter.Factory() {
 
     object DataSourceConverter : Converter<DataSource, String> {
         override fun convert(value: DataSource): String =
-                value.calendarURL.orElseThrow { IllegalStateException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?") }
+                value.calendarURL.orElseThrow { IllegalArgumentException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?") }
     }
 
     private const val LINEBREAK_MATCHER = "(?:\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029])"

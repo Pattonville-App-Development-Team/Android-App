@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.model.calendar
+package org.pattonvillecs.pattonvilleapp.service.repository.calendar
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory

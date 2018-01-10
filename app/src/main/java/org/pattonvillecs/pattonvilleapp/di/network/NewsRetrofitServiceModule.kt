@@ -21,8 +21,8 @@ import android.os.AsyncTask
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryConverterFactory
-import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryRetrofitService
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsConverterFactory
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRetrofitService
 import retrofit2.Retrofit
 import retrofit2.adapter.guava.GuavaCallAdapterFactory
 import javax.inject.Singleton
@@ -31,18 +31,18 @@ import javax.inject.Singleton
  * Created by Mitchell Skaggs on 12/8/2017.
  */
 @Module(includes = [(OkHttpClientModule::class)])
-object DirectoryRetrofitServiceModule {
+object NewsRetrofitServiceModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideDirectoryRetrofitService(okHttpClient: OkHttpClient): DirectoryRetrofitService {
+    fun provideNewsRetrofitService(okHttpClient: OkHttpClient): NewsRetrofitService {
         return Retrofit.Builder()
-                .baseUrl("https://forms.psdr3.org/psdapp/")
+                .baseUrl("http://fccms.psdr3.org/")
                 .client(okHttpClient)
                 .callbackExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .addCallAdapterFactory(GuavaCallAdapterFactory.create())
-                .addConverterFactory(DirectoryConverterFactory)
+                .addConverterFactory(NewsConverterFactory)
                 .build()
-                .create(DirectoryRetrofitService::class.java)
+                .create(NewsRetrofitService::class.java)
     }
 }

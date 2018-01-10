@@ -15,28 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.network;
+package org.pattonvillecs.pattonvilleapp.service.repository.news
 
-import android.app.Application;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
+import com.github.magneticflux.rss.namespaces.standard.elements.Rss
+import com.google.common.util.concurrent.ListenableFuture
+import org.pattonvillecs.pattonvilleapp.DataSource
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * Created by Mitchell Skaggs on 12/14/2017.
  */
-
-@Module
-public class OkHttpClientModule {
-    @Provides
-    @Singleton
-    public static OkHttpClient provideOkHttpClient(Application application) {
-        return new OkHttpClient.Builder()
-                .cache(new Cache(application.getCacheDir(), 16 * 1024 * 1024 /* 16 MiB (Mebibytes) */))
-                .build();
-    }
+interface NewsRetrofitService {
+    @GET("{datasource}/news/?plugin=xml&leaves")
+    fun getRss(@Path(value = "datasource") dataSource: DataSource): ListenableFuture<Rss>
 }

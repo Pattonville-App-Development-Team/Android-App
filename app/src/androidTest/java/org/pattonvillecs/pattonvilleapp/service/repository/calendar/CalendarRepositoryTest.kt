@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.model.calendar
+package org.pattonvillecs.pattonvilleapp.service.repository.calendar
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
@@ -28,10 +28,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue
 import org.threeten.bp.Instant
 
 /**

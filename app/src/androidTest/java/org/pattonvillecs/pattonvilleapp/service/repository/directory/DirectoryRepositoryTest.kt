@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.model.directory
+package org.pattonvillecs.pattonvilleapp.service.repository.directory
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
@@ -28,9 +28,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.pattonvillecs.pattonvilleapp.DataSource
-import org.pattonvillecs.pattonvilleapp.service.model.calendar.awaitValue
+import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
-import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryRepository
+import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue
 
 /**
  * Tests adding and removing faculty from an in-memory database.

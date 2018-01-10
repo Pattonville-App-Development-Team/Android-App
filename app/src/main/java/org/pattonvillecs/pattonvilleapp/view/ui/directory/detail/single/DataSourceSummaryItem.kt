@@ -48,7 +48,7 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
 
     override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
 
-        Picasso.with()
+        Picasso.get()
                 .load(getImageResourceForDataSource(dataSource))
                 .fit()
                 .centerCrop()

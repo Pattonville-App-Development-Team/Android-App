@@ -97,3 +97,12 @@
 #CheckerFramework
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
+
+#SimpleXML RSS
+-keepattributes *Annotation*
+-keepclassmembers class org.simpleframework.xml.** {
+    <init>(...);
+}
+-keep class com.github.magneticflux.rss.** { *; }
+-keep class * extends org.simpleframework.xml.convert.Converter
+-keep class * extends org.simpleframework.xml.transform.Transform
