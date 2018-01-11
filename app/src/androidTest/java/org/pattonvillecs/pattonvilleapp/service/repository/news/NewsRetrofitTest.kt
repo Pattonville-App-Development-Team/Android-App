@@ -21,6 +21,9 @@ import android.app.Application
 import android.support.test.InstrumentationRegistry
 import android.support.test.filters.MediumTest
 import android.support.test.runner.AndroidJUnit4
+import com.github.magneticflux.rss.namespaces.standard.elements.Item
+import com.natpryce.hamkrest.*
+import com.natpryce.hamkrest.should.shouldMatch
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,5 +49,10 @@ class NewsRetrofitTest {
     @Test
     fun Given_AllNewsDataSources_When_GetRssCalled_Then_ReturnValidXML() {
         val feeds = newsRetrofitService.getRss(DataSource.HIGH_SCHOOL).get()
+
+        feeds.channel.title shouldMatch equalTo("News")
+        feeds.channel.items shouldMatch anyElement(has(Item::title, equalTo("PHS Announcements")))
+        feeds.channel.items shouldMatch allElements(has(Item::author, present(anything)))
+        feeds.channel.items shouldMatch allElements(Matcher("has matching authors", { it.author == it.iTunesAuthor }))
     }
 }

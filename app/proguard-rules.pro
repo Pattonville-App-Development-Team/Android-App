@@ -80,6 +80,7 @@
 -keep,includedescriptorclasses class kotlin.reflect.KCallable { *; }
 -keep,includedescriptorclasses class kotlin.Triple { *; }
 -keep,includedescriptorclasses class kotlin.ranges.ClosedRange { *; }
+-keep,includedescriptorclasses class kotlin.text.StringsKt** { *; }
 
 #Okio
 -dontwarn okio.**
