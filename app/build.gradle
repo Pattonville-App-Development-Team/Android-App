@@ -221,6 +221,10 @@ dependencies {
     //Job scheduling from Firebase
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
+    //Memory leak detection
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
+
     //@Generated annotation, other annotations
     compileOnly 'javax.annotation:javax.annotation-api:1.3.1'
 

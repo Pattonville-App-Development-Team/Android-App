@@ -30,6 +30,7 @@ import com.esotericsoftware.kryo.pool.KryoPool;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
@@ -91,6 +92,8 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     /**
      * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
+     *
+     * @deprecated It was a dumb idea lol
      */
     private Map<String, Integer> keyModificationCounts;
     private List<PauseableListener<?>> pauseableListeners;
@@ -102,7 +105,14 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         AndroidThreeTen.init(this);
+
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new ArrayList<>();
         pauseableListeners = new ArrayList<>();
