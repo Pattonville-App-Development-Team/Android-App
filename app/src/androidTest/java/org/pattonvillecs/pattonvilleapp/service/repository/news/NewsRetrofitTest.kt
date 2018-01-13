@@ -32,6 +32,7 @@ import org.junit.runner.RunWith
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.di.network.NewsRetrofitServiceModule.provideNewsRetrofitService
 import org.pattonvillecs.pattonvilleapp.di.network.OkHttpClientModule.provideOkHttpClient
+import java.util.concurrent.ExecutionException
 
 /**
  * @author Mitchell Skaggs
@@ -64,5 +65,12 @@ class NewsRetrofitTest {
         val feeds = DataSource.ALL.filter { it.newsURL.isPresent }.map { newsRetrofitService.getRss(it).get() }
 
         feeds shouldMatch allElements(has(Rss::channel, has(Channel::title, equalTo("News"))))
+    }
+
+    @Test
+    fun Given_InvalidNewsDataSources_When_GetRssCalled_Then_ThrowException() {
+        (fun() {
+            newsRetrofitService.getRss(DataSource.EARLY_CHILDHOOD).get()
+        }).shouldMatch(throws<ExecutionException>(has(Throwable::cause, present(isA<IllegalArgumentException>()))))
     }
 }
