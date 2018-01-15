@@ -59,25 +59,23 @@ class CalendarSyncJobService : DaggerJobService() {
 
     override fun onStopJob(job: JobParameters): Boolean = false
 
-    private fun dataSourceToSourcedCalendarFuture(dataSource: DataSource): ListenableFuture<SourcedCalendar>? =
-            transform(calendarRetrofitService.getCalendar(dataSource), Function<Calendar, SourcedCalendar> { it?.let { SourcedCalendar(dataSource, it) } }, THREAD_POOL_EXECUTOR)
+    private fun dataSourceToSourcedCalendarFuture(dataSource: DataSource): ListenableFuture<SourcedCalendar> =
+            transform(calendarRetrofitService.getCalendar(dataSource), Function<Calendar?, SourcedCalendar> { it: Calendar? -> SourcedCalendar(dataSource, it!!) }, THREAD_POOL_EXECUTOR)
 
     class SourcedCalendarListCallback(
             private val calendarSyncJobService: CalendarSyncJobService,
             private val job: JobParameters,
             private val calendarRepository: CalendarRepository
-    ) : FutureCallback<List<SourcedCalendar?>> {
+    ) : FutureCallback<List<SourcedCalendar>> {
 
-        override fun onSuccess(result: List<SourcedCalendar?>?) {
+        override fun onSuccess(result: List<SourcedCalendar>?) {
             Log.i(TAG, "Successful download!")
-            result?.forEach {
-                it?.let { sourcedCalendar ->
-                    val events = sourcedCalendar.calendar.components.filter { it is VEvent }.map { it as VEvent }.map { CalendarEvent(it) }
-                    val dataSourceMarkers = events.map { dataSource(it, sourcedCalendar.dataSource) }
+            result?.forEach { sourcedCalendar ->
+                val events = sourcedCalendar.calendar.components.filter { it is VEvent }.map { it as VEvent }.map { CalendarEvent(it) }
+                val dataSourceMarkers = events.map { dataSource(it, sourcedCalendar.dataSource) }
 
-                    calendarRepository.updateEventsAndDataSourceMarkers(events, dataSourceMarkers)
-                    Log.i(TAG, "Inserted ${events.size} items into ${sourcedCalendar.dataSource}")
-                }
+                calendarRepository.updateEventsAndDataSourceMarkers(events, dataSourceMarkers)
+                Log.i(TAG, "Inserted ${events.size} items into ${sourcedCalendar.dataSource}")
             }
             calendarSyncJobService.jobFinished(job, false)
         }

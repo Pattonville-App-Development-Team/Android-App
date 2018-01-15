@@ -29,12 +29,12 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.news.NewsFragment
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.adapter.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment
+import org.pattonvillecs.pattonvilleapp.view.ui.news.NewsFragment
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.home.HomeFragmentViewModel
 import javax.inject.Inject

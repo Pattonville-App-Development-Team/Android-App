@@ -30,13 +30,13 @@ public class DataSourceTypeConverter {
 
     @TypeConverter
     @Nullable
-    public static DataSource fromTimestamp(@Nullable Integer value) {
+    public static DataSource fromIndex(@Nullable Integer value) {
         return value == null ? null : DataSource.values()[value];
     }
 
     @TypeConverter
     @Nullable
-    public static Integer dateToTimestamp(@Nullable DataSource dataSource) {
+    public static Integer dataSourceToIndex(@Nullable DataSource dataSource) {
         return dataSource == null ? null : dataSource.ordinal();
     }
 }

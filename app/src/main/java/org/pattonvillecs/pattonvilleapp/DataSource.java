@@ -243,6 +243,10 @@ public enum DataSource {
             .filter(d -> d.calendarURL.isPresent())
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
+    public static final Set<DataSource> NEWS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
+            .filter(d -> d.newsURL.isPresent())
+            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+
     public final String longName, shortName, websiteURL, address, mainNumber, initialsName, topicName;
     public final int calendarColor;
     @DrawableRes

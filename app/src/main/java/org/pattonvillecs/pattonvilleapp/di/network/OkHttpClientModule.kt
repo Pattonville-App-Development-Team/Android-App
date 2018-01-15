@@ -15,28 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.network;
+package org.pattonvillecs.pattonvilleapp.di.network
 
-import android.app.Application;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
+import android.app.Application
+import dagger.Module
+import dagger.Provides
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import javax.inject.Singleton
 
 /**
  * Created by Mitchell Skaggs on 11/20/2017.
  */
 
 @Module
-public class OkHttpClientModule {
+object OkHttpClientModule {
     @Provides
     @Singleton
-    public static OkHttpClient provideOkHttpClient(Application application) {
-        return new OkHttpClient.Builder()
-                .cache(new Cache(application.getCacheDir(), 16 * 1024 * 1024 /* 16 MiB (Mebibytes) */))
-                .build();
+    @JvmStatic
+    fun provideOkHttpClient(application: Application): OkHttpClient {
+        return OkHttpClient.Builder()
+                .cache(Cache(application.cacheDir, (16 * 1024 * 1024).toLong() /* 16 MiB (Mebibytes) */))
+                .build()
     }
 }

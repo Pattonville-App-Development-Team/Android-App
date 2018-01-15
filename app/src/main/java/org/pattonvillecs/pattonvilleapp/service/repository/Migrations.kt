@@ -24,7 +24,8 @@ import android.arch.persistence.room.migration.Migration
 
 object MIGRATION_1_2 : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("CREATE TABLE faculty ("
+        db.execSQL("CREATE TABLE faculty "
+                + "("
                 + "first_name TEXT NOT NULL, "
                 + "last_name TEXT NOT NULL, "
                 + "pcn TEXT NOT NULL, "
@@ -42,5 +43,37 @@ object MIGRATION_1_2 : Migration(1, 2) {
         db.execSQL("CREATE INDEX index_faculty_location "
                 + "ON faculty "
                 + "(location)")
+    }
+}
+
+object MIGRATION_2_3 : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE news_articles "
+                + "("
+                + "title TEXT NOT NULL, "
+                + "link TEXT NOT NULL, "
+                + "pub_date INTEGER NOT NULL COLLATE BINARY, "
+                + "guid TEXT NOT NULL COLLATE BINARY, "
+                + "PRIMARY KEY(guid)"
+                + ")")
+        db.execSQL("CREATE INDEX index_news_articles_pub_date "
+                + "ON news_articles "
+                + "(pub_date)")
+        db.execSQL("CREATE INDEX index_news_articles_guid "
+                + "ON news_articles "
+                + "(guid)")
+
+        db.execSQL("CREATE TABLE news_datasource_markers "
+                + "("
+                + "guid TEXT NOT NULL COLLATE BINARY, "
+                + "datasource INTEGER NOT NULL COLLATE BINARY, "
+                + "PRIMARY KEY (guid, datasource)"
+                + ")")
+        db.execSQL("CREATE INDEX index_news_datasource_markers_guid "
+                + "ON news_datasource_markers "
+                + "(guid)")
+        db.execSQL("CREATE INDEX index_news_datasource_markers_datasource "
+                + "ON news_datasource_markers "
+                + "(datasource)")
     }
 }

@@ -25,6 +25,7 @@ import org.pattonvillecs.pattonvilleapp.di.image.PicassoModule;
 import org.pattonvillecs.pattonvilleapp.di.job.FirebaseJobDispatcherModule;
 import org.pattonvillecs.pattonvilleapp.di.network.CalendarRetrofitServiceModule;
 import org.pattonvillecs.pattonvilleapp.di.network.DirectoryRetrofitServiceModule;
+import org.pattonvillecs.pattonvilleapp.di.network.NewsRetrofitServiceModule;
 
 import javax.inject.Singleton;
 
@@ -42,6 +43,7 @@ import dagger.android.AndroidInjector;
         AppDatabaseModule.class,
         CalendarRetrofitServiceModule.class,
         DirectoryRetrofitServiceModule.class,
+        NewsRetrofitServiceModule.class,
         FirebaseJobDispatcherModule.class,
         PicassoModule.class,
 

@@ -47,6 +47,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -138,6 +139,11 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Inject
     protected void createDirectorySyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
         firebaseJobDispatcher.schedule(DirectorySyncJobService.getRecurringDirectorySyncJob(firebaseJobDispatcher));
+    }
+
+    @Inject
+    protected void createNewsSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        firebaseJobDispatcher.schedule(NewsSyncJobService.getRecurringNewsSyncJob(firebaseJobDispatcher));
     }
 
     /**

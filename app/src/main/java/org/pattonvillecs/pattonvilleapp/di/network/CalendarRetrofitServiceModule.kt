@@ -15,37 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.di.network;
+package org.pattonvillecs.pattonvilleapp.di.network
 
-import android.os.AsyncTask;
-
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarConverterFactory;
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRetrofitService;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.guava.GuavaCallAdapterFactory;
+import android.os.AsyncTask
+import dagger.Module
+import dagger.Provides
+import okhttp3.OkHttpClient
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarConverterFactory
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRetrofitService
+import retrofit2.Retrofit
+import retrofit2.adapter.guava.GuavaCallAdapterFactory
+import javax.inject.Singleton
 
 /**
  * Created by Mitchell Skaggs on 11/20/2017.
  */
 
-@Module(includes = OkHttpClientModule.class)
-public class CalendarRetrofitServiceModule {
+@Module(includes = [(OkHttpClientModule::class)])
+object CalendarRetrofitServiceModule {
     @Provides
+    @JvmStatic
     @Singleton
-    static CalendarRetrofitService provideCalendarRetrofitService(OkHttpClient okHttpClient) {
-        return new Retrofit.Builder()
+    fun provideCalendarRetrofitService(okHttpClient: OkHttpClient): CalendarRetrofitService {
+        return Retrofit.Builder()
                 .baseUrl("http://drummond.psdr3.org/")
                 .client(okHttpClient)
                 .callbackExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .addCallAdapterFactory(GuavaCallAdapterFactory.create())
-                .addConverterFactory(CalendarConverterFactory.INSTANCE)
+                .addConverterFactory(CalendarConverterFactory)
                 .build()
-                .create(CalendarRetrofitService.class);
+                .create(CalendarRetrofitService::class.java)
     }
 }

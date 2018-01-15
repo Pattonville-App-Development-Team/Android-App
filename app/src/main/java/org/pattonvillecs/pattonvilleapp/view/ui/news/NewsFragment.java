@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.news;
+package org.pattonvillecs.pattonvilleapp.view.ui.news;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -40,18 +39,21 @@ import android.widget.Toast;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
+import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -61,17 +63,17 @@ import static org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper
 /**
  * Fragment used within MainActivity to display the News tab
  *
- * @author Nathan Skelton
+ * @since 1.0.0
  */
-public class NewsFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class NewsFragment extends DaggerFragment implements SearchView.OnQueryTextListener {
 
     private static final String TAG = NewsFragment.class.getSimpleName();
-
+    @Inject
+    public FirebaseJobDispatcher firebaseJobDispatcher;
     private SwipeRefreshLayout mRefreshLayout;
     private FlexibleAdapter<NewsArticle> newsArticleAdapter;
     private PauseableListener<NewsParsingUpdateData> listener;
     private PattonvilleApplication pattonvilleApplication;
-
     private List<NewsArticle> mNewsArticles;
 
     public NewsFragment() {
@@ -147,12 +149,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
             private void setNewsArticles(NewsParsingUpdateData data) {
                 List<NewsArticle> newNewsArticles = Stream.of(data.getNewsData())
-                        .flatMap(new Function<Map.Entry<DataSource, List<NewsArticle>>, Stream<NewsArticle>>() {
-                            @Override
-                            public Stream<NewsArticle> apply(Map.Entry<DataSource, List<NewsArticle>> dataSourceListEntry) {
-                                return Stream.of(dataSourceListEntry.getValue());
-                            }
-                        })
+                        .flatMap(dataSourceListEntry -> Stream.of(dataSourceListEntry.getValue()))
                         .sorted((o1, o2) -> -o1.getPublishDate().compareTo(o2.getPublishDate()))
                         .collect(Collectors.toList());
 
@@ -178,18 +175,18 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_news, container, false);
 
         newsArticleAdapter = new FlexibleAdapter<>(null);
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.news_recyclerView);
+        RecyclerView recyclerView = root.findViewById(R.id.news_recyclerView);
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
         recyclerView.setAdapter(newsArticleAdapter);
         // Adds item divider between elements
         recyclerView.addItemDecoration(new FlexibleItemDecoration(getContext()));
 
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
+        mRefreshLayout = root.findViewById(R.id.news_refreshLayout);
         mRefreshLayout.setOnRefreshListener(() -> pattonvilleApplication.hardRefreshNewsData());
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 
@@ -261,6 +258,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
 
             case R.id.news_menu_refresh:
                 pattonvilleApplication.hardRefreshNewsData();
+                firebaseJobDispatcher.schedule(NewsSyncJobService.getInstantNewsSyncJob(firebaseJobDispatcher));
 
                 Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
                 break;
@@ -297,7 +295,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         MenuItem searchItem = menu.findItem(R.id.news_menu_search);
         if (searchItem != null) {
 
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     MenuItem listTypeItem = menu.findItem(R.id.news_menu_refresh);
@@ -315,7 +313,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
                 }
             });
 
-            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            SearchView searchView = (SearchView) searchItem.getActionView();
             searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
             searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
             searchView.setQueryHint(getString(R.string.action_search));

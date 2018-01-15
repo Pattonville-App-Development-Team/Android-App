@@ -27,6 +27,8 @@ import java.lang.reflect.Type
 
 /**
  * Created by Mitchell Skaggs on 12/14/2017.
+ *
+ * @since 1.4.0
  */
 object NewsConverterFactory : Converter.Factory() {
 

@@ -35,7 +35,6 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import org.pattonvillecs.pattonvilleapp.intro.PattonvilleAppIntro;
-import org.pattonvillecs.pattonvilleapp.news.NewsFragment;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SettingsActivity;
 import org.pattonvillecs.pattonvilleapp.service.model.links.SchoolListType;
@@ -46,6 +45,7 @@ import org.pattonvillecs.pattonvilleapp.view.ui.directory.DirectoryListFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.links.PowerschoolActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.links.SchoolListActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.news.NewsFragment;
 
 import dagger.android.support.DaggerAppCompatActivity;
 

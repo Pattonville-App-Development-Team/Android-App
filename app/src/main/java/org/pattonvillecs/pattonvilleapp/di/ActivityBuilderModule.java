@@ -29,10 +29,12 @@ import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell Skaggs on 11/22/2017.
+ *
+ * @since 1.2.0
  */
 
 @Module
-public abstract class ActivityBuilderModule {
+abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     @PerActivity
     abstract CalendarEventDetailsActivity contributeCalendarEventDetailsActivity();

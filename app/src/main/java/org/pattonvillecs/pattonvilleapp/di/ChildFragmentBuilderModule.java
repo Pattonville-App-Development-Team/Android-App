@@ -27,9 +27,11 @@ import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell on 10/3/2017.
+ *
+ * @since 1.2.0
  */
 @Module
-public abstract class ChildFragmentBuilderModule {
+abstract class ChildFragmentBuilderModule {
     @ContributesAndroidInjector
     @PerChildFragment
     abstract CalendarPinnedFragment contributeCalendarPinnedFragment();
