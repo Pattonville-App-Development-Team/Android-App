@@ -29,12 +29,14 @@ import org.pattonvillecs.pattonvilleapp.DataSource
  * @since 1.4.0
  */
 @Immutable
-data class SourcedArticleSummary(
+data class SourcedArticleSummary @JvmOverloads constructor(
         @field:Embedded
         val articleSummary: ArticleSummary,
         @field:Relation(parentColumn = "guid", entityColumn = "guid", entity = DataSourceMarker::class)
-        val dataSourceMarkers: Set<DataSourceMarker> = setOf()
+        var _dataSourceMarkers: Set<DataSourceMarker> = setOf()
 ) : IArticleSummary by articleSummary {
+
+    val dataSourceMarkers: Set<DataSourceMarker> @Ignore get() = _dataSourceMarkers
 
     @delegate:Ignore
     val dataSources: Set<DataSource> by lazy { dataSourceMarkers.mapTo(mutableSetOf(), { it.dataSource }) }

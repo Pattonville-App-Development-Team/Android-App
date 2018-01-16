@@ -17,15 +17,19 @@
 
 package org.pattonvillecs.pattonvilleapp.service.repository.news;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
+import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
+import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary;
 import org.pattonvillecs.pattonvilleapp.service.model.news.DataSourceMarker;
+import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedArticleSummary;
 
 import java.util.List;
 
@@ -39,6 +43,18 @@ import java.util.List;
 //Due to nullable annotations not being overridden in "_Impl" classes
 @Dao
 public abstract class NewsDao {
+
+    private static final String SELECT_NEWS_ARTICLES = "news_articles.*";
+    private static final String WHERE_DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM news_datasource_markers WHERE news_datasource_markers.guid = news_articles.guid AND news_datasource_markers.datasource IN (:dataSources) LIMIT 1))";
+    private static final String ORDER_BY_DEFAULT = "news_articles.pub_date ASC";
+
+    @Transaction
+    @Query("SELECT " + SELECT_NEWS_ARTICLES
+            + " FROM news_articles"
+            + " WHERE " + WHERE_DATASOURCE_MARKER_EXISTS
+            + " ORDER BY " + ORDER_BY_DEFAULT)
+    abstract LiveData<List<SourcedArticleSummary>> getArticlesByDataSources(@NonNull List<DataSource> dataSources);
+
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract void insertAllIgnore(@NonNull List<ArticleSummary> articleSummaries, @NonNull List<DataSourceMarker> dataSourceMarkers);

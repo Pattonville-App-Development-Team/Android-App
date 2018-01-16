@@ -17,8 +17,11 @@
 
 package org.pattonvillecs.pattonvilleapp.service.repository.news
 
+import android.arch.lifecycle.LiveData
+import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.model.news.DataSourceMarker
+import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,7 +35,27 @@ import javax.inject.Singleton
 class NewsRepository @Inject constructor(appDatabase: AppDatabase) {
     private val newsDao: NewsDao = appDatabase.newsDao()
 
+    fun getArticlesByDataSources(dataSources: Iterable<DataSource>): LiveData<List<SourcedArticleSummary>> =
+            newsDao.getArticlesByDataSources(dataSources.toList())
+
+    fun getArticlesByDataSources(vararg dataSources: DataSource): LiveData<List<SourcedArticleSummary>> =
+            getArticlesByDataSources(dataSources.asIterable())
+
     fun updateArticlesAndDataSourceMarkers(articleSummaries: List<ArticleSummary>, dataSourceMarkers: List<DataSourceMarker>) {
         newsDao.upsertAll(articleSummaries, dataSourceMarkers)
+    }
+
+    fun updateSourcedArticles(vararg sourcedArticleSummaries: SourcedArticleSummary) {
+        updateSourcedArticles(sourcedArticleSummaries.toList())
+    }
+
+    fun updateSourcedArticles(sourcedArticleSummaries: Iterable<SourcedArticleSummary>) {
+        val articleSummaries = mutableListOf<ArticleSummary>()
+        val dataSourceMarkers = mutableListOf<DataSourceMarker>()
+        sourcedArticleSummaries.forEach {
+            articleSummaries += it.articleSummary
+            dataSourceMarkers += it.dataSourceMarkers
+        }
+        updateArticlesAndDataSourceMarkers(articleSummaries, dataSourceMarkers)
     }
 }
