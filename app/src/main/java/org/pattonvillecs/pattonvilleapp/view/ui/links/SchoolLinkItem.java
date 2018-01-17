@@ -47,7 +47,7 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, SchoolLinkItemViewHolder holder, int position, List payloads) {
-        Picasso.with()
+        Picasso.get()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes)
                 .fit()

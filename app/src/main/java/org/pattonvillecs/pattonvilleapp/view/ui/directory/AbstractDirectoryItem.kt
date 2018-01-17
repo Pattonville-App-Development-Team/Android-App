@@ -43,7 +43,7 @@ abstract class AbstractDirectoryItem : AbstractFlexibleItem<AbstractDirectoryIte
 
         holder.name.text = displayName
 
-        Picasso.with()
+        Picasso.get()
                 .load(mascotDrawableRes)
                 .error(mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside()
