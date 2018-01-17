@@ -46,7 +46,7 @@ public abstract class NewsDao {
 
     private static final String SELECT_NEWS_ARTICLES = "news_articles.*";
     private static final String WHERE_DATASOURCE_MARKER_EXISTS = "(EXISTS (SELECT * FROM news_datasource_markers WHERE news_datasource_markers.guid = news_articles.guid AND news_datasource_markers.datasource IN (:dataSources) LIMIT 1))";
-    private static final String ORDER_BY_DEFAULT = "news_articles.pub_date ASC";
+    private static final String ORDER_BY_DEFAULT = "news_articles.pub_date DESC";
 
     @Transaction
     @Query("SELECT " + SELECT_NEWS_ARTICLES

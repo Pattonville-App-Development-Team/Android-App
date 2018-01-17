@@ -151,7 +151,7 @@ class HomeFragment : DaggerFragment() {
         news_recyclerview.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         news_recyclerview.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.home_news_listview_item)
+                        .withDefaultDivider(R.layout.news_recyclerview_item)
                         .withDrawDividerOnLastItem(true))
         news_recyclerview.isNestedScrollingEnabled = false
         news_recyclerview.adapter = newsArticlesAdapter

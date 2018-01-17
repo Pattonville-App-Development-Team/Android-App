@@ -207,7 +207,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
 
     @Override
     public int getLayoutRes() {
-        return R.layout.home_news_listview_item;
+        return R.layout.news_recyclerview_item;
     }
 
     /**
