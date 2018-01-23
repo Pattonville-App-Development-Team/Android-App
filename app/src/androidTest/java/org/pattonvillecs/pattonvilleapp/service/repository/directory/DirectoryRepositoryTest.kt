@@ -38,7 +38,7 @@ import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue
  * @author Mitchell Skaggs
  * @since 1.3.0
  */
-@Suppress("FunctionName")
+@Suppress("TestFunctionName")
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class DirectoryRepositoryTest {

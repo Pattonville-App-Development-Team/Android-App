@@ -39,10 +39,9 @@ import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsDao
         entities = [
             CalendarEvent::class,
             PinnedEventMarker::class,
-            org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker::class,
+            DataSourceMarker::class,
             Faculty::class,
-            ArticleSummary::class,
-            org.pattonvillecs.pattonvilleapp.service.model.news.DataSourceMarker::class
+            ArticleSummary::class
         ],
         version = 3)
 @TypeConverters(

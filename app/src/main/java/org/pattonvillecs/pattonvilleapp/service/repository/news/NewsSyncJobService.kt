@@ -29,11 +29,11 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.firebase.crash.FirebaseCrash
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
-import org.pattonvillecs.pattonvilleapp.service.model.news.DataSourceMarker
-import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedRss
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
+typealias SourcedRss = Pair<Rss, DataSource>
 
 /**
  * Created by Mitchell Skaggs on 1/15/2018.
@@ -59,7 +59,7 @@ class NewsSyncJobService : DaggerJobService() {
     }
 
     private fun dataSourceToSourcedRss(dataSource: DataSource): ListenableFuture<SourcedRss> =
-            transform(newsRetrofitService.getRss(dataSource), Function<Rss, SourcedRss> { it: Rss? -> SourcedRss(dataSource, it!!) }, AsyncTask.THREAD_POOL_EXECUTOR)
+            transform(newsRetrofitService.getRss(dataSource), Function<Rss, SourcedRss> { it: Rss? -> it!! to dataSource }, AsyncTask.THREAD_POOL_EXECUTOR)
 
     override fun onStopJob(job: JobParameters): Boolean = false
 
@@ -73,17 +73,15 @@ class NewsSyncJobService : DaggerJobService() {
             Log.i(TAG, "Successful download!")
 
             val articles = mutableListOf<ArticleSummary>()
-            val dataSourceMarkers = mutableListOf<DataSourceMarker>()
 
             result.orEmpty().forEach {
-                Log.i(TAG, "Processed ${it.dataSource} with ${it.rss.channel.items.size} articles")
-                it.rss.channel.items.forEach { item ->
-                    articles += ArticleSummary(item)
-                    dataSourceMarkers += DataSourceMarker(item, it.dataSource)
+                Log.i(TAG, "Processed ${it.second} with ${it.first.channel.items.size} articles")
+                it.first.channel.items.forEach { item ->
+                    articles += ArticleSummary(item, it.second)
                 }
             }
 
-            newsRepository.updateArticlesAndDataSourceMarkers(articles, dataSourceMarkers)
+            newsRepository.updateArticles(articles)
 
             newsSyncJobService.jobFinished(job, false)
         }

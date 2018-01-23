@@ -51,9 +51,9 @@ class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
     @Inject
     lateinit var newsRepository: NewsRepository
 
-    lateinit var newsArticleAdapter: FlexibleAdapter<SourcedArticleSummaryItem>
+    private lateinit var newsArticleAdapter: FlexibleAdapter<ArticleSummaryItem>
 
-    lateinit var newsFragmentViewModel: NewsFragmentViewModel
+    private lateinit var newsFragmentViewModel: NewsFragmentViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -41,7 +41,7 @@ import org.threeten.bp.Instant
  * @author Mitchell Skaggs
  * @since 1.2.0
  */
-@Suppress("FunctionName")
+@Suppress("TestFunctionName")
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class CalendarRepositoryTest {

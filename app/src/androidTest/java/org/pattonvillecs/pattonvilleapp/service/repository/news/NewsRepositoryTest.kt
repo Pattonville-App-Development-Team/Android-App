@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("TestFunctionName")
+
 package org.pattonvillecs.pattonvilleapp.service.repository.news
 
 import android.arch.persistence.room.Room
@@ -30,8 +32,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
-import org.pattonvillecs.pattonvilleapp.service.model.news.DataSourceMarker
-import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
 import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue
 import org.threeten.bp.Instant
@@ -42,7 +42,7 @@ import org.threeten.bp.Instant
  * @author Mitchell Skaggs
  * @since 1.4.0
  */
-@Suppress("FunctionName")
+@Suppress("TestFunctionName")
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class NewsRepositoryTest {
@@ -66,7 +66,7 @@ class NewsRepositoryTest {
     fun Given_SourcedArticleSummary_When_UpsertAllCalled_Then_ReturnSameSourcedArticleSummary() {
         val sourcedArticleSummary = testSourcedArticleSummary()
 
-        newsRepository.updateSourcedArticles(sourcedArticleSummary)
+        newsRepository.updateArticles(sourcedArticleSummary)
 
         val result = newsRepository.getArticlesByDataSources(DataSource.DISTRICT).awaitValue()
 
@@ -76,23 +76,22 @@ class NewsRepositoryTest {
 
     @Test
     fun Given_SourcedArticleSummaries_When_UpsertAllCalled_Then_ReturnSameSourcedArticleSummariesInCorrectOrder() {
-        val sourcedArticleSummary1 = testSourcedArticleSummary(guid = "test_guid_1", pubDate = Instant.ofEpochMilli(0))
-        val sourcedArticleSummary2 = testSourcedArticleSummary(guid = "test_guid_2", pubDate = Instant.ofEpochMilli(1))
+        val sourcedArticleSummaryOlder = testSourcedArticleSummary(guid = "test_guid_old", pubDate = Instant.ofEpochMilli(0))
+        val sourcedArticleSummaryNewer = testSourcedArticleSummary(guid = "test_guid_new", pubDate = Instant.ofEpochMilli(1))
 
-        newsRepository.updateSourcedArticles(sourcedArticleSummary1, sourcedArticleSummary2)
+        newsRepository.updateArticles(sourcedArticleSummaryOlder, sourcedArticleSummaryNewer)
 
         val result = newsRepository.getArticlesByDataSources(DataSource.DISTRICT).awaitValue()
 
         result shouldMatch hasSize(equalTo(2))
-        result[0] shouldMatch equalTo(sourcedArticleSummary1)
-        result[1] shouldMatch equalTo(sourcedArticleSummary2)
+        result shouldMatch equalTo(listOf(sourcedArticleSummaryNewer, sourcedArticleSummaryOlder))
     }
 
     private fun testSourcedArticleSummary(title: String = "test_title",
                                           link: String = "test_link",
                                           pubDate: Instant = Instant.ofEpochMilli(0),
                                           guid: String = "test_guid",
-                                          dataSources: Collection<DataSource> = setOf(DataSource.DISTRICT)): SourcedArticleSummary {
-        return SourcedArticleSummary(ArticleSummary(title, link, pubDate, guid), dataSources.mapTo(mutableSetOf(), { DataSourceMarker(guid, it) }))
+                                          dataSource: DataSource = DataSource.DISTRICT): ArticleSummary {
+        return ArticleSummary(title, link, pubDate, guid, dataSource)
     }
 }

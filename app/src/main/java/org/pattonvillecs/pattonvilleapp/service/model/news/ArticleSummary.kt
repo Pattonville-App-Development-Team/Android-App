@@ -21,6 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import com.github.magneticflux.rss.namespaces.standard.elements.Item
 import com.google.errorprone.annotations.Immutable
+import org.pattonvillecs.pattonvilleapp.DataSource
 import org.threeten.bp.Instant
 
 /**
@@ -32,13 +33,15 @@ import org.threeten.bp.Instant
 @Entity(tableName = "news_articles", primaryKeys = ["guid"])
 data class ArticleSummary(
         @ColumnInfo(name = "title")
-        override val title: String,
+        val title: String,
         @ColumnInfo(name = "link")
-        override val link: String,
+        val link: String,
         @ColumnInfo(name = "pub_date", index = true, collate = ColumnInfo.BINARY)
-        override val pubDate: Instant,
+        val pubDate: Instant,
         @field:ColumnInfo(name = "guid", index = true, collate = ColumnInfo.BINARY)
-        override val guid: String
-) : IArticleSummary {
-    constructor(item: Item) : this(item.title!!, item.link!!.toString(), item.pubDate!!.toInstant(), item.guid!!.text)
+        val guid: String,
+        @field:ColumnInfo(name = "datasource", index = true, collate = ColumnInfo.BINARY)
+        val dataSource: DataSource
+) {
+    constructor(item: Item, dataSource: DataSource) : this(item.title!!, item.link!!.toString(), item.pubDate!!.toInstant(), item.guid!!.text, dataSource)
 }

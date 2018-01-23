@@ -22,7 +22,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +35,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 
@@ -69,20 +67,20 @@ public class NewsDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         // Avoid null pointer warning with null check
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.news_detail_refresh_layout);
+        mRefreshLayout = findViewById(R.id.news_detail_refresh_layout);
 
         // Defines the colors used for the refresh icon
         mRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         mRefreshLayout.setRefreshing(true);
 
-        mWebView = (WebView) findViewById(R.id.news_detail_webview);
+        mWebView = findViewById(R.id.news_detail_webview);
 
         // Defines the background color to match the app's background
         mWebView.setBackgroundColor(Color.parseColor("#FAFAFA"));
@@ -109,23 +107,17 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         // Article content request using Volley
         CustomStringRequest stringRequest = new CustomStringRequest(Request.Method.GET, newsArticle.getPrivateUrl(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // When content found, load
-                        response = new String(response.getBytes(Charset.defaultCharset()), Charset.defaultCharset());
-                        mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
-                    }
+                response -> {
+                    // When content found, load
+                    response = new String(response.getBytes(Charset.defaultCharset()), Charset.defaultCharset());
+                    mWebView.loadDataWithBaseURL(null, CONTENT_FORMATTING_STRING + NewsArticle.formatContent(response), DEFAULT_MIME_TYPE, DEFAULT_ENCODING, null);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                        // When unable to get content, inform the user
-                        Toast.makeText(getApplicationContext(), "Unable to download news article content", Toast.LENGTH_SHORT).show();
-                        mRefreshLayout.setRefreshing(false);
-                        mRefreshLayout.setEnabled(false);
-                    }
+                    // When unable to get content, inform the user
+                    Toast.makeText(getApplicationContext(), "Unable to download news article content", Toast.LENGTH_SHORT).show();
+                    mRefreshLayout.setRefreshing(false);
+                    mRefreshLayout.setEnabled(false);
                 });
 
         // If the cache has the link's content save, parse and display

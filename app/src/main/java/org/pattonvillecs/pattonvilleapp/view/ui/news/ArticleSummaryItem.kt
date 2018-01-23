@@ -26,7 +26,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import org.jetbrains.anko.find
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedArticleSummary
+import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -36,21 +36,21 @@ import org.threeten.bp.format.FormatStyle
  *
  * @since 1.4.0
  */
-data class SourcedArticleSummaryItem(private val articleSummary: SourcedArticleSummary) : AbstractFlexibleItem<SourcedArticleSummaryItem.SourcedArticleSummaryItemViewHolder>() {
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): SourcedArticleSummaryItemViewHolder {
-        return SourcedArticleSummaryItemViewHolder(view, adapter)
+data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>() {
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): ArticleSummaryItemViewHolder {
+        return ArticleSummaryItemViewHolder(view, adapter)
     }
 
     override fun getLayoutRes(): Int = R.layout.news_recyclerview_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: SourcedArticleSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
-        holder.circle.setColorFilter(articleSummary.dataSources.first().calendarColor)
-        holder.abbreviation.text = articleSummary.dataSources.first().initialsName
+    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: ArticleSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+        holder.circle.setColorFilter(articleSummary.dataSource.calendarColor)
+        holder.abbreviation.text = articleSummary.dataSource.initialsName
         holder.title.text = articleSummary.title
         holder.date.text = FORMATTER.format(articleSummary.pubDate)
     }
 
-    class SourcedArticleSummaryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {
+    class ArticleSummaryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {
         val circle = view.find<ImageView>(R.id.news_front_imageview)
         val abbreviation = view.find<TextView>(R.id.news_circle_school_id)
         val title = view.find<TextView>(R.id.home_news_listview_item_textView)

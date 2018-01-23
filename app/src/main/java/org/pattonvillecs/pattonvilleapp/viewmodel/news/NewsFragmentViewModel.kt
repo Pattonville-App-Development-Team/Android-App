@@ -22,11 +22,11 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
-import org.pattonvillecs.pattonvilleapp.service.model.news.SourcedArticleSummary
+import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.switchMap
-import org.pattonvillecs.pattonvilleapp.view.ui.news.SourcedArticleSummaryItem
+import org.pattonvillecs.pattonvilleapp.view.ui.news.ArticleSummaryItem
 import org.pattonvillecs.pattonvilleapp.viewmodel.app
 
 /**
@@ -39,12 +39,12 @@ class NewsFragmentViewModel(application: Application) : AndroidViewModel(applica
 
     private val selectedDataSources: LiveData<Set<DataSource>> = PreferenceUtils.getSelectedSchoolsLiveData(app)
 
-    val articles: LiveData<List<SourcedArticleSummary>> by lazy {
+    val articles: LiveData<List<ArticleSummary>> by lazy {
         selectedDataSources.switchMap { newsRepository.getArticlesByDataSources(it) }
     }
-    val articleItems: LiveData<List<SourcedArticleSummaryItem>> by lazy {
+    val articleItems: LiveData<List<ArticleSummaryItem>> by lazy {
         articles.map {
-            it.map(::SourcedArticleSummaryItem)
+            it.map(::ArticleSummaryItem)
         }
     }
 }

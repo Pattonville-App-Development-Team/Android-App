@@ -54,6 +54,7 @@ object MIGRATION_2_3 : Migration(2, 3) {
                 + "link TEXT NOT NULL, "
                 + "pub_date INTEGER NOT NULL COLLATE BINARY, "
                 + "guid TEXT NOT NULL COLLATE BINARY, "
+                + "datasource INTEGER NOT NULL COLLATE BINARY, "
                 + "PRIMARY KEY(guid)"
                 + ")")
         db.execSQL("CREATE INDEX index_news_articles_pub_date "
@@ -62,18 +63,8 @@ object MIGRATION_2_3 : Migration(2, 3) {
         db.execSQL("CREATE INDEX index_news_articles_guid "
                 + "ON news_articles "
                 + "(guid)")
-
-        db.execSQL("CREATE TABLE news_datasource_markers "
-                + "("
-                + "guid TEXT NOT NULL COLLATE BINARY, "
-                + "datasource INTEGER NOT NULL COLLATE BINARY, "
-                + "PRIMARY KEY (guid, datasource)"
-                + ")")
-        db.execSQL("CREATE INDEX index_news_datasource_markers_guid "
-                + "ON news_datasource_markers "
-                + "(guid)")
-        db.execSQL("CREATE INDEX index_news_datasource_markers_datasource "
-                + "ON news_datasource_markers "
+        db.execSQL("CREATE INDEX index_news_articles_datasource "
+                + "ON news_articles "
                 + "(datasource)")
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "0f9495fd453915c8a3c1af07f01afbf5",
+    "identityHash": "5f0bc4cf4fae1e7e890432988c102e54",
     "entities": [
       {
         "tableName": "events",
@@ -257,7 +257,7 @@
       },
       {
         "tableName": "news_articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `link` TEXT NOT NULL, `pub_date` INTEGER NOT NULL COLLATE BINARY, `guid` TEXT NOT NULL COLLATE BINARY, PRIMARY KEY(`guid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `link` TEXT NOT NULL, `pub_date` INTEGER NOT NULL COLLATE BINARY, `guid` TEXT NOT NULL COLLATE BINARY, `datasource` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`guid`))",
         "fields": [
           {
             "fieldPath": "title",
@@ -281,6 +281,12 @@
             "fieldPath": "guid",
             "columnName": "guid",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "datasource",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -306,50 +312,14 @@
               "guid"
             ],
             "createSql": "CREATE  INDEX `index_news_articles_guid` ON `${TABLE_NAME}` (`guid`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "news_datasource_markers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`guid` TEXT NOT NULL COLLATE BINARY, `datasource` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`guid`, `datasource`))",
-        "fields": [
-          {
-            "fieldPath": "guid",
-            "columnName": "guid",
-            "affinity": "TEXT",
-            "notNull": true
           },
           {
-            "fieldPath": "dataSource",
-            "columnName": "datasource",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "guid",
-            "datasource"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_news_datasource_markers_guid",
-            "unique": false,
-            "columnNames": [
-              "guid"
-            ],
-            "createSql": "CREATE  INDEX `index_news_datasource_markers_guid` ON `${TABLE_NAME}` (`guid`)"
-          },
-          {
-            "name": "index_news_datasource_markers_datasource",
+            "name": "index_news_articles_datasource",
             "unique": false,
             "columnNames": [
               "datasource"
             ],
-            "createSql": "CREATE  INDEX `index_news_datasource_markers_datasource` ON `${TABLE_NAME}` (`datasource`)"
+            "createSql": "CREATE  INDEX `index_news_articles_datasource` ON `${TABLE_NAME}` (`datasource`)"
           }
         ],
         "foreignKeys": []
@@ -357,7 +327,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0f9495fd453915c8a3c1af07f01afbf5\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5f0bc4cf4fae1e7e890432988c102e54\")"
     ]
   }
 }

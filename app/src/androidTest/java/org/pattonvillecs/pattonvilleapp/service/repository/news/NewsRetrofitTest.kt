@@ -38,6 +38,7 @@ import java.util.concurrent.ExecutionException
  * @author Mitchell Skaggs
  * @since 1.4.0
  */
+@Suppress("TestFunctionName")
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class NewsRetrofitTest {
