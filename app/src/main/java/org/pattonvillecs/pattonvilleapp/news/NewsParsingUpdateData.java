@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
+@Deprecated
 public class NewsParsingUpdateData {
     public static final int NEWS_LISTENER_ID = 412983751;
     private final ConcurrentMap<DataSource, List<NewsArticle>> newsData;

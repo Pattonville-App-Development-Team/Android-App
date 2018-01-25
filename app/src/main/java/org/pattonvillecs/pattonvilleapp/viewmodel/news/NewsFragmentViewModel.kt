@@ -47,9 +47,7 @@ class NewsFragmentViewModel(application: Application) : AndroidViewModel(applica
         selectedDataSources.switchMap { newsRepository.getArticlesByDataSources(it) }
     }
     val articleItems: LiveData<List<ArticleSummaryItem>> by lazy {
-        articles.map {
-            it.map(::ArticleSummaryItem)
-        }
+        articles.map { it.map(::ArticleSummaryItem) }
     }
 
     fun setSearchText(text: String) {

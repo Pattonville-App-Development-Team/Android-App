@@ -54,6 +54,14 @@ public abstract class NewsDao {
     abstract LiveData<List<ArticleSummary>> getArticlesByDataSources(@NonNull List<DataSource> dataSources);
 
     @Transaction
+    @Query("SELECT " + SELECT_NEWS_ARTICLES
+            + " FROM news_articles"
+            + " WHERE " + WHERE_DATASOURCE_MARKER_MATCHES
+            + " ORDER BY " + ORDER_BY_DEFAULT
+            + " LIMIT (:limit)")
+    abstract LiveData<List<ArticleSummary>> getArticlesByDataSourcesWithLimit(@NonNull List<DataSource> dataSources, int limit);
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract void insertAllIgnore(@NonNull List<ArticleSummary> articleSummaries);
 
@@ -62,7 +70,7 @@ public abstract class NewsDao {
     abstract void updateAllIgnore(@NonNull List<ArticleSummary> articleSummaries);
 
     /**
-     * Needed because {@link OnConflictStrategy#REPLACE} deletes first, which causes pinned events to be cascade deleted.
+     * Needed because {@link OnConflictStrategy#REPLACE} deletes first.
      *
      * @see <a href="https://en.wiktionary.org/wiki/upsert">Upsert</a>
      */

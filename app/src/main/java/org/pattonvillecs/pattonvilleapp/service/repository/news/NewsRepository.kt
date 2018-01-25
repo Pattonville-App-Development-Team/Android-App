@@ -39,6 +39,12 @@ class NewsRepository @Inject constructor(appDatabase: AppDatabase) {
     fun getArticlesByDataSources(vararg dataSources: DataSource): LiveData<List<ArticleSummary>> =
             getArticlesByDataSources(dataSources.asIterable())
 
+    fun getArticlesByDataSourcesWithLimit(dataSources: Iterable<DataSource>, limit: Int): LiveData<List<ArticleSummary>> =
+            newsDao.getArticlesByDataSourcesWithLimit(dataSources.toList(), limit)
+
+    fun getArticlesByDataSourcesWithLimit(vararg dataSources: DataSource, limit: Int): LiveData<List<ArticleSummary>> =
+            getArticlesByDataSourcesWithLimit(dataSources.asIterable(), limit)
+
     fun updateArticles(articleSummaries: List<ArticleSummary>) {
         newsDao.upsertAll(articleSummaries)
     }

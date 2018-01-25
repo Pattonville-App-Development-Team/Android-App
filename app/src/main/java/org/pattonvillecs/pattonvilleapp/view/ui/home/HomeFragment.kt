@@ -29,11 +29,12 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.pattonvillecs.pattonvilleapp.R
-import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRepository
 import org.pattonvillecs.pattonvilleapp.view.adapter.calendar.CalendarEventFlexibleAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment
+import org.pattonvillecs.pattonvilleapp.view.ui.news.ArticleSummaryItem
 import org.pattonvillecs.pattonvilleapp.view.ui.news.NewsFragment
 import org.pattonvillecs.pattonvilleapp.viewmodel.getViewModel
 import org.pattonvillecs.pattonvilleapp.viewmodel.home.HomeFragmentViewModel
@@ -43,20 +44,25 @@ import javax.inject.Inject
 class HomeFragment : DaggerFragment() {
     @Inject
     lateinit var picasso: Picasso
+
     @Inject
     lateinit var calendarRepository: CalendarRepository
+
+    @Inject
+    lateinit var newsRepository: NewsRepository
 
     private lateinit var viewModel: HomeFragmentViewModel
 
     private lateinit var allEventsAdapter: CalendarEventFlexibleAdapter
     private lateinit var pinnedEventsAdapter: CalendarEventFlexibleAdapter
-    private lateinit var newsArticlesAdapter: FlexibleAdapter<NewsArticle>
+    private lateinit var newsArticlesAdapter: FlexibleAdapter<ArticleSummaryItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = getViewModel()
 
         viewModel.calendarRepository = calendarRepository
+        viewModel.newsRepository = newsRepository
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -151,7 +157,7 @@ class HomeFragment : DaggerFragment() {
         news_recyclerview.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         news_recyclerview.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.news_recyclerview_item)
+                        .withDefaultDivider()
                         .withDrawDividerOnLastItem(true))
         news_recyclerview.isNestedScrollingEnabled = false
         news_recyclerview.adapter = newsArticlesAdapter
@@ -160,7 +166,7 @@ class HomeFragment : DaggerFragment() {
         all_events_recyclerview.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         all_events_recyclerview.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
+                        .withDefaultDivider()
                         .withDrawDividerOnLastItem(true))
         all_events_recyclerview.isNestedScrollingEnabled = false
         all_events_recyclerview.adapter = allEventsAdapter
@@ -169,7 +175,7 @@ class HomeFragment : DaggerFragment() {
         pinned_events_recyclerview.layoutManager = SmoothScrollLinearLayoutManager(context!!)
         pinned_events_recyclerview.addItemDecoration(
                 FlexibleItemDecoration(context!!)
-                        .withDefaultDivider(R.layout.calendar_dateless_event_list_item)
+                        .withDefaultDivider()
                         .withDrawDividerOnLastItem(true))
         pinned_events_recyclerview.isNestedScrollingEnabled = false
         pinned_events_recyclerview.adapter = pinnedEventsAdapter

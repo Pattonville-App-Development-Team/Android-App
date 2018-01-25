@@ -56,6 +56,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
  * @author Mitchell Skaggs
  * @author Jeremiah Simmons
  */
+@Deprecated
 public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable, IFilterable {
 
     //Required CREATOR for the Parcelable implementation

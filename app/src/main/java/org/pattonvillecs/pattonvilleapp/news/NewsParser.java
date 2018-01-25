@@ -43,6 +43,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Nathan Skelton
  * @author Jeremiah Simmons
  */
+@Deprecated
 public class NewsParser extends DefaultHandler {
 
     private NewsArticle item = null;

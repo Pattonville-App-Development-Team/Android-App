@@ -50,6 +50,7 @@ import java.nio.charset.Charset;
  *
  * @author Nathan Skelton
  */
+@Deprecated
 public class NewsDetailActivity extends AppCompatActivity {
 
     public static final String KEY_NEWS_ARTICLE = "news_article";

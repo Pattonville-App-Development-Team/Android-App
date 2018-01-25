@@ -84,11 +84,16 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     public static final String TOPIC_TEST = "test";
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
 
+    @Deprecated
     private RequestQueue mRequestQueue;
+    @Deprecated
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
+    @Deprecated
     private KryoPool kryoPool;
 
+    @Deprecated
     private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
+    @Deprecated
     private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
 
     /**
@@ -96,7 +101,9 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
      *
      * @deprecated It was a dumb idea lol
      */
+    @Deprecated
     private Map<String, Integer> keyModificationCounts;
+    @Deprecated
     private List<PauseableListener<?>> pauseableListeners;
 
     public static PattonvilleApplication get(Activity activity) {
@@ -127,8 +134,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setupFirebaseTopics();
-        setUpNewsParsing();
-        enableHttpResponseCache();
     }
 
     @Inject
@@ -238,6 +243,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         });
     }
 
+    @Deprecated
     private void setUpNewsParsing() {
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
@@ -258,24 +264,29 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), false);
     }
 
+    @Deprecated
     private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
         Stream.of(dataSources)
                 .filter(dataSource -> dataSource.newsURL.isPresent())
                 .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
     }
 
+    @Deprecated
     public Kryo borrowKryo() {
         return kryoPool.borrow();
     }
 
+    @Deprecated
     public void releaseKryo(Kryo kryo) {
         kryoPool.release(kryo);
     }
 
+    @Deprecated
     public RequestQueue getRequestQueue() {
         return mRequestQueue;
     }
 
+    @Deprecated
     public void registerOnPreferenceKeyChangedListener(OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener) {
         int index = onSharedPreferenceKeyChangedListeners.indexOf(onSharedPreferenceKeyChangedListener);
         if (index > -1)
@@ -284,11 +295,13 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
             onSharedPreferenceKeyChangedListeners.add(onSharedPreferenceKeyChangedListener);
     }
 
+    @Deprecated
     public void unregisterOnPreferenceKeyChangedListener(OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener) {
         onSharedPreferenceKeyChangedListeners.remove(onSharedPreferenceKeyChangedListener);
     }
 
     @Override
+    @Deprecated
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.i(TAG, "Preference changed: " + key + " modifications are now: " + keyModificationCounts);
 
@@ -305,6 +318,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     @SuppressWarnings("unchecked")
     @Override
+    @Deprecated
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
@@ -318,6 +332,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     @SuppressWarnings("unchecked")
     @Override
+    @Deprecated
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
@@ -330,23 +345,28 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     }
 
     @Override
+    @Deprecated
     public void registerPauseableListener(PauseableListener<?> pauseableListener) {
         pauseableListeners.add(pauseableListener);
     }
 
     @Override
+    @Deprecated
     public void unregisterPauseableListener(PauseableListener<?> pauseableListener) {
         pauseableListeners.remove(pauseableListener);
     }
 
+    @Deprecated
     public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
         return runningNewsAsyncTasks;
     }
 
+    @Deprecated
     public void updateNewsListeners() {
         updateNewsListeners(getCurrentNewsParsingUpdateData());
     }
 
+    @Deprecated
     private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
         Log.d(TAG, "Updating news listeners");
         for (PauseableListener<?> pauseableListener : pauseableListeners) {
@@ -364,14 +384,17 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         }
     }
 
+    @Deprecated
     private NewsParsingUpdateData getCurrentNewsParsingUpdateData() {
         return new NewsParsingUpdateData(newsData, runningNewsAsyncTasks);
     }
 
+    @Deprecated
     public Map<DataSource, List<NewsArticle>> getNewsData() {
         return newsData;
     }
 
+    @Deprecated
     public void hardRefreshNewsData() {
         executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
     }
