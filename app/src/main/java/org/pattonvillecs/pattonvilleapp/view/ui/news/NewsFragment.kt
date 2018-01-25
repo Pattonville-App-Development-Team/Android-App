@@ -17,8 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.news
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.SearchView
 import android.text.InputType
@@ -31,6 +29,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_news.*
+import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextListener
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRepository
 import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService
@@ -44,16 +43,16 @@ import javax.inject.Inject
  *
  * @since 1.0.0
  */
-class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
+class NewsFragment : DaggerFragment() {
     @Inject
     lateinit var firebaseJobDispatcher: FirebaseJobDispatcher
 
     @Inject
     lateinit var newsRepository: NewsRepository
 
-    private lateinit var newsArticleAdapter: FlexibleAdapter<ArticleSummaryItem>
+    private lateinit var adapter: FlexibleAdapter<ArticleSummaryItem>
 
-    private lateinit var newsFragmentViewModel: NewsFragmentViewModel
+    private lateinit var viewModel: NewsFragmentViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -65,8 +64,8 @@ class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        newsFragmentViewModel = getViewModel()
-        newsFragmentViewModel.newsRepository = newsRepository
+        viewModel = getViewModel()
+        viewModel.newsRepository = newsRepository
     }
 
 
@@ -76,10 +75,10 @@ class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        newsArticleAdapter = FlexibleAdapter(null)
+        adapter = FlexibleAdapter(null)
 
         news_recyclerView.layoutManager = SmoothScrollLinearLayoutManager(context!!)
-        news_recyclerView.adapter = newsArticleAdapter
+        news_recyclerView.adapter = adapter
         // Adds item divider between elements
         news_recyclerView.addItemDecoration(
                 FlexibleItemDecoration(context!!)
@@ -88,8 +87,19 @@ class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
         news_refreshLayout.setOnRefreshListener(this::refreshNewsData)
         news_refreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark)
 
-        newsFragmentViewModel.articleItems.observe(this::getLifecycle) {
-            newsArticleAdapter.updateDataSet(it)
+        viewModel.articleItems.observe(this::getLifecycle) {
+            if (it != null) {
+                adapter.updateDataSet(it)
+                adapter.filterItems(100)
+                news_refreshLayout.isRefreshing = false
+            }
+        }
+        viewModel.searchText.observe(this::getLifecycle) {
+            Log.i(TAG, "Filtering based on '$it'")
+            if (it != null) {
+                adapter.searchText = it
+                adapter.filterItems(100)
+            }
         }
     }
 
@@ -123,62 +133,32 @@ class NewsFragment : DaggerFragment(), SearchView.OnQueryTextListener {
         return true
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean {
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String): Boolean {
-        if (newsArticleAdapter.hasNewSearchText(newText)) {
-            Log.d(TAG, "onQueryTextChange newText: " + newText)
-            newsArticleAdapter.searchText = newText
-            newsArticleAdapter.filterItems(200L)
-        }
-        news_refreshLayout.isEnabled = !newsArticleAdapter.hasSearchText()
-        return true
-    }
-
     /**
      * Method to setup the search functionality of the list
-     *
-     *
-     * Refer to the Flexible Adapter documentation, as this is a near replica implementation
      *
      * @param menu Menu object of current options menu
      */
     private fun initSearchView(menu: Menu) {
-        // Associate searchable configuration with the SearchView
-        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         val searchItem = menu.findItem(R.id.news_menu_search)
         if (searchItem != null) {
-
-            searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    val listTypeItem = menu.findItem(R.id.news_menu_refresh)
-                    if (listTypeItem != null)
-                        listTypeItem.isVisible = false
-                    return true
-                }
-
-                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    val listTypeItem = menu.findItem(R.id.news_menu_refresh)
-                    if (listTypeItem != null)
-                        listTypeItem.isVisible = true
-                    return true
-                }
-            })
-
             val searchView = searchItem.actionView as SearchView
             searchView.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             searchView.imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
             searchView.queryHint = getString(R.string.action_search)
-            searchView.setSearchableInfo(searchManager?.getSearchableInfo(activity!!.componentName))
-            searchView.setOnQueryTextListener(this)
+            searchView.onQueryTextListener {
+                onQueryTextChange {
+                    Log.d(TAG, "Search text: '$it'")
+                    if (it != null)
+                        viewModel.setSearchText(it)
+                    true
+                }
+            }
         }
     }
 
     companion object {
 
-        private val TAG = NewsFragment::class.java.simpleName
+        private const val TAG = "NewsFragment"
 
         /**
          * Method that provides a new instance of NewsFragment

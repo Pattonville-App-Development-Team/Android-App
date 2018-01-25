@@ -20,6 +20,7 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.news
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
@@ -39,6 +40,9 @@ class NewsFragmentViewModel(application: Application) : AndroidViewModel(applica
 
     private val selectedDataSources: LiveData<Set<DataSource>> = PreferenceUtils.getSelectedSchoolsLiveData(app)
 
+    private val _searchText: MutableLiveData<String> = MutableLiveData()
+    val searchText: LiveData<String> = _searchText
+
     val articles: LiveData<List<ArticleSummary>> by lazy {
         selectedDataSources.switchMap { newsRepository.getArticlesByDataSources(it) }
     }
@@ -46,5 +50,9 @@ class NewsFragmentViewModel(application: Application) : AndroidViewModel(applica
         articles.map {
             it.map(::ArticleSummaryItem)
         }
+    }
+
+    fun setSearchText(text: String) {
+        _searchText.value = text
     }
 }

@@ -22,8 +22,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.jetbrains.anko.find
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
@@ -36,7 +38,16 @@ import org.threeten.bp.format.FormatStyle
  *
  * @since 1.4.0
  */
-data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>() {
+data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>(), IFilterable {
+    override fun filter(constraint: String?): Boolean {
+        if (constraint == null || constraint.isBlank())
+            return true
+
+        val titleRatio = FuzzySearch.weightedRatio(constraint, articleSummary.title.toLowerCase())
+        val dataSourceRatio = FuzzySearch.weightedRatio(constraint, articleSummary.dataSource.toString().toLowerCase())
+        return titleRatio > 70 || dataSourceRatio > 70
+    }
+
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): ArticleSummaryItemViewHolder {
         return ArticleSummaryItemViewHolder(view, adapter)
     }
