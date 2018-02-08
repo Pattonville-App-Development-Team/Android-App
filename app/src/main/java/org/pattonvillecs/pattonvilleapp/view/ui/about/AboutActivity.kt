@@ -48,7 +48,7 @@ class AboutActivity : AppCompatActivity() {
         val aboutAdapter = FlexibleAdapter<IFlexible<*>>(null)
         aboutAdapter.setDisplayHeadersAtStartUp(true)
                 .setAnimationEntryStep(false)
-                .setAnimationOnScrolling(true)
+                .setAnimationOnForwardScrolling(true)
                 .setAnimationOnReverseScrolling(true)
 
         val manager = SmoothScrollGridLayoutManager(this, 2)

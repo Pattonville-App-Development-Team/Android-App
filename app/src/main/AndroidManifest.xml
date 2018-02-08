@@ -83,7 +83,7 @@
         </activity>
 
         <activity
-            android:name=".news.NewsDetailActivity"
+            android:name=".view.ui.news.NewsDetailActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
 
@@ -138,6 +138,12 @@
         <activity
             android:name=".view.ui.about.secret.SecretShopActivity"
             android:parentActivityName=".view.ui.about.secret.SecretActivity" />
+
+        <activity
+            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@style/FinestWebViewTheme.Fullscreen" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

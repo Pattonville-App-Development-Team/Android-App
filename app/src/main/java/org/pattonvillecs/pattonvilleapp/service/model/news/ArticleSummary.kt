@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp.service.model.news
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import com.github.magneticflux.rss.namespaces.standard.elements.Item
 import com.google.errorprone.annotations.Immutable
 import org.pattonvillecs.pattonvilleapp.DataSource
@@ -43,5 +44,8 @@ data class ArticleSummary(
         @field:ColumnInfo(name = "datasource", index = true, collate = ColumnInfo.BINARY)
         val dataSource: DataSource
 ) {
-    constructor(item: Item, dataSource: DataSource) : this(item.title!!, item.link!!.toString(), item.pubDate!!.toInstant(), item.guid!!.text, dataSource)
+    constructor(item: Item, dataSource: DataSource) : this(item.title!!, item.link!!.file, item.pubDate!!.toInstant(), item.guid!!.text, dataSource)
+
+    @delegate:Ignore
+    val publicLink: String by lazy { "${dataSource.websiteURL}?$link" }
 }

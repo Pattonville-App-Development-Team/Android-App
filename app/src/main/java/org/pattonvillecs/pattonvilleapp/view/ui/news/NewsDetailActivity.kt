@@ -15,21 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.repository.news
+package org.pattonvillecs.pattonvilleapp.view.ui.news
 
-import com.github.magneticflux.rss.namespaces.standard.elements.Rss
-import com.google.common.util.concurrent.ListenableFuture
-import org.pattonvillecs.pattonvilleapp.DataSource
-import retrofit2.http.GET
-import retrofit2.http.Path
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.webkit.WebViewClient
+import kotlinx.android.synthetic.main.activity_news_detail.*
+import org.pattonvillecs.pattonvilleapp.R
 
 /**
- * Created by Mitchell Skaggs on 12/14/2017.
+ * @since 1.4.0
  */
-interface NewsRetrofitService {
-    @GET("{datasource}/news/?plugin=xml&leaves")
-    fun getRss(@Path(value = "datasource") dataSource: DataSource): ListenableFuture<Rss>
+class NewsDetailActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_news_detail)
 
-    @GET("{datasource}/news/{id}")
-    fun getArticle(@Path(value = "datasource") dataSource: DataSource, @Path(value = "id") id: String): ListenableFuture<Rss>
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        webview.webViewClient = object : WebViewClient() {}
+        webview.loadUrl("http://www.google.com/")
+    }
 }

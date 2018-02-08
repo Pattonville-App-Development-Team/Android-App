@@ -20,6 +20,7 @@ package org.pattonvillecs.pattonvilleapp.view.ui.news
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.thefinestartist.finestwebview.FinestWebView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -27,6 +28,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.jetbrains.anko.find
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.threeten.bp.ZoneId
@@ -40,7 +42,7 @@ import org.threeten.bp.format.FormatStyle
  */
 data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>(), IFilterable {
     override fun filter(constraint: String?): Boolean {
-        if (constraint == null || constraint.isBlank())
+        if (constraint.isNullOrBlank())
             return true
 
         val titleRatio = FuzzySearch.weightedRatio(constraint, articleSummary.title.toLowerCase())
@@ -59,6 +61,13 @@ data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : Abst
         holder.abbreviation.text = articleSummary.dataSource.initialsName
         holder.title.text = articleSummary.title
         holder.date.text = FORMATTER.format(articleSummary.pubDate)
+        holder.itemView.onClick {
+            FinestWebView.Builder(it!!.context)
+                    .showIconBack(true)
+                    .showSwipeRefreshLayout(true)
+                    .swipeRefreshColorsRes(R.array.colors)
+                    .show(articleSummary.publicLink)
+        }
     }
 
     class ArticleSummaryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {

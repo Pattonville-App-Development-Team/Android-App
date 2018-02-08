@@ -31,6 +31,7 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.squareup.leakcanary.LeakCanary;
+import com.thefinestartist.Base;
 
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
@@ -120,6 +121,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         }
         LeakCanary.install(this);
         AndroidThreeTen.init(this);
+        Base.initialize(this);
 
         mRequestQueue = Volley.newRequestQueue(this);
         onSharedPreferenceKeyChangedListeners = new ArrayList<>();

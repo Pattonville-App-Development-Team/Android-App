@@ -66,7 +66,7 @@ public class NewsDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_detail);
+        setContentView(R.layout.activity_news_detail_old);
 
         setSupportActionBar(findViewById(R.id.toolbar));
 

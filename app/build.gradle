@@ -133,11 +133,11 @@ dependencies {
     implementation "com.google.firebase:firebase-crash:$firebase_version"
 
     //Android Architecture Components
-    implementation "android.arch.lifecycle:extensions:$arch_version"
-    implementation "android.arch.persistence.room:runtime:$arch_version"
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    implementation "android.arch.persistence.room:runtime:$room_version"
     implementation "android.arch.paging:runtime:1.0.0-alpha4-1"
-    kapt "android.arch.persistence.room:compiler:$arch_version"
-    kapt "android.arch.lifecycle:compiler:$arch_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
+    kapt "android.arch.lifecycle:compiler:$lifecycle_version"
 
     //Dagger 2
     implementation "com.google.dagger:dagger-android:$dagger_version"
@@ -158,13 +158,14 @@ dependencies {
 
     //RecyclerView improvements
     implementation 'eu.davidea:flexible-adapter:5.0.0-SNAPSHOT'
-    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b1'
+    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b2'
 
     //Java 8 streams
     implementation 'com.annimon:stream:1.1.9'
 
     //Collections, utilities
-    implementation 'com.google.guava:guava:23.6-android'
+    implementation 'com.google.guava:guava:24.0-android'
 
     //Network
     implementation 'com.android.volley:volley:1.1.0'
@@ -224,21 +225,27 @@ dependencies {
     //Job scheduling from Firebase
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
+    //WebView alternative
+    implementation 'com.github.rhlff:NestedScrollWebView:v1.0.2'
+
+    //Webview alternative
+    implementation 'com.thefinestartist:finestwebview:1.2.7'
+
     //Memory leak detection
-    debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     //@Generated annotation, other annotations
     compileOnly 'javax.annotation:javax.annotation-api:1.3.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-android:$mockito_version"
-    testImplementation "android.arch.core:core-testing:$arch_version"
+    testImplementation "android.arch.core:core-testing:$lifecycle_version"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2-alpha1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2-alpha1'
     androidTestImplementation "org.mockito:mockito-android:$mockito_version"
-    androidTestImplementation "android.arch.persistence.room:testing:$arch_version"
+    androidTestImplementation "android.arch.persistence.room:testing:$room_version"
     androidTestImplementation 'com.natpryce:hamkrest:1.4.2.2'
     androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }

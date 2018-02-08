@@ -83,7 +83,7 @@ class AllDataSourcesDirectoryDetailActivity : AbstractDirectoryDetailActivity() 
         }
 
         viewModel.searchText.observe(this::getLifecycle) {
-            facultyAdapter.searchText = it
+            facultyAdapter.searchText = it.orEmpty()
             if (facultyAdapter.hasSearchText()) {
                 Log.i(TAG, "Visible from search with text $it!")
                 progress_bar.visibility = View.VISIBLE
