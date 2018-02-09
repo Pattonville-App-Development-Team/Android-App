@@ -32,12 +32,11 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.ICalendarEv
  */
 
 @Entity(tableName = "pinned_event_markers",
-        foreignKeys = arrayOf(
-                ForeignKey(entity = CalendarEvent::class,
-                        parentColumns = arrayOf("uid"),
-                        childColumns = arrayOf("uid"),
-                        onDelete = ForeignKey.CASCADE,
-                        deferred = true)))
+        foreignKeys = [(ForeignKey(entity = CalendarEvent::class,
+                parentColumns = ["uid"],
+                childColumns = ["uid"],
+                onDelete = ForeignKey.CASCADE,
+                deferred = true))])
 data class PinnedEventMarker(@field:PrimaryKey
                              @field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
                              val uid: String) {

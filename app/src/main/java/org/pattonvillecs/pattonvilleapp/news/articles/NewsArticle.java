@@ -282,7 +282,7 @@ public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleVie
         constraint = constraint.toLowerCase();
 
         int titleRatio = FuzzySearch.partialRatio(constraint, title.toLowerCase());
-        int dataSourceRatio = FuzzySearch.partialRatio(constraint, dataSource.name.toLowerCase());
+        int dataSourceRatio = FuzzySearch.partialRatio(constraint, dataSource.longName.toLowerCase());
         int dateRatio = FuzzySearch.partialRatio(constraint, getFormattedDate().toLowerCase());
 
         return titleRatio > 80 || dataSourceRatio > 80 || dateRatio > 80;

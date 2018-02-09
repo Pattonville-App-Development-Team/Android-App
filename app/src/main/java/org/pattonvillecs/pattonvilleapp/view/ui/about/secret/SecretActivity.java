@@ -106,7 +106,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         text = findViewById(R.id.well_text);
         resetButton = findViewById(R.id.well_reset);
 
-        Picasso.with()
+        Picasso.get()
                 .load(R.drawable.well)
                 .fit()
                 .centerInside()

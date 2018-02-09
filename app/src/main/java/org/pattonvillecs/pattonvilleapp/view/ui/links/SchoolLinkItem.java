@@ -47,14 +47,14 @@ public abstract class SchoolLinkItem extends AbstractFlexibleItem<SchoolLinkItem
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, SchoolLinkItemViewHolder holder, int position, List payloads) {
-        Picasso.with()
+        Picasso.get()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes)
                 .fit()
                 .centerInside()
                 .into(holder.schoolMascot);
 
-        holder.schoolName.setText(dataSource.name);
+        holder.schoolName.setText(dataSource.longName);
 
         holder.itemView.setOnClickListener(v -> onClick(v.getContext()));
     }

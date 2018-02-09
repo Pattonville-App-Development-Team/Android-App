@@ -29,31 +29,27 @@ import java.lang.reflect.Type
 /**
  * Created by Mitchell Skaggs on 11/20/2017.
  */
-object CalendarConverters {
+object CalendarConverterFactory : Converter.Factory() {
+    override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, Calendar>? =
+            when (type) {
+                Calendar::class.java -> CalendarConverter
+                else -> null
+            }
 
-    class CalendarConverter : Converter<ResponseBody, Calendar> {
+    override fun stringConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<*, String>? =
+            when (type) {
+                DataSource::class.java -> DataSourceConverter
+                else -> null
+            }
+
+    object CalendarConverter : Converter<ResponseBody, Calendar> {
         override fun convert(value: ResponseBody): Calendar =
                 CalendarBuilder().build(StringReader(fixICalStrings(value.string())))
     }
 
-    class DataSourceConverter : Converter<DataSource, String> {
+    object DataSourceConverter : Converter<DataSource, String> {
         override fun convert(value: DataSource): String =
                 value.calendarURL.orElseThrow { IllegalStateException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?") }
-    }
-
-    @JvmField
-    val FACTORY: Converter.Factory = object : Converter.Factory() {
-        override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, Calendar>? =
-                when (type) {
-                    Calendar::class.java -> CalendarConverter()
-                    else -> null
-                }
-
-        override fun stringConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<*, String>? =
-                when (type) {
-                    DataSource::class.java -> DataSourceConverter()
-                    else -> null
-                }
     }
 
     private const val LINEBREAK_MATCHER = "(?:\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029])"

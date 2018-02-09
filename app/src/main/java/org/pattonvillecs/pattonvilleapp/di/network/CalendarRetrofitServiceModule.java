@@ -19,7 +19,7 @@ package org.pattonvillecs.pattonvilleapp.di.network;
 
 import android.os.AsyncTask;
 
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarConverters;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarConverterFactory;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRetrofitService;
 
 import javax.inject.Singleton;
@@ -44,7 +44,7 @@ public class CalendarRetrofitServiceModule {
                 .client(okHttpClient)
                 .callbackExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                 .addCallAdapterFactory(GuavaCallAdapterFactory.create())
-                .addConverterFactory(CalendarConverters.FACTORY)
+                .addConverterFactory(CalendarConverterFactory.INSTANCE)
                 .build()
                 .create(CalendarRetrofitService.class);
     }

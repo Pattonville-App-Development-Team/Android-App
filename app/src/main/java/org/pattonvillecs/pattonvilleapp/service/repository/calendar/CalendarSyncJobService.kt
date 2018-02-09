@@ -25,13 +25,13 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.*
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.firebase.crash.FirebaseCrash
-import dagger.android.AndroidInjection
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker.CREATOR.dataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.SourcedCalendar
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
+import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -41,17 +41,12 @@ import javax.inject.Inject
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-class CalendarSyncJobService : JobService() {
+class CalendarSyncJobService : DaggerJobService() {
     @field:Inject
     lateinit var calendarRepository: CalendarRepository
 
     @field:Inject
     lateinit var calendarRetrofitService: CalendarRetrofitService
-
-    override fun onCreate() {
-        AndroidInjection.inject(this)
-        super.onCreate()
-    }
 
     override fun onStartJob(job: JobParameters): Boolean {
         Log.i(TAG, "Starting calendar sync service!")

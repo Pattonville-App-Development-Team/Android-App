@@ -71,7 +71,7 @@ public class LinkItem extends AbstractFlexibleItem<LinkItem.LinkViewHolder> impl
         Context context = adapter.getRecyclerView().getContext();
 
         holder.imageView.setOnClickListener(v -> context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link))));
-        Picasso.with()
+        Picasso.get()
                 .load(image)
                 .error(image)
                 .fit()
