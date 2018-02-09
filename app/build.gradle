@@ -106,6 +106,13 @@ kotlin {
     }
 }
 
+configurations.all {
+    // Already included in Android
+    exclude group: 'stax', module: 'stax-api'
+    exclude group: 'stax', module: 'stax'
+    exclude group: 'xpp3', module: 'xpp3'
+}
+
 dependencies {
     //Fixed errorprone version
     errorprone 'com.google.errorprone:error_prone_core:2.2.0'

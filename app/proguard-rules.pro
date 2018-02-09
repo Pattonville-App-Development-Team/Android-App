@@ -113,3 +113,5 @@
 -keep class com.github.magneticflux.rss.** { *; }
 -keep class * extends org.simpleframework.xml.convert.Converter
 -keep class * extends org.simpleframework.xml.transform.Transform
+-dontwarn org.xmlpull.v1.**
+-dontwarn javax.xml.**
