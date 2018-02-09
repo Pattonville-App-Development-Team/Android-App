@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="16dp"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
-    android:paddingTop="8dp"
-    tools:background="@color/colorPrimary">
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/newsDetail_toolbar_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/colorAccent"
-        tools:text="Title" />
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/newsDetail_toolbar_date"
@@ -24,7 +21,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textColor="@color/colorAccent"
-        tools:text="Date" />
+        android:textColor="@color/colorAccent" />
 
 </LinearLayout>

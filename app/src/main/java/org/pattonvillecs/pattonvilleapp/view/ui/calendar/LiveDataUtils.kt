@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,10 +70,9 @@ fun <A, B> LiveData<A>.zipTo(b: LiveData<B>): LiveData<Pair<A, B>> = zipLiveData
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-inline fun <A, B> LiveData<A>.map(crossinline function: (A) -> B): LiveData<B> =
-        Transformations.map(this) { it: A? ->
-            if (it == null) null else function(it)
-        }
+fun <A, B> LiveData<A>.map(function: (A) -> B): LiveData<B> = Transformations.map(this) { it: A? ->
+    if (it == null) null else function(it)
+}
 
 /**
  * This is an extension function that calls to [Transformations.map]. It exposes the possibilities of receiving and returning null.
@@ -82,8 +81,7 @@ inline fun <A, B> LiveData<A>.map(crossinline function: (A) -> B): LiveData<B> =
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.mapNullable(function: (A?) -> B?): LiveData<B> =
-        Transformations.map(this, function)
+fun <A, B> LiveData<A>.mapNullable(function: (A?) -> B?): LiveData<B> = Transformations.map(this, function)
 
 /**
  * This is an extension function that calls to [Transformations.switchMap]. If null is received, null is returned instead of calling the provided function.
@@ -92,10 +90,9 @@ fun <A, B> LiveData<A>.mapNullable(function: (A?) -> B?): LiveData<B> =
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.switchMap(function: (A) -> LiveData<B>): LiveData<B> =
-        Transformations.switchMap(this) {
-            if (it == null) null else function(it)
-        }
+fun <A, B> LiveData<A>.switchMap(function: (A) -> LiveData<B>): LiveData<B> = Transformations.switchMap(this) {
+    if (it == null) null else function(it)
+}
 
 /**
  * This is an extension function that calls to [Transformations.switchMap]. It exposes the possibilities of receiving and returning null.
@@ -104,5 +101,4 @@ fun <A, B> LiveData<A>.switchMap(function: (A) -> LiveData<B>): LiveData<B> =
  * @since 1.2.0
  * @author Mitchell Skaggs
  */
-fun <A, B> LiveData<A>.switchMapNullable(function: (A?) -> LiveData<B>?): LiveData<B> =
-        Transformations.switchMap(this, function)
+fun <A, B> LiveData<A>.switchMapNullable(function: (A?) -> LiveData<B>?): LiveData<B> = Transformations.switchMap(this, function)

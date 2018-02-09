@@ -12,7 +12,7 @@
         android:required="false" />
 
     <application
-        android:name=".view.ui.PattonvilleApplication"
+        android:name=".PattonvilleApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/app_backup_rules"
         android:icon="@mipmap/psd_launcher"
@@ -26,7 +26,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".view.ui.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/PSD.NoActionBar.SplashScreen">
@@ -69,31 +69,31 @@
 
         <activity
             android:name=".preferences.SettingsActivity"
-            android:parentActivityName=".view.ui.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/PSD" />
 
         <activity
             android:name="org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
-            android:parentActivityName=".view.ui.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/PSD">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.pattonvillecs.pattonvilleapp.view.ui.MainActivity" />
+                android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
         </activity>
 
         <activity
-            android:name=".view.ui.news.NewsDetailActivity"
-            android:parentActivityName=".view.ui.MainActivity"
+            android:name=".news.NewsDetailActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/PSD.NoActionBar" />
 
         <activity
             android:name=".view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity"
-            android:parentActivityName=".view.ui.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".view.ui.directory.detail.single.SingleDataSourceDirectoryDetailActivity"
-            android:parentActivityName=".view.ui.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
         <service
             android:name=".firebase.FBNotificationsService"
@@ -113,11 +113,11 @@
 
         <activity
             android:name=".view.ui.links.PowerschoolActivity"
-            android:parentActivityName=".view.ui.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".view.ui.links.SchoolListActivity"
-            android:parentActivityName=".view.ui.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".view.ui.directory.detail.CallExtensionActivity"
@@ -125,7 +125,7 @@
 
         <activity
             android:name=".view.ui.about.AboutActivity"
-            android:parentActivityName=".view.ui.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".view.ui.about.detail.AboutDetailActivity"
@@ -138,12 +138,6 @@
         <activity
             android:name=".view.ui.about.secret.SecretShopActivity"
             android:parentActivityName=".view.ui.about.secret.SecretActivity" />
-
-        <activity
-            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensor"
-            android:theme="@style/FinestWebViewTheme.Fullscreen" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -159,14 +153,6 @@
 
         <service
             android:name="org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name="org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />

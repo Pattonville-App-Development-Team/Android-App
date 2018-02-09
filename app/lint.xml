@@ -3,5 +3,4 @@
     <issue id="all">
         <ignore path="build" />
     </issue>
-    <issue id="InvalidPackage" severity="ignore" />
 </lint>
