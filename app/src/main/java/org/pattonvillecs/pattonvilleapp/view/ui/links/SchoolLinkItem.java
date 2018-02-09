@@ -24,8 +24,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 import java.util.List;
 

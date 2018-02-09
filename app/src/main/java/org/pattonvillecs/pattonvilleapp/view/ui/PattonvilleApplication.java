@@ -15,9 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.view.ui;
 
 import android.app.Activity;
+import android.app.Application;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
@@ -29,10 +31,12 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.squareup.leakcanary.LeakCanary;
 import com.thefinestartist.Base;
 
+import org.pattonvillecs.pattonvilleapp.BuildConfig;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
@@ -57,7 +61,7 @@ import kotlinx.coroutines.experimental.CoroutineStart;
 import static kotlinx.coroutines.experimental.DeferredKt.async;
 
 /**
- * The main {@link android.app.Application} class of the Pattonville App.
+ * The main {@link Application} class of the Pattonville App.
  *
  * @author Mitchell Skaggs
  * @since 1.0.0
@@ -67,7 +71,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
-    private static final String TAG = PattonvilleApplication.class.getSimpleName();
+    private static final String TAG = "PattonvilleApplication";
 
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private Map<String, Integer> keyModificationCounts;
@@ -93,8 +97,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-        setupFirebaseTopics();
     }
 
     @Inject
@@ -157,8 +159,9 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         return DaggerAppComponent.builder().application(this).build();
     }
 
-    private void setupFirebaseTopics() {
-        PreferenceUtils.getSelectedSchoolsLiveData(this).observeForever(dataSources -> {
+    @Inject
+    protected void setupFirebaseTopics() {
+        PreferenceUtils.getSelectedSchoolsLiveData(this).observe(ProcessLifecycleOwner.get(), dataSources -> {
             if (dataSources != null) {
                 FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 

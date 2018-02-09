@@ -27,7 +27,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.firebase.crash.FirebaseCrash
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker.CREATOR.dataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.SourcedCalendar
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent

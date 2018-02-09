@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.view.ui.directory
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity
 
 /**

@@ -21,7 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import net.fortuna.ical4j.model.Calendar;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;

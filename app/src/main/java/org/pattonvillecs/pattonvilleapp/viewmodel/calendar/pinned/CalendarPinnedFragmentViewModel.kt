@@ -20,9 +20,9 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.calendar.pinned
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.*

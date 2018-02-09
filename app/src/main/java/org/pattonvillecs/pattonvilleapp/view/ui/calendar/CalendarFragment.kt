@@ -27,8 +27,8 @@ import android.view.*
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import org.pattonvillecs.pattonvilleapp.MainActivity
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.view.ui.MainActivity
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.events.CalendarEventsFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.month.CalendarMonthFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment

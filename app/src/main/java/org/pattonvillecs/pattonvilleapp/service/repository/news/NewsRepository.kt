@@ -18,7 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.service.repository.news
 
 import android.arch.lifecycle.LiveData
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
 import javax.inject.Inject

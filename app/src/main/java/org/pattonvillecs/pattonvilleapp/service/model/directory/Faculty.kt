@@ -21,7 +21,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import org.apache.commons.collections4.comparators.ComparatorChain
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 
 /**
  * This class represents a faculty member.

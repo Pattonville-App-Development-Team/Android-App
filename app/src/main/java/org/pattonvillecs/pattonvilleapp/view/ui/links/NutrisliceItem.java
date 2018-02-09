@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 /**
  * Created by Mitchell on 5/28/2017.

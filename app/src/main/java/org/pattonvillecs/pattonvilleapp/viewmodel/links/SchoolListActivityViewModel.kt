@@ -20,8 +20,8 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.links
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.links.SchoolListType
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
 import org.pattonvillecs.pattonvilleapp.view.ui.links.NutrisliceItem

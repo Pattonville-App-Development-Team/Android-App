@@ -30,7 +30,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
 import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue

@@ -27,7 +27,7 @@ import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;

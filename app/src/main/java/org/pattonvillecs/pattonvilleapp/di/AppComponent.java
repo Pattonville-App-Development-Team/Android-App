@@ -19,13 +19,13 @@ package org.pattonvillecs.pattonvilleapp.di;
 
 import android.app.Application;
 
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
 import org.pattonvillecs.pattonvilleapp.di.image.PicassoModule;
 import org.pattonvillecs.pattonvilleapp.di.job.FirebaseJobDispatcherModule;
 import org.pattonvillecs.pattonvilleapp.di.network.CalendarRetrofitServiceModule;
 import org.pattonvillecs.pattonvilleapp.di.network.DirectoryRetrofitServiceModule;
 import org.pattonvillecs.pattonvilleapp.di.network.NewsRetrofitServiceModule;
+import org.pattonvillecs.pattonvilleapp.view.ui.PattonvilleApplication;
 
 import javax.inject.Singleton;
 

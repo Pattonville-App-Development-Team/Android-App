@@ -22,8 +22,8 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.view.View
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.DateHeader

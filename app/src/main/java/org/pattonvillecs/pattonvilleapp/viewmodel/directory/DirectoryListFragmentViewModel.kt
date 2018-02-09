@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.directory
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.AbstractDirectoryItem
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.AllDataSourcesDirectoryItem
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.SingleDataSourceDirectoryItem

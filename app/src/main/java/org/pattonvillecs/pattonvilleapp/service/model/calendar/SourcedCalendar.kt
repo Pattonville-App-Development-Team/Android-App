@@ -18,7 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.service.model.calendar
 
 import net.fortuna.ical4j.model.Calendar
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 
 /**
  * Created by Mitchell Skaggs on 11/20/2017.

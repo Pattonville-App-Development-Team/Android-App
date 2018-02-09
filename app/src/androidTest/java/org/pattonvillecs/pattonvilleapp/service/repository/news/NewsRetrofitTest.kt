@@ -29,9 +29,9 @@ import com.natpryce.hamkrest.should.shouldMatch
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.di.network.NewsRetrofitServiceModule.provideNewsRetrofitService
 import org.pattonvillecs.pattonvilleapp.di.network.OkHttpClientModule.provideOkHttpClient
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import java.util.concurrent.ExecutionException
 
 /**

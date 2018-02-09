@@ -27,8 +27,8 @@ import android.support.annotation.NonNull;
 import com.annimon.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
-import org.pattonvillecs.pattonvilleapp.DataSource;
 import org.pattonvillecs.pattonvilleapp.R;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 import java.util.Collection;
 import java.util.EnumSet;

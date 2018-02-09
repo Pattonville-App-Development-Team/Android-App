@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository;
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 /**
  * Created by Mitchell on 10/9/2017.

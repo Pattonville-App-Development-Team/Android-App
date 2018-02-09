@@ -12,7 +12,7 @@
         android:required="false" />
 
     <application
-        android:name=".PattonvilleApplication"
+        android:name=".view.ui.PattonvilleApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/app_backup_rules"
         android:icon="@mipmap/psd_launcher"
@@ -26,7 +26,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".view.ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/PSD.NoActionBar.SplashScreen">
@@ -69,31 +69,31 @@
 
         <activity
             android:name=".preferences.SettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".view.ui.MainActivity"
             android:theme="@style/PSD" />
 
         <activity
             android:name="org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity"
             android:label="@string/title_activity_calendar_event_details"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".view.ui.MainActivity"
             android:theme="@style/PSD">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.pattonvillecs.pattonvilleapp.MainActivity" />
+                android:value="org.pattonvillecs.pattonvilleapp.view.ui.MainActivity" />
         </activity>
 
         <activity
             android:name=".view.ui.news.NewsDetailActivity"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".view.ui.MainActivity"
             android:theme="@style/PSD.NoActionBar" />
 
         <activity
             android:name=".view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".view.ui.MainActivity" />
 
         <activity
             android:name=".view.ui.directory.detail.single.SingleDataSourceDirectoryDetailActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".view.ui.MainActivity" />
 
         <service
             android:name=".firebase.FBNotificationsService"
@@ -113,11 +113,11 @@
 
         <activity
             android:name=".view.ui.links.PowerschoolActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".view.ui.MainActivity" />
 
         <activity
             android:name=".view.ui.links.SchoolListActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".view.ui.MainActivity" />
 
         <activity
             android:name=".view.ui.directory.detail.CallExtensionActivity"
@@ -125,7 +125,7 @@
 
         <activity
             android:name=".view.ui.about.AboutActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".view.ui.MainActivity" />
 
         <activity
             android:name=".view.ui.about.detail.AboutDetailActivity"

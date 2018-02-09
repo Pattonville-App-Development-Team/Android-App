@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.news
 import com.github.magneticflux.rss.createRssPersister
 import com.github.magneticflux.rss.namespaces.standard.elements.Rss
 import okhttp3.ResponseBody
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type

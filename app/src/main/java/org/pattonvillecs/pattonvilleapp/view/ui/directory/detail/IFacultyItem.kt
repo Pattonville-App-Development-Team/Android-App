@@ -19,7 +19,7 @@ package org.pattonvillecs.pattonvilleapp.view.ui.directory.detail
 
 import android.support.v7.widget.RecyclerView
 import eu.davidea.flexibleadapter.items.IFlexible
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 
 /**
  * Created by Mitchell Skaggs on 12/10/2017.

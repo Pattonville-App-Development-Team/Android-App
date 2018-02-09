@@ -21,8 +21,8 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map

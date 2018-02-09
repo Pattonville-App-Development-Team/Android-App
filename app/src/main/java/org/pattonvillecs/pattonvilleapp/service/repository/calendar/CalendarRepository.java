@@ -27,7 +27,7 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
 import org.jetbrains.annotations.NotNull;
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;

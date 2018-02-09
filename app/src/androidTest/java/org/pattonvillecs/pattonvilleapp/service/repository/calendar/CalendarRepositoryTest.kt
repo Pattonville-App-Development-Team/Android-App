@@ -27,7 +27,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent

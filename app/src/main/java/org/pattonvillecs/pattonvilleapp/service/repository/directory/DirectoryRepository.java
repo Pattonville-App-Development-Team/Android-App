@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.directory;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Directory;
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty;
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase;

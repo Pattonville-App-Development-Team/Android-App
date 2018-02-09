@@ -18,7 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.service.repository.directory
 
 import okhttp3.ResponseBody
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Directory
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty
 import retrofit2.Converter

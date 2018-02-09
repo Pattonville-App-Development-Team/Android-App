@@ -22,7 +22,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import com.github.magneticflux.rss.namespaces.standard.elements.Item
 import com.google.errorprone.annotations.Immutable
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.threeten.bp.Instant
 
 /**

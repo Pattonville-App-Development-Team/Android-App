@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.calendar
 import net.fortuna.ical4j.data.CalendarBuilder
 import net.fortuna.ical4j.model.Calendar
 import okhttp3.ResponseBody
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.io.StringReader

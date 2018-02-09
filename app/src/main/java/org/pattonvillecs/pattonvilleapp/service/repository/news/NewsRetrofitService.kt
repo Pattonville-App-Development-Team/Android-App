@@ -19,7 +19,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.news
 
 import com.github.magneticflux.rss.namespaces.standard.elements.Rss
 import com.google.common.util.concurrent.ListenableFuture
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import retrofit2.http.GET
 import retrofit2.http.Path
 

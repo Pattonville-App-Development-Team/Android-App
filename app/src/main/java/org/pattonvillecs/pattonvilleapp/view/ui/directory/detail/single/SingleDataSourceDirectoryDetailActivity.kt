@@ -31,8 +31,8 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.activity_directory_single_datasource_detail.*
 import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextListener
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.view.adapter.directory.FacultyAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.AbstractDirectoryDetailActivity
 import org.pattonvillecs.pattonvilleapp.viewmodel.directory.detail.single.SingleDataSourceDirectoryDetailActivityViewModel

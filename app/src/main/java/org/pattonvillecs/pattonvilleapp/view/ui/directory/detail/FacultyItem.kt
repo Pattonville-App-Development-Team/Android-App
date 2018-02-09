@@ -30,8 +30,8 @@ import org.apache.commons.text.WordUtils
 import org.jetbrains.anko.email
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.DataSourceHeader
 

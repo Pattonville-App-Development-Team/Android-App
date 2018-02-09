@@ -43,10 +43,10 @@ import com.github.jinatonic.confetti.ConfettiSource;
 import com.github.jinatonic.confetti.confetto.BitmapConfetto;
 import com.squareup.picasso.Picasso;
 
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
+import org.pattonvillecs.pattonvilleapp.view.ui.PattonvilleApplication;
 
 import java.util.Arrays;
 import java.util.HashSet;

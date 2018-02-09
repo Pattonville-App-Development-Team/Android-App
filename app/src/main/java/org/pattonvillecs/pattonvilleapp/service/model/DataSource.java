@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.service.model;
 
 import android.support.annotation.DrawableRes;
 
@@ -24,6 +24,7 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.Arrays;
 import java.util.Collections;

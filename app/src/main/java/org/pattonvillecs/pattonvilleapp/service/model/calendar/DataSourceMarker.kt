@@ -22,7 +22,7 @@ import android.arch.persistence.room.Entity
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.errorprone.annotations.Immutable
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
 
 /**

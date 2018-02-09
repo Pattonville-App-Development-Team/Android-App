@@ -27,7 +27,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.Futures.transform
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.firebase.crash.FirebaseCrash
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
 import java.util.concurrent.TimeUnit
