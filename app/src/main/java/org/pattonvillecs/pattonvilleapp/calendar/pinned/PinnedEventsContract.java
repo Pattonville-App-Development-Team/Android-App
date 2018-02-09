@@ -25,6 +25,10 @@ import org.pattonvillecs.pattonvilleapp.BuildConfig;
 
 /**
  * Created by Mitchell Skaggs on 2/23/17.
+ * <p>
+ * This is the Content Provider contract for the legacy pinned events Content Provider.
+ *
+ * @since 1.0.0
  */
 
 public final class PinnedEventsContract {
