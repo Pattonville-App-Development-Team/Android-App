@@ -25,7 +25,10 @@ import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * This module creates a singleton OkHttpClient with a 16 MiB cache.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Module

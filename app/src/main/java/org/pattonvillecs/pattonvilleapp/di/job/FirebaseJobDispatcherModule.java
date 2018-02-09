@@ -30,7 +30,10 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * This module provides a singleton {@link FirebaseJobDispatcher} for the application.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.3.0
  */
 
 @Module(includes = AppModule.class)

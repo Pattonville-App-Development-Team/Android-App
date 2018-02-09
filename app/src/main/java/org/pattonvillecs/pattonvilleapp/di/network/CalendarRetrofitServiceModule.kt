@@ -28,7 +28,10 @@ import retrofit2.adapter.guava.GuavaCallAdapterFactory
 import javax.inject.Singleton
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * This module creates a singleton CalendarRetrofitService.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Module(includes = [(OkHttpClientModule::class)])

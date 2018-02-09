@@ -32,7 +32,10 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 
 /**
- * Created by Mitchell Skaggs on 11/28/2017.
+ * This module creates a singleton Picasso instance given an OkHttpClient. It also sets the Picasso singleton instance to be the newly created Picasso object.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Module(includes = {OkHttpClientModule.class, AppModule.class})

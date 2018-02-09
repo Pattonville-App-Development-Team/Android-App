@@ -28,7 +28,10 @@ import retrofit2.adapter.guava.GuavaCallAdapterFactory
 import javax.inject.Singleton
 
 /**
- * Created by Mitchell Skaggs on 12/8/2017.
+ * This module creates a singleton NewsRetrofitService.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.4.0
  */
 @Module(includes = [(OkHttpClientModule::class)])
 object NewsRetrofitServiceModule {
