@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 
 package org.pattonvillecs.pattonvilleapp.firebase;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -51,13 +50,11 @@ public class FBNotificationsService extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
 
-        Notification builder = new NotificationCompat.Builder(this, "miscellaneous")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle("PSD App")
-                .setContentText(remoteMessage.getNotification().getBody())
-                .build();
+                .setContentText(remoteMessage.getNotification().getBody());
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (manager != null)
-            manager.notify(0, builder);
+        manager.notify(0, builder.build());
     }
 }

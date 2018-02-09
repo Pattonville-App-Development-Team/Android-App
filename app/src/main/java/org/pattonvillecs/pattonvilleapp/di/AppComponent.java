@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,12 @@ package org.pattonvillecs.pattonvilleapp.di;
 
 import android.app.Application;
 
+import org.pattonvillecs.pattonvilleapp.PattonvilleApplication;
 import org.pattonvillecs.pattonvilleapp.di.database.AppDatabaseModule;
 import org.pattonvillecs.pattonvilleapp.di.image.PicassoModule;
 import org.pattonvillecs.pattonvilleapp.di.job.FirebaseJobDispatcherModule;
 import org.pattonvillecs.pattonvilleapp.di.network.CalendarRetrofitServiceModule;
 import org.pattonvillecs.pattonvilleapp.di.network.DirectoryRetrofitServiceModule;
-import org.pattonvillecs.pattonvilleapp.di.network.NewsRetrofitServiceModule;
-import org.pattonvillecs.pattonvilleapp.view.ui.PattonvilleApplication;
 
 import javax.inject.Singleton;
 
@@ -43,7 +42,6 @@ import dagger.android.AndroidInjector;
         AppDatabaseModule.class,
         CalendarRetrofitServiceModule.class,
         DirectoryRetrofitServiceModule.class,
-        NewsRetrofitServiceModule.class,
         FirebaseJobDispatcherModule.class,
         PicassoModule.class,
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 
 package org.pattonvillecs.pattonvilleapp.di;
 
+import org.pattonvillecs.pattonvilleapp.MainActivity;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerActivity;
-import org.pattonvillecs.pattonvilleapp.view.ui.MainActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.about.detail.AboutDetailActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity;
@@ -29,12 +29,10 @@ import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell Skaggs on 11/22/2017.
- *
- * @since 1.2.0
  */
 
 @Module
-abstract class ActivityBuilderModule {
+public abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     @PerActivity
     abstract CalendarEventDetailsActivity contributeCalendarEventDetailsActivity();

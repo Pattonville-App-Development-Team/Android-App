@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,7 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 
 /**
- * This module creates a singleton Picasso instance given an OkHttpClient. It also sets the Picasso singleton instance to be the newly created Picasso object.
- *
- * @author Mitchell Skaggs
- * @since 1.2.0
+ * Created by Mitchell Skaggs on 11/28/2017.
  */
 
 @Module(includes = {OkHttpClientModule.class, AppModule.class})

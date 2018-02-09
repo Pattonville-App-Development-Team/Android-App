@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,26 +19,20 @@ package org.pattonvillecs.pattonvilleapp.di;
 
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
-import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell Skaggs on 11/20/2017.
- *
- * @since 1.2.0
  */
 
 @Module
-abstract class ServiceBuilderModule {
+public abstract class ServiceBuilderModule {
 
     @ContributesAndroidInjector
     abstract CalendarSyncJobService contributeCalendarSyncJobService();
 
     @ContributesAndroidInjector
     abstract DirectorySyncJobService contributeDirectorySyncJobService();
-
-    @ContributesAndroidInjector
-    abstract NewsSyncJobService contributeNewsSyncJobService();
 }
