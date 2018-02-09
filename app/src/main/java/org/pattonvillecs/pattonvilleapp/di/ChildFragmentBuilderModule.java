@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,11 @@ import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell on 10/3/2017.
+ *
+ * @since 1.2.0
  */
 @Module
-public abstract class ChildFragmentBuilderModule {
+abstract class ChildFragmentBuilderModule {
     @ContributesAndroidInjector
     @PerChildFragment
     abstract CalendarPinnedFragment contributeCalendarPinnedFragment();

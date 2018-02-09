@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ import eu.davidea.viewholders.FlexibleViewHolder
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.IFacultyItem
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.single.DataSourceSummaryItem.DataSourceSummaryItemViewHolder

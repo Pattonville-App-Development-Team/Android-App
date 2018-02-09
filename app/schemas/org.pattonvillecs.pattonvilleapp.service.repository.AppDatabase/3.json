@@ -1,0 +1,333 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "5f0bc4cf4fae1e7e890432988c102e54",
+    "entities": [
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, `summary` TEXT NOT NULL, `location` TEXT NOT NULL, `start_date` INTEGER NOT NULL COLLATE BINARY, `end_date` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startDateTime",
+            "columnName": "start_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endDateTime",
+            "columnName": "end_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_events_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE  INDEX `index_events_uid` ON `${TABLE_NAME}` (`uid`)"
+          },
+          {
+            "name": "index_events_start_date",
+            "unique": false,
+            "columnNames": [
+              "start_date"
+            ],
+            "createSql": "CREATE  INDEX `index_events_start_date` ON `${TABLE_NAME}` (`start_date`)"
+          },
+          {
+            "name": "index_events_end_date",
+            "unique": false,
+            "columnNames": [
+              "end_date"
+            ],
+            "createSql": "CREATE  INDEX `index_events_end_date` ON `${TABLE_NAME}` (`end_date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pinned_event_markers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`), FOREIGN KEY(`uid`) REFERENCES `events`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_pinned_event_markers_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE  INDEX `index_pinned_event_markers_uid` ON `${TABLE_NAME}` (`uid`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "uid"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "datasource_markers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL COLLATE BINARY, `datasource` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`uid`, `datasource`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "datasource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid",
+            "datasource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_datasource_markers_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE  INDEX `index_datasource_markers_uid` ON `${TABLE_NAME}` (`uid`)"
+          },
+          {
+            "name": "index_datasource_markers_datasource",
+            "unique": false,
+            "columnNames": [
+              "datasource"
+            ],
+            "createSql": "CREATE  INDEX `index_datasource_markers_datasource` ON `${TABLE_NAME}` (`datasource`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "faculty",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `pcn` TEXT NOT NULL, `description` TEXT NOT NULL, `location` INTEGER COLLATE BINARY, `email` TEXT, `office_number_1` TEXT, `extension_1` TEXT, `office_number_2` TEXT, `extension_2` TEXT, `office_number_3` TEXT, `extension_3` TEXT, PRIMARY KEY(`first_name`, `last_name`, `pcn`))",
+        "fields": [
+          {
+            "fieldPath": "firstName",
+            "columnName": "first_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "last_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pcn",
+            "columnName": "pcn",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "officeNumber1",
+            "columnName": "office_number_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extension1",
+            "columnName": "extension_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "officeNumber2",
+            "columnName": "office_number_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extension2",
+            "columnName": "extension_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "officeNumber3",
+            "columnName": "office_number_3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extension3",
+            "columnName": "extension_3",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "first_name",
+            "last_name",
+            "pcn"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_faculty_location",
+            "unique": false,
+            "columnNames": [
+              "location"
+            ],
+            "createSql": "CREATE  INDEX `index_faculty_location` ON `${TABLE_NAME}` (`location`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "news_articles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `link` TEXT NOT NULL, `pub_date` INTEGER NOT NULL COLLATE BINARY, `guid` TEXT NOT NULL COLLATE BINARY, `datasource` INTEGER NOT NULL COLLATE BINARY, PRIMARY KEY(`guid`))",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pubDate",
+            "columnName": "pub_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "guid",
+            "columnName": "guid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "datasource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "guid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_news_articles_pub_date",
+            "unique": false,
+            "columnNames": [
+              "pub_date"
+            ],
+            "createSql": "CREATE  INDEX `index_news_articles_pub_date` ON `${TABLE_NAME}` (`pub_date`)"
+          },
+          {
+            "name": "index_news_articles_guid",
+            "unique": false,
+            "columnNames": [
+              "guid"
+            ],
+            "createSql": "CREATE  INDEX `index_news_articles_guid` ON `${TABLE_NAME}` (`guid`)"
+          },
+          {
+            "name": "index_news_articles_datasource",
+            "unique": false,
+            "columnNames": [
+              "datasource"
+            ],
+            "createSql": "CREATE  INDEX `index_news_articles_datasource` ON `${TABLE_NAME}` (`datasource`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5f0bc4cf4fae1e7e890432988c102e54\")"
+    ]
+  }
+}

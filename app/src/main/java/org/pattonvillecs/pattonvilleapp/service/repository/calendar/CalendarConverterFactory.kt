@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.calendar
 import net.fortuna.ical4j.data.CalendarBuilder
 import net.fortuna.ical4j.model.Calendar
 import okhttp3.ResponseBody
-import org.pattonvillecs.pattonvilleapp.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.io.StringReader
@@ -49,7 +49,7 @@ object CalendarConverterFactory : Converter.Factory() {
 
     object DataSourceConverter : Converter<DataSource, String> {
         override fun convert(value: DataSource): String =
-                value.calendarURL.orElseThrow { IllegalStateException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?") }
+                value.calendarURL.orElseThrow { IllegalArgumentException("calendarURL must be present to download calendar! Did you filter by DataSources that have calendars?") }
     }
 
     private const val LINEBREAK_MATCHER = "(?:\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029])"

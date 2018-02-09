@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,17 @@ import retrofit2.adapter.guava.GuavaCallAdapterFactory
 import javax.inject.Singleton
 
 /**
- * Created by Mitchell Skaggs on 12/8/2017.
+ * This module creates a singleton DirectoryRetrofitService.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.3.0
  */
 @Module(includes = [(OkHttpClientModule::class)])
 object DirectoryRetrofitServiceModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideCalendarRetrofitService(okHttpClient: OkHttpClient): DirectoryRetrofitService {
+    fun provideDirectoryRetrofitService(okHttpClient: OkHttpClient): DirectoryRetrofitService {
         return Retrofit.Builder()
                 .baseUrl("https://forms.psdr3.org/psdapp/")
                 .client(okHttpClient)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ import eu.davidea.flexibleadapter.common.FlexibleItemDecoration
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.activity_directory_single_datasource_detail.*
 import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextListener
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.view.adapter.directory.FacultyAdapter
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.AbstractDirectoryDetailActivity
 import org.pattonvillecs.pattonvilleapp.viewmodel.directory.detail.single.SingleDataSourceDirectoryDetailActivityViewModel
@@ -80,7 +80,7 @@ class SingleDataSourceDirectoryDetailActivity : AbstractDirectoryDetailActivity(
         }
 
         viewModel.searchText.observe(this::getLifecycle) {
-            facultyAdapter.searchText = it
+            facultyAdapter.searchText = it.orEmpty()
             if (facultyAdapter.hasSearchText()) {
                 Log.i(TAG, "Visible from search with text $it!")
                 progress_bar.visibility = View.VISIBLE

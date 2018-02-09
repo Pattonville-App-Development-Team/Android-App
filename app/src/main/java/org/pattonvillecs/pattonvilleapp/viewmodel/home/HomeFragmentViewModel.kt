@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,15 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.home
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import org.pattonvillecs.pattonvilleapp.DataSource
-import org.pattonvillecs.pattonvilleapp.PattonvilleApplication
-import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData
-import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsRepository
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.PinnableCalendarEventItem
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.map
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.switchMap
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.zipTo
+import org.pattonvillecs.pattonvilleapp.view.ui.news.ArticleSummaryItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 
@@ -42,19 +41,18 @@ import org.threeten.bp.ZoneId
 class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var calendarRepository: CalendarRepository
 
+    lateinit var newsRepository: NewsRepository
+
     val carouselVisiblePreference: LiveData<Boolean> by lazy { PreferenceUtils.getCarouselVisibleLiveData(getApplication()) }
     val homeNewsAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomeNewsLiveData(getApplication()) }
     val homeCalendarAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomeEventsLiveData(getApplication()) }
     val homePinnedAmountPreference: LiveData<Int> by lazy { PreferenceUtils.getHomePinnedLiveData(getApplication()) }
     private val selectedDataSources: LiveData<Set<DataSource>> by lazy { PreferenceUtils.getSelectedSchoolsLiveData(getApplication()) }
 
-    val newsArticles: LiveData<List<NewsArticle>> by lazy {
-        homeNewsAmountPreference.switchMap { amount ->
-            PauseableListenerLiveData<NewsParsingUpdateData>(NewsParsingUpdateData.NEWS_LISTENER_ID, getApplication<PattonvilleApplication>()).map { articleList ->
-                articleList.newsData.values.flatMap { it }.sortedByDescending { it.publishDate }.take<NewsArticle>(amount)
-            }
+    val newsArticles: LiveData<List<ArticleSummaryItem>> by lazy {
+        homeNewsAmountPreference.zipTo(selectedDataSources).switchMap {
+            newsRepository.getArticlesByDataSourcesWithLimit(it.second, it.first).map { it.map(::ArticleSummaryItem) }
         }
-
     }
 
     val recentCalendarEvents: LiveData<List<PinnableCalendarEventItem>> by lazy {

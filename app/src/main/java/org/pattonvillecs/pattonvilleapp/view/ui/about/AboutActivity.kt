@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class AboutActivity : AppCompatActivity() {
         val aboutAdapter = FlexibleAdapter<IFlexible<*>>(null)
         aboutAdapter.setDisplayHeadersAtStartUp(true)
                 .setAnimationEntryStep(false)
-                .setAnimationOnScrolling(true)
+                .setAnimationOnForwardScrolling(true)
                 .setAnimationOnReverseScrolling(true)
 
         val manager = SmoothScrollGridLayoutManager(this, 2)

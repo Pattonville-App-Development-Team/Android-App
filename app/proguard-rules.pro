@@ -80,6 +80,13 @@
 -keep,includedescriptorclasses class kotlin.reflect.KCallable { *; }
 -keep,includedescriptorclasses class kotlin.Triple { *; }
 -keep,includedescriptorclasses class kotlin.ranges.ClosedRange { *; }
+-keep,includedescriptorclasses class kotlin.text.StringsKt** { *; }
+-keep,includedescriptorclasses class kotlin.collections.SetsKt** { *; }
+-keep,includedescriptorclasses class kotlin.collections.MapsKt** { *; }
+-keep,includedescriptorclasses class kotlin.Lazy** { *; }
+-keep,includedescriptorclasses class kotlin.reflect.KClass** { *; }
+-keep,includedescriptorclasses class kotlin.jvm.JvmClassMappingKt** { *; }
+-keep,includedescriptorclasses class kotlin._Assertions** { *; }
 
 #Okio
 -dontwarn okio.**
@@ -97,3 +104,14 @@
 #CheckerFramework
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
+
+#SimpleXML RSS
+-keepattributes *Annotation*
+-keepclassmembers class org.simpleframework.xml.** {
+    <init>(...);
+}
+-keep class com.github.magneticflux.rss.** { *; }
+-keep class * extends org.simpleframework.xml.convert.Converter
+-keep class * extends org.simpleframework.xml.transform.Transform
+-dontwarn org.xmlpull.v1.**
+-dontwarn javax.xml.**

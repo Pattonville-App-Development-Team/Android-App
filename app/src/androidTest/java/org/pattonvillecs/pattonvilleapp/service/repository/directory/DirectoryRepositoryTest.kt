@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.model.directory
+package org.pattonvillecs.pattonvilleapp.service.repository.directory
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
@@ -27,10 +27,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.pattonvillecs.pattonvilleapp.DataSource
-import org.pattonvillecs.pattonvilleapp.service.model.calendar.awaitValue
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
+import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty
 import org.pattonvillecs.pattonvilleapp.service.repository.AppDatabase
-import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryRepository
+import org.pattonvillecs.pattonvilleapp.service.repository.awaitValue
 
 /**
  * Tests adding and removing faculty from an in-memory database.
@@ -38,7 +38,7 @@ import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryRe
  * @author Mitchell Skaggs
  * @since 1.3.0
  */
-@Suppress("FunctionName")
+@Suppress("TestFunctionName")
 @RunWith(AndroidJUnit4::class)
 @MediumTest
 class DirectoryRepositoryTest {
