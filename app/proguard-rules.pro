@@ -16,15 +16,22 @@
 #   public *;
 #}
 
--verbose
+#-verbose
 -dontobfuscate
+
+#Pattonville App
+-keep,includedescriptorclasses class org.pattonvillecs.pattonvilleapp.** {
+    *;
+}
 
 #iCal4j
 -dontwarn net.fortuna.ical4j.model.**
 -dontwarn net.fortuna.ical4j.groovy.**
 -dontwarn groovy.**
--keep class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
--keep class * extends net.fortuna.ical4j.model.Content$Factory
+-keep,includedescriptorclasses class * extends net.fortuna.ical4j.validate.CalendarValidatorFactory
+-keep,includedescriptorclasses class * extends net.fortuna.ical4j.model.Content$Factory
+-keep,includedescriptorclasses class net.fortuna.ical4j.util.MapTimeZoneCache
+-dontwarn net.fortuna.ical4j.util.JCacheTimeZoneCache
 
 #Retrolambda
 -dontwarn java.lang.invoke.*
@@ -35,10 +42,11 @@
 
 #Guava
 -dontwarn java.lang.ClassValue
+-dontwarn com.google.common.collect.EnumMultiset
 
 #Kryo
 -dontwarn com.esotericsoftware.kryo.**
--keepclassmembers class * extends com.esotericsoftware.kryo.Serializer {
+-keepclassmembers,includedescriptorclasses class * extends com.esotericsoftware.kryo.Serializer {
     *;
 }
 
@@ -49,9 +57,40 @@
 -dontwarn com.google.errorprone.annotations.*
 
 #Support Library Bug
--keep class android.support.v7.widget.SearchView { *; }
+-keep,includedescriptorclasses class android.support.v7.widget.SearchView { *; }
 
 #Spotlight
--keep class com.wooplr.spotlight.** { *; }
--keep interface com.wooplr.spotlight.**
--keep enum com.wooplr.spotlight.**
+-keep,includedescriptorclasses class com.wooplr.spotlight.** { *; }
+-keep,includedescriptorclasses interface com.wooplr.spotlight.**
+-keep,includedescriptorclasses enum com.wooplr.spotlight.**
+
+#Lifecycles/Pagination
+-dontwarn android.arch.paging.LivePagedListProvider*
+
+#java.time JSR310
+-keep class org.threeten.bp.** { *; }
+
+#Tests
+-keepclassmembers,includedescriptorclasses class android.arch.persistence.room.** {
+    *;
+}
+-keep,includedescriptorclasses class android.arch.persistence.room.**
+-keep,includedescriptorclasses class android.arch.lifecycle.**
+-keep,includedescriptorclasses class kotlin.collections.CollectionsKt** { *; }
+
+#Okio
+-dontwarn okio.**
+
+#Retrofit
+# Platform calls Class.forName on types which do not exist on Android to determine platform.
+-dontnote retrofit2.Platform
+# Platform used when running on Java 8 VMs. Will not be used at runtime.
+-dontwarn retrofit2.Platform$Java8
+# Retain generic type information for use by reflection by converters and adapters.
+-keepattributes Signature
+# Retain declared checked exceptions for use by a Proxy instance.
+-keepattributes Exceptions
+
+#CheckerFramework
+-dontwarn afu.org.checkerframework.**
+-dontwarn org.checkerframework.**

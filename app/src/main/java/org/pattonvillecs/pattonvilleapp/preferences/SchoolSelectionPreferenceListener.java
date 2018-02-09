@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp.preferences;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,9 +28,7 @@ public abstract class SchoolSelectionPreferenceListener implements OnSharedPrefe
     private static final Set<String> keys;
 
     static {
-        HashSet<String> set = new HashSet<>(1, .75f);
-        set.add(PreferenceUtils.SCHOOL_SELECTION_PREFERENCE_KEY);
-        keys = Collections.unmodifiableSet(set);
+        keys = Collections.singleton(PreferenceUtils.SCHOOL_SELECTION_PREFERENCE_KEY);
     }
 
     @Override

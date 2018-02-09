@@ -3,21 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:scrollbars="vertical"
-    tools:context="org.pattonvillecs.pattonvilleapp.HomeFragment">
+    tools:context="org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
 
         <com.synnapps.carouselview.CarouselView
-            android:id="@+id/carouselView"
-            android:layout_width="match_parent"
+            android:id="@+id/carousel"
+            android:layout_width="0dp"
             android:layout_height="250dp"
             app:animateOnBoundary="true"
             app:fillColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:pageColor="@android:color/transparent"
             app:pageTransformInterval="3000"
             app:radius="6dp"
@@ -26,130 +29,132 @@
             app:strokeColor="@android:color/secondary_text_light"
             app:strokeWidth="1dp" />
 
-        <LinearLayout
-            android:id="@+id/home_news_header_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/home_news_header"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="3"
-                android:background="@color/colorPrimary"
-                android:gravity="center_vertical"
-                android:paddingEnd="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingStart="20dp"
-                android:text="@string/home_news_header_text"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/recent_news_see_more_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
-                android:drawablePadding="8dp"
-                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
-                android:gravity="center_vertical|end"
-                android:padding="8dp"
-                android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_news_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/home_events_header_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/news_header"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
             android:background="@color/colorPrimary"
-            android:orientation="horizontal">
+            android:gravity="center_vertical|start"
+            android:paddingEnd="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:text="@string/home_news_header_text"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/news_see_more"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/carousel" />
 
-            <TextView
-                android:id="@+id/upcoming_events_header"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="3"
-                android:gravity="center_vertical"
-                android:paddingEnd="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingStart="20dp"
-                android:text="@string/home_upcoming_events_header_text"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/home_upcoming_events_see_more_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
-                android:drawablePadding="8dp"
-                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
-                android:gravity="center_vertical|end"
-                android:padding="8dp"
-                android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/news_see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimary"
+            android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical|end"
+            android:padding="8dp"
+            android:text="@string/see_more"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/news_header"
+            app:layout_constraintTop_toBottomOf="@id/carousel" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_calendar_event_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/home_pinned_header_layout"
-            android:layout_width="match_parent"
+            android:id="@+id/news_recyclerview"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/news_header" />
 
-            <TextView
-                android:id="@+id/pinned_events_header"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="3"
-                android:background="@color/colorPrimary"
-                android:gravity="center_vertical"
-                android:paddingEnd="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingStart="20dp"
-                android:text="@string/home_pinned_events_header_text"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+        <TextView
+            android:id="@+id/all_events_header"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="3"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:paddingEnd="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:text="@string/home_upcoming_events_header_text"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/all_events_see_more"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/news_recyclerview" />
 
-            <TextView
-                android:id="@+id/home_pinned_events_see_more_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
-                android:drawablePadding="8dp"
-                android:drawableRight="@drawable/ic_arrow_forward_white_18dp"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:text="@string/see_more"
-                android:textColor="@color/colorAccent" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/all_events_see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimary"
+            android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical|end"
+            android:padding="8dp"
+            android:text="@string/see_more"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/all_events_header"
+            app:layout_constraintTop_toBottomOf="@id/news_recyclerview" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_calendar_pinned_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:id="@+id/all_events_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/all_events_header" />
+
+        <TextView
+            android:id="@+id/pinned_events_header"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="3"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical|start"
+            android:paddingEnd="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:text="@string/home_pinned_events_header_text"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/pinned_events_see_more"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/all_events_recyclerview" />
+
+        <TextView
+            android:id="@+id/pinned_events_see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimary"
+            android:drawableEnd="@drawable/ic_arrow_forward_white_18dp"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical|end"
+            android:padding="8dp"
+            android:text="@string/see_more"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pinned_events_header"
+            app:layout_constraintTop_toBottomOf="@id/all_events_recyclerview" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pinned_events_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pinned_events_header" />
 
         <TextView
             android:id="@+id/home_no_items_shown_textview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/colorPrimary"
@@ -162,8 +167,12 @@
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/carousel" />
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>

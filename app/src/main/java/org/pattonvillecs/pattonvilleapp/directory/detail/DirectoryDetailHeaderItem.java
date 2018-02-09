@@ -22,9 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -93,13 +91,13 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
 
     @Override
     public int hashCode() {
-        return dataSource != null ? dataSource.hashCode() : 0;
+        return dataSource.hashCode();
     }
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, DirectoryDetailHeaderViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
-        Picasso.with(context).load(getImageResourceForDataSource(dataSource)).centerInside().fit().into(holder.schoolImage);
+        Picasso.with().load(getImageResourceForDataSource(dataSource)).centerInside().fit().into(holder.schoolImage);
 
         holder.schoolName.setText(dataSource.name);
 
@@ -150,11 +148,11 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
     }
 
     @Override
-    public DirectoryDetailHeaderViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryDetailHeaderViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryDetailHeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryDetailHeaderViewHolder(view, adapter);
     }
 
-    class DirectoryDetailHeaderViewHolder extends FlexibleViewHolder {
+    static class DirectoryDetailHeaderViewHolder extends FlexibleViewHolder {
         final TextView schoolName, schoolAddress, schoolPhoneNumber, schoolAttendanceNumber, schoolFaxNumber, schoolWebsite;
         final ImageView schoolImage;
 

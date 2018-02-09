@@ -92,6 +92,7 @@ public class NewsParser extends DefaultHandler {
      *
      * @throws SAXException
      */
+    @Override
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         if (item != null) {

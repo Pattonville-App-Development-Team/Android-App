@@ -28,7 +28,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -61,11 +60,12 @@ import java.util.Set;
 
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.utils.Utils;
+import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 
-import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
-import static org.pattonvillecs.pattonvilleapp.calendar.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
+import static org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity.PATTONVILLE_COORDINATES;
+import static org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper.showSpotlight;
 
 public class DirectoryDetailActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public static final String KEY_DATASOURCES = "dataSources";
@@ -101,7 +101,7 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
             bubble.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
             bubble.setBackgroundResource(R.drawable.fast_scroller_bubble_small);
 
-            ((GradientDrawable) bubble.getBackground()).setColor(Utils.fetchAccentColor(fastScroller.getContext(), Color.RED));
+            ((GradientDrawable) bubble.getBackground()).setColor(FlexibleUtils.fetchAccentColor(fastScroller.getContext(), Color.RED));
         } catch (NoSuchFieldException e) {
             Log.wtf(TAG, e);
         } catch (IllegalAccessException e) {
@@ -188,12 +188,12 @@ public class DirectoryDetailActivity extends AppCompatActivity implements Search
 
         facultyRecyclerView.setAdapter(directoryAdapter);
         facultyRecyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(this, OrientationHelper.VERTICAL, false));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(facultyRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        facultyRecyclerView.addItemDecoration(dividerItemDecoration);
+        FlexibleItemDecoration flexibleItemDecoration = new FlexibleItemDecoration(facultyRecyclerView.getContext());
+        facultyRecyclerView.addItemDecoration(flexibleItemDecoration);
         facultyRecyclerView.setFocusable(false);
 
         fastScroller = (FastScroller) findViewById(R.id.fast_scroller);
-        directoryAdapter.setFastScroller(fastScroller, Utils.fetchAccentColor(this, Color.RED)); // Default red to show an error
+        directoryAdapter.setFastScroller(fastScroller);//, Utils.fetchAccentColor(this, Color.RED)); // Default red to show an error
 
         directoryAdapter.setDisplayHeadersAtStartUp(true);
         if (dataSources.size() > 1)

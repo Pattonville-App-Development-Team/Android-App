@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'net.ltgt.errorprone'
+apply plugin: 'com.github.ben-manes.versions'
 
 def hasKeystore = file('psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
@@ -8,6 +12,27 @@ if (hasKeystore)
 else
     println 'Keystore properties file missing! An unsigned release build will be generated.'
 
+/*
+ * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+//Disable ErrorProne checks for generated code (Dagger 2, Room, etc.)
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-XepDisableWarningsInGeneratedCode']
+}
 
 android {
     if (hasKeystore)
@@ -19,31 +44,43 @@ android {
                 storePassword keystoreProperties['storePassword']
             }
         }
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 27
     defaultConfig {
         applicationId "org.pattonvillecs.pattonvilleapp"
-        minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 18
-        versionName "1.1.4"
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 19
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
         setProperty("archivesBaseName", "pattonvilleapp-v$versionName")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+
+        //Needed to run instrumentation tests on API 19
+        testInstrumentationRunnerArguments.notClass = 'com.android.dex.DexIndexOverflowException'
+    }
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
             if (hasKeystore)
                 signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled true
-            //useProguard false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
             applicationIdSuffix ".debug"
         }
     }
@@ -52,93 +89,146 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DEPENDENCIES*'
+        exclude 'META-INF/LICENSE*'
+        exclude 'META-INF/NOTICE*'
+        exclude 'META-INF/README*'
+        exclude 'META-INF/CHANGES*'
+        exclude 'zoneinfo*/**'
+    }
+}
+kotlin {
+    experimental {
+        coroutines 'enable'
     }
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:$support_version"
-    compile "com.android.support:appcompat-v7:$support_version"
-    compile "com.android.support:design:$support_version"
-    compile "com.android.support:support-v4:$support_version"
-    compile "com.android.support:cardview-v7:$support_version"
-    compile "com.android.support:recyclerview-v7:$support_version"
-    compile "com.takisoft.fix:preference-v7:$support_version.0"
+    //Fixed errorprone version
+    errorprone 'com.google.errorprone:error_prone_core:2.1.3'
 
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    compile "com.google.firebase:firebase-core:$firebase_version"
-    compile "com.google.firebase:firebase-messaging:$firebase_version"
-    compile "com.google.firebase:firebase-crash:$firebase_version"
+    //Android Support Libraries
+    implementation "com.android.support:support-annotations:$support_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "com.android.support:support-v4:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.takisoft.fix:preference-v7:$support_version.0"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+
+    //Anko
+    implementation "org.jetbrains.anko:anko:$anko_version"
+
+    //Firebase
+    implementation "com.google.firebase:firebase-core:$firebase_version"
+    implementation "com.google.firebase:firebase-messaging:$firebase_version"
+    implementation "com.google.firebase:firebase-crash:$firebase_version"
+
+    //Android Architecture Components
+    implementation "android.arch.lifecycle:extensions:$arch_version"
+    kapt "android.arch.lifecycle:compiler:$arch_version"
+    testImplementation "android.arch.core:core-testing:$arch_version"
+    implementation "android.arch.persistence.room:runtime:$arch_version"
+    kapt "android.arch.persistence.room:compiler:$arch_version"
+    implementation "android.arch.paging:runtime:1.0.0-alpha3"
+
+    //Dagger 2
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     //Calendar view
-    compile 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    //Alternative
+    implementation 'com.applandeo:material-calendar-view:1.3.2'
 
     //Home carousel
-    compile 'com.synnapps:carouselview:0.1.3'
+    implementation 'com.synnapps:carouselview:0.1.4'
 
     //Network image download + cache
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
 
     //RecyclerView improvements
-    compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
+    implementation 'eu.davidea:flexible-adapter:5.0.0-SNAPSHOT'
+    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b1'
+
     //Java 8 streams
-    compile 'com.annimon:stream:1.1.8'
+    implementation 'com.annimon:stream:1.1.9'
 
     //Collections, utilities
-    compile('com.google.guava:guava:23.0-android') {
-        exclude group: 'com.google.code.findbugs'
-    }
+    implementation 'com.google.guava:guava:23.5-android'
 
     //Network
-    compile 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.1.0-rc2'
+    //Better network
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-guava:2.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
 
     //All for iCal4j library
-    compile 'org.mnode.ical4j:ical4j:2.0.5'
-    compile 'org.apache.commons:commons-collections4:4.1'
-    compile 'org.apache.commons:commons-lang3:3.6'
-    compile 'org.slf4j:slf4j-android:1.7.25'
-    compile 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.mnode.ical4j:ical4j:2.1.5', {
+        exclude group: 'org.threeten'
+    }
+    implementation 'org.apache.commons:commons-collections4:4.1'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'org.slf4j:slf4j-android:1.7.25'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
 
     //Tutorial
-    compile 'com.github.magneticflux-:Spotlight:1.3.2'
+    implementation 'com.github.magneticflux-:Spotlight:1.3.2'
 
     //App settings
-    compile 'com.github.apl-devs:appintro:v4.2.2'
+    implementation 'com.github.apl-devs:appintro:v4.2.2'
 
     //Serialization
-    compile 'com.esotericsoftware:kryo:4.0.1'
-    compile 'de.javakaffee:kryo-serializers:0.42'
+    implementation 'com.esotericsoftware:kryo:4.0.1'
+    implementation 'de.javakaffee:kryo-serializers:0.42'
+    implementation 'org.objenesis:objenesis:2.6'
 
     //Pin button
-    compile 'com.github.varunest:sparkbutton:1.0.4'
+    implementation 'com.github.varunest:sparkbutton:1.0.5'
 
     //News content parsing is in jsoup jar
-    compile 'org.jsoup:jsoup:1.10.3'
+    implementation 'org.jsoup:jsoup:1.11.2'
 
     //Fuzzy string contains - !!!GPL 3.0!!!
-    compile 'me.xdrop:fuzzywuzzy:1.1.8'
+    implementation 'me.xdrop:fuzzywuzzy:1.1.9'
 
     //Alternative fuzzy string matching
-    compile 'org.apache.commons:commons-text:1.1'
+    implementation 'org.apache.commons:commons-text:1.1'
 
     //Cool Particles
-    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
+    implementation 'com.github.jinatonic.confetti:confetti:1.1.0'
 
     //Overrides Guava and Espresso's differing older versions
-    compile 'com.google.code.findbugs:jsr305:3.0.2'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test:runner:1.0.0') {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    //java.time backport
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
+    //Job scheduling from Firebase
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+
+    //@Generated annotation, other annotations
+    compileOnly 'javax.annotation:javax.annotation-api:1.3.1'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-android:2.12.0'
+
+    androidTestImplementation('com.android.support.test:runner:1.0.1') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.0') {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1') {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestImplementation 'org.mockito:mockito-android:2.12.0'
 }
-
-apply plugin: 'com.google.gms.google-services' //Must be at bottom
+//Must be at bottom
+apply plugin: 'com.google.gms.google-services'

@@ -17,9 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.directory.detail;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.pattonvillecs.pattonvilleapp.DataSource;
@@ -53,8 +51,8 @@ public class FacultyHeader extends AbstractHeaderItem<FacultyHeader.FacultyHeade
     }
 
     @Override
-    public FacultyHeaderViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new FacultyHeaderViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter, true);
+    public FacultyHeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new FacultyHeaderViewHolder(view, adapter, true);
     }
 
     @Override
@@ -73,7 +71,7 @@ public class FacultyHeader extends AbstractHeaderItem<FacultyHeader.FacultyHeade
         return dataSource != null ? dataSource.hashCode() : 0;
     }
 
-    class FacultyHeaderViewHolder extends FlexibleViewHolder {
+    static class FacultyHeaderViewHolder extends FlexibleViewHolder {
         final TextView headerText;
 
         public FacultyHeaderViewHolder(View view, FlexibleAdapter adapter, boolean stickyHeader) {

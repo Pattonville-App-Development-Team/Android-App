@@ -53,10 +53,10 @@ import java.util.List;
 import java.util.Map;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.DividerItemDecoration;
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 
-import static org.pattonvillecs.pattonvilleapp.SpotlightHelper.showSpotlight;
+import static org.pattonvillecs.pattonvilleapp.view.ui.spotlight.SpotlightHelper.showSpotlight;
 
 /**
  * Fragment used within MainActivity to display the News tab
@@ -187,7 +187,7 @@ public class NewsFragment extends Fragment implements SearchView.OnQueryTextList
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getContext()));
         recyclerView.setAdapter(newsArticleAdapter);
         // Adds item divider between elements
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        recyclerView.addItemDecoration(new FlexibleItemDecoration(getContext()));
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.news_refreshLayout);
         mRefreshLayout.setOnRefreshListener(() -> pattonvilleApplication.hardRefreshNewsData());
