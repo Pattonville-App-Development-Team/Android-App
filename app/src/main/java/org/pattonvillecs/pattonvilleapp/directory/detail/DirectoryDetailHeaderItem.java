@@ -97,7 +97,7 @@ public class DirectoryDetailHeaderItem extends AbstractHeaderItem<DirectoryDetai
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, DirectoryDetailHeaderViewHolder holder, int position, List payloads) {
         Context context = adapter.getRecyclerView().getContext();
-        Picasso.with().load(getImageResourceForDataSource(dataSource)).centerInside().fit().into(holder.schoolImage);
+        Picasso.get().load(getImageResourceForDataSource(dataSource)).centerInside().fit().into(holder.schoolImage);
 
         holder.schoolName.setText(dataSource.name);
 

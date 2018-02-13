@@ -67,7 +67,7 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
             holder.name.setText(StringUtils.join(dataSources, ", "));
         }
 
-        Picasso.with()
+        Picasso.get()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside().fit().into(holder.icon);
