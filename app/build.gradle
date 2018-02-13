@@ -155,7 +155,8 @@ dependencies {
 
     //RecyclerView improvements
     implementation 'eu.davidea:flexible-adapter:5.0.0-SNAPSHOT'
-    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b1'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b2'
+    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
 
     //Java 8 streams
     implementation 'com.annimon:stream:1.1.9'
