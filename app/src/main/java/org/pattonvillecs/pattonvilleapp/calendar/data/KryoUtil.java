@@ -87,12 +87,14 @@ import org.pattonvillecs.pattonvilleapp.DataSource;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.EnumMapSerializer;
 import de.javakaffee.kryoserializers.URISerializer;
 import de.javakaffee.kryoserializers.guava.HashMultimapSerializer;
@@ -570,6 +572,7 @@ public final class KryoUtil {
                 return new XParameter(kryo.readObject(input, String.class), kryo.readObject(input, String.class));
             }
         });
+        kryo.register(Arrays.asList(0, 0).getClass(), new ArraysAsListSerializer());
 
         return kryo;
     }

@@ -18,9 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.directory;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,15 +67,15 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
             holder.name.setText(StringUtils.join(dataSources, ", "));
         }
 
-        Picasso.with(context)
+        Picasso.get()
                 .load(dataSource.mascotDrawableRes)
                 .error(dataSource.mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside().fit().into(holder.icon);
     }
 
     @Override
-    public DirectoryItemViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryItemViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryItemViewHolder(view, adapter);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class DirectoryItem extends AbstractFlexibleItem<DirectoryItem.DirectoryI
         return dataSources != null ? dataSources.hashCode() : 0;
     }
 
-    class DirectoryItemViewHolder extends FlexibleViewHolder {
+    static class DirectoryItemViewHolder extends FlexibleViewHolder {
         final View view;
         final TextView name;
         final ImageView icon;

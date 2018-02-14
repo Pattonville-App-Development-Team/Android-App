@@ -3,19 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:fadeScrollbars="false"
+    android:fillViewport="true"
     android:overScrollMode="always"
     android:scrollbars="vertical"
-    tools:context="org.pattonvillecs.pattonvilleapp.calendar.CalendarMonthFragment">
+    tools:context=".view.ui.calendar.month.CalendarMonthFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
         android:orientation="vertical">
 
-        <org.pattonvillecs.pattonvilleapp.calendar.fix.FixedMaterialCalendarView
-            android:id="@+id/calendar_calendar"
+        <org.pattonvillecs.pattonvilleapp.view.ui.calendar.fix.FixedMaterialCalendarView
+            android:id="@+id/calendarView"
             style="PSD.MaterialCalendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,14 +26,14 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_margin="2dp"
-            android:background="?android:attr/dividerHorizontal" />
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
-        <include
-            layout="@layout/calendar_event_recyclerview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/event_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:clipChildren="false" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

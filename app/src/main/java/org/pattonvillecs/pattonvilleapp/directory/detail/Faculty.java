@@ -23,9 +23,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -108,8 +106,8 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
         this.mExtension2 = mExtension2;
         this.mOffice3 = mOffice3;
         this.mExtension3 = mExtension3;
-        this.mRank = getRank(this);
-        this.directoryKey = getDirectoryKey(this);
+        this.mRank = getRankForFaculty(this);
+        this.directoryKey = getDirectoryKeyForFaculty(this);
     }
 
     private Faculty(Parcel in) {
@@ -129,7 +127,7 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
         );
     }
 
-    private static DataSource getDirectoryKey(Faculty faculty) {
+    private static DataSource getDirectoryKeyForFaculty(Faculty faculty) {
         switch (faculty.mLocation.trim().toUpperCase()) {
             case "BRIDGEWAY ELEMENTARY":
                 return DataSource.BRIDGEWAY_ELEMENTARY;
@@ -157,7 +155,7 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
     }
 
 
-    private static int getRank(Faculty faculty) {
+    private static int getRankForFaculty(Faculty faculty) {
         if (faculty.mPCN.contains("LCSPT")) {
             return -2;
         } else if (faculty.mPCN.contains("LCASTSUP")) {
@@ -332,8 +330,8 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
     }
 
     @Override
-    public DirectoryViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater, ViewGroup parent) {
-        return new DirectoryViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public DirectoryViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new DirectoryViewHolder(view, adapter);
     }
 
     @Override
@@ -357,7 +355,7 @@ public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder
         dest.writeString(mExtension3);
     }
 
-    public class DirectoryViewHolder extends FlexibleViewHolder {
+    public static class DirectoryViewHolder extends FlexibleViewHolder {
         final RecyclerView facultyView;
         final TextView nameText, longDesText;
         final ImageButton emailButton, extensionButton;

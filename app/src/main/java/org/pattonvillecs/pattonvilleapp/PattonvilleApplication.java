@@ -18,10 +18,8 @@
 package org.pattonvillecs.pattonvilleapp;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.support.v4.os.AsyncTaskCompat;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -29,13 +27,13 @@ import com.android.volley.toolbox.Volley;
 import com.annimon.stream.Stream;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.google.common.collect.Iterators;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import org.pattonvillecs.pattonvilleapp.calendar.data.CalendarParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
-import org.pattonvillecs.pattonvilleapp.calendar.data.RetrieveCalendarDataAsyncTask;
-import org.pattonvillecs.pattonvilleapp.calendar.events.EventFlexibleItem;
+import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
+import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
 import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
 import org.pattonvillecs.pattonvilleapp.directory.detail.Faculty;
@@ -47,25 +45,40 @@ import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
+import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
+import kotlin.Unit;
+import kotlinx.coroutines.experimental.CommonPool;
+import kotlinx.coroutines.experimental.CoroutineStart;
+
+import static android.os.AsyncTask.THREAD_POOL_EXECUTOR;
+import static kotlinx.coroutines.experimental.DeferredKt.async;
+
 /**
- * Created by Mitchell Skaggs on 12/19/16.
+ * The main {@link android.app.Application} class of the Pattonville App.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.0.0
  */
 
-public class PattonvilleApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
+public class PattonvilleApplication extends DaggerApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
     public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
@@ -74,10 +87,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
-
-    private TreeSet<EventFlexibleItem> calendarEvents;
-    private Set<DataSource> loadedCalendarDataSources;
-    private Set<RetrieveCalendarDataAsyncTask> runningCalendarAsyncTasks;
 
     private ConcurrentMap<DataSource, List<Faculty>> directoryData;
     private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
@@ -98,15 +107,12 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     @Override
     public void onCreate() {
         super.onCreate();
+        AndroidThreeTen.init(this);
         mRequestQueue = Volley.newRequestQueue(this);
-        onSharedPreferenceKeyChangedListeners = new LinkedList<>();
-        pauseableListeners = new LinkedList<>();
+        onSharedPreferenceKeyChangedListeners = new ArrayList<>();
+        pauseableListeners = new ArrayList<>();
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
-
-        calendarEvents = new TreeSet<>();
-        loadedCalendarDataSources = EnumSet.noneOf(DataSource.class);
-        runningCalendarAsyncTasks = Collections.synchronizedSet(new HashSet<RetrieveCalendarDataAsyncTask>());
 
         directoryData = new ConcurrentHashMap<>();
         runningDirectoryAsyncTasks = Collections.synchronizedSet(new HashSet<DirectoryAsyncTask>());
@@ -118,15 +124,65 @@ public class PattonvilleApplication extends Application implements SharedPrefere
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         setupFirebaseTopics();
-        setUpCalendarParsing();
         setUpNewsParsing();
         setUpDirectoryParsing();
         enableHttpResponseCache();
     }
 
+    @Inject
+    protected void createCalendarSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        firebaseJobDispatcher.schedule(CalendarSyncJobService.getRecurringCalendarSyncJob(firebaseJobDispatcher));
+    }
+
+    /**
+     * This method transfers pinned events from the Content Provider database to the new Room Database.
+     *
+     * @since 1.2.0
+     */
+    @Inject
+    public void transferOldPinnedEvents(CalendarRepository calendarRepository) {
+        async(CommonPool.INSTANCE, CoroutineStart.DEFAULT, (coroutineScope, continuation) -> {
+
+            Cursor cursor = getContentResolver().query(PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+            Log.d(TAG, "Loaded old pinned events!");
+            Set<String> uids = new HashSet<>();
+            while (cursor != null && cursor.moveToNext()) {
+                uids.add(cursor.getString(1));
+            }
+            if (cursor != null)
+                cursor.close();
+            Log.d(TAG, "Old pinned events: " + uids);
+
+            calendarRepository.insertPins(Stream.of(uids).map(PinnedEventMarker::new).toList());
+            Log.d(TAG, "Inserted old pins into new database!");
+
+            Stream.of(uids).forEach(
+                    uid -> {
+                        Log.d(TAG, "Deleting pin \"" + uid + "\" from old database!");
+                        getContentResolver().delete(
+                                PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
+                                PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID + "=?",
+                                new String[]{uid});
+                    }
+            );
+
+            return Unit.INSTANCE;
+        });
+    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().application(this).build();
+    }
+
     /**
      * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
      */
+    @Deprecated
     private void enableHttpResponseCache() {
         try {
             long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
@@ -147,7 +203,7 @@ public class PattonvilleApplication extends Application implements SharedPrefere
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
 
                 FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
@@ -175,45 +231,14 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     }
 
     private void executeDirectoryDataTasks() {
-        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void setUpCalendarParsing() {
-        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
-            @Override
-            public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> nowSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
-
-                Stream.of(loadedCalendarDataSources)
-                        .filter(dataSource -> !nowSelectedDataSources.contains(dataSource))
-                        .forEach(dataSource -> {
-                            Log.i(TAG, "keyChanged: Removing datasource " + dataSource + " from items");
-                            Stream.of(calendarEvents).forEach(eventFlexibleItem -> eventFlexibleItem.dataSources.remove(dataSource));
-                            //noinspection ResultOfMethodCallIgnored
-                            Iterators.removeIf(calendarEvents.iterator(), input -> input != null && input.dataSources.isEmpty());
-                        });
-
-                loadedCalendarDataSources.retainAll(nowSelectedDataSources); //Remove any DataSource from loaded list if they aren't present in the now selected ones
-
-                Set<DataSource> neededToExecute = EnumSet.copyOf(nowSelectedDataSources);
-                neededToExecute.removeAll(loadedCalendarDataSources); //Remove DataSources that are already loaded
-
-                if (neededToExecute.size() == 0)
-                    updateCalendarListeners();
-                else
-                    executeCalendarDataTasks(neededToExecute, false);
-            }
-        });
-
-        //Initial download of calendar
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), false);
+        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(THREAD_POOL_EXECUTOR);
     }
 
     private void setUpNewsParsing() {
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
             public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(sharedPreferences);
+                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
 
                 Stream.of(newsData.keySet())
                         .filter(dataSource -> !newSelectedDataSources.contains(dataSource))
@@ -232,13 +257,7 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
         Stream.of(dataSources)
                 .filter(dataSource -> dataSource.newsURL.isPresent())
-                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
-    }
-
-    private void executeCalendarDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        Stream.of(dataSources)
-                .filter(dataSource -> dataSource.calendarURL.isPresent())
-                .forEach(dataSource -> AsyncTaskCompat.executeParallel(new RetrieveCalendarDataAsyncTask(PattonvilleApplication.this, skipCacheLoad), dataSource));
+                .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
     }
 
     public Kryo borrowKryo() {
@@ -272,22 +291,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
         onSharedPreferenceKeyChangedListeners.remove(onSharedPreferenceKeyChangedListener);
     }
 
-    private void updateCalendarListeners(CalendarParsingUpdateData data) {
-        Log.d(TAG, "Updating calendar listeners");
-        for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Updating listener " + pauseableListener);
-                if (pauseableListener.getIdentifier() == CalendarParsingUpdateData.CALENDAR_LISTENER_ID) {
-                    Log.d(TAG, "Updating calendar listener " + pauseableListener);
-                    //noinspection unchecked
-                    ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onReceiveData(data);
-                }
-            } else {
-                Log.d(TAG, "Skipping paused listener");
-            }
-        }
-    }
-
     private void updateDirectoryListeners(DirectoryParsingUpdateData data) {
         Log.d(TAG, "Updating directory listeners");
 
@@ -305,13 +308,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
                 Log.d(TAG, "Skipping paused listener");
             }
         }
-    }
-
-    /**
-     * Calls {@link PattonvilleApplication#updateCalendarListeners(CalendarParsingUpdateData)} with {@link PattonvilleApplication#getCurrentCalendarParsingUpdateData()} as the argument
-     */
-    public void updateCalendarListeners() {
-        updateCalendarListeners(getCurrentCalendarParsingUpdateData());
     }
 
     public void updateDirectoryListeners() {
@@ -341,10 +337,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     @Override
     public void pause(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "Calendar update listener paused!");
-                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onPause(getCurrentCalendarParsingUpdateData());
-                break;
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener paused!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
@@ -362,10 +354,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     @Override
     public void resume(PauseableListener<?> pauseableListener) {
         switch (pauseableListener.getIdentifier()) {
-            case CalendarParsingUpdateData.CALENDAR_LISTENER_ID:
-                Log.i(TAG, "Calendar update listener resumed!");
-                ((PauseableListener<CalendarParsingUpdateData>) pauseableListener).onResume(getCurrentCalendarParsingUpdateData());
-                break;
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener resumed!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
@@ -387,22 +375,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
     @Override
     public void unregisterPauseableListener(PauseableListener<?> pauseableListener) {
         pauseableListeners.remove(pauseableListener);
-    }
-
-    private CalendarParsingUpdateData getCurrentCalendarParsingUpdateData() {
-        return new CalendarParsingUpdateData(calendarEvents, runningCalendarAsyncTasks);
-    }
-
-    public TreeSet<EventFlexibleItem> getCalendarEvents() {
-        return calendarEvents;
-    }
-
-    public Set<RetrieveCalendarDataAsyncTask> getRunningCalendarAsyncTasks() {
-        return runningCalendarAsyncTasks;
-    }
-
-    public void hardRefreshCalendarData() {
-        executeCalendarDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
     }
 
     public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
@@ -444,10 +416,6 @@ public class PattonvilleApplication extends Application implements SharedPrefere
 
     public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
         return directoryData;
-    }
-
-    public Set<DataSource> getLoadedCalendarDataSources() {
-        return loadedCalendarDataSources;
     }
 
     public Set<DirectoryAsyncTask> getRunningDirectoryAsyncTasks() {

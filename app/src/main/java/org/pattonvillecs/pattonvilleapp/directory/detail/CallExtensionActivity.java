@@ -64,7 +64,7 @@ public class CallExtensionActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure that you want to call " + faculty.getFormattedFullName() + "?")
-                .setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+                .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("tel:"
                             + DISTRICT_VOICEMAIL_PHONE
@@ -84,7 +84,7 @@ public class CallExtensionActivity extends AppCompatActivity {
                     }
                     finish();
                 })
-                .setNegativeButton(android.R.string.no, (dialogInterface, i) -> finish())
+                .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> finish())
                 .setOnDismissListener(dialog -> finish())
                 .create()
                 .show();
