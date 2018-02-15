@@ -64,7 +64,7 @@ import java.util.*
  * @since 1.2.0
  */
 
-class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable, ICalendarEvent by pinnableCalendarEvent, IFlexibleHasStartDate<PinnableCalendarEventItemViewHolder> {
+class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCalendarEvent: PinnableCalendarEvent, header: DateHeader? = null) : AbstractSectionableItem<PinnableCalendarEventItemViewHolder, DateHeader>(header), IHolder<PinnableCalendarEvent>, IFilterable<String>, ICalendarEvent by pinnableCalendarEvent, IFlexibleHasStartDate<PinnableCalendarEventItemViewHolder> {
     override fun filter(constraint: String?): Boolean {
         if (constraint == null || constraint.isBlank())
             return true

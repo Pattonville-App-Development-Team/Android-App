@@ -22,9 +22,9 @@ import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.util.Log;
 
-import com.annimon.stream.Stream;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -38,10 +38,13 @@ import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChanged
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
 import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
 import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService;
+import org.threeten.bp.Instant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,11 +57,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
-import kotlin.Unit;
-import kotlinx.coroutines.experimental.CommonPool;
-import kotlinx.coroutines.experimental.CoroutineStart;
-
-import static kotlinx.coroutines.experimental.DeferredKt.async;
+import kotlin.collections.CollectionsKt;
 
 /**
  * The main {@link Application} class of the Pattonville App.
@@ -121,36 +120,35 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
      */
     @Inject
     public void transferOldPinnedEvents(CalendarRepository calendarRepository) {
-        async(CommonPool.INSTANCE, CoroutineStart.DEFAULT, (coroutineScope, continuation) -> {
-
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
+            Log.d(TAG, "Getting cursor for old database...");
             Cursor cursor = getContentResolver().query(PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
                     null,
                     null,
                     null,
                     null);
             Log.d(TAG, "Loaded old pinned events!");
-            Set<String> uids = new HashSet<>();
+            Set<PinnedEventMarker> uids = new HashSet<>();
             while (cursor != null && cursor.moveToNext()) {
-                uids.add(cursor.getString(1));
+                uids.add(new PinnedEventMarker(cursor.getString(1)));
             }
             if (cursor != null)
                 cursor.close();
             Log.d(TAG, "Old pinned events: " + uids);
 
-            calendarRepository.insertPins(Stream.of(uids).map(PinnedEventMarker::new).toList());
+            for (PinnedEventMarker pinnedEventMarker : uids) {
+                Log.d(TAG, "Deleting pin \"" + pinnedEventMarker.getUid() + "\" from old database!");
+                getContentResolver().delete(
+                        PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
+                        PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID + "=?",
+                        new String[]{pinnedEventMarker.getUid()});
+            }
+
+            for (PinnedEventMarker pinnedEventMarker : uids) {
+                calendarRepository.insertEvent(new PinnableCalendarEvent(new CalendarEvent(pinnedEventMarker.getUid(), "Loading...", "Loading...", Instant.EPOCH, Instant.EPOCH), true));
+            }
+            calendarRepository.insertPins(CollectionsKt.toList(uids));
             Log.d(TAG, "Inserted old pins into new database!");
-
-            Stream.of(uids).forEach(
-                    uid -> {
-                        Log.d(TAG, "Deleting pin \"" + uid + "\" from old database!");
-                        getContentResolver().delete(
-                                PinnedEventsContract.PinnedEventsTable.CONTENT_URI,
-                                PinnedEventsContract.PinnedEventsTable.COLUMN_NAME_UID + "=?",
-                                new String[]{uid});
-                    }
-            );
-
-            return Unit.INSTANCE;
         });
     }
 

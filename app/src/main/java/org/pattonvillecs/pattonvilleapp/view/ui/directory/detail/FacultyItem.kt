@@ -42,7 +42,7 @@ import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.DataSourceH
  * @author Mitchell Skaggs
  */
 
-data class FacultyItem(val faculty: Faculty) : AbstractSectionableItem<FacultyItem.FacultyItemViewHolder, DataSourceHeader>(null), IFacultyItem<FacultyItem.FacultyItemViewHolder>, IFilterable {
+data class FacultyItem(val faculty: Faculty) : AbstractSectionableItem<FacultyItem.FacultyItemViewHolder, DataSourceHeader>(null), IFacultyItem<FacultyItem.FacultyItemViewHolder>, IFilterable<String> {
     override val location: DataSource? get() = faculty.location
 
     constructor(faculty: Faculty, header: DataSourceHeader? = null) : this(faculty) {

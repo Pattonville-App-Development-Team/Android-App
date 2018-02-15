@@ -40,7 +40,7 @@ import org.threeten.bp.format.FormatStyle
  *
  * @since 1.4.0
  */
-data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>(), IFilterable {
+data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : AbstractFlexibleItem<ArticleSummaryItem.ArticleSummaryItemViewHolder>(), IFilterable<String> {
     override fun filter(constraint: String?): Boolean {
         if (constraint.isNullOrBlank())
             return true
