@@ -97,3 +97,7 @@
 #CheckerFramework
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
+
+# Android bug
+-dontwarn org.xmlpull.v1.**
+-dontwarn javax.xml.**

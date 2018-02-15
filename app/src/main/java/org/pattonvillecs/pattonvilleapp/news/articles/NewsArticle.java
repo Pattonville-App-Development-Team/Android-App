@@ -56,7 +56,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
  * @author Mitchell Skaggs
  * @author Jeremiah Simmons
  */
-public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable, IFilterable {
+public class NewsArticle extends AbstractFlexibleItem<NewsArticle.NewsArticleViewHolder> implements Parcelable, IFilterable<String> {
 
     //Required CREATOR for the Parcelable implementation
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
