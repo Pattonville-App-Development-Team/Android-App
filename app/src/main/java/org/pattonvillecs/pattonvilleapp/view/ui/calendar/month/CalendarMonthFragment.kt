@@ -26,8 +26,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
 import android.util.Log
 import android.view.*
+import com.crashlytics.android.Crashlytics
 import com.google.common.collect.Multiset
-import com.google.firebase.crash.FirebaseCrash
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
@@ -72,11 +72,11 @@ class CalendarMonthFragment : DaggerFragment() {
         get() {
             return if (calendarView != null) {
                 if (calendarView.width == 0 || calendarView.height == 0)
-                    FirebaseCrash.logcat(Log.WARN, TAG, "Width and height are ${calendarView.width}, ${calendarView.height}! This method was called before the final layout pass!")
+                    Crashlytics.log(Log.WARN, TAG, "Width and height are ${calendarView.width}, ${calendarView.height}! This method was called before the final layout pass!")
 
                 (Math.min(calendarView.width, calendarView.height) / 125f).coerceAtLeast(5f)
             } else {
-                FirebaseCrash.logcat(Log.WARN, TAG, "calendarView is null!")
+                Crashlytics.log(Log.WARN, TAG, "calendarView is null!")
                 10f
             }
         }

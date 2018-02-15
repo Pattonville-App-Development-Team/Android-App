@@ -19,12 +19,12 @@ package org.pattonvillecs.pattonvilleapp.service.repository.calendar
 
 import android.os.AsyncTask.THREAD_POOL_EXECUTOR
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.*
 import com.google.common.base.Function
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.*
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.firebase.crash.FirebaseCrash
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.component.VEvent
 import org.pattonvillecs.pattonvilleapp.service.model.DataSource
@@ -81,8 +81,8 @@ class CalendarSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
-            FirebaseCrash.report(t)
+            Crashlytics.log(Log.WARN, TAG, "Download failed!")
+            Crashlytics.logException(t)
             calendarSyncJobService.jobFinished(job, true)
         }
     }

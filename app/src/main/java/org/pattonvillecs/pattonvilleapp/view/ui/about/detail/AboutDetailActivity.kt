@@ -22,7 +22,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.view.MenuItem
-import com.google.firebase.crash.FirebaseCrash
+import com.crashlytics.android.Crashlytics
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerAppCompatActivity
@@ -100,7 +100,7 @@ class AboutDetailActivity : DaggerAppCompatActivity() {
                             }
 
                             override fun onError(e: Exception) {
-                                FirebaseCrash.report(e)
+                                Crashlytics.logException(e)
                                 supportStartPostponedEnterTransition()
                             }
                         })

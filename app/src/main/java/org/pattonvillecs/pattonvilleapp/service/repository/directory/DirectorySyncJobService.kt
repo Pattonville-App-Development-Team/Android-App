@@ -19,10 +19,10 @@ package org.pattonvillecs.pattonvilleapp.service.repository.directory
 
 import android.os.AsyncTask.THREAD_POOL_EXECUTOR
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.*
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.addCallback
-import com.google.firebase.crash.FirebaseCrash
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Directory
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
 import java.util.concurrent.TimeUnit
@@ -69,9 +69,8 @@ class DirectorySyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
-            Log.w(TAG, "Exception thrown:", t)
-            FirebaseCrash.report(t)
+            Crashlytics.log(Log.WARN, TAG, "Download failed!")
+            Crashlytics.logException(t)
             directorySyncJobService.jobFinished(job, true)
         }
     }
