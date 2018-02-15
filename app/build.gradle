@@ -83,7 +83,7 @@ android {
         }
         debug {
             minifyEnabled true
-            useProguard false
+            useProguard true // Required for 'play-services-base:11.8.0' See: https://stackoverflow.com/q/47893266/9073728
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-test.pro'
             applicationIdSuffix ".debug"
