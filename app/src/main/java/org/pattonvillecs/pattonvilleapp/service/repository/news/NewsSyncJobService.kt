@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository.news
 
 import android.os.AsyncTask
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.*
 import com.github.magneticflux.rss.namespaces.standard.elements.Rss
 import com.google.common.base.Function
@@ -26,7 +27,6 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.Futures.transform
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.firebase.crash.FirebaseCrash
 import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
@@ -87,8 +87,8 @@ class NewsSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
-            FirebaseCrash.report(t)
+            Crashlytics.log(Log.WARN, TAG, "Download failed!")
+            Crashlytics.logException(t)
             newsSyncJobService.jobFinished(job, true)
         }
     }
