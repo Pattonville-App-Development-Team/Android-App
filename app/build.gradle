@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 def hasKeystore = file('psd.keystore.properties').exists()
 def keystoreProperties = new Properties()
@@ -138,6 +139,7 @@ dependencies {
     //Firebase
     implementation "com.google.firebase:firebase-core:$firebase_version"
     implementation "com.google.firebase:firebase-messaging:$firebase_version"
+    implementation "com.google.firebase:firebase-perf:$firebase_version"
     implementation "com.crashlytics.sdk.android:crashlytics:2.9.0"
 
     //Android Architecture Components
