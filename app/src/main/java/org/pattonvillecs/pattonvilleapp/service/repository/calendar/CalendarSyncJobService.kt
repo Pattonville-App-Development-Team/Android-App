@@ -116,6 +116,7 @@ class CalendarSyncJobService : JobService() {
                         .setReplaceCurrent(true)
                         .setTag("instant_calendar_sync_job")
                         .setService(CalendarSyncJobService::class.java)
+                        .addConstraint(Constraint.ON_ANY_NETWORK)
                         .setLifetime(Lifetime.FOREVER)
                         .setTrigger(Trigger.NOW)
                         .build()
