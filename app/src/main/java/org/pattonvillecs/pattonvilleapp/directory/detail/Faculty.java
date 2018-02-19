@@ -45,7 +45,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
  * Created by gadsonk on 12/7/16.
  */
 
-public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder, FacultyHeader> implements IFilterable, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable, Parcelable {
+public class Faculty extends AbstractSectionableItem<Faculty.DirectoryViewHolder, FacultyHeader> implements IFilterable<String>, DirectoryItem<Faculty.DirectoryViewHolder>, Serializable, Parcelable {
 
     public static final Creator<Faculty> CREATOR = new Creator<Faculty>() {
         @Override
