@@ -59,21 +59,20 @@ public final class AppIntroPreferenceFragment extends AppIntroBaseFragment {
         return appIntroPreferenceFragment;
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: Starting!");
         View view = inflater.inflate(getLayoutId(), container, false);
 
-        TextView title = (TextView) view.findViewById(com.github.paolorotolo.appintro.R.id.title);
-        TextView description = (TextView) view.findViewById(com.github.paolorotolo.appintro.R.id.description);
-        LinearLayout mainLayout = (LinearLayout) view.findViewById(com.github.paolorotolo.appintro.R.id.main);
+        TextView title = view.findViewById(com.github.paolorotolo.appintro.R.id.title);
+        TextView description = view.findViewById(com.github.paolorotolo.appintro.R.id.description);
+        LinearLayout mainLayout = view.findViewById(com.github.paolorotolo.appintro.R.id.main);
 
         title.setText(this.title);
         if (titleColor != 0) {
             title.setTextColor(titleColor);
         }
-        if (titleTypeface != null && titleTypeface.equals("")) {
+        if (titleTypeface != null && !titleTypeface.equals("")) {
             if (CustomFontCache.get(titleTypeface, getContext()) != null) {
                 title.setTypeface(CustomFontCache.get(titleTypeface, getContext()));
             }
