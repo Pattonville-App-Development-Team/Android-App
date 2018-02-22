@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.Futures.addCallback
 import com.google.firebase.crash.FirebaseCrash
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Directory
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -69,9 +70,8 @@ class DirectorySyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
-            Log.w(TAG, "Exception thrown:", t)
-            FirebaseCrash.report(t)
+            if (t !is IOException)
+                FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
             directorySyncJobService.jobFinished(job, true)
         }
     }
