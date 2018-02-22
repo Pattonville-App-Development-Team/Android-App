@@ -18,6 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.di;
 
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
+import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -31,4 +32,7 @@ public abstract class ServiceBuilderModule {
 
     @ContributesAndroidInjector
     abstract CalendarSyncJobService contributeCalendarSyncJobService();
+
+    @ContributesAndroidInjector
+    abstract DirectorySyncJobService contributeDirectorySyncJobService();
 }

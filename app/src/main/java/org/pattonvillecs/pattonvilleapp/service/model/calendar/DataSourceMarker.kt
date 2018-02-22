@@ -30,7 +30,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEve
  */
 
 @Immutable
-@Entity(tableName = "datasource_markers", primaryKeys = arrayOf("uid", "datasource"))
+@Entity(tableName = "datasource_markers", primaryKeys = ["uid", "datasource"])
 data class DataSourceMarker(@field:ColumnInfo(name = "uid", index = true, collate = ColumnInfo.BINARY)
                             val uid: String,
                             @field:ColumnInfo(name = "datasource", index = true, collate = ColumnInfo.BINARY)

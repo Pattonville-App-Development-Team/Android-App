@@ -35,9 +35,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
-import org.pattonvillecs.pattonvilleapp.directory.DirectoryAsyncTask;
-import org.pattonvillecs.pattonvilleapp.directory.DirectoryParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.directory.detail.Faculty;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
 import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
 import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
@@ -52,6 +49,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCal
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 import org.threeten.bp.Instant;
+import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,9 +87,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private KryoPool kryoPool;
 
-    private ConcurrentMap<DataSource, List<Faculty>> directoryData;
-    private Set<DirectoryAsyncTask> runningDirectoryAsyncTasks;
-
     private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
     private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
 
@@ -115,9 +110,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         keyModificationCounts = new HashMap<>();
         kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
 
-        directoryData = new ConcurrentHashMap<>();
-        runningDirectoryAsyncTasks = Collections.synchronizedSet(new HashSet<DirectoryAsyncTask>());
-
         newsData = new ConcurrentHashMap<>();
         runningNewsAsyncTasks = Collections.synchronizedSet(new HashSet<NewsParsingAsyncTask>());
 
@@ -126,13 +118,17 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
         setupFirebaseTopics();
         setUpNewsParsing();
-        setUpDirectoryParsing();
         enableHttpResponseCache();
     }
 
     @Inject
     protected void createCalendarSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
         firebaseJobDispatcher.schedule(CalendarSyncJobService.getRecurringCalendarSyncJob(firebaseJobDispatcher));
+    }
+
+    @Inject
+    protected void createDirectorySyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        firebaseJobDispatcher.schedule(DirectorySyncJobService.getRecurringDirectorySyncJob(firebaseJobDispatcher));
     }
 
     /**
@@ -195,10 +191,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         }
     }
 
-    private void setUpDirectoryParsing() {
-        executeDirectoryDataTasks();
-    }
-
     private void setupFirebaseTopics() {
         this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
             @Override
@@ -228,10 +220,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
                 }
             }
         });
-    }
-
-    private void executeDirectoryDataTasks() {
-        new DirectoryAsyncTask(PattonvilleApplication.this, false).executeOnExecutor(THREAD_POOL_EXECUTOR);
     }
 
     private void setUpNewsParsing() {
@@ -268,13 +256,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         kryoPool.release(kryo);
     }
 
-    public int getPreferenceKeyModificationCount(String key) {
-        if (keyModificationCounts.containsKey(key))
-            return keyModificationCounts.get(key);
-        else
-            return 0;
-    }
-
     public RequestQueue getRequestQueue() {
         return mRequestQueue;
     }
@@ -289,33 +270,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     public void unregisterOnPreferenceKeyChangedListener(OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener) {
         onSharedPreferenceKeyChangedListeners.remove(onSharedPreferenceKeyChangedListener);
-    }
-
-    private void updateDirectoryListeners(DirectoryParsingUpdateData data) {
-        Log.d(TAG, "Updating directory listeners");
-
-        for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Checking listener " + pauseableListener);
-
-                if (pauseableListener.getIdentifier() == DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID) {
-                    Log.d(TAG, "Updating directory listener " + pauseableListener);
-
-                    //noinspection unchecked
-                    ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onReceiveData(data);
-                }
-            } else {
-                Log.d(TAG, "Skipping paused listener");
-            }
-        }
-    }
-
-    public void updateDirectoryListeners() {
-        updateDirectoryListeners(getCurrentDirectoryParsingUpdateData());
-    }
-
-    private DirectoryParsingUpdateData getCurrentDirectoryParsingUpdateData() {
-        return new DirectoryParsingUpdateData(directoryData);
     }
 
     @Override
@@ -341,10 +295,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
                 Log.i(TAG, "News update listener paused!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
                 break;
-            case DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID:
-                Log.i(TAG, "Directory update listener paused!");
-                ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onPause(getCurrentDirectoryParsingUpdateData());
-                break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
         }
@@ -357,10 +307,6 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
             case NewsParsingUpdateData.NEWS_LISTENER_ID:
                 Log.i(TAG, "News update listener resumed!");
                 ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
-                break;
-            case DirectoryParsingUpdateData.DIRECTORY_LISTENER_ID:
-                Log.i(TAG, "Directory update listener resumed!");
-                ((PauseableListener<DirectoryParsingUpdateData>) pauseableListener).onResume(getCurrentDirectoryParsingUpdateData());
                 break;
             default:
                 throw new IllegalArgumentException("Listener not known!");
@@ -412,13 +358,5 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
     public void hardRefreshNewsData() {
         executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
-    }
-
-    public ConcurrentMap<DataSource, List<Faculty>> getDirectoryData() {
-        return directoryData;
-    }
-
-    public Set<DirectoryAsyncTask> getRunningDirectoryAsyncTasks() {
-        return runningDirectoryAsyncTasks;
     }
 }

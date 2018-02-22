@@ -15,24 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.service.repository.calendar.typeconverters;
+package org.pattonvillecs.pattonvilleapp.view.adapter.directory
 
-import android.arch.persistence.room.TypeConverter;
-
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import org.apache.commons.text.WordUtils
+import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.FacultyItem
+import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.IFacultyItem
 
 /**
- * Created by Mitchell on 10/9/2017.
+ * Created by Mitchell Skaggs on 12/10/2017.
  */
+class FacultyAdapter(items: MutableList<out IFacultyItem<*>>? = null, listeners: Any? = null, stableIds: Boolean = false) : FlexibleAdapter<IFacultyItem<*>>(items, listeners, stableIds) {
 
-public class DataSourceTypeConverter {
-    @TypeConverter
-    public static DataSource fromTimestamp(Integer value) {
-        return value == null ? null : DataSource.values()[value];
-    }
-
-    @TypeConverter
-    public static Integer dateToTimestamp(DataSource dataSource) {
-        return dataSource == null ? null : dataSource.ordinal();
+    override fun onCreateBubbleText(position: Int): String {
+        val item = this.getItem(position)
+        return (item as? FacultyItem)?.faculty?.description.let { WordUtils.capitalizeFully(it, *FacultyItem.delimiters) } ?: ""
     }
 }

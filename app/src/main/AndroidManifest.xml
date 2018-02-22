@@ -88,7 +88,11 @@
             android:theme="@style/PSD.NoActionBar" />
 
         <activity
-            android:name=".directory.detail.DirectoryDetailActivity"
+            android:name=".view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".view.ui.directory.detail.single.SingleDataSourceDirectoryDetailActivity"
             android:parentActivityName=".MainActivity" />
 
         <service
@@ -116,8 +120,7 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".directory.detail.CallExtensionActivity"
-            android:parentActivityName=".directory.detail.DirectoryDetailActivity"
+            android:name=".view.ui.directory.detail.CallExtensionActivity"
             android:theme="@style/PSD.NoActionBar.Invisible" />
 
         <activity
@@ -142,6 +145,14 @@
 
         <service
             android:name="org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />

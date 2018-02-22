@@ -187,6 +187,7 @@ public class NewsParsingAsyncTask extends AsyncTask<DataSource, Double, List<New
             pattonvilleApplication.getNewsData().put(dataSource, result);
         }
         removeAndUpdate();
+        pattonvilleApplication.releaseKryo(this.kryo);
     }
 
     private void removeAndUpdate() {

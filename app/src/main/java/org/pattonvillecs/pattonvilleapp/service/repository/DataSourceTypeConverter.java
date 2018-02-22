@@ -15,15 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp.directory.detail;
+package org.pattonvillecs.pattonvilleapp.service.repository;
 
-import android.support.v7.widget.RecyclerView;
+import android.arch.persistence.room.TypeConverter;
+import android.support.annotation.Nullable;
 
-import eu.davidea.flexibleadapter.items.IFlexible;
+import org.pattonvillecs.pattonvilleapp.DataSource;
 
 /**
- * Created by skaggsm on 5/8/17.
+ * Created by Mitchell on 10/9/2017.
  */
 
-public interface DirectoryItem<VH extends RecyclerView.ViewHolder> extends IFlexible<VH> {
+public class DataSourceTypeConverter {
+
+    @TypeConverter
+    @Nullable
+    public static DataSource fromTimestamp(@Nullable Integer value) {
+        return value == null ? null : DataSource.values()[value];
+    }
+
+    @TypeConverter
+    @Nullable
+    public static Integer dateToTimestamp(@Nullable DataSource dataSource) {
+        return dataSource == null ? null : dataSource.ordinal();
+    }
 }

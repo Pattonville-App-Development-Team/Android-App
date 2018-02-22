@@ -21,6 +21,8 @@ import org.pattonvillecs.pattonvilleapp.MainActivity;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.about.detail.AboutDetailActivity;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.details.CalendarEventDetailsActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.AllDataSourcesDirectoryDetailActivity;
+import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.single.SingleDataSourceDirectoryDetailActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -42,4 +44,12 @@ public abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     @PerActivity
     abstract AboutDetailActivity contributeAboutDetailActivity();
+
+    @ContributesAndroidInjector
+    @PerActivity
+    abstract AllDataSourcesDirectoryDetailActivity contributeAllDataSourcesDirectoryDetailActivity();
+
+    @ContributesAndroidInjector
+    @PerActivity
+    abstract SingleDataSourceDirectoryDetailActivity contributeSingleDataSourceDirectoryDetailActivity();
 }

@@ -43,9 +43,9 @@ data class CalendarEvent(@field:PrimaryKey
                          override val summary: String,
                          @field:ColumnInfo(name = "location")
                          override val location: String,
-                         @field:ColumnInfo(name = "start_date", index = true)
+                         @field:ColumnInfo(name = "start_date", index = true, collate = ColumnInfo.BINARY)
                          override val startDateTime: Instant,
-                         @field:ColumnInfo(name = "end_date", index = true)
+                         @field:ColumnInfo(name = "end_date", index = true, collate = ColumnInfo.BINARY)
                          override val endDateTime: Instant) : HasStartDate, HasEndDate, Parcelable, ICalendarEvent {
     constructor(vEvent: VEvent) : this(
             vEvent.uid.value,

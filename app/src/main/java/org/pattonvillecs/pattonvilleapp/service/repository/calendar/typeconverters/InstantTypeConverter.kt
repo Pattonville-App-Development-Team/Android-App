@@ -18,7 +18,6 @@
 package org.pattonvillecs.pattonvilleapp.service.repository.calendar.typeconverters
 
 import android.arch.persistence.room.TypeConverter
-
 import org.threeten.bp.Instant
 
 /**
@@ -28,9 +27,9 @@ import org.threeten.bp.Instant
 object InstantTypeConverter {
     @TypeConverter
     @JvmStatic
-    fun timestampToInstant(value: Long): Instant = Instant.ofEpochMilli(value)
+    fun timestampToInstant(value: Long?): Instant? = if (value != null) Instant.ofEpochMilli(value) else null
 
     @TypeConverter
     @JvmStatic
-    fun instantToTimestamp(date: Instant): Long = date.toEpochMilli()
+    fun instantToTimestamp(date: Instant?): Long? = date?.toEpochMilli()
 }

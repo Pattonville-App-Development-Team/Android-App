@@ -71,12 +71,15 @@
 -keep class org.threeten.bp.** { *; }
 
 #Tests
--keepclassmembers,includedescriptorclasses class android.arch.persistence.room.** {
-    *;
-}
+-keep,includedescriptorclasses class android.arch.persistence.room.** { *; }
 -keep,includedescriptorclasses class android.arch.persistence.room.**
 -keep,includedescriptorclasses class android.arch.lifecycle.**
 -keep,includedescriptorclasses class kotlin.collections.CollectionsKt** { *; }
+-keep,includedescriptorclasses class android.arch.persistence.db.SupportSQLiteDatabase { *; }
+-keep,includedescriptorclasses class kotlin.jvm.internal.FunctionReference { *; }
+-keep,includedescriptorclasses class kotlin.reflect.KCallable { *; }
+-keep,includedescriptorclasses class kotlin.Triple { *; }
+-keep,includedescriptorclasses class kotlin.ranges.ClosedRange { *; }
 
 #Okio
 -dontwarn okio.**
@@ -94,3 +97,7 @@
 #CheckerFramework
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
+
+# Android bug
+-dontwarn org.xmlpull.v1.**
+-dontwarn javax.xml.**

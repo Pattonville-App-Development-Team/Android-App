@@ -25,26 +25,35 @@ import android.support.annotation.NonNull;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;
+import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarDao;
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.typeconverters.DataSourceTypeConverter;
-import org.pattonvillecs.pattonvilleapp.service.repository.calendar.typeconverters.DateTypeConverter;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.typeconverters.InstantTypeConverter;
+import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectoryDao;
 
 /**
  * Created by Mitchell on 10/1/2017.
  */
 
-@Database(entities = {CalendarEvent.class, PinnedEventMarker.class, DataSourceMarker.class}, version = 1)
+@Database(entities = {
+        CalendarEvent.class,
+        PinnedEventMarker.class,
+        DataSourceMarker.class,
+        Faculty.class
+},
+        version = 2)
 @TypeConverters({
-        DateTypeConverter.class,
         DataSourceTypeConverter.class,
         InstantTypeConverter.class
 })
 public abstract class AppDatabase extends RoomDatabase {
     @NonNull
     public static RoomDatabase.Builder<AppDatabase> init(@NonNull RoomDatabase.Builder<AppDatabase> builder) {
-        return builder;
+        return builder.addMigrations(
+                MIGRATION_1_2.INSTANCE
+        );
     }
 
     public abstract CalendarDao calendarDao();
+
+    public abstract DirectoryDao directoryDao();
 }

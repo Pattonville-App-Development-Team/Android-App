@@ -209,7 +209,7 @@ public enum DataSource {
                 Integer o2Value = o2.getSortingScore();
                 return o1Value.compareTo(o2Value);
             },
-            (o1, o2) -> o1.name.compareTo(o2.name)));
+            (o1, o2) -> o1.longName.compareTo(o2.longName)));
 
     public static final Set<DataSource> ALL = Collections.unmodifiableSet(EnumSet.allOf(DataSource.class));
 
@@ -243,14 +243,14 @@ public enum DataSource {
             .filter(d -> d.calendarURL.isPresent())
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
-    public final String name, shortName, websiteURL, address, mainNumber, initialsName, topicName;
+    public final String longName, shortName, websiteURL, address, mainNumber, initialsName, topicName;
     public final int calendarColor;
     @DrawableRes
     public final int mascotDrawableRes;
     public final boolean isDisableable, isHighSchool, isMiddleSchool, isElementarySchool;
     public final Optional<String> attendanceNumber, faxNumber, peachjarLink, nutrisliceLink, newsURL, calendarURL;
 
-    DataSource(String name,
+    DataSource(String longName,
                String shortName,
                boolean isDisableable,
                boolean isHighSchool,
@@ -269,7 +269,7 @@ public enum DataSource {
                Optional<String> nutrisliceLink,
                String topicName,
                Optional<Integer> mascotDrawableRes) {
-        this.name = name;
+        this.longName = longName;
         this.shortName = shortName;
         this.isDisableable = isDisableable;
         this.isHighSchool = isHighSchool;
@@ -305,6 +305,6 @@ public enum DataSource {
 
     @Override
     public String toString() {
-        return this.name;
+        return this.longName;
     }
 }

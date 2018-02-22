@@ -119,6 +119,17 @@
     <string name="secret_shop_action_title">Shop</string>
     <string name="insert_calendar_event_failure">Sorry, this device does not support inserting calendar events. Please contact the developers through the Play Store if this feature is necessary.</string>
     <string name="date_time_newline">%1$s\n%2$s</string>
+    <string name="email_faculty">Email faculty</string>
+    <string name="call_faculty">Call faculty</string>
+    <string name="faculty_name">%1$s %2$s</string>
+    <string name="school_image">School image</string>
+    <string name="address">Address:</string>
+    <string name="main_phone">Main Phone:</string>
+    <string name="attendance_phone">Attendance Phone:</string>
+    <string name="fax">Fax:</string>
+    <string name="website">Website</string>
+    <string name="no_phone_capabilities_found">No phone capabilities found! Does this device have calling support?</string>
+    <string name="phone_denied">Phone call permission is required to place a call!</string>
     <plurals name="secret_purchase_toast">
         <item quantity="one">Purchased %1$,d item!</item>
         <item quantity="other">Purchased %1$,d items!</item>
