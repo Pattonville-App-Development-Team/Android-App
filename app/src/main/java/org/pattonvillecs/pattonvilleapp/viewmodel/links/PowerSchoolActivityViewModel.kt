@@ -19,6 +19,7 @@ package org.pattonvillecs.pattonvilleapp.viewmodel.links
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.content.Intent
 import org.jetbrains.anko.browse
 import org.pattonvillecs.pattonvilleapp.R
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils
@@ -33,7 +34,7 @@ class PowerSchoolActivityViewModel(application: Application) : AndroidViewModel(
         if (PreferenceUtils.getPowerSchoolIntent(app)) {
             launchPowerSchoolApp()
         } else {
-            app.browse("https://powerschool.psdr3.org", false)
+            app.browse("https://powerschool.psdr3.org", true)
         }
     }
 
@@ -43,17 +44,17 @@ class PowerSchoolActivityViewModel(application: Application) : AndroidViewModel(
 
         // If app installed, launch, if not, open play store to it
         if (packageManager.getLaunchIntentForPackage(packageName) != null) {
-            app.startActivity(packageManager.getLaunchIntentForPackage(packageName))
+            app.startActivity(packageManager.getLaunchIntentForPackage(packageName).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } else {
-            app.browse("https://play.google.com/store/apps/details?id=$packageName", false)
+            app.browse("https://play.google.com/store/apps/details?id=$packageName", true)
         }
     }
 
     fun onTeacherButtonPressed() {
-        app.browse("https://powerschool.psdr3.org/teachers/pw.html", false)
+        app.browse("https://powerschool.psdr3.org/teachers/pw.html", true)
     }
 
     fun onAdministratorButtonPressed() {
-        app.browse("https://powerschool.psdr3.org/admin/pw.html", false)
+        app.browse("https://powerschool.psdr3.org/admin/pw.html", true)
     }
 }
