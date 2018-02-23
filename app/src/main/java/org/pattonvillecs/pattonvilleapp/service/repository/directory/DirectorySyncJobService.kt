@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures.addCallback
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Directory
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -69,8 +70,8 @@ class DirectorySyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            Crashlytics.log(Log.WARN, TAG, "Download failed!")
-            Crashlytics.logException(t)
+            if (t !is IOException)
+                Crashlytics.log(Log.WARN, TAG, "Download failed!")
             directorySyncJobService.jobFinished(job, true)
         }
     }

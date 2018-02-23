@@ -32,6 +32,7 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.DataSourceMarker.
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.SourcedCalendar
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -81,8 +82,8 @@ class CalendarSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            Crashlytics.log(Log.WARN, TAG, "Download failed!")
-            Crashlytics.logException(t)
+            if (t !is IOException)
+                Crashlytics.log(Log.WARN, TAG, "Download failed!")
             calendarSyncJobService.jobFinished(job, true)
         }
     }
