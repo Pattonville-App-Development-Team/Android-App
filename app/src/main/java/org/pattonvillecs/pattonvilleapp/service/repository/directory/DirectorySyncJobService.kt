@@ -91,5 +91,17 @@ class DirectorySyncJobService : DaggerJobService() {
                         .setRecurring(true)
                         .setTrigger(Trigger.executionWindow(TimeUnit.HOURS.toSeconds(24).toInt(), TimeUnit.HOURS.toSeconds(48).toInt()))
                         .build()
+
+        @JvmStatic
+        fun getInstantDirectorySyncJob(firebaseJobDispatcher: FirebaseJobDispatcher): Job =
+                firebaseJobDispatcher.newJobBuilder()
+                        .setReplaceCurrent(true)
+                        .setTag("instant_directory_sync_job")
+                        .setService(DirectorySyncJobService::class.java)
+                        .addConstraint(Constraint.ON_ANY_NETWORK)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setRecurring(false)
+                        .setTrigger(Trigger.NOW)
+                        .build()
     }
 }

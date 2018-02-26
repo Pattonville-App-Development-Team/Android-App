@@ -48,8 +48,8 @@ import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEve
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
-import org.threeten.bp.Instant;
 import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
+import org.threeten.bp.Instant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
     private static final String TAG = PattonvilleApplication.class.getSimpleName();
+    private static final String KEY_APP_VERSION = "app_version";
 
     private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
@@ -119,6 +120,22 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         setupFirebaseTopics();
         setUpNewsParsing();
         enableHttpResponseCache();
+    }
+
+    @Inject
+    protected void checkForUpdate(FirebaseJobDispatcher firebaseJobDispatcher) {
+        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
+
+        int appVersion = sharedPreferences.getInt(KEY_APP_VERSION, -1);
+        Log.v(TAG, "Stored app version: " + appVersion + ". Current app version: " + BuildConfig.VERSION_CODE);
+
+        if (appVersion < BuildConfig.VERSION_CODE) {
+            Log.d(TAG, "Launching update jobs!");
+            firebaseJobDispatcher.schedule(CalendarSyncJobService.getInstantCalendarSyncJob(firebaseJobDispatcher));
+            firebaseJobDispatcher.schedule(DirectorySyncJobService.getInstantDirectorySyncJob(firebaseJobDispatcher));
+
+            sharedPreferences.edit().putInt(KEY_APP_VERSION, BuildConfig.VERSION_CODE).apply();
+        }
     }
 
     @Inject
