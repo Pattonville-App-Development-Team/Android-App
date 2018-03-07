@@ -18,6 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.view.ui.news
 
 import android.view.View
+import android.webkit.WebSettings
 import android.widget.ImageView
 import android.widget.TextView
 import com.thefinestartist.finestwebview.FinestWebView
@@ -66,6 +67,9 @@ data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : Abst
                     .showIconBack(true)
                     .showSwipeRefreshLayout(true)
                     .swipeRefreshColorsRes(R.array.colors)
+                    .webViewSupportZoom(true)
+                    .webViewBuiltInZoomControls(true)
+                    .webViewLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING)
                     .show(articleSummary.publicLink)
         }
     }
