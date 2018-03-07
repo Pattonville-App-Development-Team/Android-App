@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,15 @@ package org.pattonvillecs.pattonvilleapp.di.image;
 
 import android.app.Application;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.provider.PicassoProvider;
 
 import org.pattonvillecs.pattonvilleapp.di.AppModule;
 import org.pattonvillecs.pattonvilleapp.di.network.OkHttpClientModule;
+
+import java.lang.reflect.Field;
 
 import javax.inject.Singleton;
 
@@ -32,7 +36,10 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 
 /**
- * Created by Mitchell Skaggs on 11/28/2017.
+ * This module creates a singleton Picasso instance given an OkHttpClient. It also sets the Picasso singleton instance to be the newly created Picasso object.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.2.0
  */
 
 @Module(includes = {OkHttpClientModule.class, AppModule.class})
@@ -43,7 +50,15 @@ public class PicassoModule {
         Picasso picasso = new Picasso.Builder(application)
                 .downloader(new OkHttp3Downloader(okHttpClient))
                 .build();
-        Picasso.setSingletonInstance(picasso);
+
+        try {
+            Field instanceField = PicassoProvider.class.getDeclaredField("instance");
+            instanceField.setAccessible(true);
+            instanceField.set(null, picasso);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            FirebaseCrash.report(e);
+        }
+
         return picasso;
     }
 }

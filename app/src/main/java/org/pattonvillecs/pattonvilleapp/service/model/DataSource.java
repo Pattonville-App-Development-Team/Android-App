@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.service.model;
 
 import android.support.annotation.DrawableRes;
 
@@ -24,6 +24,7 @@ import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.pattonvillecs.pattonvilleapp.R;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -241,6 +242,10 @@ public enum DataSource {
 
     public static final Set<DataSource> CALENDARS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
             .filter(d -> d.calendarURL.isPresent())
+            .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
+
+    public static final Set<DataSource> NEWS = Collections.unmodifiableSet(Stream.of(DataSource.ALL)
+            .filter(d -> d.newsURL.isPresent())
             .collect(Collectors.toCollection(() -> EnumSet.noneOf(DataSource.class))));
 
     public final String longName, shortName, websiteURL, address, mainNumber, initialsName, topicName;

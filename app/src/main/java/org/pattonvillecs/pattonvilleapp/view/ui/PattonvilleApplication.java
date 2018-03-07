@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,52 +15,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pattonvillecs.pattonvilleapp;
+package org.pattonvillecs.pattonvilleapp.view.ui;
 
 import android.app.Activity;
+import android.app.Application;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.annimon.stream.Stream;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.pool.KryoPool;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.squareup.leakcanary.LeakCanary;
+import com.thefinestartist.Base;
 
-import org.pattonvillecs.pattonvilleapp.calendar.data.KryoUtil;
+import org.pattonvillecs.pattonvilleapp.BuildConfig;
 import org.pattonvillecs.pattonvilleapp.calendar.pinned.PinnedEventsContract;
 import org.pattonvillecs.pattonvilleapp.di.DaggerAppComponent;
-import org.pattonvillecs.pattonvilleapp.listeners.PauseableListenable;
-import org.pattonvillecs.pattonvilleapp.listeners.PauseableListener;
-import org.pattonvillecs.pattonvilleapp.news.NewsParsingAsyncTask;
-import org.pattonvillecs.pattonvilleapp.news.NewsParsingUpdateData;
-import org.pattonvillecs.pattonvilleapp.news.articles.NewsArticle;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
 import org.pattonvillecs.pattonvilleapp.preferences.PreferenceUtils;
-import org.pattonvillecs.pattonvilleapp.preferences.SchoolSelectionPreferenceListener;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.PinnedEventMarker;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.CalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.model.calendar.event.PinnableCalendarEvent;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarRepository;
 import org.pattonvillecs.pattonvilleapp.service.repository.calendar.CalendarSyncJobService;
 import org.pattonvillecs.pattonvilleapp.service.repository.directory.DirectorySyncJobService;
+import org.pattonvillecs.pattonvilleapp.service.repository.news.NewsSyncJobService;
 import org.threeten.bp.Instant;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.inject.Inject;
 
@@ -68,34 +59,22 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
 import kotlin.collections.CollectionsKt;
 
-import static android.os.AsyncTask.THREAD_POOL_EXECUTOR;
-
 /**
- * The main {@link android.app.Application} class of the Pattonville App.
+ * The main {@link Application} class of the Pattonville App.
  *
  * @author Mitchell Skaggs
  * @since 1.0.0
  */
 
-public class PattonvilleApplication extends DaggerApplication implements SharedPreferences.OnSharedPreferenceChangeListener, PauseableListenable {
+public class PattonvilleApplication extends DaggerApplication implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String TOPIC_ALL_MIDDLE_SCHOOLS = "All-Middle-Schools";
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
-    private static final String TAG = PattonvilleApplication.class.getSimpleName();
+    private static final String TAG = "PattonvilleApplication";
     private static final String KEY_APP_VERSION = "app_version";
 
-    private RequestQueue mRequestQueue;
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
-    private KryoPool kryoPool;
-
-    private ConcurrentMap<DataSource, List<NewsArticle>> newsData;
-    private Set<NewsParsingAsyncTask> runningNewsAsyncTasks;
-
-    /**
-     * Similar to {@link java.util.AbstractList#modCount}, but for every key seen so far
-     */
     private Map<String, Integer> keyModificationCounts;
-    private List<PauseableListener<?>> pauseableListeners;
 
     public static PattonvilleApplication get(Activity activity) {
         return (PattonvilleApplication) activity.getApplication();
@@ -104,23 +83,22 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         AndroidThreeTen.init(this);
-        mRequestQueue = Volley.newRequestQueue(this);
-        onSharedPreferenceKeyChangedListeners = new ArrayList<>();
-        pauseableListeners = new ArrayList<>();
-        keyModificationCounts = new HashMap<>();
-        kryoPool = new KryoPool.Builder(new KryoUtil.KryoRegistrationFactory()).softReferences().build();
+        Base.initialize(this);
 
-        newsData = new ConcurrentHashMap<>();
-        runningNewsAsyncTasks = Collections.synchronizedSet(new HashSet<NewsParsingAsyncTask>());
+        onSharedPreferenceKeyChangedListeners = new ArrayList<>();
+        keyModificationCounts = new HashMap<>();
 
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-        setupFirebaseTopics();
-        setUpNewsParsing();
-        enableHttpResponseCache();
     }
+
 
     @Inject
     protected void checkForUpdate(FirebaseJobDispatcher firebaseJobDispatcher) {
@@ -133,6 +111,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
             Log.d(TAG, "Launching update jobs!");
             firebaseJobDispatcher.schedule(CalendarSyncJobService.getInstantCalendarSyncJob(firebaseJobDispatcher));
             firebaseJobDispatcher.schedule(DirectorySyncJobService.getInstantDirectorySyncJob(firebaseJobDispatcher));
+            firebaseJobDispatcher.schedule(NewsSyncJobService.getInstantNewsSyncJob(firebaseJobDispatcher));
 
             sharedPreferences.edit().putInt(KEY_APP_VERSION, BuildConfig.VERSION_CODE).apply();
         }
@@ -146,6 +125,11 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     @Inject
     protected void createDirectorySyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
         firebaseJobDispatcher.schedule(DirectorySyncJobService.getRecurringDirectorySyncJob(firebaseJobDispatcher));
+    }
+
+    @Inject
+    protected void createNewsSyncJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        firebaseJobDispatcher.schedule(NewsSyncJobService.getRecurringNewsSyncJob(firebaseJobDispatcher));
     }
 
     /**
@@ -192,89 +176,29 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
         return DaggerAppComponent.builder().application(this).build();
     }
 
-    /**
-     * This is to create an HTTP cache that we can use to prevent constant downloads when loading articles
-     */
-    @Deprecated
-    private void enableHttpResponseCache() {
-        try {
-            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-            File httpCacheDir = new File(getCacheDir(), "http");
-            Class.forName("android.net.http.HttpResponseCache")
-                    .getMethod("install", File.class, long.class)
-                    .invoke(null, httpCacheDir, httpCacheSize);
-        } catch (Exception httpResponseCacheNotAvailable) {
-            Log.d(TAG, "HTTP response cache is unavailable.");
-        }
-    }
-
-    private void setupFirebaseTopics() {
-        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
-            @Override
-            public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
-
+    @Inject
+    protected void setupFirebaseTopics() {
+        PreferenceUtils.getSelectedSchoolsLiveData(this).observe(ProcessLifecycleOwner.get(), dataSources -> {
+            if (dataSources != null) {
                 FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
-                for (DataSource dataSource : DataSource.ALL) {
+                for (DataSource dataSource : DataSource.ALL)
                     firebaseMessaging.unsubscribeFromTopic(dataSource.topicName);
-                }
                 firebaseMessaging.unsubscribeFromTopic(TOPIC_ALL_MIDDLE_SCHOOLS);
                 firebaseMessaging.unsubscribeFromTopic(TOPIC_ALL_ELEMENTARY_SCHOOLS);
                 firebaseMessaging.unsubscribeFromTopic(TOPIC_TEST);
 
-                for (DataSource dataSource : newSelectedDataSources) {
+                for (DataSource dataSource : dataSources) {
                     firebaseMessaging.subscribeToTopic(dataSource.topicName);
-                    if (dataSource.isElementarySchool) {
+                    if (dataSource.isElementarySchool)
                         firebaseMessaging.subscribeToTopic(TOPIC_ALL_ELEMENTARY_SCHOOLS);
-                    } else if (dataSource.isMiddleSchool) {
+                    else if (dataSource.isMiddleSchool)
                         firebaseMessaging.subscribeToTopic(TOPIC_ALL_MIDDLE_SCHOOLS);
-                    }
                 }
 
-                if (BuildConfig.DEBUG) {
-                    firebaseMessaging.subscribeToTopic(TOPIC_TEST);
-                }
+                if (BuildConfig.DEBUG) firebaseMessaging.subscribeToTopic(TOPIC_TEST);
             }
         });
-    }
-
-    private void setUpNewsParsing() {
-        this.registerOnPreferenceKeyChangedListener(new SchoolSelectionPreferenceListener() {
-            @Override
-            public void keyChanged(SharedPreferences sharedPreferences, String key) {
-                Set<DataSource> newSelectedDataSources = PreferenceUtils.getSelectedSchoolsSet(PattonvilleApplication.this);
-
-                Stream.of(newsData.keySet())
-                        .filter(dataSource -> !newSelectedDataSources.contains(dataSource))
-                        .forEach(dataSource -> newsData.remove(dataSource));
-
-                newSelectedDataSources.removeAll(newsData.keySet()); //Remove DataSources that are already present
-
-                executeNewsDataTasks(newSelectedDataSources, false);
-            }
-        });
-
-        //Initial download of news
-        executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), false);
-    }
-
-    private void executeNewsDataTasks(Set<DataSource> dataSources, boolean skipCacheLoad) {
-        Stream.of(dataSources)
-                .filter(dataSource -> dataSource.newsURL.isPresent())
-                .forEach(dataSource -> new NewsParsingAsyncTask(PattonvilleApplication.this, skipCacheLoad).executeOnExecutor(THREAD_POOL_EXECUTOR, dataSource));
-    }
-
-    public Kryo borrowKryo() {
-        return kryoPool.borrow();
-    }
-
-    public void releaseKryo(Kryo kryo) {
-        kryoPool.release(kryo);
-    }
-
-    public RequestQueue getRequestQueue() {
-        return mRequestQueue;
     }
 
     public void registerOnPreferenceKeyChangedListener(OnSharedPreferenceKeyChangedListener onSharedPreferenceKeyChangedListener) {
@@ -290,6 +214,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     }
 
     @Override
+    @Deprecated
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.i(TAG, "Preference changed: " + key + " modifications are now: " + keyModificationCounts);
 
@@ -302,78 +227,5 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
             if (onSharedPreferenceKeyChangedListener.getListenedKeys().contains(key))
                 onSharedPreferenceKeyChangedListener.keyChanged(sharedPreferences, key);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void pause(PauseableListener<?> pauseableListener) {
-        switch (pauseableListener.getIdentifier()) {
-            case NewsParsingUpdateData.NEWS_LISTENER_ID:
-                Log.i(TAG, "News update listener paused!");
-                ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
-                break;
-            default:
-                throw new IllegalArgumentException("Listener not known!");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void resume(PauseableListener<?> pauseableListener) {
-        switch (pauseableListener.getIdentifier()) {
-            case NewsParsingUpdateData.NEWS_LISTENER_ID:
-                Log.i(TAG, "News update listener resumed!");
-                ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onResume(getCurrentNewsParsingUpdateData());
-                break;
-            default:
-                throw new IllegalArgumentException("Listener not known!");
-        }
-    }
-
-    @Override
-    public void registerPauseableListener(PauseableListener<?> pauseableListener) {
-        pauseableListeners.add(pauseableListener);
-    }
-
-    @Override
-    public void unregisterPauseableListener(PauseableListener<?> pauseableListener) {
-        pauseableListeners.remove(pauseableListener);
-    }
-
-    public Set<NewsParsingAsyncTask> getRunningNewsAsyncTasks() {
-        return runningNewsAsyncTasks;
-    }
-
-    public void updateNewsListeners() {
-        updateNewsListeners(getCurrentNewsParsingUpdateData());
-    }
-
-    private void updateNewsListeners(NewsParsingUpdateData newsParsingUpdateData) {
-        Log.d(TAG, "Updating news listeners");
-        for (PauseableListener<?> pauseableListener : pauseableListeners) {
-            Log.d(TAG, "Checking listener " + pauseableListener);
-            if (!pauseableListener.isPaused()) {
-                Log.d(TAG, "Check passed for listener " + pauseableListener);
-                if (pauseableListener.getIdentifier() == NewsParsingUpdateData.NEWS_LISTENER_ID) {
-                    Log.d(TAG, "Updating news listener " + pauseableListener);
-                    //noinspection unchecked
-                    ((PauseableListener<NewsParsingUpdateData>) pauseableListener).onReceiveData(newsParsingUpdateData);
-                }
-            } else {
-                Log.d(TAG, "Skipping paused listener");
-            }
-        }
-    }
-
-    private NewsParsingUpdateData getCurrentNewsParsingUpdateData() {
-        return new NewsParsingUpdateData(newsData, runningNewsAsyncTasks);
-    }
-
-    public Map<DataSource, List<NewsArticle>> getNewsData() {
-        return newsData;
-    }
-
-    public void hardRefreshNewsData() {
-        executeNewsDataTasks(PreferenceUtils.getSelectedSchoolsSet(this), true);
     }
 }

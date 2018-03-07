@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package org.pattonvillecs.pattonvilleapp.service.repository;
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;
 
-import org.pattonvillecs.pattonvilleapp.DataSource;
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource;
 
 /**
  * Created by Mitchell on 10/9/2017.
@@ -30,13 +30,13 @@ public class DataSourceTypeConverter {
 
     @TypeConverter
     @Nullable
-    public static DataSource fromTimestamp(@Nullable Integer value) {
+    public static DataSource fromIndex(@Nullable Integer value) {
         return value == null ? null : DataSource.values()[value];
     }
 
     @TypeConverter
     @Nullable
-    public static Integer dateToTimestamp(@Nullable DataSource dataSource) {
+    public static Integer dataSourceToIndex(@Nullable DataSource dataSource) {
         return dataSource == null ? null : dataSource.ordinal();
     }
 }

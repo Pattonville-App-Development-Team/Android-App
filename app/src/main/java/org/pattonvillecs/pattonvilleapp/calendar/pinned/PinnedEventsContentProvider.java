@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,11 @@ import android.util.Log;
 
 /**
  * Created by Mitchell Skaggs on 2/23/17.
+ * <p>
+ * This is a legacy Content Provider that stores users' pinned events. This is only here to allow legacy pinned events to be converted to the new Room database.
  *
  * @see <a href="http://www.grokkingandroid.com/android-tutorial-writing-your-own-content-provider/">Android Tutorial: Writing your own Content Provider | Grokking Android</a>
+ * @since 1.0.0
  */
 
 public class PinnedEventsContentProvider extends ContentProvider {

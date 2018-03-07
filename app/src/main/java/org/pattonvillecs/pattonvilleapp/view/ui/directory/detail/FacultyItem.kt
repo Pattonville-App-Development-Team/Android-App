@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@ import org.apache.commons.text.WordUtils
 import org.jetbrains.anko.email
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.pattonvillecs.pattonvilleapp.DataSource
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.directory.Faculty
 import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.DataSourceHeader
 
@@ -49,13 +49,13 @@ data class FacultyItem(val faculty: Faculty) : AbstractSectionableItem<FacultyIt
         this.header = header
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): FacultyItemViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): FacultyItemViewHolder =
             FacultyItemViewHolder(view, adapter)
 
     override fun getLayoutRes(): Int =
             R.layout.faculty_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: FacultyItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: FacultyItemViewHolder, position: Int, payloads: MutableList<Any>?) {
         val context = adapter.recyclerView.context
 
         holder.name.text = context.getString(R.string.faculty_name,

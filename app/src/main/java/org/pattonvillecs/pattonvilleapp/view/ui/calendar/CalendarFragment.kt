@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ import android.view.*
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import org.pattonvillecs.pattonvilleapp.MainActivity
 import org.pattonvillecs.pattonvilleapp.R
+import org.pattonvillecs.pattonvilleapp.view.ui.MainActivity
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.events.CalendarEventsFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.month.CalendarMonthFragment
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.pinned.CalendarPinnedFragment

@@ -40,6 +40,14 @@
 #Picasso
 -dontwarn com.squareup.okhttp.**
 
+#OkHttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
 #Guava
 -dontwarn java.lang.ClassValue
 -dontwarn com.google.common.collect.EnumMultiset
@@ -80,6 +88,13 @@
 -keep,includedescriptorclasses class kotlin.reflect.KCallable { *; }
 -keep,includedescriptorclasses class kotlin.Triple { *; }
 -keep,includedescriptorclasses class kotlin.ranges.ClosedRange { *; }
+-keep,includedescriptorclasses class kotlin.text.StringsKt** { *; }
+-keep,includedescriptorclasses class kotlin.collections.SetsKt** { *; }
+-keep,includedescriptorclasses class kotlin.collections.MapsKt** { *; }
+-keep,includedescriptorclasses class kotlin.Lazy** { *; }
+-keep,includedescriptorclasses class kotlin.reflect.KClass** { *; }
+-keep,includedescriptorclasses class kotlin.jvm.JvmClassMappingKt** { *; }
+-keep,includedescriptorclasses class kotlin._Assertions** { *; }
 
 #Okio
 -dontwarn okio.**
@@ -98,6 +113,13 @@
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
 
-# Android bug
+#SimpleXML RSS
+-keepattributes *Annotation*
+-keepclassmembers class org.simpleframework.xml.** {
+    <init>(...);
+}
+-keep class com.github.magneticflux.rss.** { *; }
+-keep class * extends org.simpleframework.xml.convert.Converter
+-keep class * extends org.simpleframework.xml.transform.Transform
 -dontwarn org.xmlpull.v1.**
 -dontwarn javax.xml.**

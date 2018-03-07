@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,19 @@ package org.pattonvillecs.pattonvilleapp.di;
 import org.pattonvillecs.pattonvilleapp.di.scopes.PerFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.calendar.CalendarFragment;
 import org.pattonvillecs.pattonvilleapp.view.ui.home.HomeFragment;
+import org.pattonvillecs.pattonvilleapp.view.ui.news.NewsFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 /**
  * Created by Mitchell Skaggs on 11/22/2017.
+ *
+ * @since 1.2.0
  */
 
 @Module
-public abstract class FragmentBuilderModule {
+abstract class FragmentBuilderModule {
     @ContributesAndroidInjector
     @PerFragment
     abstract CalendarFragment contributeCalendarFragment();
@@ -37,4 +40,8 @@ public abstract class FragmentBuilderModule {
     @ContributesAndroidInjector
     @PerFragment
     abstract HomeFragment contributeHomeFragment();
+
+    @ContributesAndroidInjector
+    @PerFragment
+    abstract NewsFragment contributeNewsFragment();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,10 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by Mitchell Skaggs on 11/20/2017.
+ * This module provides a singleton {@link FirebaseJobDispatcher} for the application.
+ *
+ * @author Mitchell Skaggs
+ * @since 1.3.0
  */
 
 @Module(includes = AppModule.class)

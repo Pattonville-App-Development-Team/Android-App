@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
+ * Copyright (C) 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,10 @@ import org.pattonvillecs.pattonvilleapp.BuildConfig;
 
 /**
  * Created by Mitchell Skaggs on 2/23/17.
+ * <p>
+ * This is the Content Provider contract for the legacy pinned events Content Provider.
+ *
+ * @since 1.0.0
  */
 
 public final class PinnedEventsContract {
