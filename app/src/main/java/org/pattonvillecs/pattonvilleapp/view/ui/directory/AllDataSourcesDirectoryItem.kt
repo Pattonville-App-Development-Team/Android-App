@@ -40,7 +40,7 @@ class AllDataSourcesDirectoryItem : AbstractDirectoryItem() {
     override val displayName: String
         get() = "All Staff"
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DirectoryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: DirectoryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
         super.bindViewHolder(adapter, holder, position, payloads)
 
         val context = adapter.recyclerView.context

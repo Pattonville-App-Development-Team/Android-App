@@ -76,12 +76,12 @@ class PinnableCalendarEventItem @JvmOverloads constructor(private val pinnableCa
 
     override fun getModel(): PinnableCalendarEvent = pinnableCalendarEvent
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): PinnableCalendarEventItemViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): PinnableCalendarEventItemViewHolder =
             PinnableCalendarEventItemViewHolder(view, adapter)
 
     override fun getLayoutRes(): Int = R.layout.calendar_dateless_event_list_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: PinnableCalendarEventItemViewHolder, position: Int, payloads: MutableList<Any?>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: PinnableCalendarEventItemViewHolder, position: Int, payloads: MutableList<Any?>?) {
 
         holder.topText.text = pinnableCalendarEvent.calendarEvent.summary
 

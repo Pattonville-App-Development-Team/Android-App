@@ -46,7 +46,7 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
 
     override fun getLayoutRes(): Int = R.layout.directory_datasource_suummary_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
 
         PicassoProvider.get()
                 .load(getImageResourceForDataSource(dataSource))
@@ -90,7 +90,7 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
         }
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DataSourceSummaryItemViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): DataSourceSummaryItemViewHolder =
             DataSourceSummaryItemViewHolder(view, adapter)
 
     class DataSourceSummaryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {

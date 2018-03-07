@@ -37,14 +37,14 @@ import org.pattonvillecs.pattonvilleapp.view.ui.directory.detail.all.DataSourceH
 data class DataSourceHeader(val dataSource: DataSource) : AbstractHeaderItem<DataSourceHeaderViewHolder>(), IFacultyItem<DataSourceHeaderViewHolder> {
     override val location: DataSource? get() = dataSource
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DataSourceHeaderViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: DataSourceHeaderViewHolder, position: Int, payloads: MutableList<Any>?) {
         holder.name.text = dataSource.longName
     }
 
     override fun getLayoutRes(): Int =
             R.layout.datasource_header
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DataSourceHeaderViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): DataSourceHeaderViewHolder =
             DataSourceHeaderViewHolder(view, adapter, true)
 
     class DataSourceHeaderViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {

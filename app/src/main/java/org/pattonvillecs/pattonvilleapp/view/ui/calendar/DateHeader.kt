@@ -17,6 +17,7 @@
 
 package org.pattonvillecs.pattonvilleapp.view.ui.calendar
 
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -34,12 +35,13 @@ import org.threeten.bp.format.FormatStyle
  * Created by Mitchell Skaggs on 11/23/2017.
  */
 class DateHeader(private val localDate: LocalDate) : AbstractHeaderItem<DateHeaderViewHolder>(), IFlexibleHasStartDate<DateHeaderViewHolder> {
+
     override val startDate: LocalDate get() = localDate
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DateHeaderViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>): DateHeaderViewHolder =
             DateHeaderViewHolder(view, adapter, true)
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DateHeaderViewHolder, position: Int, payloads: MutableList<Any?>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>, holder: DateHeaderViewHolder, position: Int, payloads: MutableList<Any?>?) {
         holder.dateText.text = FORMATTER.format(localDate)
     }
 

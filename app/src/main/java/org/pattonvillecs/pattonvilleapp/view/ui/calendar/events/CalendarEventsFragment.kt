@@ -159,7 +159,7 @@ class CalendarEventsFragment : DaggerFragment() {
         viewModel.searchText.observe(this::getLifecycle) {
             Log.i(TAG, "Filtering based on '$it'")
             if (it != null) {
-                eventAdapter.searchText = it
+                eventAdapter.setFilter(it)
                 eventAdapter.filterItems(100)
             }
         }

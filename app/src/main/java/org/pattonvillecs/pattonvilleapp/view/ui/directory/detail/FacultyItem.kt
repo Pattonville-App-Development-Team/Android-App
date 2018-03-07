@@ -49,13 +49,13 @@ data class FacultyItem(val faculty: Faculty) : AbstractSectionableItem<FacultyIt
         this.header = header
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): FacultyItemViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): FacultyItemViewHolder =
             FacultyItemViewHolder(view, adapter)
 
     override fun getLayoutRes(): Int =
             R.layout.faculty_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: FacultyItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: FacultyItemViewHolder, position: Int, payloads: MutableList<Any>?) {
         val context = adapter.recyclerView.context
 
         holder.name.text = context.getString(R.string.faculty_name,
