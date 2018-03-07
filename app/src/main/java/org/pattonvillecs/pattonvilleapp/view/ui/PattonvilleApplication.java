@@ -71,6 +71,7 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
     public static final String TOPIC_ALL_ELEMENTARY_SCHOOLS = "All-Elementary-Schools";
     public static final String TOPIC_TEST = "test";
     private static final String TAG = "PattonvilleApplication";
+    private static final String KEY_APP_VERSION = "app_version";
 
     private List<OnSharedPreferenceKeyChangedListener> onSharedPreferenceKeyChangedListeners;
     private Map<String, Integer> keyModificationCounts;
@@ -96,6 +97,24 @@ public class PattonvilleApplication extends DaggerApplication implements SharedP
 
         SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+
+    @Inject
+    protected void checkForUpdate(FirebaseJobDispatcher firebaseJobDispatcher) {
+        SharedPreferences sharedPreferences = PreferenceUtils.getSharedPreferences(this);
+
+        int appVersion = sharedPreferences.getInt(KEY_APP_VERSION, -1);
+        Log.v(TAG, "Stored app version: " + appVersion + ". Current app version: " + BuildConfig.VERSION_CODE);
+
+        if (appVersion < BuildConfig.VERSION_CODE) {
+            Log.d(TAG, "Launching update jobs!");
+            firebaseJobDispatcher.schedule(CalendarSyncJobService.getInstantCalendarSyncJob(firebaseJobDispatcher));
+            firebaseJobDispatcher.schedule(DirectorySyncJobService.getInstantDirectorySyncJob(firebaseJobDispatcher));
+            firebaseJobDispatcher.schedule(NewsSyncJobService.getInstantNewsSyncJob(firebaseJobDispatcher));
+
+            sharedPreferences.edit().putInt(KEY_APP_VERSION, BuildConfig.VERSION_CODE).apply();
+        }
     }
 
     @Inject

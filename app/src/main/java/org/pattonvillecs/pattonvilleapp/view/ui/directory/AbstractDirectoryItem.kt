@@ -21,7 +21,7 @@ import android.support.annotation.DrawableRes
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.squareup.picasso.provider.PicassoProvider
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -43,7 +43,7 @@ abstract class AbstractDirectoryItem : AbstractFlexibleItem<AbstractDirectoryIte
 
         holder.name.text = displayName
 
-        Picasso.get()
+        PicassoProvider.get()
                 .load(mascotDrawableRes)
                 .error(mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside()

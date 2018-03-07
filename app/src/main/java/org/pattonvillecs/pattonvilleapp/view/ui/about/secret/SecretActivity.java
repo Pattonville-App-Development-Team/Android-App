@@ -41,7 +41,7 @@ import android.widget.TextView;
 import com.github.jinatonic.confetti.ConfettiManager;
 import com.github.jinatonic.confetti.ConfettiSource;
 import com.github.jinatonic.confetti.confetto.BitmapConfetto;
-import com.squareup.picasso.Picasso;
+import com.squareup.picasso.provider.PicassoProvider;
 
 import org.pattonvillecs.pattonvilleapp.R;
 import org.pattonvillecs.pattonvilleapp.preferences.OnSharedPreferenceKeyChangedListener;
@@ -106,7 +106,7 @@ public class SecretActivity extends AppCompatActivity implements OnSharedPrefere
         text = findViewById(R.id.well_text);
         resetButton = findViewById(R.id.well_reset);
 
-        Picasso.get()
+        PicassoProvider.get()
                 .load(R.drawable.well)
                 .fit()
                 .centerInside()

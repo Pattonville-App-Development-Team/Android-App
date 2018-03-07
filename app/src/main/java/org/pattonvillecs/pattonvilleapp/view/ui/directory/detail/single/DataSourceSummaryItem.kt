@@ -24,7 +24,7 @@ import android.support.annotation.DrawableRes
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.squareup.picasso.provider.PicassoProvider
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -48,7 +48,7 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
 
     override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
 
-        Picasso.get()
+        PicassoProvider.get()
                 .load(getImageResourceForDataSource(dataSource))
                 .fit()
                 .centerCrop()

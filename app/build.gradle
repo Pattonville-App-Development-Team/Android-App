@@ -49,7 +49,7 @@ android {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 23
+        versionCode 24
         versionName "1.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -162,6 +162,7 @@ dependencies {
 
     //Network image download + cache
     implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
+    implementation 'com.squareup.picasso:picasso-provider:3.0.0-SNAPSHOT'
 
     //RecyclerView improvements
     implementation 'eu.davidea:flexible-adapter:5.0.0-SNAPSHOT'
