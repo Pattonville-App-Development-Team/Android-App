@@ -49,8 +49,8 @@ android {
         applicationId "org.pattonvillecs.pattonvilleapp"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 24
-        versionName "1.4.0"
+        versionCode 25
+        versionName "1.4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
