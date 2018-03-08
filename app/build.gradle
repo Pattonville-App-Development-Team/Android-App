@@ -185,7 +185,7 @@ dependencies {
 
     //XML parsing
     implementation 'org.simpleframework:simple-xml:2.7.1'
-    implementation 'com.github.magneticflux:kotlin-simplexml-rss:1.1.1', {
+    implementation 'com.github.magneticflux:kotlin-simplexml-rss:1.1.2', {
         exclude group: 'org.threeten', module: 'threetenbp'
     }
 
