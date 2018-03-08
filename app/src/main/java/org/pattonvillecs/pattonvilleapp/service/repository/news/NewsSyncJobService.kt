@@ -30,6 +30,7 @@ import com.google.firebase.crash.FirebaseCrash
 import org.pattonvillecs.pattonvilleapp.service.model.DataSource
 import org.pattonvillecs.pattonvilleapp.service.model.news.ArticleSummary
 import org.pattonvillecs.pattonvilleapp.service.repository.DaggerJobService
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -87,8 +88,10 @@ class NewsSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
-            FirebaseCrash.report(t)
+            if (t !is IOException) {
+                FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
+                FirebaseCrash.report(t)
+            }
             newsSyncJobService.jobFinished(job, true)
         }
     }
@@ -115,6 +118,7 @@ class NewsSyncJobService : DaggerJobService() {
                         .setReplaceCurrent(true)
                         .setTag("instant_news_sync_job")
                         .setService(NewsSyncJobService::class.java)
+                        .addConstraint(Constraint.ON_ANY_NETWORK)
                         .setLifetime(Lifetime.FOREVER)
                         .setTrigger(Trigger.NOW)
                         .build()

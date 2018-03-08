@@ -82,8 +82,10 @@ class CalendarSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            if (t !is IOException)
+            if (t !is IOException) {
                 FirebaseCrash.logcat(Log.WARN, TAG, "Download failed!")
+                FirebaseCrash.report(t)
+            }
             calendarSyncJobService.jobFinished(job, true)
         }
     }
