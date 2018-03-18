@@ -19,7 +19,7 @@ package org.pattonvillecs.pattonvilleapp.di.image;
 
 import android.app.Application;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.provider.PicassoProvider;
@@ -56,7 +56,7 @@ public class PicassoModule {
             instanceField.setAccessible(true);
             instanceField.set(null, picasso);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
 
         return picasso;
