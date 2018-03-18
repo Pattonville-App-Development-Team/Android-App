@@ -82,8 +82,10 @@ class CalendarSyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            if (t !is IOException)
+            if (t !is IOException) {
                 Crashlytics.log(Log.WARN, TAG, "Download failed!")
+                Crashlytics.logException(t)
+            }
             calendarSyncJobService.jobFinished(job, true)
         }
     }

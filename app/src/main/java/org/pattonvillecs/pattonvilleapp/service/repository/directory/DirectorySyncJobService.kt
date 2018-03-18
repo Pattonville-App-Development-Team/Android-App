@@ -70,8 +70,10 @@ class DirectorySyncJobService : DaggerJobService() {
         }
 
         override fun onFailure(t: Throwable) {
-            if (t !is IOException)
+            if (t !is IOException) {
                 Crashlytics.log(Log.WARN, TAG, "Download failed!")
+                Crashlytics.logException(t)
+            }
             directorySyncJobService.jobFinished(job, true)
         }
     }
@@ -90,6 +92,18 @@ class DirectorySyncJobService : DaggerJobService() {
                         .setLifetime(Lifetime.FOREVER)
                         .setRecurring(true)
                         .setTrigger(Trigger.executionWindow(TimeUnit.HOURS.toSeconds(24).toInt(), TimeUnit.HOURS.toSeconds(48).toInt()))
+                        .build()
+
+        @JvmStatic
+        fun getInstantDirectorySyncJob(firebaseJobDispatcher: FirebaseJobDispatcher): Job =
+                firebaseJobDispatcher.newJobBuilder()
+                        .setReplaceCurrent(true)
+                        .setTag("instant_directory_sync_job")
+                        .setService(DirectorySyncJobService::class.java)
+                        .addConstraint(Constraint.ON_ANY_NETWORK)
+                        .setLifetime(Lifetime.FOREVER)
+                        .setRecurring(false)
+                        .setTrigger(Trigger.NOW)
                         .build()
     }
 }

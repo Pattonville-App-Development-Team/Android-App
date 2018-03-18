@@ -26,7 +26,7 @@ import android.support.annotation.DrawableRes;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.squareup.picasso.provider.PicassoProvider;
 
 import org.pattonvillecs.pattonvilleapp.R;
 
@@ -71,7 +71,7 @@ public class LinkItem extends AbstractFlexibleItem<LinkItem.LinkViewHolder> impl
         Context context = adapter.getRecyclerView().getContext();
 
         holder.imageView.setOnClickListener(v -> context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link))));
-        Picasso.get()
+        PicassoProvider.get()
                 .load(image)
                 .error(image)
                 .fit()

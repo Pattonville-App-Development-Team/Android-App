@@ -19,11 +19,15 @@ package org.pattonvillecs.pattonvilleapp.di.image;
 
 import android.app.Application;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.provider.PicassoProvider;
 
 import org.pattonvillecs.pattonvilleapp.di.AppModule;
 import org.pattonvillecs.pattonvilleapp.di.network.OkHttpClientModule;
+
+import java.lang.reflect.Field;
 
 import javax.inject.Singleton;
 
@@ -46,7 +50,15 @@ public class PicassoModule {
         Picasso picasso = new Picasso.Builder(application)
                 .downloader(new OkHttp3Downloader(okHttpClient))
                 .build();
-        Picasso.setSingletonInstance(picasso);
+
+        try {
+            Field instanceField = PicassoProvider.class.getDeclaredField("instance");
+            instanceField.setAccessible(true);
+            instanceField.set(null, picasso);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            FirebaseCrash.report(e);
+        }
+
         return picasso;
     }
 }

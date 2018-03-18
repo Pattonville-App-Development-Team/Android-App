@@ -97,7 +97,7 @@ class NewsFragment : DaggerFragment() {
         viewModel.searchText.observe(this::getLifecycle) {
             Log.i(TAG, "Filtering based on '$it'")
             if (it != null) {
-                adapter.searchText = it
+                adapter.setFilter(it)
                 adapter.filterItems(100)
             }
         }

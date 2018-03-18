@@ -24,7 +24,7 @@ import android.support.annotation.DrawableRes
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.squareup.picasso.provider.PicassoProvider
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -46,9 +46,9 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
 
     override fun getLayoutRes(): Int = R.layout.directory_datasource_suummary_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: DataSourceSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
 
-        Picasso.get()
+        PicassoProvider.get()
                 .load(getImageResourceForDataSource(dataSource))
                 .fit()
                 .centerCrop()
@@ -90,7 +90,7 @@ data class DataSourceSummaryItem(val dataSource: DataSource) : AbstractFlexibleI
         }
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): DataSourceSummaryItemViewHolder =
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): DataSourceSummaryItemViewHolder =
             DataSourceSummaryItemViewHolder(view, adapter)
 
     class DataSourceSummaryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {

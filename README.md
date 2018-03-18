@@ -8,6 +8,6 @@
 - Nathan Skelton
 
 ## Gource Visualization
-[![Gource visualization](https://img.youtube.com/vi/8YGtw4NcLJU/0.jpg)](https://www.youtube.com/watch?v=8YGtw4NcLJU)
+[![Gource visualization](https://img.youtube.com/vi/9iv6C9SbMrM/0.jpg)](https://www.youtube.com/watch?v=9iv6C9SbMrM)
 
 Copyright 2017 - 2018 Mitchell Skaggs, Keturah Gadson, Ethan Holtgrieve, Nathan Skelton, Pattonville School District

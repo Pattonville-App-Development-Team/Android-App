@@ -21,7 +21,7 @@ import android.support.annotation.DrawableRes
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.squareup.picasso.provider.PicassoProvider
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -39,11 +39,11 @@ abstract class AbstractDirectoryItem : AbstractFlexibleItem<AbstractDirectoryIte
 
     abstract val displayName: String
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: DirectoryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: DirectoryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
 
         holder.name.text = displayName
 
-        Picasso.get()
+        PicassoProvider.get()
                 .load(mascotDrawableRes)
                 .error(mascotDrawableRes) //Needed because VectorDrawables are not loaded properly when using .load(). See square/picasso/issues/1109
                 .centerInside()
@@ -51,7 +51,7 @@ abstract class AbstractDirectoryItem : AbstractFlexibleItem<AbstractDirectoryIte
                 .into(holder.icon)
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<*>): DirectoryItemViewHolder {
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): DirectoryItemViewHolder {
         return DirectoryItemViewHolder(view, adapter)
     }
 
@@ -59,7 +59,7 @@ abstract class AbstractDirectoryItem : AbstractFlexibleItem<AbstractDirectoryIte
         return R.layout.directory_recycler_view_item
     }
 
-    class DirectoryItemViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {
+    class DirectoryItemViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>, stickyHeader: Boolean = false) : FlexibleViewHolder(view, adapter, stickyHeader) {
         val name = view.find<TextView>(R.id.directory_name)
         val icon = view.find<ImageView>(R.id.directory_icon)
     }

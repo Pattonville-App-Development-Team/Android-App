@@ -18,6 +18,7 @@
 package org.pattonvillecs.pattonvilleapp.view.ui.news
 
 import android.view.View
+import android.webkit.WebSettings
 import android.widget.ImageView
 import android.widget.TextView
 import com.thefinestartist.finestwebview.FinestWebView
@@ -50,13 +51,13 @@ data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : Abst
         return titleRatio > 70 || dataSourceRatio > 70
     }
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>): ArticleSummaryItemViewHolder {
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>>): ArticleSummaryItemViewHolder {
         return ArticleSummaryItemViewHolder(view, adapter)
     }
 
     override fun getLayoutRes(): Int = R.layout.news_recyclerview_item
 
-    override fun bindViewHolder(adapter: FlexibleAdapter<out IFlexible<*>>, holder: ArticleSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
+    override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<*>>, holder: ArticleSummaryItemViewHolder, position: Int, payloads: MutableList<Any>?) {
         holder.circle.setColorFilter(articleSummary.dataSource.calendarColor)
         holder.abbreviation.text = articleSummary.dataSource.initialsName
         holder.title.text = articleSummary.title
@@ -66,6 +67,9 @@ data class ArticleSummaryItem(private val articleSummary: ArticleSummary) : Abst
                     .showIconBack(true)
                     .showSwipeRefreshLayout(true)
                     .swipeRefreshColorsRes(R.array.colors)
+                    .webViewSupportZoom(true)
+                    .webViewBuiltInZoomControls(true)
+                    .webViewLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING)
                     .show(articleSummary.publicLink)
         }
     }
